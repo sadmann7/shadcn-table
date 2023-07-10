@@ -1,0 +1,72 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "id": "ca108565-5b04-4cc9-a86c-6e3127824765",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "tasks": {
+      "name": "tasks",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "label": {
+          "name": "label",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "priority": {
+          "name": "priority",
+          "type": "priority",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {}
+    }
+  },
+  "enums": {
+    "priority": {
+      "name": "priority",
+      "values": {
+        "low": "low",
+        "medium": "medium",
+        "high": "high"
+      }
+    },
+    "status": {
+      "name": "status",
+      "values": {
+        "todo": "todo",
+        "in-progress": "in-progress",
+        "done": "done",
+        "canceled": "canceled"
+      }
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}
