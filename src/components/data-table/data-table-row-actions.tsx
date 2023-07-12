@@ -1,5 +1,6 @@
 "use client"
 
+import { Task } from "@/db/schema"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { Row } from "@tanstack/react-table"
 
@@ -19,8 +20,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { labels } from "./data"
-import { selectTaskSchema } from "@/db/schema"
-
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -29,7 +28,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const task = selectTaskSchema.parse(row.original)
+  const task = row.original as Task
 
   return (
     <DropdownMenu>

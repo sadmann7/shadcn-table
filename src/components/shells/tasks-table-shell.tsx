@@ -23,14 +23,9 @@ import { DataTableRowActions } from "@/components/data-table/data-table-row-acti
 interface TasksTableShellProps {
   data: Task[]
   pageCount: number
-  storeId: number
 }
 
-export function TasksTableShell({
-  data,
-  pageCount,
-  storeId,
-}: TasksTableShellProps) {
+export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<Task, unknown>[]>(
     () => [
@@ -186,7 +181,7 @@ export function TasksTableShell({
         cell: ({ row }) => <DataTableRowActions row={row} />,
       },
     ],
-    [storeId]
+    []
   )
 
   return <DataTable columns={columns} data={data} pageCount={pageCount} />

@@ -2,6 +2,9 @@ import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import { and, asc, desc, like, sql } from "drizzle-orm"
 
+import { Shell } from "@/components/shells/shell"
+import { TasksTableShell } from "@/components/shells/tasks-table-shell"
+
 interface IndexPageProps {
   searchParams: {
     [key: string]: string | string[] | undefined
@@ -79,11 +82,8 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
   const pageCount = Math.ceil(totalTasks / limit)
 
   return (
-    <div className="container flex min-h-screen flex-col items-center justify-center">
-      <h1 className="text-3xl font-bold">Shadcn Table</h1>
-      <p className="text-base text-muted-foreground">
-        Under construction, please come back later.
-      </p>
-    </div>
+    <Shell>
+      <TasksTableShell data={allTasks} pageCount={pageCount} />
+    </Shell>
   )
 }
