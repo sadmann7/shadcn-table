@@ -1,6 +1,6 @@
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
-import { and, asc, desc, like, sql } from "drizzle-orm"
+import { and, asc, desc, eq, like, or, sql } from "drizzle-orm"
 
 import { Shell } from "@/components/shells/shell"
 import { TasksTableShell } from "@/components/shells/tasks-table-shell"
@@ -12,7 +12,7 @@ interface IndexPageProps {
 }
 
 export default async function IndexPage({ searchParams }: IndexPageProps) {
-  const { page, per_page, sort, title } = searchParams
+  const { page, per_page, sort, title, status, priority } = searchParams
 
   // Number of items per page
   const limit = typeof per_page === "string" ? parseInt(per_page) : 10
@@ -46,6 +46,18 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
           // Filter tasks by title
           typeof title === "string"
             ? like(tasks.title, `%${title}%`)
+            : undefined,
+          typeof status === "string"
+            ? or(
+                // @ts-ignore
+                ...status.split(",").map((s) => eq(tasks.status, s))
+              )
+            : undefined,
+          typeof priority === "string"
+            ? or(
+                // @ts-ignore
+                ...priority.split(",").map((s) => eq(tasks.priority, s))
+              )
             : undefined
         )
       )
