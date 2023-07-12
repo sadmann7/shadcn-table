@@ -126,8 +126,8 @@ export function DataTable<TData, TValue>({
   }, [sorting])
 
   // Handle server-side column filtering
-  const debouncedName = useDebounce(
-    columnFilters.find((f) => f.id === "name")?.value,
+  const debouncedTitle = useDebounce(
+    columnFilters.find((f) => f.id === "title")?.value,
     500
   )
 
@@ -135,12 +135,12 @@ export function DataTable<TData, TValue>({
     router.push(
       `${pathname}?${createQueryString({
         page: 1,
-        name: typeof debouncedName === "string" ? debouncedName : null,
+        name: typeof debouncedTitle === "string" ? debouncedTitle : null,
       })}`
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedName])
+  }, [debouncedTitle])
 
   const table = useReactTable({
     data,
@@ -223,7 +223,10 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <DataTablePagination
+        table={table}
+        pageSizeOptions={[10, 20, 30, 40, 50]}
+      />
     </div>
   )
 }
