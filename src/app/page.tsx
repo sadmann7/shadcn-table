@@ -9,7 +9,7 @@ interface IndexPageProps {
 }
 
 export default async function IndexPage({ searchParams }: IndexPageProps) {
-  const { page, per_page, sort, title, date_range } = searchParams
+  const { page, per_page, sort, title } = searchParams
 
   // Number of items per page
   const limit = typeof per_page === "string" ? parseInt(per_page) : 10
@@ -21,6 +21,8 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
         : 0
       : 0
   // Column and order to sort by
+  // Spliting the sort string by "." to get the column and order
+  // Example: "title.desc" => ["title", "desc"]
   const [column, order] =
     typeof sort === "string"
       ? (sort.split(".") as [
