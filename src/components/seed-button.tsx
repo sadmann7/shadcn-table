@@ -5,7 +5,7 @@ import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { seedTasksAction } from "@/app/_actions/task"
 
-export function GenerateButton() {
+export function SeedButton() {
   const [isPending, startTransition] = React.useTransition()
 
   return (
@@ -16,7 +16,7 @@ export function GenerateButton() {
         })
       }}
     >
-      Generate
+      {isPending ? "Loading..." : "Generate"}
     </Button>
   )
 }
