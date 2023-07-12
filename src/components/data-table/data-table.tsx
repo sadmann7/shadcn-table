@@ -1,8 +1,9 @@
-"use client"
-
 import * as React from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useSearchParams } from "next/navigation"
+import { useRouter } from "next/router"
 import {
+  ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
@@ -11,11 +12,9 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   PaginationState,
+  SortingState,
   useReactTable,
-  type ColumnDef,
-  type ColumnFiltersState,
-  type SortingState,
-  type VisibilityState,
+  VisibilityState,
 } from "@tanstack/react-table"
 
 import { useDebounce } from "@/hooks/use-debounce"
@@ -28,6 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import { FilterOption } from "./data-table-faceted-filter"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 
@@ -35,16 +35,29 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   pageCount: number
+  filterableColumns?: {
+    id: keyof TData
+    title: string
+    options: FilterOption[]
+  }[]
+  searchableColumns?: {
+    id: keyof TData
+    title: string
+  }[]
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   pageCount,
+  filterableColumns = [],
+  searchableColumns = [],
 }: DataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+
+  console.log(columns)
 
   // Search params
   const page = searchParams?.get("page") ?? "1"
@@ -126,6 +139,11 @@ export function DataTable<TData, TValue>({
   }, [sorting])
 
   // Handle server-side column filtering
+  // for (const filterableColumn of filterableColumns) {
+  //   const columnFilter = columnFilters.find(
+  //     (f) => f.id === filterableColumn.id
+  //   )
+  // }
   const debouncedTitle = useDebounce(
     columnFilters.find((f) => f.id === "title")?.value,
     500
@@ -172,7 +190,11 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar
+        table={table}
+        filterableColumns={filterableColumns}
+        searchableColumns={searchableColumns}
+      />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
