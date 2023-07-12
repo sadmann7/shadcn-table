@@ -6,7 +6,7 @@ export const tasks = mysqlTable("tasks", {
   code: varchar("code", { length: 255 }).unique(),
   title: varchar("title", { length: 255 }),
   status: mysqlEnum("status", ["todo", "in-progress", "done", "canceled"]),
-  label: varchar("label", { length: 255 }),
+  label: mysqlEnum("label", ["bug", "feature", "enhancement", "documentation"]),
   priority: mysqlEnum("priority", ["low", "medium", "high"]),
 })
 
