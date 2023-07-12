@@ -1,18 +1,10 @@
-import { pgEnum, pgTable, varchar } from "drizzle-orm/pg-core"
+import { mysqlEnum, mysqlTable, serial, varchar } from "drizzle-orm/mysql-core"
 
-export const statusEnum = pgEnum("status", [
-  "todo",
-  "in-progress",
-  "done",
-  "canceled",
-])
-
-export const priorityEnum = pgEnum("priority", ["low", "medium", "high"])
-
-export const tasks = pgTable("tasks", {
-  id: varchar("id").primaryKey(),
+export const tasks = mysqlTable("tasks", {
+  id: serial("id").primaryKey(),
+  code: varchar("code", { length: 255 }).unique(),
   title: varchar("title", { length: 255 }),
-  status: statusEnum("status"),
+  status: mysqlEnum("status", ["todo", "in-progress", "done", "canceled"]),
   label: varchar("label", { length: 255 }),
-  priority: priorityEnum("priority"),
+  priority: mysqlEnum("priority", ["low", "medium", "high"]),
 })
