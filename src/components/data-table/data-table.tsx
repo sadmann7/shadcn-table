@@ -28,6 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import { FilterOption } from "./data-table-faceted-filter"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 
@@ -35,16 +36,29 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   pageCount: number
+  filterableColumns?: {
+    id: keyof TData
+    title: string
+    options: FilterOption[]
+  }[]
+  searchableColumns?: {
+    id: keyof TData
+    title: string
+  }[]
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   pageCount,
+  filterableColumns = [],
+  searchableColumns = [],
 }: DataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+
+  console.log(columns)
 
   // Search params
   const page = searchParams?.get("page") ?? "1"
@@ -127,15 +141,17 @@ export function DataTable<TData, TValue>({
 
   // Handle server-side column filtering
   const debouncedName = useDebounce(
-    columnFilters.find((f) => f.id === "name")?.value,
+    columnFilters.find((f) => f.id === "title")?.value,
     500
   )
+
+  console.log("filters", columnFilters)
 
   React.useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         page: 1,
-        name: typeof debouncedName === "string" ? debouncedName : null,
+        title: typeof debouncedName === "string" ? debouncedName : null,
       })}`
     )
 
@@ -172,7 +188,11 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} />
+      <DataTableToolbar
+        table={table}
+        filterableColumns={filterableColumns}
+        searchableColumns={searchableColumns}
+      />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
