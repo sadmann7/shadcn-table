@@ -1,4 +1,7 @@
+import { type InferModel } from "drizzle-orm";
 import { mysqlEnum, mysqlTable, serial, varchar } from "drizzle-orm/mysql-core"
+import { createSelectSchema } from 'drizzle-zod';
+
 
 export const tasks = mysqlTable("tasks", {
   id: serial("id").primaryKey(),
@@ -8,3 +11,8 @@ export const tasks = mysqlTable("tasks", {
   label: varchar("label", { length: 255 }),
   priority: mysqlEnum("priority", ["low", "medium", "high"]),
 })
+
+export type Task = InferModel<typeof tasks>;
+
+export const selectTaskSchema = createSelectSchema(tasks);
+
