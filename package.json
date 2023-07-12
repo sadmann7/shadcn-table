@@ -44,6 +44,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
     "@ianvs/prettier-plugin-sort-imports": "^4.0.2",
     "@types/eslint": "^8.44.0",
     "@types/node": "^20.4.1",
