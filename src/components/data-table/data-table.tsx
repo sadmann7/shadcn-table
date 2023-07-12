@@ -140,23 +140,38 @@ export function DataTable<TData, TValue>({
   }, [sorting])
 
   // Handle server-side column filtering
-  const debouncedName = useDebounce(
-    columnFilters.find((f) => f.id === "title")?.value,
-    500
-  )
-
-  console.log("filters", columnFilters)
+  // for (const filterableColumn of filterableColumns) {
+  //   const columnFilter = columnFilters.find(
+  //     (f) => f.id === filterableColumn.id
+  //   )
+  // }
 
   React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
-        page: 1,
-        title: typeof debouncedName === "string" ? debouncedName : null,
-      })}`
-    )
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedName])
+    for (const column of columnFilters) {
+      if (typeof column.value === "string") {
+        const debouncedColumn = useDebounce(
+          columnFilters.find((f) => f.id === column.id)?.value,
+          500
+        )
+        router.push(
+          `${pathname}?${createQueryString({
+            page,
+            [column.id]: typeof debouncedColumn === "string" ? debouncedColumn : null,
+          })}`
+        )
+      } else if (
+        typeof column.value === "object" &&
+        Array.isArray(column.value)
+      ) {
+        router.push(
+          `${pathname}?${createQueryString({
+            page,
+            [column.id]: column.value.join(","),
+          })}`
+        )
+      }
+    }
+  }, [JSON.stringify(columnFilters)])
 
   const table = useReactTable({
     data,
@@ -204,9 +219,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}
