@@ -1,3 +1,4 @@
+import { type InferModel } from "drizzle-orm"
 import { mysqlEnum, mysqlTable, serial, varchar } from "drizzle-orm/mysql-core"
 
 export const tasks = mysqlTable("tasks", {
@@ -8,3 +9,5 @@ export const tasks = mysqlTable("tasks", {
   label: varchar("label", { length: 255 }),
   priority: mysqlEnum("priority", ["low", "medium", "high"]),
 })
+
+export type Task = InferModel<typeof tasks>
