@@ -184,37 +184,35 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
     []
   )
 
-  console.log(tasks.status.enumValues)
-
   return (
     <DataTable
       columns={columns}
       data={data}
       pageCount={pageCount}
-      filterableColumns={[
-        {
-          id: "status",
-          title: "Status",
-          options: tasks.status.enumValues.map((status) => ({
-            label: status[0]!.toUpperCase() + status.slice(1),
-            value: status,
-          })),
-        },
-        {
-          id: "priority",
-          title: "Priority",
-          options: tasks.priority.enumValues.map((priority) => ({
-            label: priority[0]!.toUpperCase() + priority.slice(1),
-            value: priority,
-          })),
-        },
-      ]}
-      searchableColumns={[
-        {
-          id: "title",
-          title: "Title",
-        },
-      ]}
+      // filterableColumns={[
+      //   {
+      //     id: "status",
+      //     title: "Status",
+      //     options: tasks.status.enumValues.map((status) => ({
+      //       label: status[0]!.toUpperCase() + status.slice(1),
+      //       value: status,
+      //     })),
+      //   },
+      //   {
+      //     id: "priority",
+      //     title: "Priority",
+      //     options: tasks.priority.enumValues.map((priority) => ({
+      //       label: priority[0]!.toUpperCase() + priority.slice(1),
+      //       value: priority,
+      //     })),
+      //   },
+      // ]}
+      // searchableColumns={[
+      //   {
+      //     id: "title",
+      //     title: "Title",
+      //   },
+      // ]}
     />
   )
 }

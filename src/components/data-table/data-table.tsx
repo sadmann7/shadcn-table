@@ -1,6 +1,5 @@
 import * as React from "react"
-import { usePathname, useSearchParams } from "next/navigation"
-import { useRouter } from "next/router"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -56,8 +55,6 @@ export function DataTable<TData, TValue>({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-
-  console.log(columns)
 
   // Search params
   const page = searchParams?.get("page") ?? "1"
@@ -120,7 +117,7 @@ export function DataTable<TData, TValue>({
   // Handle server-side sorting
   const [sorting, setSorting] = React.useState<SortingState>([
     {
-      id: column ?? "id",
+      id: column ?? "",
       desc: order === "desc",
     },
   ])
@@ -144,21 +141,34 @@ export function DataTable<TData, TValue>({
   //     (f) => f.id === filterableColumn.id
   //   )
   // }
-  const debouncedTitle = useDebounce(
-    columnFilters.find((f) => f.id === "title")?.value,
-    500
-  )
 
   React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
-        page: 1,
-        name: typeof debouncedTitle === "string" ? debouncedTitle : null,
-      })}`
-    )
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedTitle])
+    for (const column of columnFilters) {
+      if (typeof column.value === "string") {
+        const debouncedColumn = useDebounce(
+          columnFilters.find((f) => f.id === column.id)?.value,
+          500
+        )
+        router.push(
+          `${pathname}?${createQueryString({
+            page,
+            [column.id]:
+              typeof debouncedColumn === "string" ? debouncedColumn : null,
+          })}`
+        )
+      } else if (
+        typeof column.value === "object" &&
+        Array.isArray(column.value)
+      ) {
+        router.push(
+          `${pathname}?${createQueryString({
+            page,
+            [column.id]: column.value.join(","),
+          })}`
+        )
+      }
+    }
+  }, [JSON.stringify(columnFilters)])
 
   const table = useReactTable({
     data,
@@ -190,11 +200,11 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      <DataTableToolbar
+      {/* <DataTableToolbar
         table={table}
         filterableColumns={filterableColumns}
         searchableColumns={searchableColumns}
-      />
+      /> */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -245,10 +255,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination
-        table={table}
-        pageSizeOptions={[10, 20, 30, 40, 50]}
-      />
+      {/* <DataTablePagination table={table} /> */}
     </div>
   )
 }

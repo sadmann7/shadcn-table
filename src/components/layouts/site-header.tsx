@@ -24,7 +24,7 @@ export function SiteHeader() {
               key={index}
               href={item.href}
               className={cn(
-                "flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm",
+                "flex items-center text-sm font-medium transition-colors hover:text-foreground/80",
                 pathname === item.href
                   ? "text-foreground"
                   : "text-foreground/60"
