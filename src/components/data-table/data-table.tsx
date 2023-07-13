@@ -161,6 +161,20 @@ export function DataTable<TData, TValue>({
         )
       }
     }
+
+    for (const key of searchParams.keys()) {
+      if (
+        searchableColumns.find((column) => column.id === key) &&
+        !debouncedSearchableColumnFilters.find((column) => column.id === key)
+      ) {
+        router.push(
+          `${pathname}?${createQueryString({
+            page,
+            [key]: null,
+          })}`
+        )
+      }
+    }
   }, [JSON.stringify(debouncedSearchableColumnFilters)])
 
   React.useEffect(() => {
@@ -170,6 +184,20 @@ export function DataTable<TData, TValue>({
           `${pathname}?${createQueryString({
             page,
             [column.id]: column.value.join("."),
+          })}`
+        )
+      }
+    }
+
+    for (const key of searchParams.keys()) {
+      if (
+        filterableColumns.find((column) => column.id === key) &&
+        !filterableColumnFilters.find((column) => column.id === key)
+      ) {
+        router.push(
+          `${pathname}?${createQueryString({
+            page,
+            [key]: null,
           })}`
         )
       }
