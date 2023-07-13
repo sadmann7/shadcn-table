@@ -30,7 +30,7 @@ import { FilterOption } from "./data-table-faceted-filter"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 
-interface DataTableProps<TData, TValue> {
+interface MillionDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   pageCount: number
@@ -45,13 +45,13 @@ interface DataTableProps<TData, TValue> {
   }[]
 }
 
-export function DataTable<TData, TValue>({
+export function MillionDataTable<TData, TValue>({
   columns,
   data,
   pageCount,
   filterableColumns = [],
   searchableColumns = [],
-}: DataTableProps<TData, TValue>) {
+}: MillionDataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
