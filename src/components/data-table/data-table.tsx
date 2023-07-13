@@ -135,28 +135,23 @@ export function DataTable<TData, TValue>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sorting])
 
-  // Handle server-side filtering
-
-  const debouncedColumnFilters = JSON.parse(
+  const debouncedSearchableColumnFilters = JSON.parse(
     useDebounce(
       JSON.stringify(
-        columnFilters.map((filter) => {
-          if (searchableColumns.find((column) => column.id === filter.id)) {
-            return {
-              ...filter,
-              value: filter.value ?? "",
-            }
-          }
-
-          return filter
+        columnFilters.filter((filter) => {
+          return searchableColumns.find((column) => column.id === filter.id)
         })
       ),
       500
     )
   ) as ColumnFiltersState
 
+  const filterableColumnFilters = columnFilters.filter((filter) => {
+    return filterableColumns.find((column) => column.id === filter.id)
+  }) as ColumnFiltersState
+
   React.useEffect(() => {
-    for (const column of debouncedColumnFilters) {
+    for (const column of debouncedSearchableColumnFilters) {
       if (typeof column.value === "string") {
         router.push(
           `${pathname}?${createQueryString({
@@ -164,10 +159,13 @@ export function DataTable<TData, TValue>({
             [column.id]: typeof column.value === "string" ? column.value : null,
           })}`
         )
-      } else if (
-        typeof column.value === "object" &&
-        Array.isArray(column.value)
-      ) {
+      }
+    }
+  }, [JSON.stringify(debouncedSearchableColumnFilters)])
+
+  React.useEffect(() => {
+    for (const column of filterableColumnFilters) {
+      if (typeof column.value === "object" && Array.isArray(column.value)) {
         router.push(
           `${pathname}?${createQueryString({
             page,
@@ -176,7 +174,7 @@ export function DataTable<TData, TValue>({
         )
       }
     }
-  }, [JSON.stringify(debouncedColumnFilters)])
+  }, [JSON.stringify(filterableColumnFilters)])
 
   const table = useReactTable({
     data,
@@ -224,9 +222,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}
