@@ -53,11 +53,13 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
         enableHiding: false,
       },
       {
-        accessorKey: "id",
+        accessorKey: "code",
         header: ({ column }) => (
           <DataTableColumnHeader column={column} title="Task" />
         ),
-        cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
+        cell: ({ row }) => (
+          <div className="w-[80px]">{row.getValue("code")}</div>
+        ),
         enableSorting: false,
         enableHiding: false,
       },

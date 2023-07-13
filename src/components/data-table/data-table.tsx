@@ -1,5 +1,6 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { de } from "@faker-js/faker"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -135,25 +136,26 @@ export function DataTable<TData, TValue>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sorting])
 
-  // Handle server-side column filtering
-  // for (const filterableColumn of filterableColumns) {
-  //   const columnFilter = columnFilters.find(
-  //     (f) => f.id === filterableColumn.id
-  //   )
-  // }
+  // Handle server-side filtering
+  const debouncedColumnFilters = JSON.parse(
+    useDebounce(JSON.stringify(columnFilters), 500)
+  )
 
   React.useEffect(() => {
-    for (const column of columnFilters) {
+    console.log("running effect")
+    for (const column of debouncedColumnFilters) {
       if (typeof column.value === "string") {
-        const debouncedColumn = useDebounce(
-          columnFilters.find((f) => f.id === column.id)?.value,
-          500
-        )
+        // const debouncedColumn = useDebounce(
+        //   columnFilters.find((f) => f.id === column.id)?.value,
+        //   500
+        // )
         router.push(
           `${pathname}?${createQueryString({
             page,
             [column.id]:
-              typeof debouncedColumn === "string" ? debouncedColumn : null,
+              typeof column.value === "string" && column.value.length > 0
+                ? column.value
+                : null,
           })}`
         )
       } else if (
@@ -163,12 +165,13 @@ export function DataTable<TData, TValue>({
         router.push(
           `${pathname}?${createQueryString({
             page,
-            [column.id]: column.value.join(","),
+            [column.id]:
+              column.value.length > 0 ? column.value.join(".") : null,
           })}`
         )
       }
     }
-  }, [JSON.stringify(columnFilters)])
+  }, [JSON.stringify(debouncedColumnFilters)])
 
   const table = useReactTable({
     data,
@@ -199,7 +202,7 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="w-full space-y-4 overflow-auto">
+    <div className="w-full space-y-4 overflow-auto p-1">
       <DataTableToolbar
         table={table}
         filterableColumns={filterableColumns}

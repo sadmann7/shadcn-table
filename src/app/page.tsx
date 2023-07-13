@@ -1,6 +1,6 @@
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
-import { and, asc, desc, eq, inArray, like, or, sql } from "drizzle-orm"
+import { and, asc, desc, inArray, like, sql } from "drizzle-orm"
 
 import { Shell } from "@/components/shells/shell"
 import { TasksTableShell } from "@/components/shells/tasks-table-shell"
@@ -15,6 +15,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
   const { page, per_page, sort, title, status, priority } = searchParams
 
   console.log({
+    title,
     status,
     priority,
   })
@@ -39,6 +40,14 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
         ])
       : []
 
+  const statuses =
+    typeof status === "string" ? (status.split(".") as Task["status"][]) : []
+
+  const priorities =
+    typeof priority === "string"
+      ? (priority.split(",") as Task["priority"][])
+      : []
+
   // Transaction is used to ensure both queries are executed in a single transaction
   const { allTasks, totalTasks } = await db.transaction(async (tx) => {
     const allTasks = await tx
@@ -52,17 +61,11 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
           typeof title === "string"
             ? like(tasks.title, `%${title}%`)
             : undefined,
-          typeof status === "string"
-            ? or(
-                // @ts-ignore
-                ...status.split(",").map((s) => eq(tasks.status, s))
-              )
-            : undefined,
-          typeof priority === "string"
-            ? or(
-                // @ts-ignore
-                ...priority.split(",").map((s) => eq(tasks.priority, s))
-              )
+          // Filter tasks by status
+          statuses.length > 0 ? inArray(tasks.status, statuses) : undefined,
+          // Filter tasks by priority
+          priorities.length > 0
+            ? inArray(tasks.priority, priorities)
             : undefined
         )
       )
