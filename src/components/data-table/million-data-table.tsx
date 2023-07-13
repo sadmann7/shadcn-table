@@ -1,8 +1,6 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import {
-  ColumnDef,
-  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
@@ -10,10 +8,12 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  PaginationState,
-  SortingState,
   useReactTable,
-  VisibilityState,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type PaginationState,
+  type SortingState,
+  type VisibilityState,
 } from "@tanstack/react-table"
 
 import { useDebounce } from "@/hooks/use-debounce"
@@ -26,7 +26,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { FilterOption } from "./data-table-faceted-filter"
+import { type FilterOption } from "./data-table-faceted-filter"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 
@@ -136,25 +136,52 @@ export function MillionDataTable<TData, TValue>({
   }, [sorting])
 
   // Handle server-side filtering
-  const debouncedColumnFilters = JSON.parse(
-    useDebounce(JSON.stringify(columnFilters), 500)
+  const debouncedSearchableColumnFilters = JSON.parse(
+    useDebounce(
+      JSON.stringify(
+        columnFilters.filter((filter) => {
+          return searchableColumns.find((column) => column.id === filter.id)
+        })
+      ),
+      500
+    )
   ) as ColumnFiltersState
 
+  const filterableColumnFilters = columnFilters.filter((filter) => {
+    return filterableColumns.find((column) => column.id === filter.id)
+  })
+
   React.useEffect(() => {
-    console.log("running effect")
-    for (const column of debouncedColumnFilters) {
-      console.log(typeof column.value)
+    for (const column of debouncedSearchableColumnFilters) {
       if (typeof column.value === "string") {
         router.push(
           `${pathname}?${createQueryString({
             page,
-            [column.id]: column.value,
+            [column.id]: typeof column.value === "string" ? column.value : null,
           })}`
         )
-      } else if (
-        typeof column.value === "object" &&
-        Array.isArray(column.value)
+      }
+    }
+
+    for (const key of searchParams.keys()) {
+      if (
+        searchableColumns.find((column) => column.id === key) &&
+        !debouncedSearchableColumnFilters.find((column) => column.id === key)
       ) {
+        router.push(
+          `${pathname}?${createQueryString({
+            page,
+            [key]: null,
+          })}`
+        )
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(debouncedSearchableColumnFilters)])
+
+  React.useEffect(() => {
+    for (const column of filterableColumnFilters) {
+      if (typeof column.value === "object" && Array.isArray(column.value)) {
         router.push(
           `${pathname}?${createQueryString({
             page,
@@ -163,9 +190,22 @@ export function MillionDataTable<TData, TValue>({
         )
       }
     }
-  }, [JSON.stringify(debouncedColumnFilters)])
 
-  console.log(debouncedColumnFilters)
+    for (const key of searchParams.keys()) {
+      if (
+        filterableColumns.find((column) => column.id === key) &&
+        !filterableColumnFilters.find((column) => column.id === key)
+      ) {
+        router.push(
+          `${pathname}?${createQueryString({
+            page,
+            [key]: null,
+          })}`
+        )
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(filterableColumnFilters)])
 
   const table = useReactTable({
     data,

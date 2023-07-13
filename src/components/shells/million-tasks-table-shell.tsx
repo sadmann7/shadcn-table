@@ -133,7 +133,7 @@ export function MillionTasksTableShell({
           )
         },
         filterFn: (row, id, value) => {
-          return value.includes(row.getValue(id))
+          return value instanceof Array && value.includes(row.getValue(id))
         },
       },
       {
@@ -178,7 +178,7 @@ export function MillionTasksTableShell({
           )
         },
         filterFn: (row, id, value) => {
-          return value.includes(row.getValue(id))
+          return value instanceof Array && value.includes(row.getValue(id))
         },
       },
       {

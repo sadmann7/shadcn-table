@@ -1,7 +1,7 @@
 "use server"
 
 import { db } from "@/db"
-import { Task, tasks } from "@/db/schema"
+import { tasks, type Task } from "@/db/schema"
 import { faker } from "@faker-js/faker"
 
 export async function seedTasksAction() {

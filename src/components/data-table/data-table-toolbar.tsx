@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 
 import {
   DataTableFacetedFilter,
-  FilterOption,
+  type FilterOption,
 } from "./data-table-faceted-filter"
 import { DataTableViewOptions } from "./data-table-view-options"
 

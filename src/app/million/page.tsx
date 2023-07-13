@@ -3,7 +3,6 @@ import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import { and, asc, desc, inArray, like, sql } from "drizzle-orm"
 
-import { MillionTasksTableShell } from "@/components/shells/million-tasks-table-shell"
 import { Shell } from "@/components/shells/shell"
 
 export const metadata: Metadata = {

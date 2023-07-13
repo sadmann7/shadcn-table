@@ -1,8 +1,8 @@
 "use client"
 
-import { Task } from "@/db/schema"
+import { type Task } from "@/db/schema"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
-import { Row } from "@tanstack/react-table"
+import { type Row } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
 import {

@@ -1,8 +1,6 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import {
-  ColumnDef,
-  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFacetedRowModel,
@@ -10,10 +8,12 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  PaginationState,
-  SortingState,
   useReactTable,
-  VisibilityState,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type PaginationState,
+  type SortingState,
+  type VisibilityState,
 } from "@tanstack/react-table"
 
 import { useDebounce } from "@/hooks/use-debounce"
@@ -26,7 +26,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { FilterOption } from "./data-table-faceted-filter"
+import { type FilterOption } from "./data-table-faceted-filter"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 
@@ -135,6 +135,7 @@ export function DataTable<TData, TValue>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sorting])
 
+  // Handle server-side filtering
   const debouncedSearchableColumnFilters = JSON.parse(
     useDebounce(
       JSON.stringify(
@@ -148,7 +149,7 @@ export function DataTable<TData, TValue>({
 
   const filterableColumnFilters = columnFilters.filter((filter) => {
     return filterableColumns.find((column) => column.id === filter.id)
-  }) as ColumnFiltersState
+  })
 
   React.useEffect(() => {
     for (const column of debouncedSearchableColumnFilters) {
@@ -175,6 +176,7 @@ export function DataTable<TData, TValue>({
         )
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(debouncedSearchableColumnFilters)])
 
   React.useEffect(() => {
@@ -202,6 +204,7 @@ export function DataTable<TData, TValue>({
         )
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(filterableColumnFilters)])
 
   const table = useReactTable({
@@ -250,9 +253,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   )
                 })}
