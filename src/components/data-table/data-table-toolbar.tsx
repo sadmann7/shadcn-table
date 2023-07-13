@@ -6,7 +6,6 @@ import type { Table } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-import { priorities, statuses } from "./data"
 import {
   DataTableFacetedFilter,
   FilterOption,
@@ -37,27 +36,32 @@ export function DataTableToolbar<TData>({
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         {searchableColumns.length > 0 &&
-          searchableColumns.map((column) => (
-            <Input
-              placeholder={`Filter tasks by ${column.title}...`}
-              value={
-                (table
-                  .getColumn(column.id ? String(column.id) : "")
-                  ?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) =>
-                table
-                  .getColumn(column.id ? String(column.id) : "")
-                  ?.setFilterValue(event.target.value)
-              }
-              className="h-8 w-[150px] lg:w-[250px]"
-            />
-          ))}
+          searchableColumns.map(
+            (column) =>
+              table.getColumn(column.id ? String(column.id) : "") && (
+                <Input
+                  key={String(column.id)}
+                  placeholder={`Filter ${column.title}...`}
+                  value={
+                    (table
+                      .getColumn(String(column.id))
+                      ?.getFilterValue() as string) ?? ""
+                  }
+                  onChange={(event) =>
+                    table
+                      .getColumn(String(column.id))
+                      ?.setFilterValue(event.target.value)
+                  }
+                  className="h-8 w-[150px] lg:w-[250px]"
+                />
+              )
+          )}
         {filterableColumns.length > 0 &&
           filterableColumns.map(
             (column) =>
               table.getColumn(column.id ? String(column.id) : "") && (
                 <DataTableFacetedFilter
+                  key={String(column.id)}
                   column={table.getColumn(column.id ? String(column.id) : "")}
                   title={column.title}
                   options={column.options}

@@ -16,16 +16,19 @@ import { type ColumnDef } from "@tanstack/react-table"
 
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
-import { DataTable } from "@/components/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { DataTableRowActions } from "@/components/data-table/data-table-row-actions"
+import { MillionDataTable } from "@/components/data-table/million-data-table"
 
-interface TasksTableShellProps {
+interface MillionTasksTableShellProps {
   data: Task[]
   pageCount: number
 }
 
-export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
+export function MillionTasksTableShell({
+  data,
+  pageCount,
+}: MillionTasksTableShellProps) {
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<Task, unknown>[]>(
     () => [
@@ -187,7 +190,7 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
   )
 
   return (
-    <DataTable
+    <MillionDataTable
       columns={columns}
       data={data}
       pageCount={pageCount}

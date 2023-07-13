@@ -30,7 +30,7 @@ import { FilterOption } from "./data-table-faceted-filter"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 
-interface DataTableProps<TData, TValue> {
+interface MillionDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   pageCount: number
@@ -45,13 +45,13 @@ interface DataTableProps<TData, TValue> {
   }[]
 }
 
-export function DataTable<TData, TValue>({
+export function MillionDataTable<TData, TValue>({
   columns,
   data,
   pageCount,
   filterableColumns = [],
   searchableColumns = [],
-}: DataTableProps<TData, TValue>) {
+}: MillionDataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -136,32 +136,19 @@ export function DataTable<TData, TValue>({
   }, [sorting])
 
   // Handle server-side filtering
-
   const debouncedColumnFilters = JSON.parse(
-    useDebounce(
-      JSON.stringify(
-        columnFilters.map((filter) => {
-          if (searchableColumns.find((column) => column.id === filter.id)) {
-            return {
-              ...filter,
-              value: filter.value ?? "",
-            }
-          }
-
-          return filter
-        })
-      ),
-      500
-    )
+    useDebounce(JSON.stringify(columnFilters), 500)
   ) as ColumnFiltersState
 
   React.useEffect(() => {
+    console.log("running effect")
     for (const column of debouncedColumnFilters) {
+      console.log(typeof column.value)
       if (typeof column.value === "string") {
         router.push(
           `${pathname}?${createQueryString({
             page,
-            [column.id]: typeof column.value === "string" ? column.value : null,
+            [column.id]: column.value,
           })}`
         )
       } else if (
@@ -177,6 +164,8 @@ export function DataTable<TData, TValue>({
       }
     }
   }, [JSON.stringify(debouncedColumnFilters)])
+
+  console.log(debouncedColumnFilters)
 
   const table = useReactTable({
     data,
