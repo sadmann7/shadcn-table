@@ -39,6 +39,7 @@ export function DataTableToolbar<TData>({
         {searchableColumns.length > 0 &&
           searchableColumns.map((column) => (
             <Input
+              key={crypto.randomUUID()}
               placeholder={`Filter tasks by ${column.title}...`}
               value={
                 (table
@@ -58,6 +59,7 @@ export function DataTableToolbar<TData>({
             (column) =>
               table.getColumn(column.id ? String(column.id) : "") && (
                 <DataTableFacetedFilter
+                  key={crypto.randomUUID()}
                   column={table.getColumn(column.id ? String(column.id) : "")}
                   title={column.title}
                   options={column.options}
