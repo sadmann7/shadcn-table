@@ -146,23 +146,51 @@ export function DataTable<TData, TValue>({
   //   )
   // }
 
+  const debouncedSearchColumnFilters = JSON.parse(
+    useDebounce(
+      JSON.stringify(
+        columnFilters.map((filter) => {
+          if (searchableColumns.find((column) => column.id === filter.id)) {
+            return {
+              ...filter,
+              value: filter.value ?? "",
+            }
+          }
+
+          return filter
+        })
+      ),
+      500
+    )
+  ) as ColumnFiltersState
+
+  const filterColumnFilters = columnFilters.map(filter => {
+    if (filterableColumns.find(column => column.id === filter.id)) {
+      return {
+        ...filter,
+        value: filter.value ?? [],
+      }
+    }
+
+    return filter
+  })
+
   React.useEffect(() => {
-    for (const column of columnFilters) {
+    for (const column of debouncedSearchColumnFilters) {
       if (typeof column.value === "string") {
-        const debouncedColumn = useDebounce(
-          columnFilters.find((f) => f.id === column.id)?.value,
-          500
-        )
         router.push(
           `${pathname}?${createQueryString({
             page,
-            [column.id]: typeof debouncedColumn === "string" ? debouncedColumn : null,
+            [column.id]: typeof column.value === "string" ? column.value : null,
           })}`
         )
-      } else if (
-        typeof column.value === "object" &&
-        Array.isArray(column.value)
-      ) {
+      }
+    }
+  }, [JSON.stringify(debouncedSearchColumnFilters)])
+
+  React.useEffect(() => {
+    for (const column of filterColumnFilters) {
+      if (typeof column.value === "object" && Array.isArray(column.value)) {
         router.push(
           `${pathname}?${createQueryString({
             page,
@@ -171,7 +199,7 @@ export function DataTable<TData, TValue>({
         )
       }
     }
-  }, [JSON.stringify(columnFilters)])
+  }, [JSON.stringify(filterColumnFilters)])
 
   const table = useReactTable({
     data,
