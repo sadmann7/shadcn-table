@@ -156,10 +156,14 @@ export function DataTable<TData, TValue>({
       if (typeof column.value === "string") {
         router.push(
           `${pathname}?${createQueryString({
-            page: 1,
+            page,
             [column.id]: typeof column.value === "string" ? column.value : null,
           })}`
         )
+        setPagination({
+          pageIndex: 0,
+          pageSize,
+        })
       }
     }
 
@@ -170,10 +174,14 @@ export function DataTable<TData, TValue>({
       ) {
         router.push(
           `${pathname}?${createQueryString({
-            page: 1,
+            page,
             [key]: null,
           })}`
         )
+        setPagination({
+          pageIndex: 0,
+          pageSize,
+        })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -184,10 +192,14 @@ export function DataTable<TData, TValue>({
       if (typeof column.value === "object" && Array.isArray(column.value)) {
         router.push(
           `${pathname}?${createQueryString({
-            page: 1,
+            page,
             [column.id]: column.value.join("."),
           })}`
         )
+        setPagination({
+          pageIndex: 0,
+          pageSize,
+        })
       }
     }
 
@@ -198,10 +210,14 @@ export function DataTable<TData, TValue>({
       ) {
         router.push(
           `${pathname}?${createQueryString({
-            page: 1,
+            page,
             [key]: null,
           })}`
         )
+        setPagination({
+          pageIndex: 0,
+          pageSize,
+        })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
