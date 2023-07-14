@@ -104,6 +104,13 @@ export function DataTable<TData, TValue>({
   )
 
   React.useEffect(() => {
+    setPagination({
+      pageIndex: Number(page) - 1,
+      pageSize: Number(per_page),
+    })
+  }, [page, per_page])
+
+  React.useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         page: pageIndex + 1,
@@ -156,7 +163,7 @@ export function DataTable<TData, TValue>({
       if (typeof column.value === "string") {
         router.push(
           `${pathname}?${createQueryString({
-            page,
+            page: 1,
             [column.id]: typeof column.value === "string" ? column.value : null,
           })}`
         )
@@ -170,7 +177,7 @@ export function DataTable<TData, TValue>({
       ) {
         router.push(
           `${pathname}?${createQueryString({
-            page,
+            page: 1,
             [key]: null,
           })}`
         )
@@ -184,7 +191,7 @@ export function DataTable<TData, TValue>({
       if (typeof column.value === "object" && Array.isArray(column.value)) {
         router.push(
           `${pathname}?${createQueryString({
-            page,
+            page: 1,
             [column.id]: column.value.join("."),
           })}`
         )
@@ -198,7 +205,7 @@ export function DataTable<TData, TValue>({
       ) {
         router.push(
           `${pathname}?${createQueryString({
-            page,
+            page: 1,
             [key]: null,
           })}`
         )
@@ -253,9 +260,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
                     </TableHead>
                   )
                 })}
