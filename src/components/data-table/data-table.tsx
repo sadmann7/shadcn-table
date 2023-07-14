@@ -156,7 +156,7 @@ export function DataTable<TData, TValue>({
       if (typeof column.value === "string") {
         router.push(
           `${pathname}?${createQueryString({
-            page,
+            page: 1,
             [column.id]: typeof column.value === "string" ? column.value : null,
           })}`
         )
@@ -170,7 +170,7 @@ export function DataTable<TData, TValue>({
       ) {
         router.push(
           `${pathname}?${createQueryString({
-            page,
+            page: 1,
             [key]: null,
           })}`
         )
@@ -184,7 +184,7 @@ export function DataTable<TData, TValue>({
       if (typeof column.value === "object" && Array.isArray(column.value)) {
         router.push(
           `${pathname}?${createQueryString({
-            page,
+            page: 1,
             [column.id]: column.value.join("."),
           })}`
         )
@@ -198,7 +198,7 @@ export function DataTable<TData, TValue>({
       ) {
         router.push(
           `${pathname}?${createQueryString({
-            page,
+            page: 1,
             [key]: null,
           })}`
         )
