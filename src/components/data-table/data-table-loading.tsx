@@ -11,15 +11,11 @@ import {
 interface DataTableLoadingProps {
   columnCount: number
   rowCount?: number
-  isNewRowCreatable?: boolean
-  isRowsDeletable?: boolean
 }
 
 export function DataTableLoading({
   columnCount,
   rowCount = 10,
-  isNewRowCreatable = false,
-  isRowsDeletable = false,
 }: DataTableLoadingProps) {
   return (
     <div className="w-full space-y-3 overflow-auto">
@@ -28,14 +24,7 @@ export function DataTableLoading({
           <Skeleton className="h-7 w-[150px] lg:w-[250px]" />
           <Skeleton className="h-7 w-[70px] border-dashed" />
         </div>
-        <div className="flex items-center space-x-2">
-          {isRowsDeletable ? (
-            <Skeleton className="h-7 w-[70px]" />
-          ) : isNewRowCreatable ? (
-            <Skeleton className="h-7 w-[70px]" />
-          ) : null}
-          <Skeleton className="ml-auto hidden h-7 w-[70px] lg:flex" />
-        </div>
+        <Skeleton className="ml-auto hidden h-7 w-[70px] lg:flex" />
       </div>
       <div className="rounded-md border">
         <Table>

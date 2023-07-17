@@ -38,8 +38,6 @@ interface DataTableProps<TData, TValue> {
   pageCount: number
   filterableColumns?: DataTableFilterableColumn<TData>[]
   searchableColumns?: DataTableSearchableColumn<TData>[]
-  newRowLink?: string
-  deleteRowsAction?: React.MouseEventHandler<HTMLButtonElement>
 }
 
 export function DataTable<TData, TValue>({
@@ -48,8 +46,6 @@ export function DataTable<TData, TValue>({
   pageCount,
   filterableColumns = [],
   searchableColumns = [],
-  newRowLink,
-  deleteRowsAction,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -247,8 +243,6 @@ export function DataTable<TData, TValue>({
         table={table}
         filterableColumns={filterableColumns}
         searchableColumns={searchableColumns}
-        newRowLink={newRowLink}
-        deleteRowsAction={deleteRowsAction}
       />
       <div className="rounded-md border">
         <Table>
