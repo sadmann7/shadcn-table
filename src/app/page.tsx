@@ -85,9 +85,13 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
       .where(
         and(
           and(
-            // Filter tasks by title
+            // The task count should also be filtered by the same filters as the tasks
             typeof title === "string"
               ? like(tasks.title, `%${title}%`)
+              : undefined,
+            statuses.length > 0 ? inArray(tasks.status, statuses) : undefined,
+            priorities.length > 0
+              ? inArray(tasks.priority, priorities)
               : undefined
           )
         )
