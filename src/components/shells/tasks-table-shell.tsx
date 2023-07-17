@@ -9,16 +9,49 @@ import {
   CheckCircledIcon,
   CircleIcon,
   CrossCircledIcon,
+  DotsHorizontalIcon,
   QuestionMarkCircledIcon,
   StopwatchIcon,
 } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
 
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import { DataTableRowActions } from "@/components/data-table/data-table-row-actions"
+import { updateTaskLabelAction } from "@/app/_actions/task"
+
+const labels: {
+  value: Task["label"]
+  label: string
+}[] = [
+  {
+    value: "bug",
+    label: "Bug",
+  },
+  {
+    value: "feature",
+    label: "Feature",
+  },
+  {
+    value: "documentation",
+    label: "Documentation",
+  },
+]
 
 interface TasksTableShellProps {
   data: Task[]
@@ -26,6 +59,8 @@ interface TasksTableShellProps {
 }
 
 export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
+  const [isPending, startTransition] = React.useTransition()
+
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<Task, unknown>[]>(
     () => [
@@ -180,10 +215,59 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
       },
       {
         id: "actions",
-        cell: ({ row }) => <DataTableRowActions row={row} />,
+        cell: ({ row }) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                aria-label="Open menu"
+                variant="ghost"
+                className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+              >
+                <DotsHorizontalIcon className="h-4 w-4" aria-hidden="true" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[160px]">
+              <DropdownMenuItem>Edit</DropdownMenuItem>
+              <DropdownMenuItem>Make a copy</DropdownMenuItem>
+              <DropdownMenuItem>Favorite</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  <DropdownMenuRadioGroup
+                    value={row.original.label}
+                    onValueChange={(value) => {
+                      startTransition(async () => {
+                        await updateTaskLabelAction({
+                          id: row.original.id,
+                          label: value as Task["label"],
+                        })
+                      })
+                    }}
+                  >
+                    {labels.map((label) => (
+                      <DropdownMenuRadioItem
+                        key={label.value}
+                        value={label.value}
+                        disabled={isPending}
+                      >
+                        {label.label}
+                      </DropdownMenuRadioItem>
+                    ))}
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                Delete
+                <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ),
       },
     ],
-    []
+    [isPending]
   )
 
   return (

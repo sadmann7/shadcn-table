@@ -1,39 +1,40 @@
 "use client"
 
-import { Cross2Icon } from "@radix-ui/react-icons"
+import * as React from "react"
+import Link from "next/link"
+import type {
+  DataTableFilterableColumn,
+  DataTableSearchableColumn,
+} from "@/types"
+import { Cross2Icon, PlusCircledIcon, TrashIcon } from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
 
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-
-import {
-  DataTableFacetedFilter,
-  type FilterOption,
-} from "./data-table-faceted-filter"
-import { DataTableViewOptions } from "./data-table-view-options"
+import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
+import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
-  filterableColumns?: {
-    id: keyof TData
-    title: string
-    options: FilterOption[]
-  }[]
-  searchableColumns?: {
-    id: keyof TData
-    title: string
-  }[]
+  filterableColumns?: DataTableFilterableColumn<TData>[]
+  searchableColumns?: DataTableSearchableColumn<TData>[]
+  newRowLink?: string
+  deleteRowsAction?: React.MouseEventHandler<HTMLButtonElement>
 }
 
 export function DataTableToolbar<TData>({
   table,
   filterableColumns = [],
   searchableColumns = [],
+  newRowLink,
+  deleteRowsAction,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
+  const [isPending, startTransition] = React.useTransition()
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between p-1">
       <div className="flex flex-1 items-center space-x-2">
         {searchableColumns.length > 0 &&
           searchableColumns.map(
@@ -79,7 +80,42 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      <div className="flex items-center space-x-2">
+        {deleteRowsAction && table.getSelectedRowModel().rows.length > 0 ? (
+          <Button
+            aria-label="Delete selected rows"
+            variant="outline"
+            size="sm"
+            className="h-8"
+            onClick={(event) => {
+              startTransition(() => {
+                table.toggleAllPageRowsSelected(false)
+                deleteRowsAction(event)
+              })
+            }}
+            disabled={isPending}
+          >
+            <TrashIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+            Delete
+          </Button>
+        ) : newRowLink ? (
+          <Link aria-label="Create new row" href={newRowLink}>
+            <div
+              className={cn(
+                buttonVariants({
+                  variant: "outline",
+                  size: "sm",
+                  className: "h-8",
+                })
+              )}
+            >
+              <PlusCircledIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+              New
+            </div>
+          </Link>
+        ) : null}
+        <DataTableViewOptions table={table} />
+      </div>
     </div>
   )
 }
