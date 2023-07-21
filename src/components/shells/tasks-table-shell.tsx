@@ -299,6 +299,10 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
           title: "Title",
         },
       ]}
+      // visibleColumns={{
+      //   id: false, // Hide the ID column from the UI, but still allow it to be toggled
+      //   createdAt: false, // Hide the createdAt column from the UI, but still allow it to be toggled
+      // }}
     />
   )
 }
