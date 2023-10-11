@@ -1,4 +1,3 @@
-import { type InferModel } from "drizzle-orm"
 import { mysqlEnum, mysqlTable, serial, varchar } from "drizzle-orm/mysql-core"
 
 export const tasks = mysqlTable("tasks", {
@@ -16,4 +15,5 @@ export const tasks = mysqlTable("tasks", {
     .default("low"),
 })
 
-export type Task = InferModel<typeof tasks>
+export type Task = typeof tasks.$inferSelect
+export type NewTask = typeof tasks.$inferInsert

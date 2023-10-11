@@ -5,9 +5,9 @@ import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
-import { z } from "zod"
+import type { z } from "zod"
 
-import { updateTaskLabelSchema } from "@/lib/validations/task"
+import type { updateTaskLabelSchema } from "@/lib/validations/task"
 
 export async function seedTasksAction() {
   const allTasks: Task[] = []
