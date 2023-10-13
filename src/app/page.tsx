@@ -97,6 +97,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
 
   return (
     <Shell>
+      {/* Pass the DataTable component through the TasksTableShell component to memoize the columns which can not be done on react-server-components */}
       <TasksTableShell data={allTasks} pageCount={pageCount} />
     </Shell>
   )
