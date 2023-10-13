@@ -53,7 +53,12 @@ export function DataTable<TData, TValue>({
 
   // Search params
   const page = searchParams?.get("page") ?? "1"
+  const pageAsNumber = Number(page)
+  const fallbackPage =
+    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
   const per_page = searchParams?.get("per_page") ?? "10"
+  const perPageAsNumber = Number(per_page)
+  const fallbackPerPage = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
   const sort = searchParams?.get("sort")
   const [column, order] = sort?.split(".") ?? []
 
@@ -86,8 +91,8 @@ export function DataTable<TData, TValue>({
   // Handle server-side pagination
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
-      pageIndex: Number(page) - 1,
-      pageSize: Number(per_page),
+      pageIndex: fallbackPage - 1,
+      pageSize: fallbackPerPage,
     })
 
   const pagination = React.useMemo(
@@ -100,17 +105,20 @@ export function DataTable<TData, TValue>({
 
   React.useEffect(() => {
     setPagination({
-      pageIndex: Number(page) - 1,
-      pageSize: Number(per_page),
+      pageIndex: fallbackPage - 1,
+      pageSize: fallbackPerPage,
     })
-  }, [page, per_page])
+  }, [fallbackPage, fallbackPerPage])
 
   React.useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         page: pageIndex + 1,
         per_page: pageSize,
-      })}`
+      })}`,
+      {
+        scroll: false,
+      }
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

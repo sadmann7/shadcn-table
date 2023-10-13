@@ -2,6 +2,7 @@ import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import { and, asc, desc, inArray, like, sql } from "drizzle-orm"
 
+import { searchParamsSchema } from "@/lib/validations/params"
 import { Shell } from "@/components/shells/shell"
 import { TasksTableShell } from "@/components/shells/tasks-table-shell"
 
@@ -12,41 +13,30 @@ interface IndexPageProps {
 }
 
 export default async function IndexPage({ searchParams }: IndexPageProps) {
-  const { page, per_page, sort, title, status, priority } = searchParams
+  // Parse search params using zod schema
+  const { page, per_page, sort, title, status, priority } =
+    searchParamsSchema.parse(searchParams)
 
-  console.log({
-    title,
-    status,
-    priority,
-  })
-
+  // Fallback page for invalid page numbers
+  const pageAsNumber = Number(page)
+  const fallbackPage =
+    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
   // Number of items per page
-  const limit = typeof per_page === "string" ? parseInt(per_page) : 10
+  const perPageAsNumber = Number(per_page)
+  const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
   // Number of items to skip
-  const offset =
-    typeof page === "string"
-      ? parseInt(page) > 0
-        ? (parseInt(page) - 1) * limit
-        : 0
-      : 0
+  const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
   // Column and order to sort by
   // Spliting the sort string by "." to get the column and order
   // Example: "title.desc" => ["title", "desc"]
-  const [column, order] =
-    typeof sort === "string"
-      ? (sort.split(".") as [
-          keyof Task | undefined,
-          "asc" | "desc" | undefined,
-        ])
-      : []
+  const [column, order] = (sort?.split(".") as [
+    keyof Task | undefined,
+    "asc" | "desc" | undefined,
+  ]) ?? ["title", "desc"]
 
-  const statuses =
-    typeof status === "string" ? (status.split(".") as Task["status"][]) : []
+  const statuses = (status?.split(".") as Task["status"][]) ?? []
 
-  const priorities =
-    typeof priority === "string"
-      ? (priority.split(",") as Task["priority"][])
-      : []
+  const priorities = (priority?.split(".") as Task["priority"][]) ?? []
 
   // Transaction is used to ensure both queries are executed in a single transaction
   const { allTasks, totalTasks } = await db.transaction(async (tx) => {
