@@ -2,6 +2,7 @@ import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import { and, asc, desc, inArray, like, sql } from "drizzle-orm"
 
+import { filterColumn } from "@/lib/utils"
 import { searchParamsSchema } from "@/lib/validations/params"
 import { Shell } from "@/components/shells/shell"
 import { TasksTableShell } from "@/components/shells/tasks-table-shell"
@@ -48,9 +49,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
       .where(
         and(
           // Filter tasks by title
-          typeof title === "string"
-            ? like(tasks.title, `%${title}%`)
-            : undefined,
+          title ? filterColumn(title, tasks.title) : undefined,
           // Filter tasks by status
           statuses.length > 0 ? inArray(tasks.status, statuses) : undefined,
           // Filter tasks by priority
@@ -76,9 +75,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
         and(
           and(
             // The task count should also be filtered by the same filters as the tasks
-            typeof title === "string"
-              ? like(tasks.title, `%${title}%`)
-              : undefined,
+            title ? like(tasks.title, `%${title}%`) : undefined,
             statuses.length > 0 ? inArray(tasks.status, statuses) : undefined,
             priorities.length > 0
               ? inArray(tasks.priority, priorities)

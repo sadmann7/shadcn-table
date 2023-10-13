@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { usePathname, useRouter } from "next/navigation"
 import type { DataTableFilterOptions } from "@/types"
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
@@ -36,60 +37,54 @@ export function DataTableCombinedFilter<TData>({
   setSelectedOptions,
 }: DataTableCombinedFilterProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
+  const router = useRouter()
+  const pathname = usePathname()
   const [value, setValue] = React.useState("")
   const [open, setOpen] = React.useState(false)
 
   return (
-    <>
-      {selectedOptions.length === 0 ? (
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="outline" size="sm" role="combobox">
-              Filter
-              <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[200px] p-0" align="end">
-            <Command>
-              <CommandInput placeholder="Filter by..." />
-              <CommandEmpty>No item found.</CommandEmpty>
-              <CommandGroup>
-                {options.map((option) => (
-                  <CommandItem
-                    key={String(option.value)}
-                    onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue)
-                      setOpen(false)
-                      setSelectedOptions((prev) => {
-                        if (currentValue === value) {
-                          return prev.filter(
-                            (item) => item.value !== option.value
-                          )
-                        } else {
-                          return [...prev, option]
-                        }
-                      })
-                    }}
-                  >
-                    {option.label}
-                    <CheckIcon
-                      className={cn(
-                        "ml-auto h-4 w-4",
-                        value === option.value ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </Command>
-          </PopoverContent>
-        </Popover>
-      ) : (
-        <Button variant="outline" size="sm">
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm" role="combobox">
           Filter
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
-      )}
-    </>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-0" align="end">
+        <Command>
+          <CommandInput placeholder="Filter by..." />
+          <CommandEmpty>No item found.</CommandEmpty>
+          <CommandGroup>
+            {options.map((option) => (
+              <CommandItem
+                key={String(option.value)}
+                onSelect={(currentValue) => {
+                  setValue(currentValue === value ? "" : currentValue)
+                  setOpen(false)
+                  setSelectedOptions((prev) => {
+                    if (currentValue === value) {
+                      return prev.filter((item) => item.value !== option.value)
+                    } else {
+                      return [...prev, option]
+                    }
+                  })
+                }}
+              >
+                {option.label}
+                {selectedOptions.length > 0 ? (
+                  <CheckIcon
+                    className={cn(
+                      "ml-auto h-4 w-4",
+                      value === option.value ? "opacity-100" : "opacity-0"
+                    )}
+                    aria-hidden="true"
+                  />
+                ) : null}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </Command>
+      </PopoverContent>
+    </Popover>
   )
 }

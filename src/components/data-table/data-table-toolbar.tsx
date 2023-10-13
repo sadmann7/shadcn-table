@@ -35,10 +35,8 @@ export function DataTableToolbar<TData>({
     DataTableFilterOptions<TData>[]
   >([])
 
-  console.log("selectedOptions", selectedOptions)
-
   return (
-    <div className="w-full space-y-2 overflow-auto p-1">
+    <div className="w-full space-y-2.5 overflow-auto p-1">
       <div className="flex items-center justify-between space-x-2">
         <div className="flex flex-1 items-center space-x-2">
           {searchableColumns.length > 0 &&
@@ -101,6 +99,7 @@ export function DataTableToolbar<TData>({
             <DataTableCombinedFilterItem
               key={String(option.value)}
               option={option}
+              setSelectedOptions={setSelectedOptions}
             />
           ))}
         </div>
