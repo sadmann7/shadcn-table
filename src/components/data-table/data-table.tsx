@@ -2,6 +2,7 @@ import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type {
   DataTableFilterableColumn,
+  DataTableFilterOptions,
   DataTableSearchableColumn,
 } from "@/types"
 import {
@@ -36,16 +37,18 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   pageCount: number
-  filterableColumns?: DataTableFilterableColumn<TData>[]
   searchableColumns?: DataTableSearchableColumn<TData>[]
+  filterableColumns?: DataTableFilterableColumn<TData>[]
+  combinedFilterOptions?: DataTableFilterOptions<TData>[]
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   pageCount,
-  filterableColumns = [],
   searchableColumns = [],
+  filterableColumns = [],
+  combinedFilterOptions = [],
 }: DataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -246,11 +249,12 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="w-full space-y-4 overflow-auto">
+    <div className="w-full space-y-2.5 overflow-auto">
       <DataTableToolbar
         table={table}
         filterableColumns={filterableColumns}
         searchableColumns={searchableColumns}
+        combinedFilterOptions={combinedFilterOptions}
       />
       <div className="rounded-md border">
         <Table>

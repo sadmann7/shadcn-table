@@ -275,6 +275,12 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
       columns={columns}
       data={data}
       pageCount={pageCount}
+      searchableColumns={[
+        {
+          id: "title",
+          title: "titles",
+        },
+      ]}
       filterableColumns={[
         {
           id: "status",
@@ -293,11 +299,10 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
           })),
         },
       ]}
-      searchableColumns={[
-        {
-          id: "title",
-          title: "Title",
-        },
+      combinedFilterOptions={[
+        { label: "Title", value: "title" },
+        { label: "Status", value: "status" },
+        { label: "Priority", value: "priority" },
       ]}
     />
   )
