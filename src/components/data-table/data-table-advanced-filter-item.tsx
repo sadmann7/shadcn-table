@@ -29,6 +29,8 @@ interface DataTableAdvancedFilterItemProps<TData> {
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
+  advancedFilterMenuOpen: boolean
+  setAdvancedFilterMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export function DataTableAdvancedFilterItem<TData>({
@@ -41,14 +43,18 @@ export function DataTableAdvancedFilterItem<TData>({
   const searchParams = useSearchParams()
   const [value, setValue] = React.useState("")
   const debounceValue = useDebounce(value, 500)
+  const [open, setOpen] = React.useState(true)
 
-  const selectedValues = Array.from(
-    new Set(
-      table
-        .getColumn(String(selectedOption.value))
-        ?.getFilterValue() as string[]
-    )
-  )
+  const selectedValues =
+    selectedOption.items.length > 0
+      ? Array.from(
+          new Set(
+            table
+              .getColumn(String(selectedOption.value))
+              ?.getFilterValue() as string[]
+          )
+        )
+      : []
 
   const filterVarieties =
     selectedOption.items.length > 0
@@ -76,21 +82,35 @@ export function DataTableAdvancedFilterItem<TData>({
   )
 
   React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
-        [selectedOption.value]: `${debounceValue}${
-          debounceValue.length > 0 ? `.${filterVariety}` : ""
-        }`,
-      })}`,
-      {
-        scroll: false,
-      }
-    )
+    if (debounceValue.length > 0) {
+      router.push(
+        `${pathname}?${createQueryString({
+          [selectedOption.value]: `${debounceValue}${
+            debounceValue.length > 0 ? `.${filterVariety}` : ""
+          }`,
+        })}`,
+        {
+          scroll: false,
+        }
+      )
+    }
+
+    if (debounceValue.length === 0) {
+      router.push(
+        `${pathname}?${createQueryString({
+          [selectedOption.value]: null,
+        })}`,
+        {
+          scroll: false,
+        }
+      )
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounceValue, filterVariety])
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-7 rounded-full">
           {value.length > 0 || selectedValues.length > 0 ? (
@@ -116,7 +136,7 @@ export function DataTableAdvancedFilterItem<TData>({
       <PopoverContent className="w-60 space-y-1 text-xs">
         <div className="flex items-center space-x-1">
           <div className="flex flex-1 items-center space-x-1">
-            <div>{selectedOption.label}</div>
+            <div className="capitalize">{selectedOption.label}</div>
             <Select onValueChange={(value) => setFilterVariety(value)}>
               <SelectTrigger className="h-auto w-fit truncate border-none px-2 py-0.5 hover:bg-muted/50">
                 <SelectValue placeholder={filterVarieties[0]} />

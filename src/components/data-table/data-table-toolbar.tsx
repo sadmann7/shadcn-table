@@ -34,6 +34,8 @@ export function DataTableToolbar<TData>({
   const [selectedOptions, setSelectedOptions] = React.useState<
     DataTableFilterOption<TData>[]
   >([])
+  const [advancedFilterMenuOpen, setAdvancedFilterMenuOpen] =
+    React.useState(false)
 
   return (
     <div className="w-full space-y-2.5 overflow-auto p-1">
@@ -87,16 +89,19 @@ export function DataTableToolbar<TData>({
         <div className="flex items-center space-x-2">
           {advancedFilter ? (
             <DataTableAdvancedFilter
-              table={table}
               searchableColumns={searchableColumns}
               filterableColumns={filterableColumns}
+              selectedOptions={selectedOptions}
               setSelectedOptions={setSelectedOptions}
+              advancedFilterMenuOpen={advancedFilterMenuOpen}
+              setAdvancedFilterMenuOpen={setAdvancedFilterMenuOpen}
+              isSwitchable={selectedOptions.length > 0}
             />
           ) : null}
           <DataTableViewOptions table={table} />
         </div>
       </div>
-      {selectedOptions.length > 0 ? (
+      {advancedFilter && advancedFilterMenuOpen ? (
         <div className="flex items-center space-x-2">
           {selectedOptions.map((selectedOption) => (
             <DataTableAdvancedFilterItem
@@ -104,8 +109,19 @@ export function DataTableToolbar<TData>({
               table={table}
               selectedOption={selectedOption}
               setSelectedOptions={setSelectedOptions}
+              advancedFilterMenuOpen={advancedFilterMenuOpen}
+              setAdvancedFilterMenuOpen={setAdvancedFilterMenuOpen}
             />
           ))}
+          <DataTableAdvancedFilter
+            searchableColumns={searchableColumns}
+            filterableColumns={filterableColumns}
+            selectedOptions={selectedOptions}
+            setSelectedOptions={setSelectedOptions}
+            advancedFilterMenuOpen={advancedFilterMenuOpen}
+            setAdvancedFilterMenuOpen={setAdvancedFilterMenuOpen}
+            isSwitchable={false}
+          />
         </div>
       ) : null}
     </div>
