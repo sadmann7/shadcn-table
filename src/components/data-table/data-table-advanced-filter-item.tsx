@@ -117,7 +117,7 @@ export function DataTableAdvancedFilterItem<TData>({
           variant="outline"
           size="sm"
           className={cn(
-            "h-7 rounded-full",
+            "h-7 truncate rounded-full",
             (selectedValues.length > 0 || value.length > 0) && "bg-muted/50"
           )}
         >
@@ -141,7 +141,7 @@ export function DataTableAdvancedFilterItem<TData>({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-60 space-y-1 text-xs">
+      <PopoverContent className="w-60 space-y-1 text-xs" align="start">
         <div className="flex items-center space-x-1">
           <div className="flex flex-1 items-center space-x-1">
             <div className="capitalize">{selectedOption.label}</div>
@@ -199,9 +199,10 @@ export function DataTableAdvancedFilterItem<TData>({
         ) : (
           <Input
             placeholder="Type here..."
-            autoFocus
+            className="h-8"
             value={value}
             onChange={(event) => setValue(event.target.value)}
+            autoFocus
           />
         )}
       </PopoverContent>
