@@ -61,6 +61,13 @@ export function DataTableAdvancedFilter<TData>({
     return [...searchableOptions, ...filterableOptions]
   }, [searchableColumns, filterableColumns])
 
+  React.useEffect(() => {
+    if (selectedOptions.length === 0) {
+      setAdvancedFilterMenuOpen(false)
+      setValue("")
+    }
+  }, [selectedOptions, setAdvancedFilterMenuOpen])
+
   return (
     <>
       {isSwitchable ? (

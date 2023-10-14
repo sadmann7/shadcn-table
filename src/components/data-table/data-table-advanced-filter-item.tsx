@@ -4,6 +4,7 @@ import type { DataTableFilterOption } from "@/types"
 import { TrashIcon } from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
 
+import { cn } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -112,7 +113,14 @@ export function DataTableAdvancedFilterItem<TData>({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-7 rounded-full">
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn(
+            "h-7 rounded-full",
+            (selectedValues.length > 0 || value.length > 0) && "bg-muted/50"
+          )}
+        >
           {value.length > 0 || selectedValues.length > 0 ? (
             <>
               <span className="font-medium capitalize">
