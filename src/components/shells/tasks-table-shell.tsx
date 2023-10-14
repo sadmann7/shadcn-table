@@ -275,12 +275,9 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
       columns={columns}
       data={data}
       pageCount={pageCount}
-      searchableColumns={[
-        {
-          id: "title",
-          title: "titles",
-        },
-      ]}
+      // Render notion like filters
+      advancedFilter={true}
+      // Render dynamic faceted filters
       filterableColumns={[
         {
           id: "status",
@@ -299,10 +296,12 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
           })),
         },
       ]}
-      combinedFilterOptions={[
-        { label: "Title", value: "title" },
-        { label: "Status", value: "status" },
-        { label: "Priority", value: "priority" },
+      // Render dynamic searchable filters
+      searchableColumns={[
+        {
+          id: "title",
+          title: "titles",
+        },
       ]}
     />
   )

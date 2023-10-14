@@ -2,7 +2,6 @@ import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import type {
   DataTableFilterableColumn,
-  DataTableFilterOptions,
   DataTableSearchableColumn,
 } from "@/types"
 import {
@@ -37,18 +36,18 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   pageCount: number
-  searchableColumns?: DataTableSearchableColumn<TData>[]
   filterableColumns?: DataTableFilterableColumn<TData>[]
-  combinedFilterOptions?: DataTableFilterOptions<TData>[]
+  searchableColumns?: DataTableSearchableColumn<TData>[]
+  advancedFilter?: boolean
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   pageCount,
-  searchableColumns = [],
   filterableColumns = [],
-  combinedFilterOptions = [],
+  searchableColumns = [],
+  advancedFilter = false,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -254,7 +253,7 @@ export function DataTable<TData, TValue>({
         table={table}
         filterableColumns={filterableColumns}
         searchableColumns={searchableColumns}
-        combinedFilterOptions={combinedFilterOptions}
+        advancedFilter={advancedFilter}
       />
       <div className="rounded-md border">
         <Table>

@@ -1,8 +1,11 @@
 "use client"
 
 import * as React from "react"
-import { usePathname, useRouter } from "next/navigation"
-import type { DataTableFilterOptions } from "@/types"
+import type {
+  DataTableFilterableColumn,
+  DataTableFilterOption,
+  DataTableSearchableColumn,
+} from "@/types"
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
 
@@ -21,26 +24,39 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-interface DataTableCombinedFilterProps<TData> {
+interface DataTableAdvancedFilterProps<TData> {
   table: Table<TData>
-  options: DataTableFilterOptions<TData>[]
-  selectedOptions: DataTableFilterOptions<TData>[]
-  setSelectedOptions: React.Dispatch<
-    React.SetStateAction<DataTableFilterOptions<TData>[]>
+  filterableColumns?: DataTableFilterableColumn<TData>[]
+  searchableColumns?: DataTableSearchableColumn<TData>[]
+  setSelectedOptions?: React.Dispatch<
+    React.SetStateAction<DataTableFilterOption<TData>[]>
   >
 }
 
-export function DataTableCombinedFilter<TData>({
+export function DataTableAdvancedFilter<TData>({
   table,
-  options = [],
-  selectedOptions,
+  filterableColumns = [],
+  searchableColumns = [],
   setSelectedOptions,
-}: DataTableCombinedFilterProps<TData>) {
+}: DataTableAdvancedFilterProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
-  const router = useRouter()
-  const pathname = usePathname()
+
   const [value, setValue] = React.useState("")
   const [open, setOpen] = React.useState(false)
+
+  const options: DataTableFilterOption<TData>[] = React.useMemo(() => {
+    const searchableOptions = searchableColumns.map((column) => ({
+      label: String(column.id),
+      value: column.id,
+      items: [],
+    }))
+    const filterableOptions = filterableColumns.map((column) => ({
+      label: column.title,
+      value: column.id,
+      items: column.options,
+    }))
+    return [...searchableOptions, ...filterableOptions]
+  }, [searchableColumns, filterableColumns])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -58,10 +74,11 @@ export function DataTableCombinedFilter<TData>({
             {options.map((option) => (
               <CommandItem
                 key={String(option.value)}
+                className="capitalize"
                 onSelect={(currentValue) => {
                   setValue(currentValue === value ? "" : currentValue)
                   setOpen(false)
-                  setSelectedOptions((prev) => {
+                  setSelectedOptions?.((prev) => {
                     if (currentValue === value) {
                       return prev.filter((item) => item.value !== option.value)
                     } else {
@@ -71,15 +88,13 @@ export function DataTableCombinedFilter<TData>({
                 }}
               >
                 {option.label}
-                {selectedOptions.length > 0 ? (
-                  <CheckIcon
-                    className={cn(
-                      "ml-auto h-4 w-4",
-                      value === option.value ? "opacity-100" : "opacity-0"
-                    )}
-                    aria-hidden="true"
-                  />
-                ) : null}
+                <CheckIcon
+                  className={cn(
+                    "ml-auto h-4 w-4",
+                    value === option.value ? "opacity-100" : "opacity-0"
+                  )}
+                  aria-hidden="true"
+                />
               </CommandItem>
             ))}
           </CommandGroup>

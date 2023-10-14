@@ -3,7 +3,7 @@
 import * as React from "react"
 import type {
   DataTableFilterableColumn,
-  DataTableFilterOptions,
+  DataTableFilterOption,
   DataTableSearchableColumn,
 } from "@/types"
 import { Cross2Icon } from "@radix-ui/react-icons"
@@ -11,28 +11,28 @@ import type { Table } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { DataTableCombinedFilter } from "@/components/data-table/data-table-combined-filter"
+import { DataTableAdvancedFilter } from "@/components/data-table/data-table-advanced-filter"
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
 
-import { DataTableCombinedFilterItem } from "./data-table-combined-filter-item"
+import { DataTableAdvancedFilterItem } from "./data-table-advanced-filter-item"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
-  filterableColumns?: DataTableFilterableColumn<TData>[]
   searchableColumns?: DataTableSearchableColumn<TData>[]
-  combinedFilterOptions?: DataTableFilterOptions<TData>[]
+  filterableColumns?: DataTableFilterableColumn<TData>[]
+  advancedFilter?: boolean
 }
 
 export function DataTableToolbar<TData>({
   table,
   filterableColumns = [],
   searchableColumns = [],
-  combinedFilterOptions = [],
+  advancedFilter = false,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
   const [selectedOptions, setSelectedOptions] = React.useState<
-    DataTableFilterOptions<TData>[]
+    DataTableFilterOption<TData>[]
   >([])
 
   return (
@@ -60,7 +60,8 @@ export function DataTableToolbar<TData>({
                   />
                 )
             )}
-          {filterableColumns.length > 0 &&
+          {!advancedFilter &&
+            filterableColumns.length > 0 &&
             filterableColumns.map(
               (column) =>
                 table.getColumn(column.id ? String(column.id) : "") && (
@@ -72,7 +73,7 @@ export function DataTableToolbar<TData>({
                   />
                 )
             )}
-          {isFiltered && (
+          {!advancedFilter && isFiltered && (
             <Button
               variant="ghost"
               onClick={() => table.resetColumnFilters()}
@@ -84,21 +85,24 @@ export function DataTableToolbar<TData>({
           )}
         </div>
         <div className="flex items-center space-x-2">
-          <DataTableCombinedFilter
-            table={table}
-            options={combinedFilterOptions}
-            selectedOptions={selectedOptions}
-            setSelectedOptions={setSelectedOptions}
-          />
+          {advancedFilter ? (
+            <DataTableAdvancedFilter
+              table={table}
+              searchableColumns={searchableColumns}
+              filterableColumns={filterableColumns}
+              setSelectedOptions={setSelectedOptions}
+            />
+          ) : null}
           <DataTableViewOptions table={table} />
         </div>
       </div>
       {selectedOptions.length > 0 ? (
         <div className="flex items-center space-x-2">
-          {selectedOptions.map((option) => (
-            <DataTableCombinedFilterItem
-              key={String(option.value)}
-              option={option}
+          {selectedOptions.map((selectedOption) => (
+            <DataTableAdvancedFilterItem
+              key={String(selectedOption.value)}
+              table={table}
+              selectedOption={selectedOption}
               setSelectedOptions={setSelectedOptions}
             />
           ))}

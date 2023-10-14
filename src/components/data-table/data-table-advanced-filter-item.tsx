@@ -1,7 +1,8 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import type { DataTableFilterOptions } from "@/types"
+import type { DataTableFilterOption } from "@/types"
 import { TrashIcon } from "@radix-ui/react-icons"
+import type { Table } from "@tanstack/react-table"
 
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
@@ -20,25 +21,41 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-const filterVarieties = ["contains", "does not contain", "is", "is not"]
+import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 
-interface DataTableCombinedFilterItemProps<TData> {
-  option: DataTableFilterOptions<TData>
+interface DataTableAdvancedFilterItemProps<TData> {
+  table: Table<TData>
+  selectedOption: DataTableFilterOption<TData>
   setSelectedOptions: React.Dispatch<
-    React.SetStateAction<DataTableFilterOptions<TData>[]>
+    React.SetStateAction<DataTableFilterOption<TData>[]>
   >
 }
 
-export function DataTableCombinedFilterItem<TData>({
-  option,
+export function DataTableAdvancedFilterItem<TData>({
+  table,
+  selectedOption,
   setSelectedOptions,
-}: DataTableCombinedFilterItemProps<TData>) {
+}: DataTableAdvancedFilterItemProps<TData>) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [value, setValue] = React.useState("")
-  const [filterVariety, setFilterVariety] = React.useState(filterVarieties[0])
   const debounceValue = useDebounce(value, 500)
+
+  const selectedValues = Array.from(
+    new Set(
+      table
+        .getColumn(String(selectedOption.value))
+        ?.getFilterValue() as string[]
+    )
+  )
+
+  const filterVarieties =
+    selectedOption.items.length > 0
+      ? ["is", "is not"]
+      : ["contains", "does not contain", "is", "is not"]
+
+  const [filterVariety, setFilterVariety] = React.useState(filterVarieties[0])
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -61,7 +78,7 @@ export function DataTableCombinedFilterItem<TData>({
   React.useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
-        [option.value]: `${debounceValue}${
+        [selectedOption.value]: `${debounceValue}${
           debounceValue.length > 0 ? `.${filterVariety}` : ""
         }`,
       })}`,
@@ -70,26 +87,36 @@ export function DataTableCombinedFilterItem<TData>({
       }
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debounceValue])
+  }, [debounceValue, filterVariety])
 
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-7 rounded-full">
-          {value.length > 0 ? (
+          {value.length > 0 || selectedValues.length > 0 ? (
             <>
-              <span className="font-medium">{String(option.label)}:</span>
-              <span className="ml-1">{value}</span>
+              <span className="font-medium capitalize">
+                {selectedOption.label}:
+              </span>
+              {selectedValues.length > 0 ? (
+                <span className="ml-1">
+                  {selectedValues.length > 2
+                    ? `${selectedValues.length} selected`
+                    : selectedValues.join(", ")}
+                </span>
+              ) : (
+                <span className="ml-1">{value}</span>
+              )}
             </>
           ) : (
-            option.label
+            <span className="capitalize">{selectedOption.label}</span>
           )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-60 space-y-1 text-xs">
         <div className="flex items-center space-x-1">
           <div className="flex flex-1 items-center space-x-1">
-            <div>{option.label}</div>
+            <div>{selectedOption.label}</div>
             <Select onValueChange={(value) => setFilterVariety(value)}>
               <SelectTrigger className="h-auto w-fit truncate border-none px-2 py-0.5 hover:bg-muted/50">
                 <SelectValue placeholder={filterVarieties[0]} />
@@ -113,26 +140,42 @@ export function DataTableCombinedFilterItem<TData>({
             onClick={() => {
               router.push(
                 `${pathname}?${createQueryString({
-                  [option.value]: null,
+                  [selectedOption.value]: null,
                 })}`,
                 {
                   scroll: false,
                 }
               )
               setSelectedOptions((prev) =>
-                prev.filter((item) => item.value !== option.value)
+                prev.filter((item) => item.value !== selectedOption.value)
               )
             }}
           >
             <TrashIcon className="h-4 w-4" aria-hidden />
           </Button>
         </div>
-        <Input
-          placeholder="Type here..."
-          autoFocus
-          value={value}
-          onChange={(event) => setValue(event.target.value)}
-        />
+        {selectedOption.items.length > 0 ? (
+          table.getColumn(
+            selectedOption.value ? String(selectedOption.value) : ""
+          ) && (
+            <DataTableFacetedFilter
+              key={String(selectedOption.value)}
+              column={table.getColumn(
+                selectedOption.value ? String(selectedOption.value) : ""
+              )}
+              title={selectedOption.label}
+              options={selectedOption.items}
+              variant="command"
+            />
+          )
+        ) : (
+          <Input
+            placeholder="Type here..."
+            autoFocus
+            value={value}
+            onChange={(event) => setValue(event.target.value)}
+          />
+        )}
       </PopoverContent>
     </Popover>
   )

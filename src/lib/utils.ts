@@ -14,22 +14,25 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function filterColumn(
-  param: string,
-  table: Column<ColumnBaseConfig<ColumnDataType, string>, object, object>
-) {
-  const [value, filterVariety] = param?.split(".") ?? []
+export function filterColumn({
+  column,
+  value,
+}: {
+  column: Column<ColumnBaseConfig<ColumnDataType, string>, object, object>
+  value: string
+}) {
+  const [filterValue, filterVariety] = value?.split(".") ?? []
 
   switch (filterVariety) {
     case "contains":
-      return like(table, `%${value}%`)
+      return like(column, `%${filterValue}%`)
     case "does not contain":
-      return notLike(table, `%${value}%`)
+      return notLike(column, `%${filterValue}%`)
     case "is":
-      return eq(table, value)
+      return eq(column, filterValue)
     case "is not":
-      return not(eq(table, value))
+      return not(eq(column, filterValue))
     default:
-      return like(table, `%${value}%`)
+      return like(column, `%${filterValue}%`)
   }
 }
