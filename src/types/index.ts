@@ -8,6 +8,7 @@ export interface DataTableFilterOption<TData> {
   label: string
   value: keyof TData
   items: Option[]
+  isMultiple?: boolean
 }
 
 export interface DataTableSearchableColumn<TData> {

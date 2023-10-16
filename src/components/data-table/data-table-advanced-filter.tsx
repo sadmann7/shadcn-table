@@ -6,9 +6,13 @@ import type {
   DataTableFilterOption,
   DataTableSearchableColumn,
 } from "@/types"
-import { CaretSortIcon, CheckIcon, PlusIcon } from "@radix-ui/react-icons"
+import {
+  CaretSortIcon,
+  ChevronDownIcon,
+  PlusIcon,
+  TextIcon,
+} from "@radix-ui/react-icons"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Command,
@@ -16,6 +20,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandSeparator,
 } from "@/components/ui/command"
 import {
   Popover,
@@ -106,7 +111,10 @@ export function DataTableAdvancedFilter<TData>({
             ) : (
               <Button variant="outline" size="sm" role="combobox">
                 Filter
-                <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                <CaretSortIcon
+                  className="ml-2 h-4 w-4 shrink-0 opacity-50"
+                  aria-hidden="true"
+                />
               </Button>
             )}
           </PopoverTrigger>
@@ -126,6 +134,7 @@ export function DataTableAdvancedFilter<TData>({
                     <CommandItem
                       key={String(option.value)}
                       className="capitalize"
+                      value={String(option.value)}
                       onSelect={(currentValue) => {
                         setValue(currentValue === value ? "" : currentValue)
                         setOpen(false)
@@ -134,7 +143,7 @@ export function DataTableAdvancedFilter<TData>({
                             ? true
                             : !advancedFilterMenuOpen
                         )
-                        setSelectedOptions?.((prev) => {
+                        setSelectedOptions((prev) => {
                           if (currentValue === value) {
                             return prev.filter(
                               (item) => item.value !== option.value
@@ -145,16 +154,38 @@ export function DataTableAdvancedFilter<TData>({
                         })
                       }}
                     >
+                      {option.items.length > 0 ? (
+                        <ChevronDownIcon
+                          className="mr-2 h-4 w-4"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <TextIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                      )}
                       {option.label}
-                      <CheckIcon
-                        className={cn(
-                          "ml-auto h-4 w-4",
-                          value === option.value ? "opacity-100" : "opacity-0"
-                        )}
-                        aria-hidden="true"
-                      />
                     </CommandItem>
                   ))}
+              </CommandGroup>
+              <CommandSeparator />
+              <CommandGroup>
+                <CommandItem
+                  onSelect={() => {
+                    setOpen(false)
+                    setAdvancedFilterMenuOpen(true)
+                    setSelectedOptions([
+                      ...selectedOptions,
+                      {
+                        label: "1 rule",
+                        value: "oneRule",
+                        items: [],
+                        isMultiple: true,
+                      } as unknown as DataTableFilterOption<TData>,
+                    ])
+                  }}
+                >
+                  <PlusIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                  Advanced filter
+                </CommandItem>
               </CommandGroup>
             </Command>
           </PopoverContent>
