@@ -3,7 +3,7 @@ import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import { and, asc, desc, inArray, like, sql } from "drizzle-orm"
 
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
   title: "Million.js",

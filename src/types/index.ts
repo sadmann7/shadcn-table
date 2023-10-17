@@ -6,9 +6,9 @@ export type Option = {
 
 export interface DataTableFilterOption<TData> {
   label: string
-  value: keyof TData
+  value: keyof TData | string
   items: Option[]
-  isMultiple?: boolean
+  isAdvanced?: boolean
 }
 
 export interface DataTableSearchableColumn<TData> {

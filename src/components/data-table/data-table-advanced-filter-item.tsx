@@ -30,8 +30,6 @@ interface DataTableAdvancedFilterItemProps<TData> {
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
-  advancedFilterMenuOpen: boolean
-  setAdvancedFilterMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export function DataTableAdvancedFilterItem<TData>({
@@ -141,7 +139,7 @@ export function DataTableAdvancedFilterItem<TData>({
           )}
         </Button>
       </PopoverTrigger>
-      {selectedOption.isMultiple ? (
+      {selectedOption.isAdvanced ? (
         <PopoverContent className="w-80 space-y-1 text-xs" align="start">
           <div className="flex items-center space-x-1">
             <div className="flex flex-1 items-center space-x-1">
@@ -186,7 +184,7 @@ export function DataTableAdvancedFilterItem<TData>({
                 )
               }}
             >
-              <TrashIcon className="h-4 w-4" aria-hidden />
+              <TrashIcon className="h-4 w-4" aria-hidden="true" />
             </Button>
           </div>
           <DynamicFilter
@@ -235,7 +233,7 @@ export function DataTableAdvancedFilterItem<TData>({
                 )
               }}
             >
-              <TrashIcon className="h-4 w-4" aria-hidden />
+              <TrashIcon className="h-4 w-4" aria-hidden="true" />
             </Button>
           </div>
           <DynamicFilter

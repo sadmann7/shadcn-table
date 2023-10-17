@@ -1,5 +1,5 @@
 import { DataTableLoading } from "@/components/data-table/data-table-loading"
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 
 export default function IndexLoading() {
   return (

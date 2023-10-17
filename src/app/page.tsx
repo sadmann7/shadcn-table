@@ -4,8 +4,9 @@ import { and, asc, desc, inArray, sql } from "drizzle-orm"
 
 import { filterColumn } from "@/lib/utils"
 import { searchParamsSchema } from "@/lib/validations/params"
-import { Shell } from "@/components/shells/shell"
-import { TasksTableShell } from "@/components/shells/tasks-table-shell"
+import { Shell } from "@/components/shell"
+
+import { TasksTableShell } from "./_components/tasks-table-shell"
 
 interface IndexPageProps {
   searchParams: {

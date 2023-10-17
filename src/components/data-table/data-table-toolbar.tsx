@@ -6,7 +6,7 @@ import type {
   DataTableFilterOption,
   DataTableSearchableColumn,
 } from "@/types"
-import { Cross2Icon } from "@radix-ui/react-icons"
+import { CaretSortIcon, Cross2Icon } from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
@@ -34,8 +34,7 @@ export function DataTableToolbar<TData>({
   const [selectedOptions, setSelectedOptions] = React.useState<
     DataTableFilterOption<TData>[]
   >([])
-  const [advancedFilterMenuOpen, setAdvancedFilterMenuOpen] =
-    React.useState(false)
+  const [open, setOpen] = React.useState(false)
 
   return (
     <div className="w-full space-y-2.5 overflow-auto p-1">
@@ -88,20 +87,32 @@ export function DataTableToolbar<TData>({
         </div>
         <div className="flex items-center space-x-2">
           {advancedFilter ? (
-            <DataTableAdvancedFilter
-              searchableColumns={searchableColumns}
-              filterableColumns={filterableColumns}
-              selectedOptions={selectedOptions}
-              setSelectedOptions={setSelectedOptions}
-              advancedFilterMenuOpen={advancedFilterMenuOpen}
-              setAdvancedFilterMenuOpen={setAdvancedFilterMenuOpen}
-              isSwitchable={selectedOptions.length > 0}
-            />
+            selectedOptions.length > 0 ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setOpen((prev) => !prev)}
+              >
+                Filter
+                <CaretSortIcon
+                  className="ml-2 h-4 w-4 opacity-50"
+                  aria-hidden="true"
+                />
+              </Button>
+            ) : (
+              <DataTableAdvancedFilter
+                searchableColumns={searchableColumns}
+                filterableColumns={filterableColumns}
+                selectedOptions={selectedOptions}
+                setSelectedOptions={setSelectedOptions}
+                removeSelected
+              />
+            )
           ) : null}
           <DataTableViewOptions table={table} />
         </div>
       </div>
-      {advancedFilter && advancedFilterMenuOpen ? (
+      {advancedFilter && open ? (
         <div className="flex items-center space-x-2">
           {selectedOptions.map((selectedOption) => (
             <DataTableAdvancedFilterItem
@@ -109,8 +120,6 @@ export function DataTableToolbar<TData>({
               table={table}
               selectedOption={selectedOption}
               setSelectedOptions={setSelectedOptions}
-              advancedFilterMenuOpen={advancedFilterMenuOpen}
-              setAdvancedFilterMenuOpen={setAdvancedFilterMenuOpen}
             />
           ))}
           <DataTableAdvancedFilter
@@ -118,9 +127,6 @@ export function DataTableToolbar<TData>({
             filterableColumns={filterableColumns}
             selectedOptions={selectedOptions}
             setSelectedOptions={setSelectedOptions}
-            advancedFilterMenuOpen={advancedFilterMenuOpen}
-            setAdvancedFilterMenuOpen={setAdvancedFilterMenuOpen}
-            isSwitchable={false}
           />
         </div>
       ) : null}
