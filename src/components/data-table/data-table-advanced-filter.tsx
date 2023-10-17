@@ -36,6 +36,7 @@ interface DataTableAdvancedFilterProps<TData> {
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
   removeSelected?: boolean
+  children?: React.ReactNode
 }
 
 export function DataTableAdvancedFilter<TData>({
@@ -44,6 +45,7 @@ export function DataTableAdvancedFilter<TData>({
   selectedOptions,
   setSelectedOptions,
   removeSelected = false,
+  children,
 }: DataTableAdvancedFilterProps<TData>) {
   const [value, setValue] = React.useState("")
   const [open, setOpen] = React.useState(false)
@@ -71,13 +73,15 @@ export function DataTableAdvancedFilter<TData>({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" role="combobox">
-          Filter
-          <CaretSortIcon
-            className="ml-2 h-4 w-4 shrink-0 opacity-50"
-            aria-hidden="true"
-          />
-        </Button>
+        {children ?? (
+          <Button variant="outline" size="sm" role="combobox">
+            Filter
+            <CaretSortIcon
+              className="ml-2 h-4 w-4 shrink-0 opacity-50"
+              aria-hidden="true"
+            />
+          </Button>
+        )}
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="end">
         <Command>

@@ -6,7 +6,7 @@ import type {
   DataTableFilterOption,
   DataTableSearchableColumn,
 } from "@/types"
-import { CaretSortIcon, Cross2Icon } from "@radix-ui/react-icons"
+import { CaretSortIcon, Cross2Icon, PlusIcon } from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
@@ -35,6 +35,12 @@ export function DataTableToolbar<TData>({
     DataTableFilterOption<TData>[]
   >([])
   const [open, setOpen] = React.useState(false)
+
+  React.useEffect(() => {
+    if (selectedOptions.length > 0) {
+      setOpen(true)
+    }
+  }, [selectedOptions])
 
   return (
     <div className="w-full space-y-2.5 overflow-auto p-1">
@@ -127,7 +133,21 @@ export function DataTableToolbar<TData>({
             filterableColumns={filterableColumns}
             selectedOptions={selectedOptions}
             setSelectedOptions={setSelectedOptions}
-          />
+            removeSelected
+          >
+            <Button
+              variant="outline"
+              size="sm"
+              role="combobox"
+              className="rounded-full"
+            >
+              <PlusIcon
+                className="mr-2 h-4 w-4 opacity-50"
+                aria-hidden="true"
+              />
+              Add filter
+            </Button>
+          </DataTableAdvancedFilter>
         </div>
       ) : null}
     </div>
