@@ -1,11 +1,7 @@
 "use client"
 
 import * as React from "react"
-import type {
-  DataTableFilterableColumn,
-  DataTableFilterOption,
-  DataTableSearchableColumn,
-} from "@/types"
+import type { DataTableFilterOption } from "@/types"
 import {
   CaretSortIcon,
   ChevronDownIcon,
@@ -29,53 +25,42 @@ import {
 } from "@/components/ui/popover"
 
 interface DataTableAdvancedFilterProps<TData> {
-  filterableColumns?: DataTableFilterableColumn<TData>[]
-  searchableColumns?: DataTableSearchableColumn<TData>[]
+  options: DataTableFilterOption<TData>[]
   selectedOptions: DataTableFilterOption<TData>[]
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
-  removeSelected?: boolean
   children?: React.ReactNode
+  buttonText?: string
+  singleMode?: boolean
 }
 
 export function DataTableAdvancedFilter<TData>({
-  filterableColumns = [],
-  searchableColumns = [],
+  options,
   selectedOptions,
   setSelectedOptions,
-  removeSelected = false,
   children,
+  buttonText = "Filter",
+  singleMode = false,
 }: DataTableAdvancedFilterProps<TData>) {
   const [value, setValue] = React.useState("")
   const [open, setOpen] = React.useState(false)
-
-  const options: DataTableFilterOption<TData>[] = React.useMemo(() => {
-    const searchableOptions = searchableColumns.map((column) => ({
-      label: String(column.id),
-      value: column.id,
-      items: [],
-    }))
-    const filterableOptions = filterableColumns.map((column) => ({
-      label: column.title,
-      value: column.id,
-      items: column.options,
-    }))
-    let allOptions = [...searchableOptions, ...filterableOptions]
-    if (removeSelected) {
-      allOptions = allOptions.filter((option) => {
-        return !selectedOptions.find((item) => item.value === option.value)
-      })
-    }
-    return allOptions
-  }, [searchableColumns, filterableColumns, selectedOptions, removeSelected])
+  const [selectedOption, setSelectedOption] =
+    React.useState<DataTableFilterOption<TData>>()
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         {children ?? (
-          <Button variant="outline" size="sm" role="combobox">
-            Filter
+          <Button
+            variant="outline"
+            size="sm"
+            role="combobox"
+            className="capitalize"
+          >
+            {singleMode
+              ? selectedOption?.label || options[0]?.label
+              : buttonText}
             <CaretSortIcon
               className="ml-2 h-4 w-4 shrink-0 opacity-50"
               aria-hidden="true"
@@ -96,13 +81,17 @@ export function DataTableAdvancedFilter<TData>({
                 onSelect={(currentValue) => {
                   setValue(currentValue === value ? "" : currentValue)
                   setOpen(false)
-                  setSelectedOptions((prev) => {
-                    if (currentValue === value) {
-                      return prev.filter((item) => item.value !== option.value)
-                    } else {
-                      return [...prev, option]
-                    }
-                  })
+                  singleMode
+                    ? setSelectedOption(option)
+                    : setSelectedOptions((prev) => {
+                        if (currentValue === value) {
+                          return prev.filter(
+                            (item) => item.value !== option.value
+                          )
+                        } else {
+                          return [...prev, option]
+                        }
+                      })
                 }}
               >
                 {option.items.length > 0 ? (
@@ -117,26 +106,30 @@ export function DataTableAdvancedFilter<TData>({
               </CommandItem>
             ))}
           </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup>
-            <CommandItem
-              onSelect={() => {
-                setOpen(false)
-                setSelectedOptions([
-                  ...selectedOptions,
-                  {
-                    label: "Advanced",
-                    value: "advanced",
-                    items: [],
-                    isAdvanced: true,
-                  },
-                ])
-              }}
-            >
-              <PlusIcon className="mr-2 h-4 w-4" aria-hidden="true" />
-              Advanced filter
-            </CommandItem>
-          </CommandGroup>
+          {!singleMode && (
+            <>
+              <CommandSeparator />
+              <CommandGroup>
+                <CommandItem
+                  onSelect={() => {
+                    setOpen(false)
+                    setSelectedOptions([
+                      ...selectedOptions,
+                      {
+                        label: options[0]?.label ?? "",
+                        value: options[0]?.value ?? "",
+                        items: [],
+                        isAdvanced: true,
+                      },
+                    ])
+                  }}
+                >
+                  <PlusIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                  Advanced filter
+                </CommandItem>
+              </CommandGroup>
+            </>
+          )}
         </Command>
       </PopoverContent>
     </Popover>

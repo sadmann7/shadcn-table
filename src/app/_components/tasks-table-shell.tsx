@@ -276,7 +276,7 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
       data={data}
       pageCount={pageCount}
       // Render notion like filters
-      advancedFilter={true}
+      advancedFilter={false}
       // Render dynamic faceted filters
       filterableColumns={[
         {

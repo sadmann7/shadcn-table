@@ -42,6 +42,21 @@ export function DataTableToolbar<TData>({
     }
   }, [selectedOptions])
 
+  const options: DataTableFilterOption<TData>[] = React.useMemo(() => {
+    const searchableOptions = searchableColumns.map((column) => ({
+      label: String(column.id),
+      value: column.id,
+      items: [],
+    }))
+    const filterableOptions = filterableColumns.map((column) => ({
+      label: column.title,
+      value: column.id,
+      items: column.options,
+    }))
+
+    return [...searchableOptions, ...filterableOptions]
+  }, [filterableColumns, searchableColumns])
+
   return (
     <div className="w-full space-y-2.5 overflow-auto p-1">
       <div className="flex items-center justify-between space-x-2">
@@ -107,11 +122,14 @@ export function DataTableToolbar<TData>({
               </Button>
             ) : (
               <DataTableAdvancedFilter
-                searchableColumns={searchableColumns}
-                filterableColumns={filterableColumns}
+                options={options.filter(
+                  (option) =>
+                    !selectedOptions.some(
+                      (selectedOption) => selectedOption.value === option.value
+                    )
+                )}
                 selectedOptions={selectedOptions}
                 setSelectedOptions={setSelectedOptions}
-                removeSelected
               />
             )
           ) : null}
@@ -125,15 +143,15 @@ export function DataTableToolbar<TData>({
               key={String(selectedOption.value)}
               table={table}
               selectedOption={selectedOption}
+              options={options}
+              selectedOptions={selectedOptions}
               setSelectedOptions={setSelectedOptions}
             />
           ))}
           <DataTableAdvancedFilter
-            searchableColumns={searchableColumns}
-            filterableColumns={filterableColumns}
+            options={options}
             selectedOptions={selectedOptions}
             setSelectedOptions={setSelectedOptions}
-            removeSelected
           >
             <Button
               variant="outline"

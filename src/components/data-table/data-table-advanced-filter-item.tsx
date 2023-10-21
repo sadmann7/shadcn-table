@@ -22,11 +22,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import { DataTableAdvancedFilter } from "./data-table-advanced-filter"
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 
 interface DataTableAdvancedFilterItemProps<TData> {
   table: Table<TData>
   selectedOption: DataTableFilterOption<TData>
+  options: DataTableFilterOption<TData>[]
+  selectedOptions: DataTableFilterOption<TData>[]
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
@@ -35,6 +38,8 @@ interface DataTableAdvancedFilterItemProps<TData> {
 export function DataTableAdvancedFilterItem<TData>({
   table,
   selectedOption,
+  options,
+  selectedOptions,
   setSelectedOptions,
 }: DataTableAdvancedFilterItemProps<TData>) {
   const router = useRouter()
@@ -140,18 +145,19 @@ export function DataTableAdvancedFilterItem<TData>({
         </Button>
       </PopoverTrigger>
       {selectedOption.isAdvanced ? (
-        <PopoverContent className="w-80 space-y-1 text-xs" align="start">
+        <PopoverContent className="w-fit space-y-1 text-xs" align="start">
           <div className="flex items-center space-x-1">
-            <div className="flex flex-1 items-center space-x-1">
-              Where
-              <DynamicFilter
-                table={table}
-                selectedOption={selectedOption}
-                value={value}
-                setValue={setValue}
+            <div className="flex flex-1 items-center space-x-2">
+              <div>Where</div>
+              <DataTableAdvancedFilter
+                options={options}
+                selectedOptions={selectedOptions}
+                setSelectedOptions={setSelectedOptions}
+                buttonText={selectedOption.label}
+                singleMode={true}
               />
               <Select onValueChange={(value) => setFilterVariety(value)}>
-                <SelectTrigger className="h-auto w-fit truncate border-none px-2 py-0.5 hover:bg-muted/50">
+                <SelectTrigger className="h-8 w-full">
                   <SelectValue placeholder={filterVarieties[0]} />
                 </SelectTrigger>
                 <SelectContent>
@@ -164,6 +170,12 @@ export function DataTableAdvancedFilterItem<TData>({
                   </SelectGroup>
                 </SelectContent>
               </Select>
+              <DynamicFilter
+                table={table}
+                selectedOption={selectedOption}
+                value={value}
+                setValue={setValue}
+              />
             </div>
             <Button
               aria-label="Remove filter"
@@ -187,12 +199,6 @@ export function DataTableAdvancedFilterItem<TData>({
               <TrashIcon className="h-4 w-4" aria-hidden="true" />
             </Button>
           </div>
-          <DynamicFilter
-            table={table}
-            selectedOption={selectedOption}
-            value={value}
-            setValue={setValue}
-          />
         </PopoverContent>
       ) : (
         <PopoverContent className="w-60 space-y-1 text-xs" align="start">
