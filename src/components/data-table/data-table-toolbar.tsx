@@ -140,7 +140,7 @@ export function DataTableToolbar<TData>({
         <div className="flex items-center space-x-2">
           {selectedOptions.map((selectedOption) => (
             <DataTableAdvancedFilterItem
-              key={String(selectedOption.value)}
+              key={crypto.randomUUID()}
               table={table}
               selectedOption={selectedOption}
               options={options}

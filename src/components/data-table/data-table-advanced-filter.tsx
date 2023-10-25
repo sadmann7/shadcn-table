@@ -32,7 +32,7 @@ interface DataTableAdvancedFilterProps<TData> {
   >
   children?: React.ReactNode
   buttonText?: string
-  singleMode?: boolean
+  isSelectable?: boolean
 }
 
 export function DataTableAdvancedFilter<TData>({
@@ -41,7 +41,7 @@ export function DataTableAdvancedFilter<TData>({
   setSelectedOptions,
   children,
   buttonText = "Filter",
-  singleMode = false,
+  isSelectable = false,
 }: DataTableAdvancedFilterProps<TData>) {
   const [value, setValue] = React.useState("")
   const [open, setOpen] = React.useState(false)
@@ -58,7 +58,7 @@ export function DataTableAdvancedFilter<TData>({
             role="combobox"
             className="capitalize"
           >
-            {singleMode
+            {isSelectable
               ? selectedOption?.label || options[0]?.label
               : buttonText}
             <CaretSortIcon
@@ -81,7 +81,7 @@ export function DataTableAdvancedFilter<TData>({
                 onSelect={(currentValue) => {
                   setValue(currentValue === value ? "" : currentValue)
                   setOpen(false)
-                  singleMode
+                  isSelectable
                     ? setSelectedOption(option)
                     : setSelectedOptions((prev) => {
                         if (currentValue === value) {
@@ -106,7 +106,7 @@ export function DataTableAdvancedFilter<TData>({
               </CommandItem>
             ))}
           </CommandGroup>
-          {!singleMode && (
+          {!isSelectable && (
             <>
               <CommandSeparator />
               <CommandGroup>
@@ -116,8 +116,8 @@ export function DataTableAdvancedFilter<TData>({
                     setSelectedOptions([
                       ...selectedOptions,
                       {
-                        label: options[0]?.label ?? "",
-                        value: options[0]?.value ?? "",
+                        label: "1 rule" ?? "",
+                        value: "1 rule" ?? "",
                         items: [],
                         isAdvanced: true,
                       },
