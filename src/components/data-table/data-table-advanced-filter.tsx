@@ -30,8 +30,8 @@ interface DataTableAdvancedFilterProps<TData> {
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
-  advancedFilterMenuOpen: boolean
-  setAdvancedFilterMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
+  filterOpen: boolean
+  setFilterOpen: React.Dispatch<React.SetStateAction<boolean>>
   isSwitchable?: boolean
 }
 
@@ -40,8 +40,8 @@ export function DataTableAdvancedFilter<TData>({
   searchableColumns = [],
   selectedOptions,
   setSelectedOptions,
-  advancedFilterMenuOpen,
-  setAdvancedFilterMenuOpen,
+  filterOpen,
+  setFilterOpen,
   isSwitchable = false,
 }: DataTableAdvancedFilterProps<TData>) {
   const [value, setValue] = React.useState("")
@@ -63,10 +63,10 @@ export function DataTableAdvancedFilter<TData>({
 
   React.useEffect(() => {
     if (selectedOptions.length === 0) {
-      setAdvancedFilterMenuOpen(false)
+      setFilterOpen(false)
       setValue("")
     }
-  }, [selectedOptions, setAdvancedFilterMenuOpen])
+  }, [selectedOptions, setFilterOpen])
 
   return (
     <>
@@ -74,7 +74,7 @@ export function DataTableAdvancedFilter<TData>({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => setAdvancedFilterMenuOpen(!advancedFilterMenuOpen)}
+          onClick={() => setFilterOpen(!filterOpen)}
         >
           Filter
           <CaretSortIcon
@@ -85,7 +85,7 @@ export function DataTableAdvancedFilter<TData>({
       ) : (
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            {advancedFilterMenuOpen ? (
+            {filterOpen ? (
               options.filter(
                 (option) =>
                   !selectedOptions.find((item) => item.value === option.value)
@@ -129,10 +129,8 @@ export function DataTableAdvancedFilter<TData>({
                       onSelect={(currentValue) => {
                         setValue(currentValue === value ? "" : currentValue)
                         setOpen(false)
-                        setAdvancedFilterMenuOpen(
-                          selectedOptions.length > 0
-                            ? true
-                            : !advancedFilterMenuOpen
+                        setFilterOpen(
+                          selectedOptions.length > 0 ? true : !filterOpen
                         )
                         setSelectedOptions?.((prev) => {
                           if (currentValue === value) {

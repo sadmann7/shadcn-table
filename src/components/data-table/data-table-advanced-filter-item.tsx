@@ -30,8 +30,6 @@ interface DataTableAdvancedFilterItemProps<TData> {
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
-  advancedFilterMenuOpen: boolean
-  setAdvancedFilterMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export function DataTableAdvancedFilterItem<TData>({

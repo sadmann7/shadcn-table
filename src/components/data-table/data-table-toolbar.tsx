@@ -34,8 +34,7 @@ export function DataTableToolbar<TData>({
   const [selectedOptions, setSelectedOptions] = React.useState<
     DataTableFilterOption<TData>[]
   >([])
-  const [advancedFilterMenuOpen, setAdvancedFilterMenuOpen] =
-    React.useState(false)
+  const [filterOpen, setFilterOpen] = React.useState(false)
 
   return (
     <div className="w-full space-y-2.5 overflow-auto p-1">
@@ -93,15 +92,15 @@ export function DataTableToolbar<TData>({
               filterableColumns={filterableColumns}
               selectedOptions={selectedOptions}
               setSelectedOptions={setSelectedOptions}
-              advancedFilterMenuOpen={advancedFilterMenuOpen}
-              setAdvancedFilterMenuOpen={setAdvancedFilterMenuOpen}
+              filterOpen={filterOpen}
+              setFilterOpen={setFilterOpen}
               isSwitchable={selectedOptions.length > 0}
             />
           ) : null}
           <DataTableViewOptions table={table} />
         </div>
       </div>
-      {advancedFilter && advancedFilterMenuOpen ? (
+      {advancedFilter && filterOpen ? (
         <div className="flex items-center space-x-2">
           {selectedOptions.map((selectedOption) => (
             <DataTableAdvancedFilterItem
@@ -109,8 +108,6 @@ export function DataTableToolbar<TData>({
               table={table}
               selectedOption={selectedOption}
               setSelectedOptions={setSelectedOptions}
-              advancedFilterMenuOpen={advancedFilterMenuOpen}
-              setAdvancedFilterMenuOpen={setAdvancedFilterMenuOpen}
             />
           ))}
           <DataTableAdvancedFilter
@@ -118,8 +115,8 @@ export function DataTableToolbar<TData>({
             filterableColumns={filterableColumns}
             selectedOptions={selectedOptions}
             setSelectedOptions={setSelectedOptions}
-            advancedFilterMenuOpen={advancedFilterMenuOpen}
-            setAdvancedFilterMenuOpen={setAdvancedFilterMenuOpen}
+            filterOpen={filterOpen}
+            setFilterOpen={setFilterOpen}
             isSwitchable={false}
           />
         </div>
