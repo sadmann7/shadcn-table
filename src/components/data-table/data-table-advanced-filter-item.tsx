@@ -30,6 +30,8 @@ interface DataTableAdvancedFilterItemProps<TData> {
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
+  advancedFilterMenuOpen: boolean
+  setAdvancedFilterMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export function DataTableAdvancedFilterItem<TData>({
@@ -177,10 +179,9 @@ export function DataTableAdvancedFilterItem<TData>({
               )
             }}
           >
-            <TrashIcon className="h-4 w-4" aria-hidden="true" />
+            <TrashIcon className="h-4 w-4" aria-hidden />
           </Button>
         </div>
-
         {selectedOption.items.length > 0 ? (
           table.getColumn(
             selectedOption.value ? String(selectedOption.value) : ""

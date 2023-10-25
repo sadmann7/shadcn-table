@@ -6,7 +6,7 @@ import type {
   DataTableFilterOption,
   DataTableSearchableColumn,
 } from "@/types"
-import { CaretSortIcon, Cross2Icon, PlusIcon } from "@radix-ui/react-icons"
+import { Cross2Icon } from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
@@ -34,28 +34,8 @@ export function DataTableToolbar<TData>({
   const [selectedOptions, setSelectedOptions] = React.useState<
     DataTableFilterOption<TData>[]
   >([])
-  const [open, setOpen] = React.useState(false)
-
-  React.useEffect(() => {
-    if (selectedOptions.length > 0) {
-      setOpen(true)
-    }
-  }, [selectedOptions])
-
-  const options: DataTableFilterOption<TData>[] = React.useMemo(() => {
-    const searchableOptions = searchableColumns.map((column) => ({
-      label: String(column.id),
-      value: column.id,
-      items: [],
-    }))
-    const filterableOptions = filterableColumns.map((column) => ({
-      label: column.title,
-      value: column.id,
-      items: column.options,
-    }))
-
-    return [...searchableOptions, ...filterableOptions]
-  }, [filterableColumns, searchableColumns])
+  const [advancedFilterMenuOpen, setAdvancedFilterMenuOpen] =
+    React.useState(false)
 
   return (
     <div className="w-full space-y-2.5 overflow-auto p-1">
@@ -108,60 +88,40 @@ export function DataTableToolbar<TData>({
         </div>
         <div className="flex items-center space-x-2">
           {advancedFilter ? (
-            selectedOptions.length > 0 ? (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setOpen((prev) => !prev)}
-              >
-                Filter
-                <CaretSortIcon
-                  className="ml-2 h-4 w-4 opacity-50"
-                  aria-hidden="true"
-                />
-              </Button>
-            ) : (
-              <DataTableAdvancedFilter
-                options={options.filter(
-                  (option) =>
-                    !selectedOptions.some(
-                      (selectedOption) => selectedOption.value === option.value
-                    )
-                )}
-                setSelectedOptions={setSelectedOptions}
-              />
-            )
+            <DataTableAdvancedFilter
+              searchableColumns={searchableColumns}
+              filterableColumns={filterableColumns}
+              selectedOptions={selectedOptions}
+              setSelectedOptions={setSelectedOptions}
+              advancedFilterMenuOpen={advancedFilterMenuOpen}
+              setAdvancedFilterMenuOpen={setAdvancedFilterMenuOpen}
+              isSwitchable={selectedOptions.length > 0}
+            />
           ) : null}
           <DataTableViewOptions table={table} />
         </div>
       </div>
-      {advancedFilter && open ? (
+      {advancedFilter && advancedFilterMenuOpen ? (
         <div className="flex items-center space-x-2">
           {selectedOptions.map((selectedOption) => (
             <DataTableAdvancedFilterItem
-              key={crypto.randomUUID()}
+              key={String(selectedOption.value)}
               table={table}
               selectedOption={selectedOption}
               setSelectedOptions={setSelectedOptions}
+              advancedFilterMenuOpen={advancedFilterMenuOpen}
+              setAdvancedFilterMenuOpen={setAdvancedFilterMenuOpen}
             />
           ))}
           <DataTableAdvancedFilter
-            options={options}
+            searchableColumns={searchableColumns}
+            filterableColumns={filterableColumns}
+            selectedOptions={selectedOptions}
             setSelectedOptions={setSelectedOptions}
-          >
-            <Button
-              variant="outline"
-              size="sm"
-              role="combobox"
-              className="rounded-full"
-            >
-              <PlusIcon
-                className="mr-2 h-4 w-4 opacity-50"
-                aria-hidden="true"
-              />
-              Add filter
-            </Button>
-          </DataTableAdvancedFilter>
+            advancedFilterMenuOpen={advancedFilterMenuOpen}
+            setAdvancedFilterMenuOpen={setAdvancedFilterMenuOpen}
+            isSwitchable={false}
+          />
         </div>
       ) : null}
     </div>

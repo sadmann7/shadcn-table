@@ -1,9 +1,14 @@
 "use client"
 
 import * as React from "react"
-import type { DataTableFilterOption } from "@/types"
-import { CaretSortIcon, ChevronDownIcon, TextIcon } from "@radix-ui/react-icons"
+import type {
+  DataTableFilterableColumn,
+  DataTableFilterOption,
+  DataTableSearchableColumn,
+} from "@/types"
+import { CaretSortIcon, CheckIcon, PlusIcon } from "@radix-ui/react-icons"
 
+import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Command,
@@ -19,77 +24,142 @@ import {
 } from "@/components/ui/popover"
 
 interface DataTableAdvancedFilterProps<TData> {
-  options: DataTableFilterOption<TData>[]
+  filterableColumns?: DataTableFilterableColumn<TData>[]
+  searchableColumns?: DataTableSearchableColumn<TData>[]
+  selectedOptions: DataTableFilterOption<TData>[]
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
-  children?: React.ReactNode
-  buttonText?: string
+  advancedFilterMenuOpen: boolean
+  setAdvancedFilterMenuOpen: React.Dispatch<React.SetStateAction<boolean>>
+  isSwitchable?: boolean
 }
 
 export function DataTableAdvancedFilter<TData>({
-  options,
+  filterableColumns = [],
+  searchableColumns = [],
+  selectedOptions,
   setSelectedOptions,
-  children,
-  buttonText = "Filter",
+  advancedFilterMenuOpen,
+  setAdvancedFilterMenuOpen,
+  isSwitchable = false,
 }: DataTableAdvancedFilterProps<TData>) {
   const [value, setValue] = React.useState("")
   const [open, setOpen] = React.useState(false)
 
+  const options: DataTableFilterOption<TData>[] = React.useMemo(() => {
+    const searchableOptions = searchableColumns.map((column) => ({
+      label: String(column.id),
+      value: column.id,
+      items: [],
+    }))
+    const filterableOptions = filterableColumns.map((column) => ({
+      label: column.title,
+      value: column.id,
+      items: column.options,
+    }))
+    return [...searchableOptions, ...filterableOptions]
+  }, [searchableColumns, filterableColumns])
+
+  React.useEffect(() => {
+    if (selectedOptions.length === 0) {
+      setAdvancedFilterMenuOpen(false)
+      setValue("")
+    }
+  }, [selectedOptions, setAdvancedFilterMenuOpen])
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        {children ?? (
-          <Button
-            variant="outline"
-            size="sm"
-            role="combobox"
-            className="capitalize"
-          >
-            {buttonText}
-            <CaretSortIcon
-              className="ml-2 h-4 w-4 shrink-0 opacity-50"
-              aria-hidden="true"
-            />
-          </Button>
-        )}
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0" align="end">
-        <Command>
-          <CommandInput placeholder="Filter by..." />
-          <CommandEmpty>No item found.</CommandEmpty>
-          <CommandGroup>
-            {options.map((option) => (
-              <CommandItem
-                key={String(option.value)}
-                className="capitalize"
-                value={String(option.value)}
-                onSelect={(currentValue) => {
-                  setValue(currentValue === value ? "" : currentValue)
-                  setOpen(false)
-                  setSelectedOptions((prev) => {
-                    if (currentValue === value) {
-                      return prev.filter((item) => item.value !== option.value)
-                    } else {
-                      return [...prev, option]
-                    }
-                  })
-                }}
-              >
-                {option.items.length > 0 ? (
-                  <ChevronDownIcon
-                    className="mr-2 h-4 w-4"
+    <>
+      {isSwitchable ? (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setAdvancedFilterMenuOpen(!advancedFilterMenuOpen)}
+        >
+          Filter
+          <CaretSortIcon
+            className="ml-2 h-4 w-4 opacity-50"
+            aria-hidden="true"
+          />
+        </Button>
+      ) : (
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            {advancedFilterMenuOpen ? (
+              options.filter(
+                (option) =>
+                  !selectedOptions.find((item) => item.value === option.value)
+              ).length > 0 ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  role="combobox"
+                  className="rounded-full"
+                >
+                  <PlusIcon
+                    className="mr-2 h-4 w-4 opacity-50"
                     aria-hidden="true"
                   />
-                ) : (
-                  <TextIcon className="mr-2 h-4 w-4" aria-hidden="true" />
-                )}
-                {option.label}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </Command>
-      </PopoverContent>
-    </Popover>
+                  Add filter
+                </Button>
+              ) : null
+            ) : (
+              <Button variant="outline" size="sm" role="combobox">
+                Filter
+                <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            )}
+          </PopoverTrigger>
+          <PopoverContent className="w-[200px] p-0" align="end">
+            <Command>
+              <CommandInput placeholder="Filter by..." />
+              <CommandEmpty>No item found.</CommandEmpty>
+              <CommandGroup>
+                {options
+                  .filter(
+                    (option) =>
+                      !selectedOptions.find(
+                        (item) => item.value === option.value
+                      )
+                  )
+                  .map((option) => (
+                    <CommandItem
+                      key={String(option.value)}
+                      className="capitalize"
+                      onSelect={(currentValue) => {
+                        setValue(currentValue === value ? "" : currentValue)
+                        setOpen(false)
+                        setAdvancedFilterMenuOpen(
+                          selectedOptions.length > 0
+                            ? true
+                            : !advancedFilterMenuOpen
+                        )
+                        setSelectedOptions?.((prev) => {
+                          if (currentValue === value) {
+                            return prev.filter(
+                              (item) => item.value !== option.value
+                            )
+                          } else {
+                            return [...prev, option]
+                          }
+                        })
+                      }}
+                    >
+                      {option.label}
+                      <CheckIcon
+                        className={cn(
+                          "ml-auto h-4 w-4",
+                          value === option.value ? "opacity-100" : "opacity-0"
+                        )}
+                        aria-hidden="true"
+                      />
+                    </CommandItem>
+                  ))}
+              </CommandGroup>
+            </Command>
+          </PopoverContent>
+        </Popover>
+      )}
+    </>
   )
 }
