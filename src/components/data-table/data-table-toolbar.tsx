@@ -128,7 +128,6 @@ export function DataTableToolbar<TData>({
                       (selectedOption) => selectedOption.value === option.value
                     )
                 )}
-                selectedOptions={selectedOptions}
                 setSelectedOptions={setSelectedOptions}
               />
             )
@@ -143,14 +142,11 @@ export function DataTableToolbar<TData>({
               key={crypto.randomUUID()}
               table={table}
               selectedOption={selectedOption}
-              options={options}
-              selectedOptions={selectedOptions}
               setSelectedOptions={setSelectedOptions}
             />
           ))}
           <DataTableAdvancedFilter
             options={options}
-            selectedOptions={selectedOptions}
             setSelectedOptions={setSelectedOptions}
           >
             <Button

@@ -2,12 +2,7 @@
 
 import * as React from "react"
 import type { DataTableFilterOption } from "@/types"
-import {
-  CaretSortIcon,
-  ChevronDownIcon,
-  PlusIcon,
-  TextIcon,
-} from "@radix-ui/react-icons"
+import { CaretSortIcon, ChevronDownIcon, TextIcon } from "@radix-ui/react-icons"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -16,7 +11,6 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
-  CommandSeparator,
 } from "@/components/ui/command"
 import {
   Popover,
@@ -26,27 +20,21 @@ import {
 
 interface DataTableAdvancedFilterProps<TData> {
   options: DataTableFilterOption<TData>[]
-  selectedOptions: DataTableFilterOption<TData>[]
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
   children?: React.ReactNode
   buttonText?: string
-  isSelectable?: boolean
 }
 
 export function DataTableAdvancedFilter<TData>({
   options,
-  selectedOptions,
   setSelectedOptions,
   children,
   buttonText = "Filter",
-  isSelectable = false,
 }: DataTableAdvancedFilterProps<TData>) {
   const [value, setValue] = React.useState("")
   const [open, setOpen] = React.useState(false)
-  const [selectedOption, setSelectedOption] =
-    React.useState<DataTableFilterOption<TData>>()
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -58,9 +46,7 @@ export function DataTableAdvancedFilter<TData>({
             role="combobox"
             className="capitalize"
           >
-            {isSelectable
-              ? selectedOption?.label || options[0]?.label
-              : buttonText}
+            {buttonText}
             <CaretSortIcon
               className="ml-2 h-4 w-4 shrink-0 opacity-50"
               aria-hidden="true"
@@ -81,17 +67,13 @@ export function DataTableAdvancedFilter<TData>({
                 onSelect={(currentValue) => {
                   setValue(currentValue === value ? "" : currentValue)
                   setOpen(false)
-                  isSelectable
-                    ? setSelectedOption(option)
-                    : setSelectedOptions((prev) => {
-                        if (currentValue === value) {
-                          return prev.filter(
-                            (item) => item.value !== option.value
-                          )
-                        } else {
-                          return [...prev, option]
-                        }
-                      })
+                  setSelectedOptions((prev) => {
+                    if (currentValue === value) {
+                      return prev.filter((item) => item.value !== option.value)
+                    } else {
+                      return [...prev, option]
+                    }
+                  })
                 }}
               >
                 {option.items.length > 0 ? (
@@ -106,30 +88,6 @@ export function DataTableAdvancedFilter<TData>({
               </CommandItem>
             ))}
           </CommandGroup>
-          {!isSelectable && (
-            <>
-              <CommandSeparator />
-              <CommandGroup>
-                <CommandItem
-                  onSelect={() => {
-                    setOpen(false)
-                    setSelectedOptions([
-                      ...selectedOptions,
-                      {
-                        label: "1 rule" ?? "",
-                        value: "1 rule" ?? "",
-                        items: [],
-                        isAdvanced: true,
-                      },
-                    ])
-                  }}
-                >
-                  <PlusIcon className="mr-2 h-4 w-4" aria-hidden="true" />
-                  Advanced filter
-                </CommandItem>
-              </CommandGroup>
-            </>
-          )}
         </Command>
       </PopoverContent>
     </Popover>

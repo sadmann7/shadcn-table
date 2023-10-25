@@ -6,7 +6,7 @@ export type Option = {
 
 export interface DataTableFilterOption<TData> {
   label: string
-  value: keyof TData | string
+  value: keyof TData
   items: Option[]
   isAdvanced?: boolean
 }
