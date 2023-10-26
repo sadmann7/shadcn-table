@@ -1,5 +1,6 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import type { Option } from "@/types"
 import {
   flexRender,
   getCoreRowModel,
@@ -26,7 +27,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { type FilterOption } from "./data-table-faceted-filter"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 
@@ -37,7 +37,7 @@ interface MillionDataTableProps<TData, TValue> {
   filterableColumns?: {
     id: keyof TData
     title: string
-    options: FilterOption[]
+    options: Option[]
   }[]
   searchableColumns?: {
     id: keyof TData

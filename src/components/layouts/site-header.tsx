@@ -2,10 +2,11 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { ShadowInnerIcon } from "@radix-ui/react-icons"
+import { GitHubLogoIcon, VercelLogoIcon } from "@radix-ui/react-icons"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/layouts/theme-toggle"
 
 export function SiteHeader() {
@@ -14,8 +15,8 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="container flex h-16 items-center space-x-4">
-        <Link href="/" className="mr-2 flex items-center space-x-2 md:mr-6">
-          <ShadowInnerIcon className="h-4 w-4" aria-hidden="true" />
+        <Link href="/" className="mr-2 flex items-center md:mr-6 md:space-x-2">
+          <VercelLogoIcon className="h-4 w-4" aria-hidden="true" />
           <span className="hidden font-bold md:inline-block">
             {siteConfig.name}
           </span>
@@ -36,7 +37,23 @@ export function SiteHeader() {
             </Link>
           ))}
         </nav>
-        <ThemeToggle />
+        <div className="flex items-center">
+          <Link
+            aria-label="GitHub repo"
+            href={siteConfig.links.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              buttonVariants({
+                variant: "ghost",
+                size: "icon",
+              })
+            )}
+          >
+            <GitHubLogoIcon className="h-4 w-4" aria-hidden="true" />
+          </Link>
+          <ThemeToggle />
+        </div>
       </div>
     </header>
   )

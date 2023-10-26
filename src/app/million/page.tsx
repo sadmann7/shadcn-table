@@ -3,7 +3,7 @@ import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import { and, asc, desc, inArray, like, sql } from "drizzle-orm"
 
-import { Shell } from "@/components/shells/shell"
+import { Shell } from "@/components/shell"
 
 export const metadata: Metadata = {
   title: "Million.js",
@@ -109,7 +109,7 @@ export default async function MillionPage({ searchParams }: MillionPageProps) {
 
   return (
     <Shell>
-      <div className="flex h-full min-h-screen w-full flex-col items-center justify-center">
+      <div className="flex h-full min-h-screen w-full flex-col items-center justify-center space-y-1.5">
         <h1 className="text-center text-4xl font-bold">Under Construction</h1>
         <p className="text-center text-base text-muted-foreground">
           This page is under construction. Please check back later.
