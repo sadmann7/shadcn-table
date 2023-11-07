@@ -1,4 +1,11 @@
-import { mysqlEnum, mysqlTable, serial, varchar } from "drizzle-orm/mysql-core"
+import {
+  mysqlEnum,
+  mysqlTableCreator,
+  serial,
+  varchar,
+} from "drizzle-orm/mysql-core"
+
+const mysqlTable = mysqlTableCreator((name) => `shadcn-table_${name}`)
 
 export const tasks = mysqlTable("tasks", {
   id: serial("id").primaryKey(),

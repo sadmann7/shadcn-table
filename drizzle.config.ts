@@ -1,7 +1,4 @@
-import * as dotenv from "dotenv"
 import type { Config } from "drizzle-kit"
-
-dotenv.config()
 
 export default {
   schema: "./src/db/schema.ts",
@@ -10,4 +7,5 @@ export default {
   dbCredentials: {
     connectionString: process.env.DATABASE_URL ?? "",
   },
+  tablesFilter: ["shadcn-table_*"],
 } satisfies Config

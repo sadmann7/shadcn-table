@@ -18,18 +18,17 @@ import {
   SelectGroup,
   SelectItem,
 } from "@/components/ui/select"
-import {
-  updateTaskPriorityAction,
-  updateTaskStatusAction,
-} from "@/app/_actions/task"
+import { updateTaskPriority, updateTaskStatus } from "@/app/_actions/task"
 
 interface DataTableFloatingBarProps<TData>
   extends React.HTMLAttributes<HTMLElement> {
   table: Table<TData>
+  deleteRowsAction?: React.MouseEventHandler<HTMLButtonElement>
 }
 
 export function DataTableFloatingBar<TData>({
   table,
+  deleteRowsAction,
   className,
   ...props
 }: DataTableFloatingBarProps<TData>) {
@@ -40,7 +39,7 @@ export function DataTableFloatingBar<TData>({
       .rows as unknown as { original: Task }[]
 
     selectedRows.map(async (row) => {
-      await updateTaskStatusAction({
+      await updateTaskStatus({
         id: row.original.id,
         status: status as Task["status"],
       })
@@ -52,7 +51,7 @@ export function DataTableFloatingBar<TData>({
       .rows as unknown as { original: Task }[]
 
     selectedRows.map(async (row) => {
-      await updateTaskPriorityAction({
+      await updateTaskPriority({
         id: row.original.id,
         priority: priority as Task["priority"],
       })
@@ -69,6 +68,7 @@ export function DataTableFloatingBar<TData>({
     >
       <Button
         aria-label="Clear selection"
+        title="Clear"
         className="h-auto bg-transparent p-1 text-white hover:bg-zinc-700"
         onClick={() => table.toggleAllRowsSelected(false)}
       >
@@ -79,6 +79,7 @@ export function DataTableFloatingBar<TData>({
         <SelectTrigger asChild>
           <Button
             aria-label="Delete selected rows"
+            title="Status"
             className="h-auto bg-transparent p-1 text-white hover:bg-zinc-700"
           >
             <CheckCircledIcon className="h-4 w-4" aria-hidden="true" />
@@ -98,6 +99,7 @@ export function DataTableFloatingBar<TData>({
         <SelectTrigger asChild>
           <Button
             aria-label="Delete selected rows"
+            title="Priority"
             className="h-auto bg-transparent p-1 text-white hover:bg-zinc-700"
           >
             <ArrowUpIcon className="h-4 w-4" aria-hidden="true" />
@@ -119,11 +121,11 @@ export function DataTableFloatingBar<TData>({
       </Select>
       <Button
         aria-label="Change status of selected rows"
+        title="Delete"
         className="h-auto bg-transparent p-1 text-white hover:bg-zinc-700"
-        onClick={() => {
-          console.log(
-            table.getFilteredSelectedRowModel().rows.map((row) => row.id)
-          )
+        onClick={(event) => {
+          table.toggleAllPageRowsSelected(false)
+          deleteRowsAction?.(event)
         }}
       >
         <TrashIcon className="h-4 w-4" aria-hidden="true" />

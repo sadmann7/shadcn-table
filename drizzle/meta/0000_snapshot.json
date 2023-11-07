@@ -1,65 +1,75 @@
 {
   "version": "5",
-  "dialect": "pg",
-  "id": "ca108565-5b04-4cc9-a86c-6e3127824765",
+  "dialect": "mysql",
+  "id": "685dc4bc-d853-441c-a435-f70b0423cbef",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "tasks": {
-      "name": "tasks",
-      "schema": "",
+    "shadcn-table_tasks": {
+      "name": "shadcn-table_tasks",
       "columns": {
         "id": {
           "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         },
         "title": {
           "name": "title",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "status": {
           "name": "status",
-          "type": "status",
+          "type": "enum('todo','in-progress','done','canceled')",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'todo'"
         },
         "label": {
           "name": "label",
-          "type": "varchar(255)",
+          "type": "enum('bug','feature','enhancement','documentation')",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'bug'"
         },
         "priority": {
           "name": "priority",
-          "type": "priority",
+          "type": "enum('low','medium','high')",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'low'"
         }
       },
       "indexes": {},
       "foreignKeys": {},
-      "compositePrimaryKeys": {}
-    }
-  },
-  "enums": {
-    "priority": {
-      "name": "priority",
-      "values": {
-        "low": "low",
-        "medium": "medium",
-        "high": "high"
-      }
-    },
-    "status": {
-      "name": "status",
-      "values": {
-        "todo": "todo",
-        "in-progress": "in-progress",
-        "done": "done",
-        "canceled": "canceled"
+      "compositePrimaryKeys": {
+        "shadcn-table_tasks_id": {
+          "name": "shadcn-table_tasks_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "shadcn-table_tasks_code_unique": {
+          "name": "shadcn-table_tasks_code_unique",
+          "columns": [
+            "code"
+          ]
+        }
       }
     }
   },

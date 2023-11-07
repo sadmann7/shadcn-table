@@ -14,7 +14,9 @@ import {
   StopwatchIcon,
 } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
+import { toast } from "sonner"
 
+import { catchError } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -33,7 +35,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { MillionDataTable } from "@/components/data-table/million/million-data-table"
-import { updateTaskLabelAction } from "@/app/_actions/task"
+import { deleteTask, updateTaskLabel } from "@/app/_actions/task"
 
 const labels: {
   value: Task["label"]
@@ -241,7 +243,7 @@ export function MillionTasksTableShell({
                     value={row.original.label}
                     onValueChange={(value) => {
                       startTransition(async () => {
-                        await updateTaskLabelAction({
+                        await updateTaskLabel({
                           id: row.original.id,
                           label: value as Task["label"],
                         })
@@ -261,7 +263,19 @@ export function MillionTasksTableShell({
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  startTransition(() => {
+                    row.toggleSelected(false)
+
+                    toast.promise(deleteTask(row.original.id), {
+                      loading: "Deleting...",
+                      success: () => "Task deleted successfully.",
+                      error: (err: unknown) => catchError(err),
+                    })
+                  })
+                }}
+              >
                 Delete
                 <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
               </DropdownMenuItem>

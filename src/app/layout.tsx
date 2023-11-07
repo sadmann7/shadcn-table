@@ -9,6 +9,8 @@ import "@/styles/globals.css"
 
 import { type Metadata } from "next"
 
+import { Toaster } from "@/components/ui/toaster"
+
 export const metadata: Metadata = {
   title: siteConfig.name,
   description: siteConfig.description,
@@ -36,6 +38,7 @@ export default function RootLayout({
           </div>
           <TailwindIndicator />
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   )

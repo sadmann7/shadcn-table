@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/table"
 
 import { DataTableAdvancedToolbar } from "./advanced/data-table-advanced-toolbar"
+import { DataTableFloatingBar } from "./data-table-floating-bar"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 
@@ -41,6 +42,8 @@ interface DataTableProps<TData, TValue> {
   filterableColumns?: DataTableFilterableColumn<TData>[]
   searchableColumns?: DataTableSearchableColumn<TData>[]
   advancedFilter?: boolean
+  floatingBar?: boolean
+  deleteRowsAction?: React.MouseEventHandler<HTMLButtonElement>
 }
 
 export function DataTable<TData, TValue>({
@@ -50,6 +53,8 @@ export function DataTable<TData, TValue>({
   filterableColumns = [],
   searchableColumns = [],
   advancedFilter = false,
+  floatingBar = false,
+  deleteRowsAction,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -314,7 +319,15 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      <div className="space-y-2.5">
+        <DataTablePagination table={table} />
+        {floatingBar ? (
+          <DataTableFloatingBar
+            table={table}
+            deleteRowsAction={deleteRowsAction}
+          />
+        ) : null}
+      </div>
     </div>
   )
 }

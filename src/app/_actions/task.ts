@@ -13,12 +13,18 @@ import type {
   updateTaskStatusSchema,
 } from "@/lib/validations/task"
 
-export async function seedTasksAction() {
+export async function generateTasks({
+  count = 100,
+  deleteAll = true,
+}: {
+  count?: number
+  deleteAll?: boolean
+}) {
   const allTasks: Task[] = []
 
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < count; i++) {
     allTasks.push({
-      id: faker.number.int({ min: 1000, max: 9999 }),
+      id: i + faker.number.int({ min: 100000, max: 999999 }),
       code: `TASK-${faker.number.int({ min: 1000, max: 9999 })}`,
       title: faker.hacker
         .phrase()
@@ -35,10 +41,14 @@ export async function seedTasksAction() {
     })
   }
 
+  deleteAll && (await db.delete(tasks))
+
+  console.log("📝 Inserting tasks", allTasks.length)
+
   await db.insert(tasks).values(allTasks)
 }
 
-export async function updateTaskLabelAction({
+export async function updateTaskLabel({
   id,
   label,
 }: z.infer<typeof updateTaskLabelSchema>) {
@@ -47,7 +57,7 @@ export async function updateTaskLabelAction({
   revalidatePath("/")
 }
 
-export async function updateTaskStatusAction({
+export async function updateTaskStatus({
   id,
   status,
 }: z.infer<typeof updateTaskStatusSchema>) {
@@ -58,13 +68,22 @@ export async function updateTaskStatusAction({
   revalidatePath("/")
 }
 
-export async function updateTaskPriorityAction({
+export async function updateTaskPriority({
   id,
   priority,
 }: z.infer<typeof updateTaskPrioritySchema>) {
   console.log("updatePriorityAction", id, priority)
 
   await db.update(tasks).set({ priority }).where(eq(tasks.id, id))
+
+  revalidatePath("/")
+}
+
+export async function deleteTask(id: number) {
+  await db.delete(tasks).where(eq(tasks.id, id))
+
+  // Create a new task for the deleted one
+  await generateTasks({ count: 1, deleteAll: false })
 
   revalidatePath("/")
 }

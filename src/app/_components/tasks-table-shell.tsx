@@ -14,7 +14,9 @@ import {
   StopwatchIcon,
 } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
+import { toast } from "sonner"
 
+import { catchError } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -33,7 +35,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import { updateTaskLabelAction } from "@/app/_actions/task"
+import { deleteTask, updateTaskLabel } from "@/app/_actions/task"
 
 const labels: {
   value: Task["label"]
@@ -60,6 +62,7 @@ interface TasksTableShellProps {
 
 export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
   const [isPending, startTransition] = React.useTransition()
+  const [selectedRowIds, setSelectedRowIds] = React.useState<number[]>([])
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<Task, unknown>[]>(
@@ -69,9 +72,12 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
         header: ({ table }) => (
           <Checkbox
             checked={table.getIsAllPageRowsSelected()}
-            onCheckedChange={(value) =>
+            onCheckedChange={(value) => {
               table.toggleAllPageRowsSelected(!!value)
-            }
+              setSelectedRowIds((prev) =>
+                prev.length === data.length ? [] : data.map((row) => row.id)
+              )
+            }}
             aria-label="Select all"
             className="translate-y-[2px]"
           />
@@ -79,7 +85,14 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
         cell: ({ row }) => (
           <Checkbox
             checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            onCheckedChange={(value) => {
+              row.toggleSelected(!!value)
+              setSelectedRowIds((prev) =>
+                value
+                  ? [...prev, row.original.id]
+                  : prev.filter((id) => id !== row.original.id)
+              )
+            }}
             aria-label="Select row"
             className="translate-y-[2px]"
           />
@@ -238,7 +251,7 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
                     value={row.original.label}
                     onValueChange={(value) => {
                       startTransition(async () => {
-                        await updateTaskLabelAction({
+                        await updateTaskLabel({
                           id: row.original.id,
                           label: value as Task["label"],
                         })
@@ -258,7 +271,19 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  startTransition(() => {
+                    row.toggleSelected(false)
+
+                    toast.promise(deleteTask(row.original.id), {
+                      loading: "Deleting...",
+                      success: () => "Task deleted successfully.",
+                      error: (err: unknown) => catchError(err),
+                    })
+                  })
+                }}
+              >
                 Delete
                 <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
               </DropdownMenuItem>
@@ -267,8 +292,22 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
         ),
       },
     ],
-    [isPending]
+    [data, isPending]
   )
+
+  function deleteSelectedRows() {
+    toast.promise(Promise.all(selectedRowIds.map((id) => deleteTask(id))), {
+      loading: "Deleting...",
+      success: () => {
+        setSelectedRowIds([])
+        return "Tasks deleted successfully."
+      },
+      error: (err: unknown) => {
+        setSelectedRowIds([])
+        return catchError(err)
+      },
+    })
+  }
 
   return (
     <DataTable
@@ -276,14 +315,14 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
       data={data}
       pageCount={pageCount}
       // Render notion like filters
-      advancedFilter={true}
+      advancedFilter={false}
       // Render dynamic faceted filters
       filterableColumns={[
         {
           id: "status",
           title: "Status",
           options: tasks.status.enumValues.map((status) => ({
-            label: status[0]!.toUpperCase() + status.slice(1),
+            label: status[0]?.toUpperCase() + status.slice(1),
             value: status,
           })),
         },
@@ -291,7 +330,7 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
           id: "priority",
           title: "Priority",
           options: tasks.priority.enumValues.map((priority) => ({
-            label: priority[0]!.toUpperCase() + priority.slice(1),
+            label: priority[0]?.toUpperCase() + priority.slice(1),
             value: priority,
           })),
         },
@@ -303,6 +342,10 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
           title: "titles",
         },
       ]}
+      // Render floating filters at the bottom of the table on column selection
+      floatingBar={true}
+      // Delete rows action
+      deleteRowsAction={deleteSelectedRows}
     />
   )
 }
