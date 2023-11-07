@@ -1,6 +1,6 @@
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
-import { and, asc, desc, inArray, sql } from "drizzle-orm"
+import { and, asc, desc, inArray, or, sql } from "drizzle-orm"
 
 import { filterColumn } from "@/lib/utils"
 import { searchParamsSchema } from "@/lib/validations/params"
@@ -16,7 +16,7 @@ interface IndexPageProps {
 
 export default async function IndexPage({ searchParams }: IndexPageProps) {
   // Parse search params using zod schema
-  const { page, per_page, sort, title, status, priority } =
+  const { page, per_page, sort, title, status, priority, operator } =
     searchParamsSchema.parse(searchParams)
 
   // Fallback page for invalid page numbers
@@ -48,21 +48,37 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
       .limit(limit)
       .offset(offset)
       .where(
-        and(
-          // Filter tasks by title
-          title
-            ? filterColumn({
-                column: tasks.title,
-                value: title,
-              })
-            : undefined,
-          // Filter tasks by status
-          statuses.length > 0 ? inArray(tasks.status, statuses) : undefined,
-          // Filter tasks by priority
-          priorities.length > 0
-            ? inArray(tasks.priority, priorities)
-            : undefined
-        )
+        !operator || operator === "and"
+          ? and(
+              // Filter tasks by title
+              title
+                ? filterColumn({
+                    column: tasks.title,
+                    value: title,
+                  })
+                : undefined,
+              // Filter tasks by status
+              statuses.length > 0 ? inArray(tasks.status, statuses) : undefined,
+              // Filter tasks by priority
+              priorities.length > 0
+                ? inArray(tasks.priority, priorities)
+                : undefined
+            )
+          : or(
+              // Filter tasks by title
+              title
+                ? filterColumn({
+                    column: tasks.title,
+                    value: title,
+                  })
+                : undefined,
+              // Filter tasks by status
+              statuses.length > 0 ? inArray(tasks.status, statuses) : undefined,
+              // Filter tasks by priority
+              priorities.length > 0
+                ? inArray(tasks.priority, priorities)
+                : undefined
+            )
       )
       .orderBy(
         column && column in tasks
@@ -78,21 +94,37 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
       })
       .from(tasks)
       .where(
-        and(
-          and(
-            // The task count should also be filtered by the same filters as the tasks to get the correct total count
-            title
-              ? filterColumn({
-                  column: tasks.title,
-                  value: title,
-                })
-              : undefined,
-            statuses.length > 0 ? inArray(tasks.status, statuses) : undefined,
-            priorities.length > 0
-              ? inArray(tasks.priority, priorities)
-              : undefined
-          )
-        )
+        !operator || operator === "and"
+          ? and(
+              // Filter tasks by title
+              title
+                ? filterColumn({
+                    column: tasks.title,
+                    value: title,
+                  })
+                : undefined,
+              // Filter tasks by status
+              statuses.length > 0 ? inArray(tasks.status, statuses) : undefined,
+              // Filter tasks by priority
+              priorities.length > 0
+                ? inArray(tasks.priority, priorities)
+                : undefined
+            )
+          : or(
+              // Filter tasks by title
+              title
+                ? filterColumn({
+                    column: tasks.title,
+                    value: title,
+                  })
+                : undefined,
+              // Filter tasks by status
+              statuses.length > 0 ? inArray(tasks.status, statuses) : undefined,
+              // Filter tasks by priority
+              priorities.length > 0
+                ? inArray(tasks.priority, priorities)
+                : undefined
+            )
       )
 
     return {

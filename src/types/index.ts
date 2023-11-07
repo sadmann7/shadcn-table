@@ -5,9 +5,11 @@ export type Option = {
 }
 
 export interface DataTableFilterOption<TData> {
+  id?: string
   label: string
-  value: keyof TData
+  value: keyof TData | string
   items: Option[]
+  isMulti?: boolean
 }
 
 export interface DataTableSearchableColumn<TData> {

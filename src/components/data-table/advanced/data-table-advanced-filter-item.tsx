@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { DataTableFacetedFilter } from "./data-table-faceted-filter"
+import { DataTableFacetedFilter } from "../data-table-faceted-filter"
 
 interface DataTableAdvancedFilterItemProps<TData> {
   table: Table<TData>
@@ -104,9 +104,8 @@ export function DataTableAdvancedFilterItem<TData>({
         }
       )
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debounceValue, filterVariety])
+  }, [debounceValue, filterVariety, selectedOption.value])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -177,7 +176,7 @@ export function DataTableAdvancedFilterItem<TData>({
               )
             }}
           >
-            <TrashIcon className="h-4 w-4" aria-hidden />
+            <TrashIcon className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
         {selectedOption.items.length > 0 ? (

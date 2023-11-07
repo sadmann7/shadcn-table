@@ -27,8 +27,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { DataTablePagination } from "./data-table-pagination"
-import { DataTableToolbar } from "./data-table-toolbar"
+import { DataTablePagination } from "../data-table-pagination"
+import { DataTableToolbar } from "../data-table-toolbar"
 
 interface MillionDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]

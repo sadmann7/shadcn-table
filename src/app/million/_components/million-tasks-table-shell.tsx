@@ -32,7 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import { MillionDataTable } from "@/components/data-table/million-data-table"
+import { MillionDataTable } from "@/components/data-table/million/million-data-table"
 import { updateTaskLabelAction } from "@/app/_actions/task"
 
 const labels: {

@@ -29,8 +29,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { DataTablePagination } from "@/components/data-table/data-table-pagination"
-import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
+
+import { DataTableAdvancedToolbar } from "./advanced/data-table-advanced-toolbar"
+import { DataTablePagination } from "./data-table-pagination"
+import { DataTableToolbar } from "./data-table-toolbar"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -249,12 +251,19 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full space-y-2.5 overflow-auto">
-      <DataTableToolbar
-        table={table}
-        filterableColumns={filterableColumns}
-        searchableColumns={searchableColumns}
-        advancedFilter={advancedFilter}
-      />
+      {advancedFilter ? (
+        <DataTableAdvancedToolbar
+          table={table}
+          filterableColumns={filterableColumns}
+          searchableColumns={searchableColumns}
+        />
+      ) : (
+        <DataTableToolbar
+          table={table}
+          filterableColumns={filterableColumns}
+          searchableColumns={searchableColumns}
+        />
+      )}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
