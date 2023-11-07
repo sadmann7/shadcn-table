@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "5c5294b5-d3a6-43cf-a5bf-107a380aaa72",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "4da9a883-4361-401e-80f7-d3f49a7e1e5d",
+  "prevId": "150d08a3-6460-4bd0-914d-bdae40113a46",
   "tables": {
     "shadcn-table_tasks": {
       "name": "shadcn-table_tasks",

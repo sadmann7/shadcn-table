@@ -1,12 +1,26 @@
 {
   "version": "5",
-  "dialect": "pg",
+  "dialect": "mysql",
   "entries": [
     {
       "idx": 0,
       "version": "5",
-      "when": 1699366484227,
-      "tag": "0000_simple_union_jack",
+      "when": 1699368501889,
+      "tag": "0000_good_pandemic",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1699368844867,
+      "tag": "0001_wonderful_doctor_strange",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1699368861783,
+      "tag": "0002_sharp_domino",
       "breakpoints": true
     }
   ]

@@ -1,7 +1,8 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  darkMode: ["class"],
-  content: ["./src/**/*.{js,ts,jsx,tsx}"],
+import { type Config } from "tailwindcss";
+import { fontFamily } from "tailwindcss/defaultTheme";
+
+export default {
+  content: ["./src/**/*.tsx"],
   theme: {
     container: {
       center: true,
@@ -11,9 +12,6 @@ module.exports = {
       },
     },
     extend: {
-      screens: {
-        xs: "380px",
-      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -54,14 +52,18 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      fontFamily: {
+        sans: ["var(--font-geist-sans)", ...fontFamily.sans],
+        mono: ["var(--font-geist-mono)", ...fontFamily.mono],
+      },
       keyframes: {
         "accordion-down": {
-          from: { height: 0 },
+          from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
           from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: 0 },
+          to: { height: "0" },
         },
       },
       animation: {
@@ -71,4 +73,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+} satisfies Config;

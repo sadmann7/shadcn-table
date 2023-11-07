@@ -5,7 +5,7 @@ async function runSeed() {
 
   const start = Date.now()
 
-  await generateTasks({})
+  await generateTasks({ count: 100, reset: true })
 
   const end = Date.now()
 

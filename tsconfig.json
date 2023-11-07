@@ -20,11 +20,7 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    "plugins": [{ "name": "next" }]
   },
   "include": [
     ".eslintrc.cjs",

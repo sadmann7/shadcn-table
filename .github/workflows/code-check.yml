@@ -1,0 +1,60 @@
+name: Code check
+
+on:
+  pull_request:
+    branches: ["*"]
+
+env:
+  NEXT_PUBLIC_APP_URL: "https://fake.com"
+  DATABASE_URL: "fake"
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "fake"
+  CLERK_SECRET_KEY: "fake"
+  RESEND_API_KEY: "fake"
+  EMAIL_FROM_ADDRESS: "fake@fake.com"
+  UPLOADTHING_SECRET: "fake"
+  UPLOADTHING_APP_ID: "fake"
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "fake"
+  STRIPE_API_KEY: "fake"
+  STRIPE_WEBHOOK_SECRET: "fake"
+  STRIPE_STD_MONTHLY_PRICE_ID: "fake"
+  STRIPE_PRO_MONTHLY_PRICE_ID: "fake"
+
+jobs:
+  typecheck-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.2.4
+        with:
+          version: 8.6.1
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install deps (with cache)
+        run: pnpm install
+
+      - name: Run lint
+        run: pnpm run lint
+
+      - name: Run typecheck
+        run: pnpm run typecheck

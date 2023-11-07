@@ -3,9 +3,9 @@ import {
   mysqlTableCreator,
   serial,
   varchar,
-} from "drizzle-orm/mysql-core"
+} from "drizzle-orm/mysql-core";
 
-const mysqlTable = mysqlTableCreator((name) => `shadcn-table_${name}`)
+export const mysqlTable = mysqlTableCreator((name) => `shadcn-table_${name}`);
 
 export const tasks = mysqlTable("tasks", {
   id: serial("id").primaryKey(),
@@ -20,7 +20,7 @@ export const tasks = mysqlTable("tasks", {
   priority: mysqlEnum("priority", ["low", "medium", "high"])
     .notNull()
     .default("low"),
-})
+});
 
-export type Task = typeof tasks.$inferSelect
-export type NewTask = typeof tasks.$inferInsert
+export type Task = typeof tasks.$inferSelect;
+export type NewTask = typeof tasks.$inferInsert;

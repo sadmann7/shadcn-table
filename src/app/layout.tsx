@@ -1,34 +1,30 @@
-import { siteConfig } from "@/config/site"
-import { fontMono, fontSans } from "@/lib/fonts"
-import { cn } from "@/lib/utils"
-import { SiteHeader } from "@/components/layouts/site-header"
-import { TailwindIndicator } from "@/components/tailwind-indicator"
-import { ThemeProvider } from "@/components/theme-provider"
+import { SiteHeader } from "@/components/layouts/site-header";
+import { TailwindIndicator } from "@/components/tailwind-indicator";
+import { ThemeProvider } from "@/components/theme-provider";
+import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
 
-import "@/styles/globals.css"
+import "@/styles/globals.css";
 
-import { type Metadata } from "next"
+import { type Metadata } from "next";
 
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
+import { GeistMono, GeistSans } from "geist/font";
 
 export const metadata: Metadata = {
   title: siteConfig.name,
   description: siteConfig.description,
-}
+};
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: React.PropsWithChildren) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable,
-          fontMono.variable
+          GeistSans.variable,
+          GeistMono.variable,
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
@@ -41,5 +37,5 @@ export default function RootLayout({
         <Toaster />
       </body>
     </html>
-  )
+  );
 }

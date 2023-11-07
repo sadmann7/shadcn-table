@@ -5,6 +5,7 @@ import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
+import { customAlphabet } from "nanoid"
 import type { z } from "zod"
 
 import type {
@@ -15,16 +16,22 @@ import type {
 
 export async function generateTasks({
   count = 100,
-  deleteAll = true,
+  reset = false,
 }: {
   count?: number
-  deleteAll?: boolean
+  reset?: boolean
 }) {
   const allTasks: Task[] = []
 
   for (let i = 0; i < count; i++) {
     allTasks.push({
-      id: i + faker.number.int({ min: 100000, max: 999999 }),
+      id:
+        Number(customAlphabet("1234567890", 18)()) +
+        new Date().getTime() +
+        new Date().getMilliseconds() +
+        new Date().getSeconds() +
+        1,
+
       code: `TASK-${faker.number.int({ min: 1000, max: 9999 })}`,
       title: faker.hacker
         .phrase()
@@ -41,7 +48,7 @@ export async function generateTasks({
     })
   }
 
-  deleteAll && (await db.delete(tasks))
+  reset && (await db.delete(tasks))
 
   console.log("📝 Inserting tasks", allTasks.length)
 
@@ -83,7 +90,7 @@ export async function deleteTask(id: number) {
   await db.delete(tasks).where(eq(tasks.id, id))
 
   // Create a new task for the deleted one
-  await generateTasks({ count: 1, deleteAll: false })
+  await generateTasks({ count: 1 })
 
   revalidatePath("/")
 }
