@@ -31,7 +31,6 @@ export async function generateTasks({
         new Date().getMilliseconds() +
         new Date().getSeconds() +
         1,
-
       code: `TASK-${faker.number.int({ min: 1000, max: 9999 })}`,
       title: faker.hacker
         .phrase()
