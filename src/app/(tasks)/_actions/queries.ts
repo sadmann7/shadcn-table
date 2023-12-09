@@ -2,27 +2,19 @@ import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import { and, asc, desc, inArray, or, sql } from "drizzle-orm"
 
-import { filterColumn } from "@/lib/utils"
-import { searchParamsSchema } from "@/lib/validations/params"
-import { Shell } from "@/components/shell"
+import { filterColumn } from "@/lib/filterColumn"
+import { searchParamsSchema } from "@/lib/validations/params";
 
-import { TasksTableShell } from "./_components/tasks-table-shell"
-
-interface IndexPageProps {
-  searchParams: {
-    [key: string]: string | string[] | undefined
-  }
-}
-
-export default async function IndexPage({ searchParams }: IndexPageProps) {
-  // Parse search params using zod schema
-  const { page, per_page, sort, title, status, priority, operator } =
-    searchParamsSchema.parse(searchParams)
+export async function tasksQuery(
+    searchParams: {
+        [key: string]: string | string[] | undefined
+    }
+){
+    const { page, per_page, sort, title, status, priority, operator } = searchParamsSchema.parse(searchParams)
 
   // Fallback page for invalid page numbers
   const pageAsNumber = Number(page)
-  const fallbackPage =
-    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
+  const fallbackPage = isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
   // Number of items per page
   const perPageAsNumber = Number(per_page)
   const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
@@ -41,7 +33,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
   const priorities = (priority?.split(".") as Task["priority"][]) ?? []
 
   // Transaction is used to ensure both queries are executed in a single transaction
-  const { allTasks, totalTasks } = await db.transaction(async (tx) => {
+  const { allData, dataCount } = await db.transaction(async (tx) => {
     const allTasks = await tx
       .select()
       .from(tasks)
@@ -85,12 +77,12 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
           ? order === "asc"
             ? asc(tasks[column])
             : desc(tasks[column])
-          : desc(tasks.id)
+          : desc(tasks.uid)
       )
 
     const totalTasks = await tx
       .select({
-        count: sql<number>`count(${tasks.id})`,
+        count: sql<number>`count(${tasks.uid})`,
       })
       .from(tasks)
       .where(
@@ -125,20 +117,14 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
                 ? inArray(tasks.priority, priorities)
                 : undefined
             )
-      )
+    );
 
     return {
-      allTasks,
-      totalTasks: Number(totalTasks[0]?.count) ?? 0,
+      allData: allTasks,
+      dataCount: Number(totalTasks[0]?.count) ?? 0,
     }
   })
 
-  const pageCount = Math.ceil(totalTasks / limit)
-
-  return (
-    <Shell>
-      {/* Pass the DataTable component through the TasksTableShell component to memoize the columns which can not be done on react-server-components */}
-      <TasksTableShell data={allTasks} pageCount={pageCount} />
-    </Shell>
-  )
+  const pageCount = Math.ceil(dataCount / limit);
+  return {allData, pageCount};
 }

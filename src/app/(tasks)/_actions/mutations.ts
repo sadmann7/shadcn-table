@@ -12,7 +12,7 @@ import type {
   updateTaskLabelSchema,
   updateTaskPrioritySchema,
   updateTaskStatusSchema,
-} from "@/lib/validations/task"
+} from "./validations"
 
 export async function generateTasks({
   count = 100,
@@ -25,7 +25,7 @@ export async function generateTasks({
 
   for (let i = 0; i < count; i++) {
     allTasks.push({
-      id:
+      uid:
         Number(customAlphabet("1234567890", 18)()) +
         new Date().getTime() +
         new Date().getMilliseconds() +
@@ -55,38 +55,38 @@ export async function generateTasks({
 }
 
 export async function updateTaskLabel({
-  id,
+  uid,
   label,
 }: z.infer<typeof updateTaskLabelSchema>) {
-  await db.update(tasks).set({ label }).where(eq(tasks.id, id))
+  await db.update(tasks).set({ label }).where(eq(tasks.uid, uid))
 
   revalidatePath("/")
 }
 
 export async function updateTaskStatus({
-  id,
+  uid,
   status,
 }: z.infer<typeof updateTaskStatusSchema>) {
-  console.log("updateTaskStatusAction", id, status)
+  console.log("updateTaskStatusAction", uid, status)
 
-  await db.update(tasks).set({ status }).where(eq(tasks.id, id))
+  await db.update(tasks).set({ status }).where(eq(tasks.uid, uid))
 
   revalidatePath("/")
 }
 
 export async function updateTaskPriority({
-  id,
+  uid,
   priority,
 }: z.infer<typeof updateTaskPrioritySchema>) {
-  console.log("updatePriorityAction", id, priority)
+  console.log("updatePriorityAction", uid, priority)
 
-  await db.update(tasks).set({ priority }).where(eq(tasks.id, id))
+  await db.update(tasks).set({ priority }).where(eq(tasks.uid, uid))
 
   revalidatePath("/")
 }
 
-export async function deleteTask(id: number) {
-  await db.delete(tasks).where(eq(tasks.id, id))
+export async function deleteTask(uid: number) {
+  await db.delete(tasks).where(eq(tasks.uid, uid))
 
   // Create a new task for the deleted one
   await generateTasks({ count: 1 })

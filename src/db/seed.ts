@@ -1,4 +1,4 @@
-import { generateTasks } from "@/app/_actions/task"
+import { generateTasks } from "@/app/(tasks)/_actions/task"
 
 async function runSeed() {
   console.log("⏳ Running seed...")
