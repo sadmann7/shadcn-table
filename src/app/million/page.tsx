@@ -80,12 +80,12 @@ export default async function MillionPage({ searchParams }: MillionPageProps) {
           ? order === "asc"
             ? asc(tasks[column])
             : desc(tasks[column])
-          : desc(tasks.id)
+          : desc(tasks.uid)
       )
 
     const totalTasks = await tx
       .select({
-        count: sql<number>`count(${tasks.id})`,
+        count: sql<number>`count(${tasks.uid})`,
       })
       .from(tasks)
       .where(

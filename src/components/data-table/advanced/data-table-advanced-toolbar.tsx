@@ -18,13 +18,13 @@ import { DataTableAdvancedFilterItem } from "./data-table-advanced-filter-item"
 import { DataTableMultiFilter } from "./data-table-multi-filter"
 
 interface DataTableAdvancedToolbarProps<TData> {
-  table: Table<TData>
+  dataTable: Table<TData>
   searchableColumns?: DataTableSearchableColumn<TData>[]
   filterableColumns?: DataTableFilterableColumn<TData>[]
 }
 
 export function DataTableAdvancedToolbar<TData>({
-  table,
+  dataTable,
   filterableColumns = [],
   searchableColumns = [],
 }: DataTableAdvancedToolbarProps<TData>) {
@@ -63,17 +63,17 @@ export function DataTableAdvancedToolbar<TData>({
           {searchableColumns.length > 0 &&
             searchableColumns.map(
               (column) =>
-                table.getColumn(column.id ? String(column.id) : "") && (
+                dataTable.getColumn(column.id ? String(column.id) : "") && (
                   <Input
                     key={String(column.id)}
                     placeholder={`Filter ${column.title}...`}
                     value={
-                      (table
+                      (dataTable
                         .getColumn(String(column.id))
                         ?.getFilterValue() as string) ?? ""
                     }
                     onChange={(event) =>
-                      table
+                      dataTable
                         .getColumn(String(column.id))
                         ?.setFilterValue(event.target.value)
                     }
@@ -107,14 +107,14 @@ export function DataTableAdvancedToolbar<TData>({
               setSelectedOptions={setSelectedOptions}
             />
           )}
-          <DataTableViewOptions table={table} />
+          <DataTableViewOptions table={dataTable} />
         </div>
       </div>
       {open ? (
         <div className="flex items-center space-x-2">
           {selectedOptions.some((option) => option.isMulti) ? (
             <DataTableMultiFilter
-              table={table}
+              table={dataTable}
               allOptions={options}
               options={selectedOptions.filter((option) => option.isMulti)}
               setSelectedOptions={setSelectedOptions}
@@ -125,7 +125,7 @@ export function DataTableAdvancedToolbar<TData>({
             .map((selectedOption) => (
               <DataTableAdvancedFilterItem
                 key={String(selectedOption.value)}
-                table={table}
+                table={dataTable}
                 selectedOption={selectedOption}
                 setSelectedOptions={setSelectedOptions}
               />

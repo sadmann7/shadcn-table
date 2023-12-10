@@ -8,7 +8,7 @@ import {
 export const mysqlTable = mysqlTableCreator((name) => `shadcn-table_${name}`);
 
 export const tasks = mysqlTable("tasks", {
-  id: serial("id").primaryKey(),
+  uid: serial("id").primaryKey(),
   code: varchar("code", { length: 255 }).unique(),
   title: varchar("title", { length: 255 }),
   status: mysqlEnum("status", ["todo", "in-progress", "done", "canceled"])
