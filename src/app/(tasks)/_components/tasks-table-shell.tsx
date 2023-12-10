@@ -47,7 +47,7 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
       // Render dynamic searchable filters
       searchableColumns={searchableColumns}
       // Render floating action controls at the bottom of the table on Row selection
-      // floatingBarContent={TasksTableFloatingBarContent(dataTable)}
+      floatingBarContent={TasksTableFloatingBarContent(dataTable)}
       // Delete selected rows
       deleteRowsAction={(event) => deleteSelectedRows(dataTable, event)}
     />
