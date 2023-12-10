@@ -74,7 +74,7 @@ export function updateTasksPriority(table: Table<Task>, priority: string) {
   })
 }
 
-export function FloatingBarContent(table: Table<Task>) {
+export function TasksTableFloatingBarContent(table: Table<Task>) {
   return (
     <div className="justify-between gap-2 align-middle">
       <Select onValueChange={(value) => updateTasksStatus(table, value)}>
@@ -82,7 +82,9 @@ export function FloatingBarContent(table: Table<Task>) {
           <Button
             aria-label="Delete selected rows"
             title="Status"
-            className="h-auto bg-transparent p-1 text-white hover:bg-zinc-700"
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
           >
             <CheckCircledIcon className="h-4 w-4" aria-hidden="true" />
           </Button>
@@ -100,9 +102,10 @@ export function FloatingBarContent(table: Table<Task>) {
       <Select onValueChange={(value) => updateTasksPriority(table, value)}>
         <SelectTrigger asChild>
           <Button
-            aria-label="Delete selected rows"
             title="Priority"
-            className="h-auto bg-transparent p-1 text-white hover:bg-zinc-700"
+            variant="ghost"
+            size="icon"
+            className="h-7 w-7 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
           >
             <ArrowUpIcon className="h-4 w-4" aria-hidden="true" />
           </Button>
@@ -122,9 +125,10 @@ export function FloatingBarContent(table: Table<Task>) {
         </SelectContent>
       </Select>
       <Button
-        aria-label="Change status of selected rows"
         title="Delete"
-        className="h-auto bg-transparent p-1 text-white hover:bg-zinc-700"
+        variant="ghost"
+        size="icon"
+        className="h-7 w-7"
         onClick={(event) => {
           table.toggleAllPageRowsSelected(false)
           deleteSelectedRows?.(table, event)
