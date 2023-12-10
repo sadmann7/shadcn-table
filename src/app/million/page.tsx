@@ -1,6 +1,7 @@
 import { type Metadata } from "next"
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
+import type { SearchParams } from "@/types"
 import { and, asc, desc, inArray, like, sql } from "drizzle-orm"
 
 import { Shell } from "@/components/shell"
@@ -12,9 +13,7 @@ export const metadata: Metadata = {
 }
 
 interface MillionPageProps {
-  searchParams: {
-    [key: string]: string | string[] | undefined
-  }
+  searchParams: SearchParams
 }
 
 export default async function MillionPage({ searchParams }: MillionPageProps) {
@@ -80,12 +79,12 @@ export default async function MillionPage({ searchParams }: MillionPageProps) {
           ? order === "asc"
             ? asc(tasks[column])
             : desc(tasks[column])
-          : desc(tasks.uid)
+          : desc(tasks.id)
       )
 
     const totalTasks = await tx
       .select({
-        count: sql<number>`count(${tasks.uid})`,
+        count: sql<number>`count(${tasks.id})`,
       })
       .from(tasks)
       .where(

@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "5c5294b5-d3a6-43cf-a5bf-107a380aaa72",
+  "id": "2e3cff5e-fc36-44ff-8305-7cb4b17a5bf9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "shadcn-table_tasks": {
@@ -9,10 +9,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "varchar(128)",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": true
+          "autoincrement": false
         },
         "code": {
           "name": "code",

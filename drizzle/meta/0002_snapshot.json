@@ -1,18 +1,18 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "4da9a883-4361-401e-80f7-d3f49a7e1e5d",
-  "prevId": "150d08a3-6460-4bd0-914d-bdae40113a46",
+  "id": "bdd90c3a-73e2-42e4-b3de-bebbb688d56a",
+  "prevId": "9821f4f4-ef3d-4531-9629-3591fa0b8694",
   "tables": {
     "shadcn-table_tasks": {
       "name": "shadcn-table_tasks",
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "varchar(128)",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": true
+          "autoincrement": false
         },
         "code": {
           "name": "code",

@@ -1,11 +1,11 @@
-import { generateTasks } from "@/app/(tasks)/_actions/mutations"
+import { seedTasks } from "@/app/(tasks)/_actions/actions"
 
 async function runSeed() {
   console.log("⏳ Running seed...")
 
   const start = Date.now()
 
-  await generateTasks({ count: 100, reset: true })
+  await seedTasks({ count: 100, reset: true })
 
   const end = Date.now()
 

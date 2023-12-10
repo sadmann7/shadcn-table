@@ -16,7 +16,7 @@ import {
 import { type ColumnDef } from "@tanstack/react-table"
 import { toast } from "sonner"
 
-import { catchError } from "@/lib/catchError"
+import { catchError } from "@/lib/catch-error"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { MillionDataTable } from "@/components/data-table/million/million-data-table"
-import { deleteTask, updateTaskLabel } from "@/app/(tasks)/_actions/mutations";
+import { deleteTask, updateTaskLabel } from "@/app/(tasks)/_actions/actions"
 
 const labels: {
   value: Task["label"]
@@ -244,7 +244,7 @@ export function MillionTasksTableShell({
                     onValueChange={(value) => {
                       startTransition(async () => {
                         await updateTaskLabel({
-                          uid: row.original.uid,
+                          id: row.original.id,
                           label: value as Task["label"],
                         })
                       })
@@ -268,11 +268,16 @@ export function MillionTasksTableShell({
                   startTransition(() => {
                     row.toggleSelected(false)
 
-                    toast.promise(deleteTask(row.original.uid), {
-                      loading: "Deleting...",
-                      success: () => "Task deleted successfully.",
-                      error: (err: unknown) => catchError(err),
-                    })
+                    toast.promise(
+                      deleteTask({
+                        id: row.original.id,
+                      }),
+                      {
+                        loading: "Deleting...",
+                        success: () => "Task deleted successfully.",
+                        error: (err: unknown) => catchError(err),
+                      }
+                    )
                   })
                 }}
               >

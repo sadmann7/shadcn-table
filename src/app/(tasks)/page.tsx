@@ -1,6 +1,6 @@
-
 import { Shell } from "@/components/shell"
-import { tasksQuery } from './_actions/queries'
+
+import { tasksQuery } from "./_actions/queries"
 import { TasksTableShell } from "./_components/tasks-table-shell"
 
 export interface TasksTablePageProps {
@@ -9,16 +9,15 @@ export interface TasksTablePageProps {
   }
 }
 
-export default async function TasksTablePage(
-  { searchParams }: {
-    searchParams: {
-      [key: string]: string | string[] | undefined
-    }
+export default async function TasksTablePage({
+  searchParams,
+}: {
+  searchParams: {
+    [key: string]: string | string[] | undefined
   }
-) {
-
+}) {
   // Transaction is used to ensure both queries are executed in a single transaction
-  const { allData, pageCount } = await tasksQuery(searchParams);
+  const { allData, pageCount } = await tasksQuery(searchParams)
 
   return (
     <Shell>

@@ -1,12 +1,12 @@
-"use client";
+"use client"
 
-import { useTheme } from "next-themes";
+import { MoonIcon, SunIcon } from "@radix-ui/react-icons"
+import { useTheme } from "next-themes"
 
-import { Button } from "@/components/ui/button";
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import { Button } from "@/components/ui/button"
 
 export function ModeToggle() {
-  const { setTheme, theme } = useTheme();
+  const { setTheme, theme } = useTheme()
 
   return (
     <Button
@@ -24,5 +24,5 @@ export function ModeToggle() {
       />
       <span className="sr-only">Toggle theme</span>
     </Button>
-  );
+  )
 }

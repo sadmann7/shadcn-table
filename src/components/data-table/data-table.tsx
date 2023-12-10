@@ -1,14 +1,13 @@
+import * as React from "react"
 import type {
   DataTableFilterableColumn,
   DataTableSearchableColumn,
-} from "@/types";
-import * as React from "react";
-
+} from "@/types"
 import {
   flexRender,
-  type Table as TanstackTable,
   type ColumnDef,
-} from "@tanstack/react-table";
+  type Table as TanstackTable,
+} from "@tanstack/react-table"
 
 import {
   Table,
@@ -17,35 +16,32 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/table"
 
-import { DataTableAdvancedToolbar } from "./advanced/data-table-advanced-toolbar";
-import { DataTablePagination } from "./data-table-pagination";
-import { DataTableFloatingBar } from "./data-table-floating-bar";
-import { DataTableToolbar } from "./data-table-toolbar";
+import { DataTableAdvancedToolbar } from "./advanced/data-table-advanced-toolbar"
+import { DataTableFloatingBar } from "./data-table-floating-bar"
+import { DataTablePagination } from "./data-table-pagination"
+import { DataTableToolbar } from "./data-table-toolbar"
 
-interface DataTableProps<TData extends { uid: number }, TValue> {
+interface DataTableProps<TData, TValue> {
   dataTable: TanstackTable<TData>
   columns: ColumnDef<TData, TValue>[]
   filterableColumns?: DataTableFilterableColumn<TData>[]
   searchableColumns?: DataTableSearchableColumn<TData>[]
   advancedFilter?: boolean
-  floatingBar?: boolean
-  selectedActionControls: React.ReactNode;
+  floatingBarContent?: React.ReactNode | null
   deleteRowsAction: React.MouseEventHandler<HTMLButtonElement>
 }
 
-export function DataTable<TData extends { uid: number }, TValue>({
+export function DataTable<TData, TValue>({
   dataTable,
   columns,
   filterableColumns = [],
   searchableColumns = [],
   advancedFilter = false,
-  floatingBar = false,
-  selectedActionControls,
+  floatingBarContent,
   deleteRowsAction,
 }: DataTableProps<TData, TValue>) {
-
   return (
     <div className="w-full space-y-2.5 overflow-auto">
       {advancedFilter ? (
@@ -59,7 +55,7 @@ export function DataTable<TData extends { uid: number }, TValue>({
           table={dataTable}
           filterableColumns={filterableColumns}
           searchableColumns={searchableColumns}
-          deleteRowsAction={floatingBar ? undefined :  deleteRowsAction}
+          deleteRowsAction={deleteRowsAction}
         />
       )}
       <div className="rounded-md border">
@@ -73,9 +69,9 @@ export function DataTable<TData extends { uid: number }, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   )
                 })}
@@ -114,8 +110,10 @@ export function DataTable<TData extends { uid: number }, TValue>({
       </div>
       <div className="space-y-2.5">
         <DataTablePagination table={dataTable} />
-        {floatingBar ? (
-          <DataTableFloatingBar table={dataTable}>{selectedActionControls}</DataTableFloatingBar>
+        {floatingBarContent ? (
+          <DataTableFloatingBar table={dataTable}>
+            {floatingBarContent}
+          </DataTableFloatingBar>
         ) : null}
       </div>
     </div>

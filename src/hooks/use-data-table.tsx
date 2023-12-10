@@ -1,19 +1,37 @@
 "use client"
-import { useDebounce } from "@/hooks/use-debounce";
-import { DataTableFilterableColumn, DataTableSearchableColumn } from "@/types";
-import { ColumnDef, ColumnFiltersState, PaginationState, SortingState, VisibilityState, getCoreRowModel, getFacetedRowModel, getFacetedUniqueValues, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React from "react";
 
-interface UseDataTableProps<TData extends { uid: number }, TValue> {
+import * as React from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import type {
+  DataTableFilterableColumn,
+  DataTableSearchableColumn,
+} from "@/types"
+import {
+  getCoreRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+  type ColumnDef,
+  type ColumnFiltersState,
+  type PaginationState,
+  type SortingState,
+  type VisibilityState,
+} from "@tanstack/react-table"
+
+import { useDebounce } from "@/hooks/use-debounce"
+
+interface UseDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
-  data: TData[];
-  pageCount: number;
-  filterableColumns?: DataTableFilterableColumn<TData>[];
-  searchableColumns?: DataTableSearchableColumn<TData>[];
+  data: TData[]
+  pageCount: number
+  filterableColumns?: DataTableFilterableColumn<TData>[]
+  searchableColumns?: DataTableSearchableColumn<TData>[]
 }
 
-export default function useDataTable<TData extends { uid: number }, TValue>({
+export function useDataTable<TData, TValue>({
   columns,
   data,
   pageCount,
@@ -27,7 +45,8 @@ export default function useDataTable<TData extends { uid: number }, TValue>({
   // Search params
   const page = searchParams?.get("page") ?? "1"
   const pageAsNumber = Number(page)
-  const fallbackPage = isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
+  const fallbackPage =
+    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
   const per_page = searchParams?.get("per_page") ?? "10"
   const perPageAsNumber = Number(per_page)
   const fallbackPerPage = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
@@ -53,15 +72,19 @@ export default function useDataTable<TData extends { uid: number }, TValue>({
   )
 
   // Table states
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [rowSelection, setRowSelection] = React.useState({})
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
 
   // Handle server-side pagination
-  const [{ pageIndex, pageSize }, setPagination] = React.useState<PaginationState>({
-    pageIndex: fallbackPage - 1,
-    pageSize: fallbackPerPage,
-  })
+  const [{ pageIndex, pageSize }, setPagination] =
+    React.useState<PaginationState>({
+      pageIndex: fallbackPage - 1,
+      pageSize: fallbackPerPage,
+    })
 
   const pagination = React.useMemo(
     () => ({
@@ -210,9 +233,8 @@ export default function useDataTable<TData extends { uid: number }, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
     manualPagination: true,
     manualSorting: true,
-    manualFiltering: true
+    manualFiltering: true,
   })
 
-  return { dataTable };
-
+  return { dataTable }
 }

@@ -1,20 +1,19 @@
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
+import type { SearchParams } from "@/types"
 import { and, asc, desc, inArray, or, sql } from "drizzle-orm"
 
-import { filterColumn } from "@/lib/filterColumn"
-import { searchParamsSchema } from "@/lib/validations/params";
+import { filterColumn } from "@/lib/filter-column"
+import { searchParamsSchema } from "@/lib/validations/params"
 
-export async function tasksQuery(
-    searchParams: {
-        [key: string]: string | string[] | undefined
-    }
-){
-    const { page, per_page, sort, title, status, priority, operator } = searchParamsSchema.parse(searchParams)
+export async function tasksQuery(searchParams: SearchParams) {
+  const { page, per_page, sort, title, status, priority, operator } =
+    searchParamsSchema.parse(searchParams)
 
   // Fallback page for invalid page numbers
   const pageAsNumber = Number(page)
-  const fallbackPage = isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
+  const fallbackPage =
+    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
   // Number of items per page
   const perPageAsNumber = Number(per_page)
   const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
@@ -77,12 +76,12 @@ export async function tasksQuery(
           ? order === "asc"
             ? asc(tasks[column])
             : desc(tasks[column])
-          : desc(tasks.uid)
+          : desc(tasks.id)
       )
 
     const totalTasks = await tx
       .select({
-        count: sql<number>`count(${tasks.uid})`,
+        count: sql<number>`count(${tasks.id})`,
       })
       .from(tasks)
       .where(
@@ -117,7 +116,7 @@ export async function tasksQuery(
                 ? inArray(tasks.priority, priorities)
                 : undefined
             )
-    );
+      )
 
     return {
       allData: allTasks,
@@ -125,6 +124,6 @@ export async function tasksQuery(
     }
   })
 
-  const pageCount = Math.ceil(dataCount / limit);
-  return {allData, pageCount};
+  const pageCount = Math.ceil(dataCount / limit)
+  return { allData, pageCount }
 }

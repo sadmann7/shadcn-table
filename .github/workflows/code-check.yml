@@ -3,58 +3,122 @@ name: Code check
 on:
   pull_request:
     branches: ["*"]
-
-env:
-  NEXT_PUBLIC_APP_URL: "https://fake.com"
-  DATABASE_URL: "fake"
-  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "fake"
-  CLERK_SECRET_KEY: "fake"
-  RESEND_API_KEY: "fake"
-  EMAIL_FROM_ADDRESS: "fake@fake.com"
-  UPLOADTHING_SECRET: "fake"
-  UPLOADTHING_APP_ID: "fake"
-  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "fake"
-  STRIPE_API_KEY: "fake"
-  STRIPE_WEBHOOK_SECRET: "fake"
-  STRIPE_STD_MONTHLY_PRICE_ID: "fake"
-  STRIPE_PRO_MONTHLY_PRICE_ID: "fake"
+  push:
+    branches: ["main"]
 
 jobs:
-  typecheck-lint:
+  lint:
     runs-on: ubuntu-latest
-
+    name: Lint
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      - name: Setup Node 18
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2.2.4
+      - uses: pnpm/action-setup@v2.2.4
+        name: Install pnpm
+        id: pnpm-install
         with:
           version: 8.6.1
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - name: Install dependencies
+        run: pnpm install
+
+      - run: cp .env.example .env.local
+
+      - run: pnpm lint
+
+  format:
+    runs-on: ubuntu-latest
+    name: Format
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - uses: pnpm/action-setup@v2.2.4
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 8.6.1
+          run_install: false
 
       - name: Get pnpm store directory
         id: pnpm-cache
         run: |
           echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
 
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
         with:
           path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Install deps (with cache)
+      - name: Install dependencies
         run: pnpm install
 
-      - name: Run lint
-        run: pnpm run lint
+      - run: cp .env.example .env.local
 
-      - name: Run typecheck
-        run: pnpm run typecheck
+      - run: pnpm format:check
+
+  tsc:
+    runs-on: ubuntu-latest
+    name: Typecheck
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - uses: pnpm/action-setup@v2.2.4
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 8.6.1
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "pnpm_cache_dir=$(pnpm store path)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+      - name: Install dependencies
+        run: pnpm install
+
+      - run: cp .env.example .env.local
+
+      - run: pnpm typecheck

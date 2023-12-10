@@ -1,16 +1,16 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { GitHubLogoIcon, VercelLogoIcon } from "@radix-ui/react-icons";
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { GitHubLogoIcon, VercelLogoIcon } from "@radix-ui/react-icons"
 
-import { siteConfig } from "@/config/site";
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
-import { ModeToggle } from "@/components/layouts/mode-toggle";
+import { siteConfig } from "@/config/site"
+import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
+import { ModeToggle } from "@/components/layouts/mode-toggle"
 
 export function SiteHeader() {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
@@ -30,7 +30,7 @@ export function SiteHeader() {
                 "flex items-center text-sm font-medium transition-colors hover:text-foreground/80",
                 pathname === item.href
                   ? "text-foreground"
-                  : "text-foreground/60",
+                  : "text-foreground/60"
               )}
             >
               {item.title}
@@ -47,7 +47,7 @@ export function SiteHeader() {
               buttonVariants({
                 variant: "ghost",
                 size: "icon",
-              }),
+              })
             )}
           >
             <GitHubLogoIcon className="h-4 w-4" aria-hidden="true" />
@@ -56,5 +56,5 @@ export function SiteHeader() {
         </div>
       </div>
     </header>
-  );
+  )
 }

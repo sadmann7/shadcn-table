@@ -5,8 +5,9 @@ import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
-import { customAlphabet } from "nanoid"
 import type { z } from "zod"
+
+import { createId } from "@/lib/utils"
 
 import type {
   updateTaskLabelSchema,
@@ -14,7 +15,7 @@ import type {
   updateTaskStatusSchema,
 } from "./validations"
 
-export async function generateTasks({
+export async function seedTasks({
   count = 100,
   reset = false,
 }: {
@@ -25,12 +26,7 @@ export async function generateTasks({
 
   for (let i = 0; i < count; i++) {
     allTasks.push({
-      uid:
-        Number(customAlphabet("1234567890", 18)()) +
-        new Date().getTime() +
-        new Date().getMilliseconds() +
-        new Date().getSeconds() +
-        1,
+      id: createId(),
       code: `TASK-${faker.number.int({ min: 1000, max: 9999 })}`,
       title: faker.hacker
         .phrase()
@@ -55,41 +51,41 @@ export async function generateTasks({
 }
 
 export async function updateTaskLabel({
-  uid,
+  id,
   label,
 }: z.infer<typeof updateTaskLabelSchema>) {
-  await db.update(tasks).set({ label }).where(eq(tasks.uid, uid))
+  await db.update(tasks).set({ label }).where(eq(tasks.id, id))
 
   revalidatePath("/")
 }
 
 export async function updateTaskStatus({
-  uid,
+  id,
   status,
 }: z.infer<typeof updateTaskStatusSchema>) {
-  console.log("updateTaskStatusAction", uid, status)
+  console.log("updateTaskStatusAction", id, status)
 
-  await db.update(tasks).set({ status }).where(eq(tasks.uid, uid))
+  await db.update(tasks).set({ status }).where(eq(tasks.id, id))
 
   revalidatePath("/")
 }
 
 export async function updateTaskPriority({
-  uid,
+  id,
   priority,
 }: z.infer<typeof updateTaskPrioritySchema>) {
-  console.log("updatePriorityAction", uid, priority)
+  console.log("updatePriorityAction", id, priority)
 
-  await db.update(tasks).set({ priority }).where(eq(tasks.uid, uid))
+  await db.update(tasks).set({ priority }).where(eq(tasks.id, id))
 
   revalidatePath("/")
 }
 
-export async function deleteTask(uid: number) {
-  await db.delete(tasks).where(eq(tasks.uid, uid))
+export async function deleteTask(input: { id: string }) {
+  await db.delete(tasks).where(eq(tasks.id, input.id))
 
   // Create a new task for the deleted one
-  await generateTasks({ count: 1 })
+  await seedTasks({ count: 1 })
 
   revalidatePath("/")
 }

@@ -1,5 +1,5 @@
 CREATE TABLE `shadcn-table_tasks` (
-	`id` serial AUTO_INCREMENT NOT NULL,
+	`id` varchar(128) NOT NULL,
 	`code` varchar(255),
 	`title` varchar(255),
 	`status` enum('todo','in-progress','done','canceled') NOT NULL DEFAULT 'todo',
