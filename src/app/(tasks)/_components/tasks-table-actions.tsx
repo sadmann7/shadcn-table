@@ -135,6 +135,7 @@ export function TasksTableFloatingBarContent(table: Table<Task>) {
         }}
       >
         <TrashIcon className="h-4 w-4" aria-hidden="true" />
+        <span className="sr-only">Delete</span>
       </Button>
     </div>
   )

@@ -7,10 +7,7 @@ import { type ColumnDef } from "@tanstack/react-table"
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTable } from "@/components/data-table/data-table"
 
-import {
-  deleteSelectedRows,
-  TasksTableFloatingBarContent,
-} from "./tasks-table-actions"
+import { deleteSelectedRows } from "./tasks-table-actions"
 import {
   fetchTasksTableColumnDefs,
   filterableColumns,
@@ -50,8 +47,8 @@ export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
       // Render dynamic searchable filters
       searchableColumns={searchableColumns}
       // Render floating action controls at the bottom of the table on Row selection
-      floatingBarContent={TasksTableFloatingBarContent(dataTable)}
-      // Delete Function
+      // floatingBarContent={TasksTableFloatingBarContent(dataTable)}
+      // Delete selected rows
       deleteRowsAction={(event) => deleteSelectedRows(dataTable, event)}
     />
   )
