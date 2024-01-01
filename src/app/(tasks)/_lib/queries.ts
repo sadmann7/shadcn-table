@@ -1,3 +1,5 @@
+"use server"
+
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import type { SearchParams } from "@/types"
@@ -6,7 +8,7 @@ import { and, asc, desc, inArray, or, sql } from "drizzle-orm"
 import { filterColumn } from "@/lib/filter-column"
 import { searchParamsSchema } from "@/lib/validations/params"
 
-export async function tasksQuery(searchParams: SearchParams) {
+export async function getTasks(searchParams: SearchParams) {
   const { page, per_page, sort, title, status, priority, operator } =
     searchParamsSchema.parse(searchParams)
 
@@ -32,8 +34,8 @@ export async function tasksQuery(searchParams: SearchParams) {
   const priorities = (priority?.split(".") as Task["priority"][]) ?? []
 
   // Transaction is used to ensure both queries are executed in a single transaction
-  const { allData, dataCount } = await db.transaction(async (tx) => {
-    const allTasks = await tx
+  const { data, count } = await db.transaction(async (tx) => {
+    const data = await tx
       .select()
       .from(tasks)
       .limit(limit)
@@ -79,9 +81,9 @@ export async function tasksQuery(searchParams: SearchParams) {
           : desc(tasks.id)
       )
 
-    const totalTasks = await tx
+    const count = await tx
       .select({
-        count: sql<number>`count(${tasks.id})`,
+        count: sql<number>`count(${tasks.id})`.mapWith(Number),
       })
       .from(tasks)
       .where(
@@ -117,13 +119,17 @@ export async function tasksQuery(searchParams: SearchParams) {
                 : undefined
             )
       )
+      .execute()
+      .then((res) => res[0]?.count ?? 0)
 
     return {
-      allData: allTasks,
-      dataCount: Number(totalTasks[0]?.count) ?? 0,
+      data,
+      count,
     }
   })
 
-  const pageCount = Math.ceil(dataCount / limit)
-  return { allData, pageCount }
+  const pageCount = Math.ceil(count / limit)
+  return { data, pageCount }
 }
+
+export type TasksPromise = ReturnType<typeof getTasks>

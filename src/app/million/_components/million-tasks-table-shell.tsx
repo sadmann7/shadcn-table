@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { MillionDataTable } from "@/components/data-table/million/million-data-table"
-import { deleteTask, updateTaskLabel } from "@/app/(tasks)/_actions/actions"
+import { deleteTask, updateTaskLabel } from "@/app/(tasks)/_lib/actions"
 
 const labels: {
   value: Task["label"]

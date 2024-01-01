@@ -38,7 +38,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 
-import { deleteTask, updateTaskLabel } from "../_actions/actions"
+import { deleteTask, updateTaskLabel } from "../_lib/actions"
 
 export function fetchTasksTableColumnDefs(
   isPending: boolean,

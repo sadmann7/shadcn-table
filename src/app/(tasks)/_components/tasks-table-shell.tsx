@@ -7,6 +7,7 @@ import { type ColumnDef } from "@tanstack/react-table"
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTable } from "@/components/data-table/data-table"
 
+import { type TasksPromise } from "../_lib/queries"
 import { deleteSelectedRows } from "./tasks-table-actions"
 import {
   fetchTasksTableColumnDefs,
@@ -15,11 +16,13 @@ import {
 } from "./tasks-table-column-def"
 
 interface TasksTableShellProps {
-  data: Task[]
-  pageCount: number
+  tasksPromise: TasksPromise
 }
 
-export function TasksTableShell({ data, pageCount }: TasksTableShellProps) {
+export function TasksTableShell({ tasksPromise }: TasksTableShellProps) {
+  // Learn more about use here: https://react.dev/reference/react/use
+  const { data, pageCount } = React.use(tasksPromise)
+
   const [isPending, startTransition] = React.useTransition()
 
   // Memoize the columns so they don't re-render on every render

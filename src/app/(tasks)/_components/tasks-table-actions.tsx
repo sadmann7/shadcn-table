@@ -18,7 +18,7 @@ import {
   deleteTask,
   updateTaskPriority,
   updateTaskStatus,
-} from "../_actions/actions"
+} from "../_lib/actions"
 
 export function deleteSelectedRows(
   table: Table<Task>,
@@ -53,12 +53,25 @@ export function updateTasksStatus(table: Table<Task>, status: string) {
     original: Task
   }[]
 
-  selectedRows.map(async (row) => {
-    await updateTaskStatus({
-      id: row.original.id,
-      status: status as Task["status"],
-    })
-  })
+  toast.promise(
+    Promise.all(
+      selectedRows.map(async (row) =>
+        updateTaskStatus({
+          id: row.original.id,
+          status: status as Task["status"],
+        })
+      )
+    ),
+    {
+      loading: "Updating...",
+      success: () => {
+        return "Tasks updated successfully."
+      },
+      error: (err: unknown) => {
+        return catchError(err)
+      },
+    }
+  )
 }
 
 export function updateTasksPriority(table: Table<Task>, priority: string) {
@@ -66,12 +79,25 @@ export function updateTasksPriority(table: Table<Task>, priority: string) {
     original: Task
   }[]
 
-  selectedRows.map(async (row) => {
-    await updateTaskPriority({
-      id: row.original.id,
-      priority: priority as Task["priority"],
-    })
-  })
+  toast.promise(
+    Promise.all(
+      selectedRows.map(async (row) =>
+        updateTaskPriority({
+          id: row.original.id,
+          priority: priority as Task["priority"],
+        })
+      )
+    ),
+    {
+      loading: "Updating...",
+      success: () => {
+        return "Tasks updated successfully."
+      },
+      error: (err: unknown) => {
+        return catchError(err)
+      },
+    }
+  )
 }
 
 export function TasksTableFloatingBarContent(table: Table<Task>) {
