@@ -24,13 +24,53 @@ import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 
 interface DataTableProps<TData, TValue> {
+  /**
+   * The table instance returned from useDataTable hook with pagination, sorting, filtering, etc.
+   * @type TanstackTable<TData>
+   */
   dataTable: TanstackTable<TData>
+
+  /**
+   * The columns of the table
+   * @default []
+   * @type ColumnDef<TData, TValue>[]
+   */
   columns: ColumnDef<TData, TValue>[]
+
+  /**
+   * The filterable columns of the table. When provided, renders dynamic faceted filters, and the advancedFilter prop is ignored.
+   * @default []
+   * @type DataTableFilterableColumn<TData>[]
+   */
   filterableColumns?: DataTableFilterableColumn<TData>[]
+
+  /**
+   * The searchable columns of the table
+   * @default []
+   * @type DataTableSearchableColumn<TData>[]
+   */
   searchableColumns?: DataTableSearchableColumn<TData>[]
+
+  /**
+   * Show notion like filters when enabled
+   * @default false
+   * @type boolean
+   */
   advancedFilter?: boolean
+
+  /**
+   * The content to render in the floating bar rendered at the bottom of the table. When null, the floating bar is not rendered.
+   * @default null
+   * @type React.ReactNode | null
+   */
   floatingBarContent?: React.ReactNode | null
-  deleteRowsAction: React.MouseEventHandler<HTMLButtonElement>
+
+  /**
+   * The action to delete rows
+   * @default undefined
+   * @type React.MouseEventHandler<HTMLButtonElement> | undefined
+   */
+  deleteRowsAction?: React.MouseEventHandler<HTMLButtonElement>
 }
 
 export function DataTable<TData, TValue>({

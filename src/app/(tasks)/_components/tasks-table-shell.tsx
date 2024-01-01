@@ -7,7 +7,7 @@ import { type ColumnDef } from "@tanstack/react-table"
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTable } from "@/components/data-table/data-table"
 
-import { type TasksPromise } from "../_lib/queries"
+import { type TasksPromise } from "../_lib/fetchers"
 import { deleteSelectedRows } from "./tasks-table-actions"
 import {
   fetchTasksTableColumnDefs,
@@ -43,15 +43,9 @@ export function TasksTableShell({ tasksPromise }: TasksTableShellProps) {
     <DataTable
       dataTable={dataTable}
       columns={columns}
-      // Render notion like filters
       advancedFilter={false}
-      // Render dynamic faceted filters
       filterableColumns={filterableColumns}
-      // Render dynamic searchable filters
       searchableColumns={searchableColumns}
-      // Render floating action controls at the bottom of the table on Row selection
-      // floatingBarContent={TasksTableFloatingBarContent(dataTable)}
-      // Delete selected rows
       deleteRowsAction={(event) => deleteSelectedRows(dataTable, event)}
     />
   )

@@ -24,10 +24,37 @@ import {
 import { useDebounce } from "@/hooks/use-debounce"
 
 interface UseDataTableProps<TData, TValue> {
+  /**
+   * The columns of the table
+   * @default []
+   * @type ColumnDef<TData, TValue>[]
+   */
   columns: ColumnDef<TData, TValue>[]
+
+  /**
+   * The data for the table
+   * @type TData[]
+   */
   data: TData[]
+
+  /**
+   * The number of pages in the table
+   * @type number
+   */
   pageCount: number
+
+  /**
+   * The filterable columns of the table
+   * @default []
+   * @type DataTableFilterableColumn<TData>[]
+   */
   filterableColumns?: DataTableFilterableColumn<TData>[]
+
+  /**
+   * The searchable columns of the table
+   * @default []
+   * @type DataTableSearchableColumn<TData>[]
+   */
   searchableColumns?: DataTableSearchableColumn<TData>[]
 }
 
