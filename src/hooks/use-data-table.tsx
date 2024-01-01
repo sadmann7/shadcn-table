@@ -25,17 +25,18 @@ import { useDebounce } from "@/hooks/use-debounce"
 
 interface UseDataTableProps<TData, TValue> {
   /**
+   * The data for the table
+   * @default []
+   * @type TData[]
+   */
+  data: TData[]
+
+  /**
    * The columns of the table
    * @default []
    * @type ColumnDef<TData, TValue>[]
    */
   columns: ColumnDef<TData, TValue>[]
-
-  /**
-   * The data for the table
-   * @type TData[]
-   */
-  data: TData[]
 
   /**
    * The number of pages in the table
@@ -47,20 +48,22 @@ interface UseDataTableProps<TData, TValue> {
    * The searchable columns of the table
    * @default []
    * @type DataTableSearchableColumn<TData>[]
+   * @example searchableColumns={[{ id: "title", title: "titles" }]}
    */
   searchableColumns?: DataTableSearchableColumn<TData>[]
 
   /**
-   * The filterable columns of the table
+   * The filterable columns of the table. When provided, renders dynamic faceted filters, and the advancedFilter prop is ignored.
    * @default []
    * @type DataTableFilterableColumn<TData>[]
+   * @example filterableColumns={[{ id: "status", title: "Status", options: ["todo", "in-progress", "done", "canceled"]}]}
    */
   filterableColumns?: DataTableFilterableColumn<TData>[]
 }
 
 export function useDataTable<TData, TValue>({
-  columns,
   data,
+  columns,
   pageCount,
   searchableColumns = [],
   filterableColumns = [],

@@ -35,11 +35,11 @@ export function TasksTableShell({ tasksPromise }: TasksTableShellProps) {
   )
 
   const { dataTable } = useDataTable({
-    columns,
     data,
+    columns,
     pageCount,
-    filterableColumns,
     searchableColumns,
+    filterableColumns,
   })
 
   return (

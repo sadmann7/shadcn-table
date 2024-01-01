@@ -8,21 +8,33 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-interface DataTableLoadingProps {
+interface DataTableSkeletonProps {
   columnCount: number
   rowCount?: number
+  searchableColumnCount?: number
+  filterableColumnCount?: number
 }
 
-export function DataTableLoading({
+export function DataTableSkeleton({
   columnCount,
   rowCount = 10,
-}: DataTableLoadingProps) {
+  searchableColumnCount = 1,
+  filterableColumnCount = 1,
+}: DataTableSkeletonProps) {
   return (
     <div className="w-full space-y-3 overflow-auto">
       <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
         <div className="flex flex-1 items-center space-x-2">
-          <Skeleton className="h-7 w-[150px] lg:w-[250px]" />
-          <Skeleton className="h-7 w-[70px] border-dashed" />
+          {searchableColumnCount > 0
+            ? Array.from({ length: searchableColumnCount }).map((_, i) => (
+                <Skeleton key={i} className="h-7 w-[150px] lg:w-[250px]" />
+              ))
+            : null}
+          {filterableColumnCount > 0
+            ? Array.from({ length: filterableColumnCount }).map((_, i) => (
+                <Skeleton key={i} className="h-7 w-[70px] border-dashed" />
+              ))
+            : null}
         </div>
         <Skeleton className="ml-auto hidden h-7 w-[70px] lg:flex" />
       </div>
