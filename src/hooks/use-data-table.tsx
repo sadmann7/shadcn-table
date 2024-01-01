@@ -44,26 +44,26 @@ interface UseDataTableProps<TData, TValue> {
   pageCount: number
 
   /**
-   * The filterable columns of the table
-   * @default []
-   * @type DataTableFilterableColumn<TData>[]
-   */
-  filterableColumns?: DataTableFilterableColumn<TData>[]
-
-  /**
    * The searchable columns of the table
    * @default []
    * @type DataTableSearchableColumn<TData>[]
    */
   searchableColumns?: DataTableSearchableColumn<TData>[]
+
+  /**
+   * The filterable columns of the table
+   * @default []
+   * @type DataTableFilterableColumn<TData>[]
+   */
+  filterableColumns?: DataTableFilterableColumn<TData>[]
 }
 
 export function useDataTable<TData, TValue>({
   columns,
   data,
   pageCount,
-  filterableColumns = [],
   searchableColumns = [],
+  filterableColumns = [],
 }: UseDataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()

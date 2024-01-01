@@ -8,7 +8,10 @@ import { useDataTable } from "@/hooks/use-data-table"
 import { DataTable } from "@/components/data-table/data-table"
 
 import { type TasksPromise } from "../_lib/fetchers"
-import { deleteSelectedRows } from "./tasks-table-actions"
+import {
+  deleteSelectedRows,
+  TasksTableFloatingBarContent,
+} from "./tasks-table-actions"
 import {
   fetchTasksTableColumnDefs,
   filterableColumns,
@@ -43,9 +46,9 @@ export function TasksTableShell({ tasksPromise }: TasksTableShellProps) {
     <DataTable
       dataTable={dataTable}
       columns={columns}
-      advancedFilter={false}
-      filterableColumns={filterableColumns}
       searchableColumns={searchableColumns}
+      filterableColumns={filterableColumns}
+      floatingBarContent={TasksTableFloatingBarContent(dataTable)}
       deleteRowsAction={(event) => deleteSelectedRows(dataTable, event)}
     />
   )

@@ -4,6 +4,11 @@ This is a Shadcn table component with server-side sorting, filtering, and pagina
 
 [![Shadcn Table](./public/images/screenshot.png)](https://shadcn-table-alt.vercel.app)
 
+> **Warning**
+> This project is still in development and is not ready for production use.
+>
+> It uses new technologies ( ppr, drizzle ORM) which are subject to change and may break your application.
+
 ## Tech Stack
 
 - **Framework:** [Next.js](https://nextjs.org)
@@ -15,11 +20,13 @@ This is a Shadcn table component with server-side sorting, filtering, and pagina
 
 ## Features
 
-- [x] Server-side pagination
-- [x] Server-side sorting
-- [x] Server-side filtering
-- [x] Dynamic debounced search based on the searchable columns provided
-- [x] Dynamic faceted-filtering based on the filterable columns provided
+- [x] Server-side pagination, sorting, and filtering (`useTable` hook)
+- [x] Customizable columns (`dataTable` and `columns` props)
+- [x] Dynamic debounced search inputs (`searchableColumns` prop)
+- [x] Dynamic faceted filters (`filterableColumns` prop)
+- [x] Optional notion like advanced filtering (`advancedFilter` prop)
+- [x] Optional floating bar content at the bottom (`floatingBarContent` prop)
+- [x] Action to delete rows (`deleteRowsAction` prop)
 
 ## Running Locally
 
@@ -67,54 +74,53 @@ Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 
 1. Clone the Repo
 
-```bash
+   ```bash
    git clone https://github.com/sadmann7/shadcn-table
-```
+   ```
 
-OR
+   OR
 
-```bash
+   ```bash
    git clone https://github.com/arvind-iyer-2001/shadcn-table
-```
+   ```
 
 2. Copy the following folders and files into your project (configured with ) at the exact specific locations
 
-- `src/components/data-table`
-- `src/db/index.ts`
-- `src/hooks`
-- `src/lib`
-- `src/types`
+   - `src/components/data-table`
+   - `src/db/index.ts`
+   - `src/hooks`
+   - `src/lib`
+   - `src/types`
 
-Also install the required shadcn components and other required packages with the following commands:
+   Also install the required shadcn components and other required packages with the following commands:
 
-```bash
-pnpm dlx shadcn-ui@latest init
+   ```bash
+   pnpm dlx shadcn-ui@latest init
 
-pnpm dlx shadcn-ui@latest add button badge checkbox command dialog dropdown-menu input popover select separator skeleton table toast
+   pnpm dlx shadcn-ui@latest add button badge checkbox command dialog dropdown-menu input popover select separator skeleton table toast
 
-pnpm add drizzle-orm @planetscale/database @tanstack/react-table zod drizzle-zod sonner @t3-oss/env-nextjs
-pnpm add -D drizzle-kit dotenv-cli tsx
-```
+   pnpm add drizzle-orm @planetscale/database @tanstack/react-table zod drizzle-zod sonner @t3-oss/env-nextjs
+   pnpm add -D drizzle-kit dotenv-cli tsx
+   ```
 
 3. Configure your Environment Variables
    Then set up the Database URL, for this example, we're using PlanetScale MySQL2 Database. Our schemas will also be made using this.
 
 4. Database Actions: For this you can use any ORM of your choice, but for the sake of this particular example, we're using [Drizzle ORM](https://orm.drizzle.team) and [PlanetScale](https://planetscale.com).
 
-As an example, lets use the `tasks` table.
+   As an example, lets use the `tasks` table.
 
-- Create the Table Schema at `@/db/schema.ts`
-- Create the associated zod validations `@/lib/validations/tasks.ts` file
+   - Create the Table Schema at `@/db/schema.ts`
+   - Create the associated zod validations `@/lib/validations/tasks.ts` file
 
 5. Setting up the Table
 
-- Start with creating a route group for the tasks table - `@/app/(tasks)/`
-- Inside this create `layout.tsx` and `loading.tsx` files, if needed
-- Copy the contents of the `(tasks)` directory into your project wherever needed.
-- Modify each of the files according to your database table
-  - Modify the required actions for querying and mutating data in the folder `/(tasks)/_actions` in the `queries.ts` and `mutations.ts`
-  - Modify the `/(tasks)/_components/task-table-column-def.tsx` file to define the column header, the column based actions and the presentation of the data in each column.
-  - Modify the `/(tasks)/_components/task-table-selected-action-controls.tsx` file to define the the selected rows based actions, like deleting and modifying a group of rows.
-  - Modify the `/(tasks)/_components/task-table-shell.tsx` file to reference the schemas, types and database actions to be used in the table.
-    (Components and Data that have to be memoized must be declared here, because it can not be done in a React Server Component)
-  - Modify the `/(tasks)/page.tsx` file to fetch the required search parameters of the page, and query the data on the Server.
+   - Start with creating a route group for the tasks table - `@/app/(tasks)/`.
+   - Inside this create `layout.tsx`, file, if needed
+   - Copy the contents of the `(tasks)` directory into your project wherever needed.
+   - Modify each of the files according to your database table.
+   - Modify the required actions for querying and mutating data in the folder `/(tasks)/_lib` in the `fetchers.ts` and `actions.ts`.
+   - Modify the `/(tasks)/_components/task-table-column-def.tsx` file to define the column header, the column based actions and the presentation of the data in each column.
+   - Modify the `/(tasks)/_components/tasks-table-actions.tsx` file to define the the selected rows based actions, like deleting and modifying a group of rows, and floating bar content (can be used in the `floatingBarContent` prop of the `DataTable` component as `TasksTableFloatingBarContent(dataTable)`)
+   - Modify the `/(tasks)/_components/task-table-shell.tsx` file to reference the schemas, types and database actions to be used in the table. The `getTasksPromise` is fetched here using the `React.use` hook. Components and Data that have to be memoized must be declared here, because it can not be done in a server component.
+   - Modify the `/(tasks)/page.tsx` file to define the `getTasksPromise` to be used in the `TasksTableShell` component.

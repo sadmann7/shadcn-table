@@ -38,18 +38,20 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
 
   /**
-   * The filterable columns of the table. When provided, renders dynamic faceted filters, and the advancedFilter prop is ignored.
-   * @default []
-   * @type DataTableFilterableColumn<TData>[]
-   */
-  filterableColumns?: DataTableFilterableColumn<TData>[]
-
-  /**
    * The searchable columns of the table
    * @default []
    * @type DataTableSearchableColumn<TData>[]
+   * @example searchableColumns={[{ id: "title", title: "titles" }]}
    */
   searchableColumns?: DataTableSearchableColumn<TData>[]
+
+  /**
+   * The filterable columns of the table. When provided, renders dynamic faceted filters, and the advancedFilter prop is ignored.
+   * @default []
+   * @type DataTableFilterableColumn<TData>[]
+   * @example filterableColumns={[{ id: "status", title: "Status", options: ["todo", "in-progress", "done", "canceled"]}]}
+   */
+  filterableColumns?: DataTableFilterableColumn<TData>[]
 
   /**
    * Show notion like filters when enabled
@@ -59,9 +61,11 @@ interface DataTableProps<TData, TValue> {
   advancedFilter?: boolean
 
   /**
-   * The content to render in the floating bar rendered at the bottom of the table. When null, the floating bar is not rendered.
+   * The content to render in the floating bar rendered on row selection at the bottom of the table. When null, the floating bar is not rendered.
+   * The datTable instance is passed as a prop to the floating bar content.
    * @default null
    * @type React.ReactNode | null
+   * @example floatingBarContent={TasksTableFloatingBarContent(dataTable)}
    */
   floatingBarContent?: React.ReactNode | null
 
@@ -69,6 +73,7 @@ interface DataTableProps<TData, TValue> {
    * The action to delete rows
    * @default undefined
    * @type React.MouseEventHandler<HTMLButtonElement> | undefined
+   * @example deleteRowsAction={(event) => deleteSelectedRows(dataTable, event)}
    */
   deleteRowsAction?: React.MouseEventHandler<HTMLButtonElement>
 }
@@ -76,8 +81,8 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   dataTable,
   columns,
-  filterableColumns = [],
   searchableColumns = [],
+  filterableColumns = [],
   advancedFilter = false,
   floatingBarContent,
   deleteRowsAction,
