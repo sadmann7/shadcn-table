@@ -153,42 +153,45 @@ export function useDataTable<TData, TValue>({
   })
 
   React.useEffect(() => {
+    // Initialize new params
+    const newParamsObject = {
+      page: 1,
+    }
+
+    // Get all values
     for (const column of debouncedSearchableColumnFilters) {
       if (typeof column.value === "string") {
-        router.push(
-          `${pathname}?${createQueryString({
-            page: 1,
-            [column.id]: typeof column.value === "string" ? column.value : null,
-          })}`
-        )
+        Object.assign(newParamsObject, {
+          [column.id]: typeof column.value === "string" ? column.value : null,
+        })
       }
     }
 
+    // Remove deleted values
     for (const key of searchParams.keys()) {
       if (
         searchableColumns.find((column) => column.id === key) &&
         !debouncedSearchableColumnFilters.find((column) => column.id === key)
       ) {
-        router.push(
-          `${pathname}?${createQueryString({
-            page: 1,
-            [key]: null,
-          })}`
-        )
+        Object.assign(newParamsObject, { [key]: null })
       }
     }
+
+    // After cumulate all the changes, push new params
+    router.push(`${pathname}?${createQueryString(newParamsObject)}`)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(debouncedSearchableColumnFilters)])
 
   React.useEffect(() => {
+    // Initialize new params
+    const newParamsObject = {
+      page: 1,
+    }
+
     for (const column of filterableColumnFilters) {
       if (typeof column.value === "object" && Array.isArray(column.value)) {
-        router.push(
-          `${pathname}?${createQueryString({
-            page: 1,
-            [column.id]: column.value.join("."),
-          })}`
-        )
+        Object.assign(newParamsObject, { [column.id]: column.value.join(".") })
       }
     }
 
@@ -197,14 +200,13 @@ export function useDataTable<TData, TValue>({
         filterableColumns.find((column) => column.id === key) &&
         !filterableColumnFilters.find((column) => column.id === key)
       ) {
-        router.push(
-          `${pathname}?${createQueryString({
-            page: 1,
-            [key]: null,
-          })}`
-        )
+        Object.assign(newParamsObject, { [key]: null })
       }
     }
+
+    // After cumulate all the changes, push new params
+    router.push(`${pathname}?${createQueryString(newParamsObject)}`)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(filterableColumnFilters)])
 
