@@ -25,7 +25,7 @@ This is a Shadcn table component with server-side sorting, filtering, and pagina
 - [x] Dynamic debounced search inputs (`searchableColumns` prop)
 - [x] Dynamic faceted filters (`filterableColumns` prop)
 - [x] Optional notion like advanced filtering (`advancedFilter` prop)
-- [x] Optional floating bar content at the bottom (`floatingBarContent` prop)
+- [x] Optional floating bar on row selection, rendred at the bottom (`floatingBarContent` prop)
 - [x] Action to delete rows (`deleteRowsAction` prop)
 
 ## Running Locally
