@@ -120,7 +120,7 @@ Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
    - Copy the contents of the `(tasks)` directory into your project wherever needed.
    - Modify each of the files according to your database table.
    - Modify the required actions for querying and mutating data in the folder `/(tasks)/_lib` in the `fetchers.ts` and `actions.ts`.
-   - Modify the `/(tasks)/_components/task-table-column-def.tsx` file to define the column header, the column based actions and the presentation of the data in each column.
+   - Modify the `/(tasks)/_components/task-table-column-def.tsx` file to define the column header, searchable columns, filterable columns, and the column based actions and the presentation of the data in each column.
    - Modify the `/(tasks)/_components/tasks-table-actions.tsx` file to define the the selected rows based actions, like deleting and modifying a group of rows, and floating bar content (can be used in the `floatingBarContent` prop of the `DataTable` component as `TasksTableFloatingBarContent(dataTable)`)
    - Modify the `/(tasks)/_components/task-table-shell.tsx` file to reference the schemas, types and database actions to be used in the table. The `getTasksPromise` is fetched here using the `React.use` hook. Components and Data that have to be memoized must be declared here, because it can not be done in a server component.
    - Modify the `/(tasks)/page.tsx` file to define the `getTasksPromise` to be used in the `TasksTableShell` component.

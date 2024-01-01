@@ -23,7 +23,7 @@ interface TasksTableShellProps {
 }
 
 export function TasksTableShell({ tasksPromise }: TasksTableShellProps) {
-  // Learn more about use here: https://react.dev/reference/react/use
+  // Learn more about React.use here: https://react.dev/reference/react/use
   const { data, pageCount } = React.use(tasksPromise)
 
   const [isPending, startTransition] = React.useTransition()
