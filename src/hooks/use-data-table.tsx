@@ -59,6 +59,7 @@ interface UseDataTableProps<TData, TValue> {
    * @example filterableColumns={[{ id: "status", title: "Status", options: ["todo", "in-progress", "done", "canceled"]}]}
    */
   filterableColumns?: DataTableFilterableColumn<TData>[]
+  initialColumnFilters?: ColumnFiltersState
 }
 
 export function useDataTable<TData, TValue>({
@@ -67,6 +68,7 @@ export function useDataTable<TData, TValue>({
   pageCount,
   searchableColumns = [],
   filterableColumns = [],
+  initialColumnFilters = [],
 }: UseDataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -105,9 +107,8 @@ export function useDataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
+  const [columnFilters, setColumnFilters] =
+    React.useState<ColumnFiltersState>(initialColumnFilters)
 
   // Handle server-side pagination
   const [{ pageIndex, pageSize }, setPagination] =
