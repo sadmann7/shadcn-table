@@ -16,7 +16,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="container flex h-16 items-center space-x-4">
         <Link href="/" className="mr-2 flex items-center md:mr-6 md:space-x-2">
-          <VercelLogoIcon className="h-4 w-4" aria-hidden="true" />
+          <VercelLogoIcon className="size-4" aria-hidden="true" />
           <span className="hidden font-bold md:inline-block">
             {siteConfig.name}
           </span>
@@ -50,7 +50,7 @@ export function SiteHeader() {
               })
             )}
           >
-            <GitHubLogoIcon className="h-4 w-4" aria-hidden="true" />
+            <GitHubLogoIcon className="size-4" aria-hidden="true" />
           </Link>
           <ModeToggle />
         </div>

@@ -115,9 +115,9 @@ export function TasksTableFloatingBarContent(table: Table<Task>) {
             title="Status"
             variant="ghost"
             size="icon"
-            className="h-7 w-7 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
+            className="size-7 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
           >
-            <CheckCircledIcon className="h-4 w-4" aria-hidden="true" />
+            <CheckCircledIcon className="size-4" aria-hidden="true" />
           </Button>
         </SelectTrigger>
         <SelectContent align="center">
@@ -136,9 +136,9 @@ export function TasksTableFloatingBarContent(table: Table<Task>) {
             title="Priority"
             variant="ghost"
             size="icon"
-            className="h-7 w-7 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
+            className="size-7 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
           >
-            <ArrowUpIcon className="h-4 w-4" aria-hidden="true" />
+            <ArrowUpIcon className="size-4" aria-hidden="true" />
           </Button>
         </SelectTrigger>
         <SelectContent align="center">
@@ -159,13 +159,13 @@ export function TasksTableFloatingBarContent(table: Table<Task>) {
         title="Delete"
         variant="ghost"
         size="icon"
-        className="h-7 w-7"
+        className="size-7"
         onClick={(event) => {
           table.toggleAllPageRowsSelected(false)
           deleteSelectedRows?.(table, event)
         }}
       >
-        <TrashIcon className="h-4 w-4" aria-hidden="true" />
+        <TrashIcon className="size-4" aria-hidden="true" />
         <span className="sr-only">Delete</span>
       </Button>
     </div>

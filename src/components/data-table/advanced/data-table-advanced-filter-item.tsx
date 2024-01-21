@@ -161,7 +161,7 @@ export function DataTableAdvancedFilterItem<TData>({
             aria-label="Remove filter"
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
+            className="size-8"
             onClick={() => {
               router.push(
                 `${pathname}?${createQueryString({
@@ -176,7 +176,7 @@ export function DataTableAdvancedFilterItem<TData>({
               )
             }}
           >
-            <TrashIcon className="h-4 w-4" aria-hidden="true" />
+            <TrashIcon className="size-4" aria-hidden="true" />
           </Button>
         </div>
         {selectedOption.items.length > 0 ? (

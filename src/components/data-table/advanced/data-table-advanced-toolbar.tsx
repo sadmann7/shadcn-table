@@ -91,7 +91,7 @@ export function DataTableAdvancedToolbar<TData>({
             >
               Filter
               <CaretSortIcon
-                className="ml-2 h-4 w-4 opacity-50"
+                className="ml-2 size-4 opacity-50"
                 aria-hidden="true"
               />
             </Button>
@@ -141,10 +141,7 @@ export function DataTableAdvancedToolbar<TData>({
               role="combobox"
               className="rounded-full"
             >
-              <PlusIcon
-                className="mr-2 h-4 w-4 opacity-50"
-                aria-hidden="true"
-              />
+              <PlusIcon className="mr-2 size-4 opacity-50" aria-hidden="true" />
               Add filter
             </Button>
           </DataTableAdvancedFilter>

@@ -34,7 +34,7 @@ export function DataTableFloatingBar<TData>({
         className="h-auto bg-transparent p-1 text-white hover:bg-zinc-700"
         onClick={() => table.toggleAllRowsSelected(false)}
       >
-        <Cross2Icon className="h-4 w-4" aria-hidden="true" />
+        <Cross2Icon className="size-4" aria-hidden="true" />
       </Button>
       {table.getFilteredSelectedRowModel().rows.length} row(s) selected
       {children}

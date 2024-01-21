@@ -108,7 +108,7 @@ export default async function MillionPage({ searchParams }: MillionPageProps) {
 
   return (
     <Shell>
-      <div className="flex h-full min-h-screen w-full flex-col items-center justify-center space-y-1.5">
+      <div className="flex size-full min-h-screen flex-col items-center justify-center space-y-1.5">
         <h1 className="text-center text-4xl font-bold">Under Construction</h1>
         <p className="text-center text-base text-muted-foreground">
           This page is under construction. Please check back later.

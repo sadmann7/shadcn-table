@@ -55,11 +55,10 @@ interface UseDataTableProps<TData, TValue> {
   /**
    * The filterable columns of the table. When provided, renders dynamic faceted filters, and the advancedFilter prop is ignored.
    * @default []
-   * @type {id: keyof TData, title: string, options: { label: string, value: string, icon?: React.ComponentType<{ className?: string }> }[]
+   * @type {id: keyof TData, title: string, options: { label: string, value: string, icon?: React.ComponentType<{ className?: string }> }[]}[]
    * @example filterableColumns={[{ id: "status", title: "Status", options: ["todo", "in-progress", "done", "canceled"]}]}
    */
   filterableColumns?: DataTableFilterableColumn<TData>[]
-  initialColumnFilters?: ColumnFiltersState
 }
 
 export function useDataTable<TData, TValue>({
@@ -68,7 +67,6 @@ export function useDataTable<TData, TValue>({
   pageCount,
   searchableColumns = [],
   filterableColumns = [],
-  initialColumnFilters = [],
 }: UseDataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -102,6 +100,34 @@ export function useDataTable<TData, TValue>({
     },
     [searchParams]
   )
+  // Initial column filters
+  const initialColumnFilters: ColumnFiltersState = React.useMemo(() => {
+    return Array.from(searchParams.entries()).reduce<ColumnFiltersState>(
+      (filters, [key, value]) => {
+        const filterableColumn = filterableColumns.find(
+          (column) => column.id === key
+        )
+        const searchableColumn = searchableColumns.find(
+          (column) => column.id === key
+        )
+
+        if (filterableColumn) {
+          filters.push({
+            id: key,
+            value: value.split("."),
+          })
+        } else if (searchableColumn) {
+          filters.push({
+            id: key,
+            value: [value],
+          })
+        }
+
+        return filters
+      },
+      []
+    )
+  }, [filterableColumns, searchableColumns, searchParams])
 
   // Table states
   const [rowSelection, setRowSelection] = React.useState({})

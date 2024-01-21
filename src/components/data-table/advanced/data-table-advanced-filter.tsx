@@ -57,7 +57,7 @@ export function DataTableAdvancedFilter<TData>({
           >
             Filter
             <CaretSortIcon
-              className="ml-2 h-4 w-4 shrink-0 opacity-50"
+              className="ml-2 size-4 shrink-0 opacity-50"
               aria-hidden="true"
             />
           </Button>
@@ -87,12 +87,9 @@ export function DataTableAdvancedFilter<TData>({
                 }}
               >
                 {option.items.length > 0 ? (
-                  <ChevronDownIcon
-                    className="mr-2 h-4 w-4"
-                    aria-hidden="true"
-                  />
+                  <ChevronDownIcon className="mr-2 size-4" aria-hidden="true" />
                 ) : (
-                  <TextIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+                  <TextIcon className="mr-2 size-4" aria-hidden="true" />
                 )}
                 {option.label}
               </CommandItem>
@@ -115,7 +112,7 @@ export function DataTableAdvancedFilter<TData>({
                 ])
               }}
             >
-              <PlusIcon className="mr-2 h-4 w-4" aria-hidden="true" />
+              <PlusIcon className="mr-2 size-4" aria-hidden="true" />
               Advanced filter
             </CommandItem>
           </CommandGroup>

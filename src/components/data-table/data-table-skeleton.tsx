@@ -77,10 +77,10 @@ export function DataTableSkeleton({
             <Skeleton className="h-8 w-20" />
           </div>
           <div className="flex items-center space-x-2">
-            <Skeleton className="hidden h-8 w-8 lg:block" />
-            <Skeleton className="h-8 w-8" />
-            <Skeleton className="h-8 w-8" />
-            <Skeleton className="hidden h-8 w-8 lg:block" />
+            <Skeleton className="hidden size-8 lg:block" />
+            <Skeleton className="size-8" />
+            <Skeleton className="size-8" />
+            <Skeleton className="hidden size-8 lg:block" />
           </div>
         </div>
       </div>

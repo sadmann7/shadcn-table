@@ -42,7 +42,7 @@ export function DataTableFacetedFilter<TData, TValue>({
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" size="sm" className="h-8 border-dashed">
-              <PlusCircledIcon className="mr-2 h-4 w-4" />
+              <PlusCircledIcon className="mr-2 size-4" />
               {title}
               {selectedValues?.size > 0 && (
                 <>
@@ -104,20 +104,20 @@ export function DataTableFacetedFilter<TData, TValue>({
                       >
                         <div
                           className={cn(
-                            "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                            "mr-2 flex size-4 items-center justify-center rounded-sm border border-primary",
                             isSelected
                               ? "bg-primary text-primary-foreground"
                               : "opacity-50 [&_svg]:invisible"
                           )}
                         >
                           <CheckIcon
-                            className={cn("h-4 w-4")}
+                            className={cn("size-4")}
                             aria-hidden="true"
                           />
                         </div>
                         {option.icon && (
                           <option.icon
-                            className="mr-2 h-4 w-4 text-muted-foreground"
+                            className="mr-2 size-4 text-muted-foreground"
                             aria-hidden="true"
                           />
                         )}
@@ -173,17 +173,17 @@ export function DataTableFacetedFilter<TData, TValue>({
                   >
                     <div
                       className={cn(
-                        "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                        "mr-2 flex size-4 items-center justify-center rounded-sm border border-primary",
                         isSelected
                           ? "bg-primary text-primary-foreground"
                           : "opacity-50 [&_svg]:invisible"
                       )}
                     >
-                      <CheckIcon className={cn("h-4 w-4")} aria-hidden="true" />
+                      <CheckIcon className={cn("size-4")} aria-hidden="true" />
                     </div>
                     {option.icon && (
                       <option.icon
-                        className="mr-2 h-4 w-4 text-muted-foreground"
+                        className="mr-2 size-4 text-muted-foreground"
                         aria-hidden="true"
                       />
                     )}

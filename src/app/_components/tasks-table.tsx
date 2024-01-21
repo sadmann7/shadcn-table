@@ -2,8 +2,7 @@
 
 import * as React from "react"
 import { type Task } from "@/db/schema"
-import { type SearchParams } from "@/types"
-import { type ColumnDef, type ColumnFiltersState } from "@tanstack/react-table"
+import { type ColumnDef } from "@tanstack/react-table"
 
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTable } from "@/components/data-table/data-table"
@@ -19,15 +18,11 @@ import {
   searchableColumns,
 } from "./tasks-table-column-def"
 
-interface TasksTableShellProps {
+interface TasksTableProps {
   tasksPromise: TasksPromise
-  searchParams: SearchParams
 }
 
-export function TasksTableShell({
-  tasksPromise,
-  searchParams,
-}: TasksTableShellProps) {
+export function TasksTable({ tasksPromise }: TasksTableProps) {
   // Learn more about React.use here: https://react.dev/reference/react/use
   const { data, pageCount } = React.use(tasksPromise)
 
@@ -39,25 +34,12 @@ export function TasksTableShell({
     [isPending]
   )
 
-  const initialColumnFilters = Object.entries(searchParams)
-    .map(([columnName, columnValue]) => {
-      if (!["page", "perPage", "sort"].includes(columnName) && columnValue) {
-        const parsedValue =
-          typeof columnValue === "string" && columnValue.includes(".")
-            ? columnValue.split(".")
-            : columnValue
-        return { id: columnName, value: parsedValue }
-      }
-    })
-    .filter((ele) => !!ele) as ColumnFiltersState
-
   const { dataTable } = useDataTable({
     data,
     columns,
     pageCount,
     searchableColumns,
     filterableColumns,
-    initialColumnFilters,
   })
 
   return (
