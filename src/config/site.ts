@@ -6,14 +6,4 @@ export const siteConfig = {
     "Shadcn table component with server side sorting, pagination, and filtering",
   url: "https://shadcn-table-alt.vercel.app",
   links: { github: "https://github.com/sadmann7/shadcn-table-v2" },
-  mainNav: [
-    {
-      title: "Next",
-      href: "/",
-    },
-    {
-      title: "Million",
-      href: "/million",
-    },
-  ],
 }
