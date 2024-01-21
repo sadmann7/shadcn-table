@@ -1,8 +1,8 @@
-# [Shadcn Table](https://shadcn-table-alt.vercel.app)
+# [Shadcn Table](https://table.sadmn.com)
 
 This is a Shadcn table component with server-side sorting, filtering, and pagination. It is bootstrapped with `create-t3-app`.
 
-[![Shadcn Table](./public/images/screenshot.png)](https://shadcn-table-alt.vercel.app)
+[![Shadcn Table](./public/images/screenshot.png)](https://table.sadmn.com)
 
 > **Warning**
 > This project is still in development and is not ready for production use.
@@ -17,6 +17,8 @@ This is a Shadcn table component with server-side sorting, filtering, and pagina
 - **Table package:** [TanStack/react-table](https://tanstack.com/table/v8)
 - **Database:** [PlanetScale](https://planetscale.com)
 - **ORM:** [Drizzle ORM](https://orm.drizzle.team)
+- **Validation:** [Zod](https://zod.dev)
+- **Optimizing compiler:** [million](https://million.dev)
 
 ## Features
 
