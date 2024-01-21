@@ -7,11 +7,11 @@ import { Shell } from "@/components/shell"
 import { TasksTableShell } from "./_components/tasks-table-shell"
 import { getTasks } from "./_lib/fetchers"
 
-export interface TasksTablePageProps {
+export interface IndexPageProps {
   searchParams: SearchParams
 }
 
-export default function TasksTablePage({ searchParams }: TasksTablePageProps) {
+export default function IndexPage({ searchParams }: IndexPageProps) {
   const tasksPromise = getTasks(searchParams)
 
   return (
