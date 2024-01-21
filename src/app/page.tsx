@@ -5,7 +5,7 @@ import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { Shell } from "@/components/shell"
 
 import { TasksTable } from "./_components/tasks-table"
-import { getTasks } from "./_lib/fetchers"
+import { getTasks } from "./_lib/queries"
 
 export interface IndexPageProps {
   searchParams: SearchParams

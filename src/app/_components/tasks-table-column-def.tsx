@@ -224,8 +224,8 @@ export function fetchTasksTableColumnDefs(
                     <DropdownMenuRadioItem
                       key={label}
                       value={label}
-                      disabled={isPending}
                       className="capitalize"
+                      disabled={isPending}
                     >
                       {label}
                     </DropdownMenuRadioItem>

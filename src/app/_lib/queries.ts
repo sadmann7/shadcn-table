@@ -146,5 +146,3 @@ export async function getTasks(searchParams: SearchParams) {
     return { data: [], pageCount: 0 }
   }
 }
-
-export type TasksPromise = ReturnType<typeof getTasks>

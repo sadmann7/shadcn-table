@@ -100,8 +100,9 @@ export function useDataTable<TData, TValue>({
     },
     [searchParams]
   )
+
   // Initial column filters
-  const initialColumnFilters: ColumnFiltersState = React.useMemo(() => {
+  const initialColumnFilters = React.useMemo<ColumnFiltersState>(() => {
     return Array.from(searchParams.entries()).reduce<ColumnFiltersState>(
       (filters, [key, value]) => {
         const filterableColumn = filterableColumns.find(
@@ -215,7 +216,7 @@ export function useDataTable<TData, TValue>({
       page: 1,
     }
 
-    // Get all values
+    // Handle debounced searchable column filters
     for (const column of debouncedSearchableColumnFilters) {
       if (typeof column.value === "string") {
         Object.assign(newParamsObject, {
@@ -224,48 +225,32 @@ export function useDataTable<TData, TValue>({
       }
     }
 
-    // Remove deleted values
-    for (const key of searchParams.keys()) {
-      if (
-        searchableColumns.find((column) => column.id === key) &&
-        !debouncedSearchableColumnFilters.find((column) => column.id === key)
-      ) {
-        Object.assign(newParamsObject, { [key]: null })
-      }
-    }
-
-    // After cumulate all the changes, push new params
-    router.push(`${pathname}?${createQueryString(newParamsObject)}`)
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(debouncedSearchableColumnFilters)])
-
-  React.useEffect(() => {
-    // Initialize new params
-    const newParamsObject = {
-      page: 1,
-    }
-
+    // Handle filterable column filters
     for (const column of filterableColumnFilters) {
       if (typeof column.value === "object" && Array.isArray(column.value)) {
         Object.assign(newParamsObject, { [column.id]: column.value.join(".") })
       }
     }
 
+    // Remove deleted values
     for (const key of searchParams.keys()) {
       if (
-        filterableColumns.find((column) => column.id === key) &&
-        !filterableColumnFilters.find((column) => column.id === key)
+        (searchableColumns.find((column) => column.id === key) &&
+          !debouncedSearchableColumnFilters.find(
+            (column) => column.id === key
+          )) ||
+        (filterableColumns.find((column) => column.id === key) &&
+          !filterableColumnFilters.find((column) => column.id === key))
       ) {
         Object.assign(newParamsObject, { [key]: null })
       }
     }
 
-    // After cumulate all the changes, push new params
+    // After cumulating all the changes, push new params
     router.push(`${pathname}?${createQueryString(newParamsObject)}`)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(filterableColumnFilters)])
+  }, [debouncedSearchableColumnFilters, filterableColumnFilters])
 
   const dataTable = useReactTable({
     data,

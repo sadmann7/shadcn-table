@@ -7,7 +7,7 @@ import { type ColumnDef } from "@tanstack/react-table"
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTable } from "@/components/data-table/data-table"
 
-import { type TasksPromise } from "../_lib/fetchers"
+import { type getTasks } from "../_lib/queries"
 import {
   deleteSelectedRows,
   TasksTableFloatingBarContent,
@@ -19,7 +19,7 @@ import {
 } from "./tasks-table-column-def"
 
 interface TasksTableProps {
-  tasksPromise: TasksPromise
+  tasksPromise: ReturnType<typeof getTasks>
 }
 
 export function TasksTable({ tasksPromise }: TasksTableProps) {
