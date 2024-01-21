@@ -117,12 +117,11 @@ Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 
 5. Setting up the Table
 
-   - Start with creating a route group for the tasks table - `@/app/(tasks)/`.
-   - Inside this create `layout.tsx`, file, if needed
-   - Copy the contents of the `(tasks)` directory into your project wherever needed.
+   - Start with creating a `page.tsx` file, and if necessary, a `layout.tsx` file in the app directory
+   - Copy the contents of the `./_components` and `./_lib` directories into your project wherever needed.
    - Modify each of the files according to your database table.
-   - Modify the required actions for querying and mutating data in the folder `/(tasks)/_lib` in the `queries.ts` and `actions.ts`.
-   - Modify the `/(tasks)/_components/task-table-column-def.tsx` file to define the column header, searchable columns, filterable columns, and the column based actions and the presentation of the data in each column.
-   - Modify the `/(tasks)/_components/tasks-table-actions.tsx` file to define the the selected rows based actions, like deleting and modifying a group of rows, and floating bar content (can be used in the `floatingBarContent` prop of the `DataTable` component as `TasksTableFloatingBarContent(dataTable)`)
-   - Modify the `/(tasks)/_components/task-table.tsx` file to reference the schemas, types and database actions to be used in the table. The `getTasksPromise` is fetched here using the `React.use` hook. Components and Data that have to be memoized must be declared here, because it can not be done in a server component.
-   - Modify the `/(tasks)/page.tsx` file to define the `getTasksPromise` to be used in the `TasksTableShell` component.
+   - Modify the required actions for querying and mutating data in the folder `./_lib/queries` in the `queries.ts` and `actions.ts`.
+   - Modify the `./_components/task-table-column-def.tsx` file to define the column header, searchable columns, filterable columns, and the column based actions and the presentation of the data in each column.
+   - Modify the `./_components/tasks-table-actions.tsx` file to define the the selected rows based actions, like deleting and modifying a group of rows, and floating bar content (can be used in the `floatingBarContent` prop of the `DataTable` component as `TasksTableFloatingBarContent(dataTable)`)
+   - Modify the `./_components/task-table.tsx` file to reference the schemas, types and database actions to be used in the table. The `getTasksPromise` is fetched here using the `React.use` hook. Components and Data that have to be memoized must be declared here, because it can not be done in a server component.
+   - Modify the `./page.tsx` file to define the `getTasksPromise` to be used in the `TasksTableShell` component.
