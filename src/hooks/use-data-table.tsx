@@ -100,9 +100,8 @@ export function useDataTable<TData, TValue>({
     },
     [searchParams]
   )
-
   // Initial column filters
-  const initialColumnFilters = React.useMemo<ColumnFiltersState>(() => {
+  const initialColumnFilters: ColumnFiltersState = React.useMemo(() => {
     return Array.from(searchParams.entries()).reduce<ColumnFiltersState>(
       (filters, [key, value]) => {
         const filterableColumn = filterableColumns.find(
@@ -250,7 +249,12 @@ export function useDataTable<TData, TValue>({
     router.push(`${pathname}?${createQueryString(newParamsObject)}`)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearchableColumnFilters, filterableColumnFilters])
+  }, [
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    JSON.stringify(debouncedSearchableColumnFilters),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    JSON.stringify(filterableColumnFilters),
+  ])
 
   const dataTable = useReactTable({
     data,
