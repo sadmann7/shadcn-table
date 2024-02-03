@@ -1,4 +1,4 @@
-import million from "million/compiler"
+// import million from "million/compiler"
 
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
@@ -13,9 +13,10 @@ const nextConfig = {
   },
 }
 
-const millionConfig = {
-  auto: { rsc: true },
-}
+// const millionConfig = {
+//   auto: { rsc: true },
+// }
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-export default million.next(nextConfig, millionConfig)
+// TODO: Add back millionConfig once it's fixed
+// export default million.next(nextConfig, millionConfig)
+export default nextConfig

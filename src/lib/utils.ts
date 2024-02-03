@@ -6,6 +6,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function createId() {
-  return customAlphabet("1234567890abcdef", 16)()
+export function createId(length = 7) {
+  return customAlphabet(
+    "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+    length
+  )()
 }
