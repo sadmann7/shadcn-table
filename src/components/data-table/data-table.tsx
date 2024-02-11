@@ -48,7 +48,7 @@ interface DataTableProps<TData, TValue> {
   /**
    * The filterable columns of the table. When provided, renders dynamic faceted filters, and the advancedFilter prop is ignored.
    * @default []
-   * @type {id: keyof TData, title: string, options: { label: string, value: string, icon?: React.ComponentType<{ className?: string }> }[]
+   * @type {id: keyof TData, title: string, options: { label: string, value: string, icon?: React.ComponentType<{ className?: string }> }[]}[]
    * @example filterableColumns={[{ id: "status", title: "Status", options: ["todo", "in-progress", "done", "canceled"]}]}
    */
   filterableColumns?: DataTableFilterableColumn<TData>[]

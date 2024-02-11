@@ -20,6 +20,7 @@ import {
   type SortingState,
   type VisibilityState,
 } from "@tanstack/react-table"
+import { z } from "zod"
 
 import { useDebounce } from "@/hooks/use-debounce"
 
@@ -61,6 +62,12 @@ interface UseDataTableProps<TData, TValue> {
   filterableColumns?: DataTableFilterableColumn<TData>[]
 }
 
+const schema = z.object({
+  page: z.coerce.number().default(1),
+  per_page: z.coerce.number().default(10),
+  sort: z.string().optional(),
+})
+
 export function useDataTable<TData, TValue>({
   data,
   columns,
@@ -73,14 +80,9 @@ export function useDataTable<TData, TValue>({
   const searchParams = useSearchParams()
 
   // Search params
-  const page = searchParams?.get("page") ?? "1"
-  const pageAsNumber = Number(page)
-  const fallbackPage =
-    isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
-  const per_page = searchParams?.get("per_page") ?? "10"
-  const perPageAsNumber = Number(per_page)
-  const fallbackPerPage = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
-  const sort = searchParams?.get("sort")
+  const { page, per_page, sort } = schema.parse(
+    Object.fromEntries(searchParams)
+  )
   const [column, order] = sort?.split(".") ?? []
 
   // Create query string
@@ -139,8 +141,8 @@ export function useDataTable<TData, TValue>({
   // Handle server-side pagination
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
-      pageIndex: fallbackPage - 1,
-      pageSize: fallbackPerPage,
+      pageIndex: page - 1,
+      pageSize: per_page,
     })
 
   const pagination = React.useMemo(
@@ -153,10 +155,10 @@ export function useDataTable<TData, TValue>({
 
   React.useEffect(() => {
     setPagination({
-      pageIndex: fallbackPage - 1,
-      pageSize: fallbackPerPage,
+      pageIndex: page - 1,
+      pageSize: per_page,
     })
-  }, [fallbackPage, fallbackPerPage])
+  }, [page, per_page])
 
   React.useEffect(() => {
     router.push(

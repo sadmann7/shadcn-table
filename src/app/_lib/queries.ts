@@ -3,25 +3,26 @@
 import { unstable_noStore as noStore } from "next/cache"
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
-import type { SearchParams } from "@/types"
 import { and, asc, desc, inArray, or, sql } from "drizzle-orm"
+import { type z } from "zod"
 
 import { filterColumn } from "@/lib/filter-column"
-import { searchParamsSchema } from "@/lib/validations/params"
 
-export async function getTasks(searchParams: SearchParams) {
+import { type searchParamsSchema } from "./validations"
+
+export async function getTasks({
+  search,
+}: {
+  search: z.infer<typeof searchParamsSchema>
+}) {
   noStore()
   try {
-    const { page, per_page, sort, title, status, priority, operator } =
-      searchParamsSchema.parse(searchParams)
+    const { page, per_page, sort, title, status, priority, operator } = search
 
     // Fallback page for invalid page numbers
-    const pageAsNumber = Number(page)
-    const fallbackPage =
-      isNaN(pageAsNumber) || pageAsNumber < 1 ? 1 : pageAsNumber
+    const fallbackPage = Number.isNaN(page) || page < 1 ? 1 : page
     // Number of items per page
-    const perPageAsNumber = Number(per_page)
-    const limit = isNaN(perPageAsNumber) ? 10 : perPageAsNumber
+    const limit = Number.isNaN(per_page) ? 10 : per_page
     // Number of items to skip
     const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
     // Column and order to sort by
