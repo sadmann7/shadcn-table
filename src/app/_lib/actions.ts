@@ -63,8 +63,6 @@ export async function updateTaskStatus({
   id,
   status,
 }: z.infer<typeof updateTaskStatusSchema>) {
-  console.log("updateTaskStatusAction", id, status)
-
   await db.update(tasks).set({ status }).where(eq(tasks.id, id))
 
   revalidatePath("/")
@@ -74,8 +72,6 @@ export async function updateTaskPriority({
   id,
   priority,
 }: z.infer<typeof updateTaskPrioritySchema>) {
-  console.log("updatePriorityAction", id, priority)
-
   await db.update(tasks).set({ priority }).where(eq(tasks.id, id))
 
   revalidatePath("/")

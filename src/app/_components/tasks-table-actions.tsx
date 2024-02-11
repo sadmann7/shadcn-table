@@ -6,7 +6,7 @@ import { SelectTrigger } from "@radix-ui/react-select"
 import { type Table } from "@tanstack/react-table"
 import { toast } from "sonner"
 
-import { catchError } from "@/lib/catch-error"
+import { getErrorMessage } from "@/lib/handle-error"
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -21,10 +21,13 @@ import {
   updateTaskStatus,
 } from "../_lib/actions"
 
-export function deleteSelectedRows(
-  table: Table<Task>,
+export function deleteSelectedRows({
+  table,
+  event,
+}: {
+  table: Table<Task>
   event?: React.MouseEvent<HTMLButtonElement, MouseEvent>
-) {
+}) {
   event?.preventDefault()
   const selectedRows = table.getFilteredSelectedRowModel().rows as {
     original: Task
@@ -41,17 +44,19 @@ export function deleteSelectedRows(
     ),
     {
       loading: "Deleting...",
-      success: () => {
-        return "Tasks deleted successfully."
-      },
-      error: (err: unknown) => {
-        return catchError(err)
-      },
+      success: "Tasks deleted",
+      error: (err) => getErrorMessage(err),
     }
   )
 }
 
-export function updateTasksStatus(table: Table<Task>, status: string) {
+export function updateTasksStatus({
+  table,
+  status,
+}: {
+  table: Table<Task>
+  status: string
+}) {
   const selectedRows = table.getFilteredSelectedRowModel().rows as unknown as {
     original: Task
   }[]
@@ -68,17 +73,19 @@ export function updateTasksStatus(table: Table<Task>, status: string) {
     ),
     {
       loading: "Updating...",
-      success: () => {
-        return "Tasks updated successfully."
-      },
-      error: (err: unknown) => {
-        return catchError(err)
-      },
+      success: "Tasks updated",
+      error: (err) => getErrorMessage(err),
     }
   )
 }
 
-export function updateTasksPriority(table: Table<Task>, priority: string) {
+export function updateTasksPriority({
+  table,
+  priority,
+}: {
+  table: Table<Task>
+  priority: string
+}) {
   const selectedRows = table.getFilteredSelectedRowModel().rows as unknown as {
     original: Task
   }[]
@@ -95,12 +102,8 @@ export function updateTasksPriority(table: Table<Task>, priority: string) {
     ),
     {
       loading: "Updating...",
-      success: () => {
-        return "Tasks updated successfully."
-      },
-      error: (err: unknown) => {
-        return catchError(err)
-      },
+      success: "Tasks updated",
+      error: (err) => getErrorMessage(err),
     }
   )
 }
@@ -108,7 +111,9 @@ export function updateTasksPriority(table: Table<Task>, priority: string) {
 export function TasksTableFloatingBarContent(table: Table<Task>) {
   return (
     <div className="justify-between gap-2 align-middle">
-      <Select onValueChange={(value) => updateTasksStatus(table, value)}>
+      <Select
+        onValueChange={(value) => updateTasksStatus({ table, status: value })}
+      >
         <SelectTrigger asChild>
           <Button
             aria-label="Delete selected rows"
@@ -130,7 +135,11 @@ export function TasksTableFloatingBarContent(table: Table<Task>) {
           </SelectGroup>
         </SelectContent>
       </Select>
-      <Select onValueChange={(value) => updateTasksPriority(table, value)}>
+      <Select
+        onValueChange={(value) =>
+          updateTasksPriority({ table, priority: value })
+        }
+      >
         <SelectTrigger asChild>
           <Button
             title="Priority"
@@ -162,7 +171,7 @@ export function TasksTableFloatingBarContent(table: Table<Task>) {
         className="size-7"
         onClick={(event) => {
           table.toggleAllPageRowsSelected(false)
-          deleteSelectedRows?.(table, event)
+          deleteSelectedRows?.({ table, event })
         }}
       >
         <TrashIcon className="size-4" aria-hidden="true" />

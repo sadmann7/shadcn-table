@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { tasks, type Task } from "@/db/schema"
 import type {
   DataTableFilterableColumn,
@@ -16,10 +17,10 @@ import {
   QuestionMarkCircledIcon,
   StopwatchIcon,
 } from "@radix-ui/react-icons"
-import { type ColumnDef } from "@tanstack/react-table"
+import type { ColumnDef, Row } from "@tanstack/react-table"
 import { toast } from "sonner"
 
-import { catchError } from "@/lib/catch-error"
+import { getErrorMessage } from "@/lib/handle-error"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -40,10 +41,7 @@ import { DataTableColumnHeader } from "@/components/data-table/data-table-column
 
 import { deleteTask, updateTaskLabel } from "../_lib/actions"
 
-export function fetchTasksTableColumnDefs(
-  isPending: boolean,
-  startTransition: React.TransitionStartFunction
-): ColumnDef<Task, unknown>[] {
+export function fetchTasksTableColumnDefs(): ColumnDef<Task, unknown>[] {
   return [
     {
       id: "select",
@@ -194,72 +192,87 @@ export function fetchTasksTableColumnDefs(
     },
     {
       id: "actions",
-      cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              aria-label="Open menu"
-              variant="ghost"
-              className="flex size-8 p-0 data-[state=open]:bg-muted"
-            >
-              <DotsHorizontalIcon className="size-4" aria-hidden="true" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[160px]">
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
-              <DropdownMenuSubContent>
-                <DropdownMenuRadioGroup
-                  value={row.original.label}
-                  onValueChange={(value) => {
-                    startTransition(async () => {
-                      await updateTaskLabel({
-                        id: row.original.id,
-                        label: value as Task["label"],
-                      })
-                    })
-                  }}
-                >
-                  {tasks.label.enumValues.map((label) => (
-                    <DropdownMenuRadioItem
-                      key={label}
-                      value={label}
-                      className="capitalize"
-                      disabled={isPending}
-                    >
-                      {label}
-                    </DropdownMenuRadioItem>
-                  ))}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => {
-                startTransition(() => {
-                  row.toggleSelected(false)
+      cell: ({ row }) => <ActionsCell row={row} />,
+    },
+  ]
+}
 
+function ActionsCell({ row }: { row: Row<Task> }) {
+  const [isUpdatePending, startUpdateTransition] = React.useTransition()
+  const [isDeletePending, startDeleteTransition] = React.useTransition()
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          aria-label="Open menu"
+          variant="ghost"
+          className="flex size-8 p-0 data-[state=open]:bg-muted"
+        >
+          <DotsHorizontalIcon className="size-4" aria-hidden="true" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-[160px]">
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuRadioGroup
+              value={row.original.label}
+              onValueChange={(value) => {
+                startUpdateTransition(() => {
                   toast.promise(
-                    deleteTask({
+                    updateTaskLabel({
                       id: row.original.id,
+                      label: value as Task["label"],
                     }),
                     {
-                      loading: "Deleting...",
-                      success: () => "Task deleted successfully.",
-                      error: (err: unknown) => catchError(err),
+                      loading: "Updating...",
+                      success: "Label updated",
+                      error: (err) => getErrorMessage(err),
                     }
                   )
                 })
               }}
             >
-              Delete
-              <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
-    },
-  ]
+              {tasks.label.enumValues.map((label) => (
+                <DropdownMenuRadioItem
+                  key={label}
+                  value={label}
+                  className="capitalize"
+                  disabled={isUpdatePending}
+                >
+                  {label}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={() => {
+            startDeleteTransition(() => {
+              row.toggleSelected(false)
+
+              toast.promise(
+                deleteTask({
+                  id: row.original.id,
+                }),
+                {
+                  loading: "Deleting...",
+                  success: () => "Task deleted",
+                  error: (err: unknown) => getErrorMessage(err),
+                }
+              )
+            })
+          }}
+          disabled={isDeletePending}
+        >
+          Delete
+          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }
 
 export const filterableColumns: DataTableFilterableColumn<Task>[] = [

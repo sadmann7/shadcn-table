@@ -17,14 +17,18 @@ export async function getTasks({
 }) {
   noStore()
   try {
-    const { page, per_page, sort, title, status, priority, operator } = search
+    const {
+      page,
+      per_page: limit,
+      sort,
+      title,
+      status,
+      priority,
+      operator,
+    } = search
 
-    // Fallback page for invalid page numbers
-    const fallbackPage = Number.isNaN(page) || page < 1 ? 1 : page
-    // Number of items per page
-    const limit = Number.isNaN(per_page) ? 10 : per_page
-    // Number of items to skip
-    const offset = fallbackPage > 0 ? (fallbackPage - 1) * limit : 0
+    // Offset to paginate the results
+    const offset = (page - 1) * limit
     // Column and order to sort by
     // Spliting the sort string by "." to get the column and order
     // Example: "title.desc" => ["title", "desc"]

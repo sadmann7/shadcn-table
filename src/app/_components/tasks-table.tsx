@@ -26,15 +26,13 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
   // Learn more about React.use here: https://react.dev/reference/react/use
   const { data, pageCount } = React.use(tasksPromise)
 
-  const [isPending, startTransition] = React.useTransition()
-
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<Task, unknown>[]>(
-    () => fetchTasksTableColumnDefs(isPending, startTransition),
-    [isPending]
+    () => fetchTasksTableColumnDefs(),
+    []
   )
 
-  const { dataTable } = useDataTable({
+  const { table } = useDataTable({
     data,
     columns,
     pageCount,
@@ -44,12 +42,12 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
 
   return (
     <DataTable
-      dataTable={dataTable}
+      table={table}
       columns={columns}
       searchableColumns={searchableColumns}
       filterableColumns={filterableColumns}
-      floatingBarContent={TasksTableFloatingBarContent(dataTable)}
-      deleteRowsAction={(event) => deleteSelectedRows(dataTable, event)}
+      floatingBarContent={TasksTableFloatingBarContent(table)}
+      deleteRowsAction={(event) => deleteSelectedRows({ table, event })}
     />
   )
 }

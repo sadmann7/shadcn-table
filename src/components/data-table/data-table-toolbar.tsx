@@ -31,7 +31,7 @@ export function DataTableToolbar<TData>({
   deleteRowsAction,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
-  const [isPending, startTransition] = React.useTransition()
+  const [isDeletePending, startDeleteTransition] = React.useTransition()
 
   return (
     <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
@@ -89,12 +89,12 @@ export function DataTableToolbar<TData>({
             size="sm"
             className="h-8"
             onClick={(event) => {
-              startTransition(() => {
+              startDeleteTransition(() => {
                 table.toggleAllPageRowsSelected(false)
                 deleteRowsAction(event)
               })
             }}
-            disabled={isPending}
+            disabled={isDeletePending}
           >
             <TrashIcon className="mr-2 size-4" aria-hidden="true" />
             Delete

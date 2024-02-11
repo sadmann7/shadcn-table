@@ -28,7 +28,7 @@ interface DataTableProps<TData, TValue> {
    * The table instance returned from useDataTable hook with pagination, sorting, filtering, etc.
    * @type TanstackTable<TData>
    */
-  dataTable: TanstackTable<TData>
+  table: TanstackTable<TData>
 
   /**
    * The columns of the table
@@ -79,7 +79,7 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({
-  dataTable,
+  table,
   columns,
   searchableColumns = [],
   filterableColumns = [],
@@ -91,13 +91,13 @@ export function DataTable<TData, TValue>({
     <div className="w-full space-y-2.5 overflow-auto">
       {advancedFilter ? (
         <DataTableAdvancedToolbar
-          dataTable={dataTable}
+          table={table}
           filterableColumns={filterableColumns}
           searchableColumns={searchableColumns}
         />
       ) : (
         <DataTableToolbar
-          table={dataTable}
+          table={table}
           filterableColumns={filterableColumns}
           searchableColumns={searchableColumns}
           deleteRowsAction={deleteRowsAction}
@@ -106,7 +106,7 @@ export function DataTable<TData, TValue>({
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            {dataTable.getHeaderGroups().map((headerGroup) => (
+            {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
@@ -124,8 +124,8 @@ export function DataTable<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {dataTable.getRowModel().rows?.length ? (
-              dataTable.getRowModel().rows.map((row) => (
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
@@ -154,9 +154,9 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <div className="space-y-2.5">
-        <DataTablePagination table={dataTable} />
+        <DataTablePagination table={table} />
         {floatingBarContent ? (
-          <DataTableFloatingBar table={dataTable}>
+          <DataTableFloatingBar table={table}>
             {floatingBarContent}
           </DataTableFloatingBar>
         ) : null}
