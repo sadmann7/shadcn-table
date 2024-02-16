@@ -3,7 +3,7 @@ import { toast } from "sonner"
 import { z } from "zod"
 
 export function getErrorMessage(err: unknown) {
-  const unkonwnError = "Something went wrong, please try again later."
+  const unknownError = "Something went wrong, please try again later."
 
   if (err instanceof z.ZodError) {
     const errors = err.issues.map((issue) => {
@@ -15,7 +15,7 @@ export function getErrorMessage(err: unknown) {
   } else if (isRedirectError(err)) {
     throw err
   } else {
-    return unkonwnError
+    return unknownError
   }
 }
 
