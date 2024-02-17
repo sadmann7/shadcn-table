@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Lint
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Format
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -89,7 +89,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Typecheck
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
