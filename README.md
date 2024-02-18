@@ -66,7 +66,7 @@ This is a Shadcn table component with server-side sorting, filtering, and pagina
 
 Watch the codebase overview video on [YouTube](https://www.youtube.com/watch?v=BsvjF5Y6-C8&t=1s).
 
-Consider subscribing to [Kavin's YouTube channel](https://www.youtube.com/@livecode247) for more videos.
+Consider subscribing to Kavin Desi Valli's [YouTube channel](https://www.youtube.com/@livecode247) for more videos.
 
 ## How do I deploy this?
 
