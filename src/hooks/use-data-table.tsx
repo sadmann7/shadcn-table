@@ -213,7 +213,15 @@ export function useDataTable<TData, TValue>({
     return filterableColumns.find((column) => column.id === filter.id)
   })
 
+  const [mounted, setMounted] = React.useState(false)
+
   React.useEffect(() => {
+    // Prevent resetting the page on initial render
+    if (!mounted) {
+      setMounted(true)
+      return
+    }
+
     // Initialize new params
     const newParamsObject = {
       page: 1,
