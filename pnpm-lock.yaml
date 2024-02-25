@@ -129,7 +129,7 @@ devDependencies:
     version: 9.1.0(eslint@8.56.0)
   eslint-plugin-tailwindcss:
     specifier: ^3.14.2
-    version: 3.14.2(tailwindcss@3.4.1)
+    version: 3.14.3(tailwindcss@3.4.1)
   mysql2:
     specifier: ^3.9.1
     version: 3.9.1
@@ -3337,8 +3337,8 @@ packages:
       string.prototype.matchall: 4.0.10
     dev: true
 
-  /eslint-plugin-tailwindcss@3.14.2(tailwindcss@3.4.1):
-    resolution: {integrity: sha512-fNzdf4poZP2yQC0xC2prQxMuArMSb5mnellLQvwb9HC3NcLzxs+0IVKWIg1BqUqyui0c+bbjMmhWcKUWK67SLQ==}
+  /eslint-plugin-tailwindcss@3.14.3(tailwindcss@3.4.1):
+    resolution: {integrity: sha512-1MKT8CrVuqVJleHxb7ICHsF2QwO0G+VJ28athTtlcOkccp0qmwK7nCUa1C9paCZ+VVgQU4fonsjLz/wUxoMHJQ==}
     engines: {node: '>=12.13.0'}
     peerDependencies:
       tailwindcss: ^3.4.0
