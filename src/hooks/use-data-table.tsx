@@ -147,6 +147,11 @@ export function useDataTable<TData, TValue>({
       pageSize: perPage,
     })
 
+  const { pageIndex: debouncedPI, pageSize: debouncedPS } = useDebounce({
+    pageIndex,
+    pageSize,
+  })
+
   const pagination = React.useMemo(
     () => ({
       pageIndex,
@@ -165,8 +170,8 @@ export function useDataTable<TData, TValue>({
   React.useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
-        page: pageIndex + 1,
-        per_page: pageSize,
+        page: debouncedPI + 1,
+        per_page: debouncedPS,
       })}`,
       {
         scroll: false,
@@ -174,7 +179,7 @@ export function useDataTable<TData, TValue>({
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageIndex, pageSize])
+  }, [debouncedPI, debouncedPI])
 
   // Handle server-side sorting
   const [sorting, setSorting] = React.useState<SortingState>([
