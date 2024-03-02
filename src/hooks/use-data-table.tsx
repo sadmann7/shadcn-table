@@ -147,10 +147,13 @@ export function useDataTable<TData, TValue>({
       pageSize: perPage,
     })
 
-  const { pageIndex: debouncedPI, pageSize: debouncedPS } = useDebounce({
-    pageIndex,
-    pageSize,
-  })
+  const debouncedPage = React.useMemo(
+    () => ({ pageIndex, pageSize }),
+    [pageIndex, pageSize]
+  )
+
+  const { pageIndex: debouncedPI, pageSize: debouncedPS } =
+    useDebounce(debouncedPage)
 
   const pagination = React.useMemo(
     () => ({
