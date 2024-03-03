@@ -5,6 +5,7 @@ import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
+import { customAlphabet } from "nanoid"
 import type { z } from "zod"
 
 import { createId } from "@/lib/utils"
@@ -27,7 +28,7 @@ export async function seedTasks({
   for (let i = 0; i < count; i++) {
     allTasks.push({
       id: createId(),
-      code: `TASK-${faker.number.int({ min: 1000, max: 9999 })}`,
+      code: `TASK-${customAlphabet("0123456789", 4)()}`,
       title: faker.hacker
         .phrase()
         .replace(/^./, (letter) => letter.toUpperCase()),
