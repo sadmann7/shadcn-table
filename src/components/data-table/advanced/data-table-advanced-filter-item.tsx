@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { DataTableFacetedFilter } from "../data-table-faceted-filter"
+import { DataTableAdvancedFacetedFilter } from "./data-table-advanced-faceted-filter"
 
 interface DataTableAdvancedFilterItemProps<TData> {
   table: Table<TData>
@@ -183,14 +183,13 @@ export function DataTableAdvancedFilterItem<TData>({
           table.getColumn(
             selectedOption.value ? String(selectedOption.value) : ""
           ) && (
-            <DataTableFacetedFilter
+            <DataTableAdvancedFacetedFilter
               key={String(selectedOption.value)}
               column={table.getColumn(
                 selectedOption.value ? String(selectedOption.value) : ""
               )}
               title={selectedOption.label}
               options={selectedOption.items}
-              variant="command"
             />
           )
         ) : (
