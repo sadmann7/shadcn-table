@@ -80,11 +80,9 @@ export function useDataTable<TData, TValue>({
   const searchParams = useSearchParams()
 
   // Search params
-  const {
-    page,
-    per_page: perPage,
-    sort,
-  } = schema.parse(Object.fromEntries(searchParams))
+  const { page, per_page, sort } = schema.parse(
+    Object.fromEntries(searchParams)
+  )
   const [column, order] = sort?.split(".") ?? []
 
   // Create query string
@@ -144,7 +142,7 @@ export function useDataTable<TData, TValue>({
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
       pageIndex: page - 1,
-      pageSize: perPage,
+      pageSize: per_page,
     })
 
   const pagination = React.useMemo(
@@ -156,17 +154,10 @@ export function useDataTable<TData, TValue>({
   )
 
   React.useEffect(() => {
-    setPagination({
-      pageIndex: page - 1,
-      pageSize: perPage,
-    })
-  }, [page, perPage])
-
-  React.useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
         page: pageIndex + 1,
-        per_page: pageSize,
+        per_page: per_page,
       })}`,
       {
         scroll: false,
