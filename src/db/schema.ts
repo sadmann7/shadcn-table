@@ -1,4 +1,4 @@
-import { mysqlEnum, mysqlTableCreator, varchar } from "drizzle-orm/mysql-core"
+import { pgEnum, pgTableCreator, varchar } from "drizzle-orm/pg-core"
 
 import { createId } from "@/lib/utils"
 
@@ -9,23 +9,33 @@ import { createId } from "@/lib/utils"
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 
-export const mysqlTable = mysqlTableCreator((name) => `shadcn-table_${name}`)
+export const pgTable = pgTableCreator((name) => `shadcn-table_${name}`)
 
-export const tasks = mysqlTable("tasks", {
+export const statusEnum = pgEnum("status", [
+  "todo",
+  "in-progress",
+  "done",
+  "canceled",
+])
+
+export const labelEnum = pgEnum("label", [
+  "bug",
+  "feature",
+  "enhancement",
+  "documentation",
+])
+
+export const priorityEnum = pgEnum("priority", ["low", "medium", "high"])
+
+export const tasks = pgTable("tasks", {
   id: varchar("id", { length: 128 })
     .$defaultFn(() => createId())
     .primaryKey(),
   code: varchar("code", { length: 255 }).unique(),
   title: varchar("title", { length: 255 }),
-  status: mysqlEnum("status", ["todo", "in-progress", "done", "canceled"])
-    .notNull()
-    .default("todo"),
-  label: mysqlEnum("label", ["bug", "feature", "enhancement", "documentation"])
-    .notNull()
-    .default("bug"),
-  priority: mysqlEnum("priority", ["low", "medium", "high"])
-    .notNull()
-    .default("low"),
+  status: statusEnum("status").notNull().default("todo"),
+  label: labelEnum("label").notNull().default("bug"),
+  priority: priorityEnum("priority").notNull().default("low"),
 })
 
 export type Task = typeof tasks.$inferSelect

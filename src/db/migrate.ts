@@ -1,4 +1,4 @@
-import { migrate } from "drizzle-orm/planetscale-serverless/migrator"
+import { migrate } from "drizzle-orm/postgres-js/migrator"
 
 import { db } from "."
 
