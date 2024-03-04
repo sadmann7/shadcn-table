@@ -1,5 +1,4 @@
 import * as React from "react"
-import { unstable_noStore as noStore } from "next/cache"
 import { tasks, type Task } from "@/db/schema"
 import { ArrowUpIcon, CheckCircledIcon, TrashIcon } from "@radix-ui/react-icons"
 import { SelectTrigger } from "@radix-ui/react-select"
@@ -33,7 +32,6 @@ export function deleteSelectedRows({
     original: Task
   }[]
 
-  noStore()
   toast.promise(
     Promise.all(
       selectedRows.map(async (row) =>
@@ -61,7 +59,6 @@ export function updateTasksStatus({
     original: Task
   }[]
 
-  noStore()
   toast.promise(
     Promise.all(
       selectedRows.map(async (row) =>
@@ -90,7 +87,6 @@ export function updateTasksPriority({
     original: Task
   }[]
 
-  noStore()
   toast.promise(
     Promise.all(
       selectedRows.map(async (row) =>

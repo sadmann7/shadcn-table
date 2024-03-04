@@ -2,6 +2,7 @@
   "name": "shadcn-table",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "clean": "rm -rf node_modules && rm -rf .next",
     "build": "next build",
@@ -23,6 +24,7 @@
     "shadcn:add": "pnpm dlx shadcn-ui@latest add"
   },
   "dependencies": {
+    "@planetscale/database": "^1.16.0",
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
