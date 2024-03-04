@@ -35,9 +35,6 @@ dependencies:
   '@tanstack/react-table':
     specifier: ^8.13.2
     version: 8.13.2(react-dom@18.2.0)(react@18.2.0)
-  '@vercel/postgres':
-    specifier: ^0.7.2
-    version: 0.7.2
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
@@ -49,7 +46,7 @@ dependencies:
     version: 0.2.1(@types/react@18.2.61)(react-dom@18.2.0)(react@18.2.0)
   drizzle-orm:
     specifier: ^0.29.4
-    version: 0.29.4(@types/react@18.2.61)(@vercel/postgres@0.7.2)(pg@8.11.3)(postgres@3.4.3)(react@18.2.0)
+    version: 0.29.4(@types/react@18.2.61)(pg@8.11.3)(postgres@3.4.3)(react@18.2.0)
   geist:
     specifier: ^1.2.2
     version: 1.2.2(next@14.1.2-canary.3)
@@ -924,12 +921,6 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
-
-  /@neondatabase/serverless@0.7.2:
-    resolution: {integrity: sha512-wU3WA2uTyNO7wjPs3Mg0G01jztAxUxzd9/mskMmtPwPTjf7JKWi9AW5/puOGXLxmZ9PVgRFeBVRVYq5nBPhsCg==}
-    dependencies:
-      '@types/pg': 8.6.6
-    dev: false
 
   /@next/env@14.1.2-canary.3:
     resolution: {integrity: sha512-kLc/2DZf9ewqBOOfXnWdQtGTmI27dVNu8XQVaW/UokTxzZsJ/tA7CVWQSyJTUcbfKzSJHJqo+PRjSyK1W89DEg==}
@@ -2001,14 +1992,7 @@ packages:
     resolution: {integrity: sha512-Kza43ewS3xoLgCEpQrsT+xRo/EJej1y0kVYGiLFE1NEODXGzTfwiC6tXTLMQskn1X4/Rjlh0MQUvx9W+L9long==}
     dependencies:
       undici-types: 5.26.5
-
-  /@types/pg@8.6.6:
-    resolution: {integrity: sha512-O2xNmXebtwVekJDD+02udOncjVcMZQuTEQEMpKJ0ZRf5E7/9JJX3izhKUcUifBkyKpljyUM6BTgy2trmviKlpw==}
-    dependencies:
-      '@types/node': 20.11.24
-      pg-protocol: 1.6.0
-      pg-types: 2.2.0
-    dev: false
+    dev: true
 
   /@types/prop-types@15.7.11:
     resolution: {integrity: sha512-ga8y9v9uyeiLdpKddhxYQkxNDrfvuPrlFb0N1qnZZByvcElJaXthF1UhvCh9TLWJBEHeNtdnbysW7Y6Uq8CVng==}
@@ -2231,16 +2215,6 @@ packages:
   /@ungap/structured-clone@1.2.0:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
     dev: true
-
-  /@vercel/postgres@0.7.2:
-    resolution: {integrity: sha512-IqR/ZAvoPGcPaXl9eWWB5KaA+w/81RzZa/18P4izQRHpNBkTGt9HwGfYi9+wut5UgxNq4QSX9A7HIQR6QDvX2Q==}
-    engines: {node: '>=14.6'}
-    dependencies:
-      '@neondatabase/serverless': 0.7.2
-      bufferutil: 4.0.8
-      utf-8-validate: 6.0.3
-      ws: 8.14.2(bufferutil@4.0.8)(utf-8-validate@6.0.3)
-    dev: false
 
   /acorn-jsx@5.3.2(acorn@8.11.3):
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -2494,14 +2468,6 @@ packages:
   /buffer-writer@2.0.0:
     resolution: {integrity: sha512-a7ZpuTZU1TRtnwyCNW3I5dc0wWNC3VR9S++Ewyk2HHZdrO3CQJqSpd+95Us590V6AL7JqUAH2IwZ/398PmNFgw==}
     engines: {node: '>=4'}
-
-  /bufferutil@4.0.8:
-    resolution: {integrity: sha512-4T53u4PdgsXqKaIctwF8ifXlRTTmEPJ8iEPWFdGZvcf7sbwYo6FKFEX9eNNAnzFZ7EzJAQ3CJeOtCRA4rDp7Pw==}
-    engines: {node: '>=6.14.2'}
-    requiresBuild: true
-    dependencies:
-      node-gyp-build: 4.8.0
-    dev: false
 
   /busboy@1.6.0:
     resolution: {integrity: sha512-8SFQbg/0hQ9xy3UNTB0YEnsNBbWfhf7RtnzpL7TkBiTBRfrQ9Fxcnz7VJsleJpyp6rVLvXiuORqjlHi5q+PYuA==}
@@ -2820,7 +2786,7 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.29.4(@types/react@18.2.61)(@vercel/postgres@0.7.2)(pg@8.11.3)(postgres@3.4.3)(react@18.2.0):
+  /drizzle-orm@0.29.4(@types/react@18.2.61)(pg@8.11.3)(postgres@3.4.3)(react@18.2.0):
     resolution: {integrity: sha512-ZnSM8TAxFhzH7p1s3+w3pRE/eKaOeNkH9SKitm717pubDVVcV2I0BCDBPGKV+pe02+wMfw37ntlTcCyo2rA3IA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -2892,7 +2858,6 @@ packages:
         optional: true
     dependencies:
       '@types/react': 18.2.61
-      '@vercel/postgres': 0.7.2
       pg: 8.11.3
       postgres: 3.4.3
       react: 18.2.0
@@ -4335,11 +4300,6 @@ packages:
       - babel-plugin-macros
     dev: false
 
-  /node-gyp-build@4.8.0:
-    resolution: {integrity: sha512-u6fs2AEUljNho3EYTJNBfImO5QTo/J/1Etd+NVdCj7qWKUSN/bSLkZwhDv7I+w/MSC6qJ4cknepkAYykDdK8og==}
-    hasBin: true
-    dev: false
-
   /node-releases@2.0.14:
     resolution: {integrity: sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==}
 
@@ -5368,6 +5328,7 @@ packages:
 
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+    dev: true
 
   /undici@6.6.2:
     resolution: {integrity: sha512-vSqvUE5skSxQJ5sztTZ/CdeJb1Wq0Hf44hlYMciqHghvz+K88U0l7D6u1VsndoFgskDcnU+nG3gYmMzJVzd9Qg==}
@@ -5430,14 +5391,6 @@ packages:
       detect-node-es: 1.1.0
       react: 18.2.0
       tslib: 2.6.2
-    dev: false
-
-  /utf-8-validate@6.0.3:
-    resolution: {integrity: sha512-uIuGf9TWQ/y+0Lp+KGZCMuJWc3N9BHA+l/UmHd/oUHwJJDeysyTRxNQVkbzsIWfGFbRe3OcgML/i0mvVRPOyDA==}
-    engines: {node: '>=6.14.2'}
-    requiresBuild: true
-    dependencies:
-      node-gyp-build: 4.8.0
     dev: false
 
   /util-deprecate@1.0.2:
@@ -5530,22 +5483,6 @@ packages:
   /wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
     dev: true
-
-  /ws@8.14.2(bufferutil@4.0.8)(utf-8-validate@6.0.3):
-    resolution: {integrity: sha512-wEBG1ftX4jcglPxgFCMJmZ2PLtSbJ2Peg6TmpJFTbe9GZYOQCDPdMYu/Tm0/bGZkw8paZnJY45J4K2PZrLYq8g==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-    dependencies:
-      bufferutil: 4.0.8
-      utf-8-validate: 6.0.3
-    dev: false
 
   /xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}

@@ -15,7 +15,7 @@ This is a Shadcn table component with server-side sorting, filtering, and pagina
 - **Styling:** [Tailwind CSS](https://tailwindcss.com)
 - **UI Components:** [shadcn/ui](https://ui.shadcn.com)
 - **Table package:** [TanStack/react-table](https://tanstack.com/table/v8)
-- **Database:** [PlanetScale](https://planetscale.com)
+- **Database:** [Neon](https://neon.tech)
 - **ORM:** [Drizzle ORM](https://orm.drizzle.team)
 - **Validation:** [Zod](https://zod.dev)
 - **Optimizing compiler:** [million](https://million.dev)
@@ -101,8 +101,8 @@ Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 
    pnpm dlx shadcn-ui@latest add button badge checkbox command dialog dropdown-menu input popover select separator skeleton table toast
 
-   pnpm add drizzle-orm @planetscale/database @tanstack/react-table zod drizzle-zod sonner @t3-oss/env-nextjs
-   pnpm add -D drizzle-kit dotenv-cli tsx
+   pnpm add drizzle-orm postgres @tanstack/react-table zod sonner @t3-oss/env-nextjs
+   pnpm add -D drizzle-kit dotenv-cli pg tsx
    ```
 
 3. Configure your Environment Variables
