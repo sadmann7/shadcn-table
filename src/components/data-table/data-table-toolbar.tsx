@@ -100,19 +100,19 @@ export function DataTableToolbar<TData>({
             Delete
           </Button>
         ) : newRowLink ? (
-          <Link aria-label="Create new row" href={newRowLink}>
-            <div
-              className={cn(
-                buttonVariants({
-                  variant: "outline",
-                  size: "sm",
-                  className: "h-8",
-                })
-              )}
-            >
-              <PlusCircledIcon className="mr-2 size-4" aria-hidden="true" />
-              New
-            </div>
+          <Link
+            aria-label="Create new row"
+            href={newRowLink}
+            className={cn(
+              buttonVariants({
+                variant: "outline",
+                size: "sm",
+                className: "h-8",
+              })
+            )}
+          >
+            <PlusCircledIcon className="mr-2 size-4" aria-hidden="true" />
+            New
           </Link>
         ) : null}
         <DataTableViewOptions table={table} />

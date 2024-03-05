@@ -6,16 +6,16 @@ import { Shell } from "@/components/shell"
 
 import { TasksTable } from "./_components/tasks-table"
 import { getTasks } from "./_lib/queries"
-import { searchParamsSchema } from "./_lib/validations"
+import { getTasksSchema } from "./_lib/validations"
 
 export interface IndexPageProps {
   searchParams: SearchParams
 }
 
 export default function IndexPage({ searchParams }: IndexPageProps) {
-  const search = searchParamsSchema.parse(searchParams)
+  const search = getTasksSchema.parse(searchParams)
 
-  const tasksPromise = getTasks({ search })
+  const tasksPromise = getTasks(search)
 
   return (
     <Shell>

@@ -8,27 +8,15 @@ import { type z } from "zod"
 
 import { filterColumn } from "@/lib/filter-column"
 
-import { type searchParamsSchema } from "./validations"
+import { type getTasksSchema } from "./validations"
 
-export async function getTasks({
-  search,
-}: {
-  search: z.infer<typeof searchParamsSchema>
-}) {
+export async function getTasks(search: z.infer<typeof getTasksSchema>) {
   noStore()
   try {
-    const {
-      page,
-      per_page: limit,
-      sort,
-      title,
-      status,
-      priority,
-      operator,
-    } = search
+    const { page, per_page, sort, title, status, priority, operator } = search
 
     // Offset to paginate the results
-    const offset = (page - 1) * limit
+    const offset = (page - 1) * per_page
     // Column and order to sort by
     // Spliting the sort string by "." to get the column and order
     // Example: "title.desc" => ["title", "desc"]
@@ -46,7 +34,7 @@ export async function getTasks({
       const data = await tx
         .select()
         .from(tasks)
-        .limit(limit)
+        .limit(per_page)
         .offset(offset)
         .where(
           !operator || operator === "and"
@@ -144,10 +132,9 @@ export async function getTasks({
       }
     })
 
-    const pageCount = Math.ceil(count / limit)
+    const pageCount = Math.ceil(count / per_page)
     return { data, pageCount }
   } catch (err) {
-    console.log(err)
     return { data: [], pageCount: 0 }
   }
 }

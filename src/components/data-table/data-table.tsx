@@ -70,7 +70,15 @@ interface DataTableProps<TData, TValue> {
   floatingBarContent?: React.ReactNode | null
 
   /**
-   * The action to delete rows
+   * The link to create a new row, will be rendered as a button
+   * @default undefined
+   * @type string
+   * @example newRowLink="/tasks/new"
+   */
+  newRowLink?: string
+
+  /**
+   * The action to delete rows, will be rendered as a button
    * @default undefined
    * @type React.MouseEventHandler<HTMLButtonElement> | undefined
    * @example deleteRowsAction={(event) => deleteSelectedRows(dataTable, event)}
@@ -85,6 +93,7 @@ export function DataTable<TData, TValue>({
   filterableColumns = [],
   advancedFilter = false,
   floatingBarContent,
+  newRowLink,
   deleteRowsAction,
 }: DataTableProps<TData, TValue>) {
   return (
@@ -100,6 +109,7 @@ export function DataTable<TData, TValue>({
           table={table}
           filterableColumns={filterableColumns}
           searchableColumns={searchableColumns}
+          newRowLink={newRowLink}
           deleteRowsAction={deleteRowsAction}
         />
       )}
