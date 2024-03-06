@@ -62,7 +62,7 @@ interface DataTableProps<TData, TValue> {
 
   /**
    * The content to render in the floating bar on row selection, at the bottom of the table. When null, the floating bar is not rendered.
-   * The datTable instance is passed as a prop to the floating bar content.
+   * The dataTable instance is passed as a prop to the floating bar content.
    * @default null
    * @type React.ReactNode | null
    * @example floatingBarContent={TasksTableFloatingBarContent(dataTable)}
