@@ -52,7 +52,7 @@ dependencies:
     version: 1.2.2(next@14.2.0-canary.2)
   million:
     specifier: ^3.0.4
-    version: 3.0.4
+    version: 3.0.5
   nanoid:
     specifier: ^5.0.6
     version: 5.0.6
@@ -4189,8 +4189,8 @@ packages:
       braces: 3.0.2
       picomatch: 2.3.1
 
-  /million@3.0.4:
-    resolution: {integrity: sha512-ioO9dUL4nw6AfNMmZ60k52O3B0UoQSNzoD4pHnoROn7Zr1Cl7b7k//TgbhC/Sazq8eSjIku2+dme67AQn/sB3w==}
+  /million@3.0.5:
+    resolution: {integrity: sha512-4Ti0exibWnQGAyaxeuPEfW5gltQ23gK8rdRColorUMIS6sKXdsTKEaTg1R3X00fmJwonRWmTJQg3PeWAm/lvDw==}
     hasBin: true
     dependencies:
       '@babel/core': 7.24.0
