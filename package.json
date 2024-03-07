@@ -37,7 +37,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^0.2.1",
-    "drizzle-orm": "^0.29.4",
+    "drizzle-orm": "^0.30.0",
     "geist": "^1.2.2",
     "million": "^3.0.4",
     "nanoid": "^5.0.6",
