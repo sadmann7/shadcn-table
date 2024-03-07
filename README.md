@@ -7,7 +7,7 @@ This is a Shadcn table component with server-side sorting, filtering, and pagina
 > **Warning**
 > This project is still in development and is not ready for production use.
 >
-> It uses new technologies ( ppr, drizzle ORM) which are subject to change and may break your application.
+> It uses new technologies (ppr, and drizzle ORM) which are subject to change and may break your application.
 
 ## Tech Stack
 
@@ -108,7 +108,7 @@ Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 3. Configure your Environment Variables
    Then set up the Database URL, for this example, we're using PlanetScale MySQL2 Database. Our schemas will also be made using this.
 
-4. Database Actions: For this you can use any ORM of your choice, but for the sake of this particular example, we're using [Drizzle ORM](https://orm.drizzle.team) and [PlanetScale](https://planetscale.com).
+4. Database Actions: For this you can use any ORM of your choice, but for the sake of this particular example, we're using [Drizzle ORM](https://orm.drizzle.team) and [Neon](https://planetscale.com).
 
    As an example, lets use the `tasks` table.
 

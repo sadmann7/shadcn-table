@@ -41,7 +41,7 @@ import { DataTableColumnHeader } from "@/components/data-table/data-table-column
 
 import { deleteTask, updateTaskLabel } from "../_lib/actions"
 
-export function fetchTasksTableColumnDefs(): ColumnDef<Task, unknown>[] {
+export function fetchTasksTableColumnDef(): ColumnDef<Task, unknown>[] {
   return [
     {
       id: "select",
@@ -142,7 +142,7 @@ export function fetchTasksTableColumnDefs(): ColumnDef<Task, unknown>[] {
         )
       },
       filterFn: (row, id, value) => {
-        return value instanceof Array && value.includes(row.getValue(id))
+        return Array.isArray(value) && value.includes(row.getValue(id))
       },
     },
     {
@@ -187,7 +187,7 @@ export function fetchTasksTableColumnDefs(): ColumnDef<Task, unknown>[] {
         )
       },
       filterFn: (row, id, value) => {
-        return value instanceof Array && value.includes(row.getValue(id))
+        return Array.isArray(value) && value.includes(row.getValue(id))
       },
     },
     {

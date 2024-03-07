@@ -13,7 +13,7 @@ import {
   TasksTableFloatingBarContent,
 } from "./tasks-table-actions"
 import {
-  fetchTasksTableColumnDefs,
+  fetchTasksTableColumnDef,
   filterableColumns,
   searchableColumns,
 } from "./tasks-table-column-def"
@@ -28,7 +28,7 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo<ColumnDef<Task, unknown>[]>(
-    () => fetchTasksTableColumnDefs(),
+    () => fetchTasksTableColumnDef(),
     []
   )
 
