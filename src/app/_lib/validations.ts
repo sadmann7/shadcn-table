@@ -1,7 +1,7 @@
 import { tasks } from "@/db/schema"
 import * as z from "zod"
 
-export const getTasksSchema = z.object({
+export const searchParamsSchema = z.object({
   page: z.coerce.number().default(1),
   per_page: z.coerce.number().default(10),
   sort: z.string().optional(),
@@ -10,6 +10,8 @@ export const getTasksSchema = z.object({
   priority: z.string().optional(),
   operator: z.string().optional(),
 })
+
+export const getTasksSchema = searchParamsSchema
 
 export const updateTaskLabelSchema = z.object({
   id: z.string(),
