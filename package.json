@@ -36,7 +36,7 @@
     "@tanstack/react-table": "^8.13.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
-    "cmdk": "^0.2.1",
+    "cmdk": "^1.0.0",
     "drizzle-orm": "^0.30.0",
     "geist": "^1.2.2",
     "million": "^3.0.4",
