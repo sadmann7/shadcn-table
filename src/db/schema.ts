@@ -1,30 +1,28 @@
 import { pgTable } from "@/db/utils"
 import { pgEnum, varchar } from "drizzle-orm/pg-core"
 
+import { databasePrefix } from "@/lib/constants"
 import { createId } from "@/lib/utils"
 
-/**
- * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
- * database instance for multiple projects.
- *
- * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
- */
-
-export const statusEnum = pgEnum("shadcn_status", [
+export const statusEnum = pgEnum(`${databasePrefix}_status`, [
   "todo",
   "in-progress",
   "done",
   "canceled",
 ])
 
-export const labelEnum = pgEnum("shadcn_label", [
+export const labelEnum = pgEnum(`${databasePrefix}_label`, [
   "bug",
   "feature",
   "enhancement",
   "documentation",
 ])
 
-export const priorityEnum = pgEnum("shadcn_priority", ["low", "medium", "high"])
+export const priorityEnum = pgEnum(`${databasePrefix}_priority`, [
+  "low",
+  "medium",
+  "high",
+])
 
 export const tasks = pgTable("tasks", {
   id: varchar("id", { length: 128 })
