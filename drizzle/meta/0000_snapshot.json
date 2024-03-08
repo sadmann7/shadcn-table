@@ -1,0 +1,99 @@
+{
+  "id": "604b112c-e9fc-476a-b1c3-72eb27682da3",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "5",
+  "dialect": "pg",
+  "tables": {
+    "shadcn_tasks": {
+      "name": "shadcn_tasks",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(128)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "shadcn_status",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'todo'"
+        },
+        "label": {
+          "name": "label",
+          "type": "shadcn_label",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'bug'"
+        },
+        "priority": {
+          "name": "priority",
+          "type": "shadcn_priority",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'low'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "shadcn_tasks_code_unique": {
+          "name": "shadcn_tasks_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        }
+      }
+    }
+  },
+  "enums": {
+    "shadcn_label": {
+      "name": "shadcn_label",
+      "values": {
+        "bug": "bug",
+        "feature": "feature",
+        "enhancement": "enhancement",
+        "documentation": "documentation"
+      }
+    },
+    "shadcn_priority": {
+      "name": "shadcn_priority",
+      "values": {
+        "low": "low",
+        "medium": "medium",
+        "high": "high"
+      }
+    },
+    "shadcn_status": {
+      "name": "shadcn_status",
+      "values": {
+        "todo": "todo",
+        "in-progress": "in-progress",
+        "done": "done",
+        "canceled": "canceled"
+      }
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

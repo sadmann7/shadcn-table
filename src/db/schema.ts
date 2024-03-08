@@ -1,4 +1,5 @@
-import { pgEnum, pgTableCreator, varchar } from "drizzle-orm/pg-core"
+import { pgTable } from "@/db/utils"
+import { pgEnum, varchar } from "drizzle-orm/pg-core"
 
 import { createId } from "@/lib/utils"
 
@@ -9,23 +10,21 @@ import { createId } from "@/lib/utils"
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
 
-export const pgTable = pgTableCreator((name) => `shadcn-table_${name}`)
-
-export const statusEnum = pgEnum("status", [
+export const statusEnum = pgEnum("shadcn_status", [
   "todo",
   "in-progress",
   "done",
   "canceled",
 ])
 
-export const labelEnum = pgEnum("label", [
+export const labelEnum = pgEnum("shadcn_label", [
   "bug",
   "feature",
   "enhancement",
   "documentation",
 ])
 
-export const priorityEnum = pgEnum("priority", ["low", "medium", "high"])
+export const priorityEnum = pgEnum("shadcn_priority", ["low", "medium", "high"])
 
 export const tasks = pgTable("tasks", {
   id: varchar("id", { length: 128 })
