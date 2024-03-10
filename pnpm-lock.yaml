@@ -49,7 +49,7 @@ dependencies:
     version: 0.30.1(@types/react@18.2.64)(pg@8.11.3)(postgres@3.4.3)(react@18.2.0)
   geist:
     specifier: ^1.2.2
-    version: 1.2.2(next@14.2.0-canary.11)
+    version: 1.2.2(next@14.2.0-canary.12)
   million:
     specifier: ^3.0.4
     version: 3.0.6
@@ -57,11 +57,11 @@ dependencies:
     specifier: ^5.0.6
     version: 5.0.6
   next:
-    specifier: 14.2.0-canary.11
-    version: 14.2.0-canary.11(@babel/core@7.24.0)(react-dom@18.2.0)(react@18.2.0)
+    specifier: 14.2.0-canary.12
+    version: 14.2.0-canary.12(@babel/core@7.24.0)(react-dom@18.2.0)(react@18.2.0)
   next-themes:
     specifier: ^0.2.1
-    version: 0.2.1(next@14.2.0-canary.11)(react-dom@18.2.0)(react@18.2.0)
+    version: 0.2.1(next@14.2.0-canary.12)(react-dom@18.2.0)(react@18.2.0)
   postgres:
     specifier: ^3.4.3
     version: 3.4.3
@@ -917,8 +917,8 @@ packages:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  /@next/env@14.2.0-canary.11:
-    resolution: {integrity: sha512-EgQD4ZFAniCQrXuUmPkTJCSdqhScdrGksq3/Ea53vTjY7WjOPxH9uB7P5qK/bvArENZccxAMNycDvzVKYBfc5g==}
+  /@next/env@14.2.0-canary.12:
+    resolution: {integrity: sha512-RS2sHdVhjkSVK5dyPJ0WErW/nqAEowwnYvO+3QFAE4ndB7cHZvmpSNcx4qUeuZtiw4LLBp/l2S4qVv/MopLuMA==}
     dev: false
 
   /@next/eslint-plugin-next@14.1.3:
@@ -927,8 +927,8 @@ packages:
       glob: 10.3.10
     dev: true
 
-  /@next/swc-darwin-arm64@14.2.0-canary.11:
-    resolution: {integrity: sha512-dPHN8UJotPQflRC1lXkIY/Zm5zj+jQkojVpvuzNIqLdSQkb5beZfKHLanCSdo0g3oU6tKjOhUy1y62dP0O86iQ==}
+  /@next/swc-darwin-arm64@14.2.0-canary.12:
+    resolution: {integrity: sha512-NQiiihlfKcw80C2/EnJ9EpMvNqPLc9byxRU9c2H3vHy+L92xjmK4YRloC+oDyaXu99gNtAKo2QI6kRsI08pVkw==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
@@ -936,8 +936,8 @@ packages:
     dev: false
     optional: true
 
-  /@next/swc-darwin-x64@14.2.0-canary.11:
-    resolution: {integrity: sha512-nBtezHahQg3t+mOnFTtPln3bsWsdl6g1a4nnRZfoDhzYWE5WlEb1yxtxBFlhKqXZrSWLcHe5KucXphWjKvnhPQ==}
+  /@next/swc-darwin-x64@14.2.0-canary.12:
+    resolution: {integrity: sha512-Usz8JJW00oS+Ij62QjUrg/laSHhOd7XbHuTWCoIMEB71jdX/4M7oQ9lhCbI8UOYFckaAsSY+F1ixydTCDBt8kg==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
@@ -945,8 +945,8 @@ packages:
     dev: false
     optional: true
 
-  /@next/swc-linux-arm64-gnu@14.2.0-canary.11:
-    resolution: {integrity: sha512-au06YivPH7IXzRPgJ6Vu9mjdcV4K2EaHQ5Z3g3WTn1Hbja52ELns44QiTqwDAzfG0UPQ+imt2Xp9mmf9zfQY/Q==}
+  /@next/swc-linux-arm64-gnu@14.2.0-canary.12:
+    resolution: {integrity: sha512-9PLuMYTAEwwBLxOFIem2rOipgIsz/3nd98Xf+a178LzQOgfbBAqaRkUEjbu5G4y9v6EDQdyWtYgN+QfdeDZhhA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -954,8 +954,8 @@ packages:
     dev: false
     optional: true
 
-  /@next/swc-linux-arm64-musl@14.2.0-canary.11:
-    resolution: {integrity: sha512-yhCdM6Nf9IGTjNENsYVWlnx/bjU2S3uvHIf3b6bCaizCnIBHmD31xPHFRi50e8r0CxLSBpY8HvOQCeqnQWVlzg==}
+  /@next/swc-linux-arm64-musl@14.2.0-canary.12:
+    resolution: {integrity: sha512-ozpQTn1FcqmWq8OPrGLEJtN5h7ovaAgewlKtgY6CW9eerrLPAguY++Zhk863sxCXLSEHfp5YhX/GW93be2AeRA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -963,8 +963,8 @@ packages:
     dev: false
     optional: true
 
-  /@next/swc-linux-x64-gnu@14.2.0-canary.11:
-    resolution: {integrity: sha512-zRdu5y7pBeD8a2+inyChOMeo6M5TIDRzSDuJ3Ro/wStwxEzgtqUja1EtAyNn1WBZC6EXaVCK6yBQWQJSytBOEA==}
+  /@next/swc-linux-x64-gnu@14.2.0-canary.12:
+    resolution: {integrity: sha512-z6by+1RG9sXPrWyCH+mmBHmElfWNnmrqQVq0WbeE1HvCBYrcnp1aRn4/fSf4aP8VfXSP4KnOUyz+GyC3e+GWzQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -972,8 +972,8 @@ packages:
     dev: false
     optional: true
 
-  /@next/swc-linux-x64-musl@14.2.0-canary.11:
-    resolution: {integrity: sha512-ujhgbrt5a9yxf3vw7AHRRTo6GoByMmRiioTHvSUt2QbWhj/ftIqiFeFC8Zj5GQAxircZc14OpE4OyC5gvehz6A==}
+  /@next/swc-linux-x64-musl@14.2.0-canary.12:
+    resolution: {integrity: sha512-bltqN4P7W4fmsa9oDjyFAkX/QRdsewTEXYrKdqpg7WC4g9SPUPcS1IRHn1u9PoAn9B4tRn+Dlo3GHUPMJ4RtBQ==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -981,8 +981,8 @@ packages:
     dev: false
     optional: true
 
-  /@next/swc-win32-arm64-msvc@14.2.0-canary.11:
-    resolution: {integrity: sha512-8JqWQQ1rX4jE2QOOqEvjYfpmvoAaeyaK8GTbVFRfjs1wMG2qXebkiF2AezSf6Dx7TlqTRe6wNZwUTyMwMH9QCQ==}
+  /@next/swc-win32-arm64-msvc@14.2.0-canary.12:
+    resolution: {integrity: sha512-RjhKguk9D3+xguGnaOB0oUVOqXrtshS4T80e7UUglG+QFsQbqgI4b9XCa06wV+IB7jl5qB/tFjbKEJmUcRLp0A==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
@@ -990,8 +990,8 @@ packages:
     dev: false
     optional: true
 
-  /@next/swc-win32-ia32-msvc@14.2.0-canary.11:
-    resolution: {integrity: sha512-slklJQDUbUf929Owde2mvzv25zeHMT7LCbUJ61B8QVLlpjhIWnySv1klcJNKcsL6nKIN6VYSSCrrMeq9LruWNA==}
+  /@next/swc-win32-ia32-msvc@14.2.0-canary.12:
+    resolution: {integrity: sha512-BISbLFRaxXA5h1h+vi9oH2rHsdlPhVl4NCUE2NuMUvmtCu1M+ISyKD+OGHplPWrn33GNtSgiviRBE5FWHi2bsw==}
     engines: {node: '>= 10'}
     cpu: [ia32]
     os: [win32]
@@ -999,8 +999,8 @@ packages:
     dev: false
     optional: true
 
-  /@next/swc-win32-x64-msvc@14.2.0-canary.11:
-    resolution: {integrity: sha512-8pJXMKjjnOmf7eO4A7PilLOO+RLPbP71truptS26B4P7OhAuNttKcY1Gy+LhCZeeZ6pv1v5hi7EJnZ3vxl6yxw==}
+  /@next/swc-win32-x64-msvc@14.2.0-canary.12:
+    resolution: {integrity: sha512-PjcvClKdb9R/dVGY7uL0qnbvubjx5vb9aWhBFJWyUdPOjxrETRgdcSHiyYHaMaYo8OwiRmD0I1ZgXZI4JU8t8w==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -3411,12 +3411,12 @@ packages:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
     dev: true
 
-  /geist@1.2.2(next@14.2.0-canary.11):
+  /geist@1.2.2(next@14.2.0-canary.12):
     resolution: {integrity: sha512-uRDrxhvdnPwWJmh+K5+/5LXSKwvJzaYCl9tDXgiBi4hj7hB4K7+n/WLcvJMFs5btvyn0r9OSwCd1s6CmqAsxEw==}
     peerDependencies:
       next: '>=13.2.0 <15'
     dependencies:
-      next: 14.2.0-canary.11(@babel/core@7.24.0)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.0-canary.12(@babel/core@7.24.0)(react-dom@18.2.0)(react@18.2.0)
     dev: false
 
   /gensync@1.0.0-beta.2:
@@ -4082,14 +4082,14 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /next-themes@0.2.1(next@14.2.0-canary.11)(react-dom@18.2.0)(react@18.2.0):
+  /next-themes@0.2.1(next@14.2.0-canary.12)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-B+AKNfYNIzh0vqQQKqQItTS8evEouKD7H5Hj3kmuPERwddR2TxvDSFZuTj6T7Jfn1oyeUyJMydPl1Bkxkh0W7A==}
     peerDependencies:
       next: '*'
       react: '*'
       react-dom: '*'
     dependencies:
-      next: 14.2.0-canary.11(@babel/core@7.24.0)(react-dom@18.2.0)(react@18.2.0)
+      next: 14.2.0-canary.12(@babel/core@7.24.0)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
@@ -4098,8 +4098,8 @@ packages:
     resolution: {integrity: sha512-CXdUiJembsNjuToQvxayPZF9Vqht7hewsvy2sOWafLvi2awflj9mOC6bHIg50orX8IJvWKY9wYQ/zB2kogPslQ==}
     dev: true
 
-  /next@14.2.0-canary.11(@babel/core@7.24.0)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-cvCbT6ezIKEwa389dv3JBd3/s6p+miMhsthJWG4/uWW0LSbTY3rR1piZOMRmHAaaAUPsdCQD4TPWrvywgCz8/Q==}
+  /next@14.2.0-canary.12(@babel/core@7.24.0)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-QTdxnOWBl2mrzsMvQMdNr/NcWYJYa18ywg/cuxCmTTho0r9HDt8bchwVo/NmQiWKuKFR0VC0jjJuAjhkLKWrEg==}
     engines: {node: '>=18.17.0'}
     hasBin: true
     peerDependencies:
@@ -4113,7 +4113,7 @@ packages:
       sass:
         optional: true
     dependencies:
-      '@next/env': 14.2.0-canary.11
+      '@next/env': 14.2.0-canary.12
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
       caniuse-lite: 1.0.30001594
@@ -4123,15 +4123,15 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       styled-jsx: 5.1.1(@babel/core@7.24.0)(react@18.2.0)
     optionalDependencies:
-      '@next/swc-darwin-arm64': 14.2.0-canary.11
-      '@next/swc-darwin-x64': 14.2.0-canary.11
-      '@next/swc-linux-arm64-gnu': 14.2.0-canary.11
-      '@next/swc-linux-arm64-musl': 14.2.0-canary.11
-      '@next/swc-linux-x64-gnu': 14.2.0-canary.11
-      '@next/swc-linux-x64-musl': 14.2.0-canary.11
-      '@next/swc-win32-arm64-msvc': 14.2.0-canary.11
-      '@next/swc-win32-ia32-msvc': 14.2.0-canary.11
-      '@next/swc-win32-x64-msvc': 14.2.0-canary.11
+      '@next/swc-darwin-arm64': 14.2.0-canary.12
+      '@next/swc-darwin-x64': 14.2.0-canary.12
+      '@next/swc-linux-arm64-gnu': 14.2.0-canary.12
+      '@next/swc-linux-arm64-musl': 14.2.0-canary.12
+      '@next/swc-linux-x64-gnu': 14.2.0-canary.12
+      '@next/swc-linux-x64-musl': 14.2.0-canary.12
+      '@next/swc-win32-arm64-msvc': 14.2.0-canary.12
+      '@next/swc-win32-ia32-msvc': 14.2.0-canary.12
+      '@next/swc-win32-x64-msvc': 14.2.0-canary.12
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
