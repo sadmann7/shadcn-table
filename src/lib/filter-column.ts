@@ -1,6 +1,6 @@
 import {
   eq,
-  like,
+  ilike,
   not,
   notLike,
   type Column,
@@ -19,7 +19,7 @@ export function filterColumn({
 
   switch (filterVariety) {
     case "contains":
-      return like(column, `%${filterValue}%`)
+      return ilike(column, `%${filterValue}%`)
     case "does not contain":
       return notLike(column, `%${filterValue}%`)
     case "is":
@@ -27,6 +27,6 @@ export function filterColumn({
     case "is not":
       return not(eq(column, filterValue))
     default:
-      return like(column, `%${filterValue}%`)
+      return ilike(column, `%${filterValue}%`)
   }
 }

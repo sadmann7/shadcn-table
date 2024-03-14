@@ -16,6 +16,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
   CommandSeparator,
 } from "@/components/ui/command"
 import {
@@ -66,56 +67,63 @@ export function DataTableAdvancedFilter<TData>({
       <PopoverContent className="w-[200px] p-0" align="end">
         <Command>
           <CommandInput placeholder="Filter by..." />
-          <CommandEmpty>No item found.</CommandEmpty>
-          <CommandGroup>
-            {options.map((option) => (
+          <CommandList>
+            <CommandEmpty>No item found.</CommandEmpty>
+            <CommandGroup>
+              {options.map((option) => (
+                <CommandItem
+                  key={String(option.value)}
+                  className="capitalize"
+                  value={String(option.value)}
+                  onSelect={(currentValue) => {
+                    setValue(currentValue === value ? "" : currentValue)
+                    setOpen(false)
+                    setSelectedOption(option)
+                    setSelectedOptions((prev) => {
+                      if (currentValue === value) {
+                        return prev.filter(
+                          (item) => item.value !== option.value
+                        )
+                      } else {
+                        return [...prev, option]
+                      }
+                    })
+                  }}
+                >
+                  {option.items.length > 0 ? (
+                    <ChevronDownIcon
+                      className="mr-2 size-4"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <TextIcon className="mr-2 size-4" aria-hidden="true" />
+                  )}
+                  {option.label}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+            <CommandSeparator />
+            <CommandGroup>
               <CommandItem
-                key={String(option.value)}
-                className="capitalize"
-                value={String(option.value)}
-                onSelect={(currentValue) => {
-                  setValue(currentValue === value ? "" : currentValue)
+                onSelect={() => {
                   setOpen(false)
-                  setSelectedOption(option)
-                  setSelectedOptions((prev) => {
-                    if (currentValue === value) {
-                      return prev.filter((item) => item.value !== option.value)
-                    } else {
-                      return [...prev, option]
-                    }
-                  })
+                  setSelectedOptions([
+                    ...selectedOptions,
+                    {
+                      id: crypto.randomUUID(),
+                      label: String(selectedOption?.label),
+                      value: String(selectedOption?.value),
+                      items: selectedOption?.items ?? [],
+                      isMulti: true,
+                    },
+                  ])
                 }}
               >
-                {option.items.length > 0 ? (
-                  <ChevronDownIcon className="mr-2 size-4" aria-hidden="true" />
-                ) : (
-                  <TextIcon className="mr-2 size-4" aria-hidden="true" />
-                )}
-                {option.label}
+                <PlusIcon className="mr-2 size-4" aria-hidden="true" />
+                Advanced filter
               </CommandItem>
-            ))}
-          </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup>
-            <CommandItem
-              onSelect={() => {
-                setOpen(false)
-                setSelectedOptions([
-                  ...selectedOptions,
-                  {
-                    id: crypto.randomUUID(),
-                    label: String(selectedOption?.label),
-                    value: String(selectedOption?.value),
-                    items: selectedOption?.items ?? [],
-                    isMulti: true,
-                  },
-                ])
-              }}
-            >
-              <PlusIcon className="mr-2 size-4" aria-hidden="true" />
-              Advanced filter
-            </CommandItem>
-          </CommandGroup>
+            </CommandGroup>
+          </CommandList>
         </Command>
       </PopoverContent>
     </Popover>

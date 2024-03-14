@@ -18,10 +18,11 @@ export interface DataTableFilterOption<TData> {
 
 export interface DataTableSearchableColumn<TData> {
   id: keyof TData
-  title: string
+  placeholder?: string
 }
 
-export interface DataTableFilterableColumn<TData>
-  extends DataTableSearchableColumn<TData> {
+export interface DataTableFilterableColumn<TData> {
+  id: keyof TData
+  title: string
   options: Option[]
 }

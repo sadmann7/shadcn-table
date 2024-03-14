@@ -42,7 +42,7 @@ export function DataTableToolbar<TData>({
               table.getColumn(column.id ? String(column.id) : "") && (
                 <Input
                   key={String(column.id)}
-                  placeholder={`Filter ${column.title}...`}
+                  placeholder={column.placeholder}
                   value={
                     (table
                       .getColumn(String(column.id))

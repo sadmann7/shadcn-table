@@ -6,7 +6,7 @@ import type {
   DataTableFilterOption,
   DataTableSearchableColumn,
 } from "@/types"
-import { CaretSortIcon, PlusIcon } from "@radix-ui/react-icons"
+import { PlusIcon, SwitchIcon } from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
@@ -66,7 +66,7 @@ export function DataTableAdvancedToolbar<TData>({
                 table.getColumn(column.id ? String(column.id) : "") && (
                   <Input
                     key={String(column.id)}
-                    placeholder={`Filter ${column.title}...`}
+                    placeholder={column.placeholder}
                     value={
                       (table
                         .getColumn(String(column.id))
@@ -83,15 +83,14 @@ export function DataTableAdvancedToolbar<TData>({
             )}
         </div>
         <div className="flex items-center space-x-2">
-          {selectedOptions.length > 0 ? (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setOpen((prev) => !prev)}
-            >
+          {selectedOptions.length > 0 || open ? (
+            <Button variant="outline" size="sm" onClick={() => setOpen(!open)}>
               Filter
-              <CaretSortIcon
-                className="ml-2 size-4 opacity-50"
+              <SwitchIcon
+                className="ml-2 size-4 transition-transform"
+                style={{
+                  transform: `rotate(${open ? 180 : 0}deg)`,
+                }}
                 aria-hidden="true"
               />
             </Button>

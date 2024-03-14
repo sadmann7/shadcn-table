@@ -297,6 +297,6 @@ export const filterableColumns: DataTableFilterableColumn<Task>[] = [
 export const searchableColumns: DataTableSearchableColumn<Task>[] = [
   {
     id: "title",
-    title: "titles",
+    placeholder: "Filter titles...",
   },
 ]
