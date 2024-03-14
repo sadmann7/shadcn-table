@@ -1,4 +1,4 @@
-"use server"
+import "server-only"
 
 import { unstable_noStore as noStore } from "next/cache"
 import { db } from "@/db"
@@ -10,10 +10,10 @@ import { filterColumn } from "@/lib/filter-column"
 
 import { type getTasksSchema } from "./validations"
 
-export async function getTasks(search: z.infer<typeof getTasksSchema>) {
+export async function getTasks(input: z.infer<typeof getTasksSchema>) {
   noStore()
   try {
-    const { page, per_page, sort, title, status, priority, operator } = search
+    const { page, per_page, sort, title, status, priority, operator } = input
 
     // Offset to paginate the results
     const offset = (page - 1) * per_page
@@ -83,7 +83,7 @@ export async function getTasks(search: z.infer<typeof getTasksSchema>) {
 
       const count = await tx
         .select({
-          count: sql<number>`count(${tasks.id})`.mapWith(Number),
+          count: sql`count(*)`.mapWith(Number),
         })
         .from(tasks)
         .where(
