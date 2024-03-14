@@ -49,8 +49,8 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
     React.useState<React.ReactNode | null>(null)
 
   return (
-    <div className="space-y-4">
-      <div className="flex w-fit items-center justify-center space-x-4 rounded-md border p-4">
+    <div className="space-y-4 overflow-hidden">
+      <div className="flex w-fit items-center justify-center space-x-4 overflow-x-auto rounded-md border p-4">
         <div className="flex items-center space-x-2">
           <Switch
             id={`advanced-filter-${id}`}
