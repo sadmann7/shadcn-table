@@ -157,7 +157,7 @@ export function useDataTable<TData, TValue>({
     router.push(
       `${pathname}?${createQueryString({
         page: pageIndex + 1,
-        per_page: per_page,
+        per_page: pageSize,
       })}`,
       {
         scroll: false,
