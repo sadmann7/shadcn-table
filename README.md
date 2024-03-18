@@ -22,7 +22,7 @@ This is a Shadcn table component with server-side sorting, filtering, and pagina
 
 ## Features
 
-- [x] Server-side pagination, sorting, and filtering (`useTable` hook)
+- [x] Server-side pagination, sorting, and filtering (via `useDataTable` hook)
 - [x] Customizable columns (`dataTable` and `columns` props)
 - [x] Dynamic debounced search inputs (`searchableColumns` prop)
 - [x] Dynamic faceted filters (`filterableColumns` prop)
@@ -118,10 +118,11 @@ Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 5. Setting up the Table
 
    - Start with creating a `page.tsx` file, and if necessary, a `layout.tsx` file in the app directory
-   - Copy the contents of the `./_components` and `./_lib` directories into your project wherever needed.
+   - Copy the contents of the `./_components` and `./_lib` directories into your project wherever you want to use the table.
    - Modify each of the files according to your database table.
-   - Modify the required actions for querying and mutating data in the folder `./_lib/queries` in the `queries.ts` and `actions.ts`.
-   - Modify the `./_components/task-table-column-def.tsx` file to define the column header, searchable columns, filterable columns, and the column based actions and the presentation of the data in each column.
+   - Modify the queries and mutations in the `./_lib/queries.ts` and `./_lib/actions.ts` files respectively.
+   - Modify the `./page.tsx` file to define the `getTasksPromise` to be used in the `./_components/task-table.tsx` component.
+   - Modify the `./_components/task-table.tsx` file to define the column header, column based actions, searchable columns, and filterable columns. The `getTasksPromise` is consumed here using the `React.use` hook. Components and Data that have to be memoized must be declared here, because it can not be done in a server component.
+   - The `./hooks/useTasksTable.tsx` hook is called in the `./_components/task-table.tsx` file to expose the `table` instance to be used in the `./_components/tasks-table-actions.tsx` file. This hook is used to handle the server side pagination, sorting, and filtering of the table.
    - Modify the `./_components/tasks-table-actions.tsx` file to define the the selected rows based actions, like deleting and modifying a group of rows, and floating bar content (can be used in the `floatingBarContent` prop of the `DataTable` component as `TasksTableFloatingBarContent(dataTable)`)
-   - Modify the `./_components/task-table.tsx` file to reference the schemas, types and database actions to be used in the table. The `getTasksPromise` is fetched here using the `React.use` hook. Components and Data that have to be memoized must be declared here, because it can not be done in a server component.
-   - Modify the `./page.tsx` file to define the `getTasksPromise` to be used in the `TasksTableShell` component.
+   - Make sure to remove the demo inputs from the `./components/task-table.tsx` file. These are used for showing how the and the floating bar works.

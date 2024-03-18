@@ -13,13 +13,15 @@ interface DataTableSkeletonProps {
   rowCount?: number
   searchableColumnCount?: number
   filterableColumnCount?: number
+  showViewOptions?: boolean
 }
 
 export function DataTableSkeleton({
   columnCount,
   rowCount = 10,
-  searchableColumnCount = 1,
-  filterableColumnCount = 1,
+  searchableColumnCount = 0,
+  filterableColumnCount = 0,
+  showViewOptions = true,
 }: DataTableSkeletonProps) {
   return (
     <div className="w-full space-y-3 overflow-auto">
@@ -36,7 +38,9 @@ export function DataTableSkeleton({
               ))
             : null}
         </div>
-        <Skeleton className="ml-auto hidden h-7 w-[70px] lg:flex" />
+        {showViewOptions ? (
+          <Skeleton className="ml-auto hidden h-7 w-[70px] lg:flex" />
+        ) : null}
       </div>
       <div className="rounded-md border">
         <Table>
