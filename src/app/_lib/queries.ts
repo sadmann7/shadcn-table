@@ -3,7 +3,7 @@ import "server-only"
 import { unstable_noStore as noStore } from "next/cache"
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
-import { and, asc, desc, inArray, or, sql } from "drizzle-orm"
+import { and, asc, count, desc, inArray, or } from "drizzle-orm"
 import { type z } from "zod"
 
 import { filterColumn } from "@/lib/filter-column"
@@ -30,7 +30,7 @@ export async function getTasks(input: z.infer<typeof getTasksSchema>) {
     const priorities = (priority?.split(".") as Task["priority"][]) ?? []
 
     // Transaction is used to ensure both queries are executed in a single transaction
-    const { data, count } = await db.transaction(async (tx) => {
+    const { data, total } = await db.transaction(async (tx) => {
       const data = await tx
         .select()
         .from(tasks)
@@ -81,9 +81,9 @@ export async function getTasks(input: z.infer<typeof getTasksSchema>) {
             : desc(tasks.id)
         )
 
-      const count = await tx
+      const total = await tx
         .select({
-          count: sql`count(*)`.mapWith(Number),
+          count: count(),
         })
         .from(tasks)
         .where(
@@ -128,11 +128,11 @@ export async function getTasks(input: z.infer<typeof getTasksSchema>) {
 
       return {
         data,
-        count,
+        total,
       }
     })
 
-    const pageCount = Math.ceil(count / per_page)
+    const pageCount = Math.ceil(total / per_page)
     return { data, pageCount }
   } catch (err) {
     return { data: [], pageCount: 0 }

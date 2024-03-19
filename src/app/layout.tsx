@@ -23,9 +23,9 @@ export const metadata: Metadata = {
     "nextjs",
     "react",
     "react server components",
-    "skateshop",
-    "skateboarding",
-    "kickflip",
+    "table",
+    "react-table",
+    "shadcn-table",
   ],
   authors: [
     {
