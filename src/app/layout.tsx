@@ -25,6 +25,7 @@ export const metadata: Metadata = {
     "react server components",
     "table",
     "react-table",
+    "tanstack-table",
     "shadcn-table",
   ],
   authors: [

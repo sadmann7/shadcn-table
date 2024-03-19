@@ -117,12 +117,13 @@ Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 
 5. Setting up the Table
 
-   - Start with creating a `page.tsx` file, and if necessary, a `layout.tsx` file in the app directory
-   - Copy the contents of the `./_components` and `./_lib` directories into your project wherever you want to use the table.
-   - Modify each of the files according to your database table.
-   - Modify the queries and mutations in the `./_lib/queries.ts` and `./_lib/actions.ts` files respectively.
-   - Modify the `./page.tsx` file to define the `getTasksPromise` to be used in the `./_components/task-table.tsx` component.
-   - Modify the `./_components/task-table.tsx` file to define the column header, column based actions, searchable columns, and filterable columns. The `getTasksPromise` is consumed here using the `React.use` hook. Components and Data that have to be memoized must be declared here, because it can not be done in a server component.
-   - The `./hooks/useTasksTable.tsx` hook is called in the `./_components/task-table.tsx` file to expose the `table` instance to be used in the `./_components/tasks-table-actions.tsx` file. This hook is used to handle the server side pagination, sorting, and filtering of the table.
-   - Modify the `./_components/tasks-table-actions.tsx` file to define the the selected rows based actions, like deleting and modifying a group of rows, and floating bar content (can be used in the `floatingBarContent` prop of the `DataTable` component as `TasksTableFloatingBarContent(dataTable)`)
-   - Make sure to remove the demo inputs from the `./components/task-table.tsx` file. These are used for showing how the and the floating bar works.
+   - **Create Files**: Create `page.tsx` and, if needed, `layout.tsx` in your app directory.
+   - **Copy Directories**: Copy `./_components` and `./_lib` directories into your project.
+   - **Update Queries/Mutations**: Modify `./_lib/queries.ts` and `./_lib/actions.ts` to match your database operations.
+   - **Define Table Columns**: Update `./_components/tasks-table-columns.tsx` to define column headers, actions, searchable and filterable columns.
+   - **Define Table Actions**: Update `./_components/tasks-table-actions.tsx` to define actions for selected rows and floating bar content.
+   - **Setup Data Fetching**: In `./page.tsx`, define `getTasksPromise` for use in `./_components/tasks-table.tsx`.
+   - **Fetch Data**: In `./_components/tasks-table.tsx`, consume the `getTasksPromise` promise using the `React.use` hook. The promise is passed to trigger the `suspense` boundary.
+   - **Memoize Table Columns**: In `./_components/tasks-table.tsx`, memoize columns defined in `./_components/tasks-table-columns.tsx` using `React.useMemo` hook to prevent unnecessary re-renders.
+   - **Use Data Table Hook**: In `./_components/tasks-table.tsx`, call `./hooks/useTasksTable.tsx` hook to handle server-side pagination, sorting, and filtering.
+   - **Remove Demo Inputs**: Make sure to remove demo inputs from `./components/task-table.tsx`. These were used to show the advanced filter and floating bar features.
