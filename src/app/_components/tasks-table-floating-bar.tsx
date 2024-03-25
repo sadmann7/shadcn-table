@@ -32,7 +32,7 @@ interface TasksTableFloatingBarProps {
 }
 
 export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
-  const selectedRows = table.getFilteredSelectedRowModel().rows
+  const rows = table.getFilteredSelectedRowModel().rows
 
   return (
     <div className="mx-auto flex w-fit items-center gap-5 rounded-md border bg-muted/50 px-4 py-2">
@@ -52,13 +52,13 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
             <p>Clear selection</p>
           </TooltipContent>
         </Tooltip>
-        {table.getFilteredSelectedRowModel().rows.length} row(s) selected
+        {rows.length} row(s) selected
       </div>
       <div className="flex items-center">
         <Select
           onValueChange={(value) =>
             updateTasksStatus({
-              rows: selectedRows,
+              rows,
               status: value,
               onSucess: () => table.toggleAllRowsSelected(false),
             })
@@ -93,7 +93,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
         <Select
           onValueChange={(value) =>
             updateTasksPriority({
-              rows: selectedRows,
+              rows,
               priority: value,
               onSucess: () => table.toggleAllRowsSelected(false),
             })
@@ -137,7 +137,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
               className="size-7"
               onClick={() => {
                 deleteTasks({
-                  rows: selectedRows,
+                  rows,
                   onSucess: () => table.toggleAllRowsSelected(false),
                 })
               }}

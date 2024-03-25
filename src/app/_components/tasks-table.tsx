@@ -42,34 +42,27 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
 
   // Toggling some data-table states for demo
   const id = React.useId()
-  const [advancedFilter, setAdvancedFilter] = React.useState(false)
-
-  const [floatingBar, setFloatingBar] = React.useState<React.ReactNode | null>(
-    null
-  )
+  const [showAdvancedFilter, setShowAdvancedFilter] = React.useState(false)
+  const [showFloatingBar, setShowFloatingBar] = React.useState(false)
 
   return (
     <div className="space-y-4 overflow-hidden">
       <div className="flex w-fit items-center justify-center space-x-4 overflow-x-auto rounded-md border p-4">
         <div className="flex items-center space-x-2">
           <Switch
-            id={`advanced-filter-${id}`}
-            checked={advancedFilter}
-            onCheckedChange={setAdvancedFilter}
+            id={`show-advanced-filter-${id}`}
+            checked={showAdvancedFilter}
+            onCheckedChange={setShowAdvancedFilter}
           />
-          <Label htmlFor={`advanced-filter-${id}`}>Advanced filter</Label>
+          <Label htmlFor={`show-advanced-filter-${id}`}>Advanced filter</Label>
         </div>
         <div className="flex items-center space-x-2">
           <Switch
-            id={`floating-bar-${id}`}
-            checked={!!floatingBar}
-            onCheckedChange={(checked) =>
-              setFloatingBar(
-                checked ? <TasksTableFloatingBar table={table} /> : null
-              )
-            }
+            id={`show-floating-bar-${id}`}
+            checked={!!showFloatingBar}
+            onCheckedChange={setShowFloatingBar}
           />
-          <Label htmlFor={`floating-bar-${id}`}>Floating bar</Label>
+          <Label htmlFor={`show-floating-bar-${id}`}>Floating bar</Label>
         </div>
       </div>
       <DataTable
@@ -77,8 +70,10 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
         columns={columns}
         searchableColumns={searchableColumns}
         filterableColumns={filterableColumns}
-        advancedFilter={advancedFilter}
-        floatingBar={floatingBar}
+        advancedFilter={showAdvancedFilter}
+        floatingBar={
+          showFloatingBar ? <TasksTableFloatingBar table={table} /> : null
+        }
         deleteRowsAction={() =>
           deleteTasks({ rows: table.getFilteredSelectedRowModel().rows })
         }
