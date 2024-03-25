@@ -27,7 +27,7 @@ This is a Shadcn table component with server-side sorting, filtering, and pagina
 - [x] Dynamic debounced search inputs (`searchableColumns` prop)
 - [x] Dynamic faceted filters (`filterableColumns` prop)
 - [x] Optional notion like advanced filtering (`advancedFilter` prop)
-- [x] Optional floating bar on row selection, rendred at the bottom (`floatingBarContent` prop)
+- [x] Optional floating bar on row selection, rendred at the bottom (`floatingBar` prop)
 - [x] Action to delete rows (`deleteRowsAction` prop)
 
 ## Running Locally
@@ -119,9 +119,9 @@ Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 
    - **Create Files**: Create `page.tsx` and, if needed, `layout.tsx` in your app directory.
    - **Copy Directories**: Copy `./_components` and `./_lib` directories into your project.
-   - **Update Queries/Mutations**: Modify `./_lib/queries.ts` and `./_lib/actions.ts` to match your database operations.
+   - **Update Queries/Mutations**: Modify `./_lib/queries.ts`, `./_lib/actions.ts`, and `./_lib/mutations.ts` to match your database operations.
+   - **Update Floating Bar**: Update `./_components/tasks-table-floating-bar.tsx` to match your table's actions (optional).
    - **Define Table Columns**: Update `./_components/tasks-table-columns.tsx` to define column headers, actions, searchable and filterable columns.
-   - **Define Table Actions**: Update `./_components/tasks-table-actions.tsx` to define actions for selected rows and floating bar content.
    - **Setup Data Fetching**: In `./page.tsx`, define `getTasksPromise` for use in `./_components/tasks-table.tsx`.
    - **Fetch Data**: In `./_components/tasks-table.tsx`, consume the `getTasksPromise` promise using the `React.use` hook. The promise is passed to trigger the `suspense` boundary.
    - **Memoize Table Columns**: In `./_components/tasks-table.tsx`, memoize columns defined in `./_components/tasks-table-columns.tsx` using `React.useMemo` hook to prevent unnecessary re-renders.

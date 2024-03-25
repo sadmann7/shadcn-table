@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/table"
 
 import { DataTableAdvancedToolbar } from "./advanced/data-table-advanced-toolbar"
-import { DataTableFloatingBar } from "./data-table-floating-bar"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 
@@ -61,13 +60,12 @@ interface DataTableProps<TData, TValue> {
   advancedFilter?: boolean
 
   /**
-   * The content to render in the floating bar on row selection, at the bottom of the table. When null, the floating bar is not rendered.
-   * The dataTable instance is passed as a prop to the floating bar content.
+   * The floating bar to render at the bottom of the table on row selection.
    * @default null
    * @type React.ReactNode | null
-   * @example floatingBarContent={TasksTableFloatingBarContent(dataTable)}
+   * @example floatingBar={<TasksTableFloatingBar table={table} />}
    */
-  floatingBarContent?: React.ReactNode | null
+  floatingBar?: React.ReactNode | null
 
   /**
    * The link to create a new row, will be rendered as a button.
@@ -92,7 +90,7 @@ export function DataTable<TData, TValue>({
   searchableColumns = [],
   filterableColumns = [],
   advancedFilter = false,
-  floatingBarContent,
+  floatingBar,
   newRowLink,
   deleteRowsAction,
 }: DataTableProps<TData, TValue>) {
@@ -163,13 +161,11 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="space-y-2.5">
+      <div className="flex flex-col gap-2.5">
         <DataTablePagination table={table} />
-        {floatingBarContent ? (
-          <DataTableFloatingBar table={table}>
-            {floatingBarContent}
-          </DataTableFloatingBar>
-        ) : null}
+        {floatingBar && table.getFilteredSelectedRowModel().rows.length > 0
+          ? floatingBar
+          : null}
       </div>
     </div>
   )
