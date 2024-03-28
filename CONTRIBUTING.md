@@ -1,20 +1,8 @@
 # Contributing Guide
 
-Thank you for investing your time in contributing to our project! Any contribution you make will be reflected on [shadcn-table](<[table.sadmn.com](https://github.com/sadmann7/shadcn-table)>) :sparkles:.
-
-Read our [Code of Conduct](./CODE_OF_CONDUCT.md) to keep our community approachable and respectable.
+Thank you for investing your time in contributing to our project! Any contribution you make will be reflected on [shadcn-table](<[table.sadmn.com](https://github.com/sadmann7/shadcn-table)>).
 
 In this guide you will get an overview of the contribution workflow from opening an issue, creating a PR, reviewing, and merging the PR.
-
-## New contributor guide
-
-To get an overview of the project, read the [README](README.md). Here are some resources to help you get started with open source contributions:
-
-- [How to Contribute to Open Source](https://opensource.guide/how-to-contribute/)
-- [Understanding the GitHub flow](https://guides.github.com/introduction/flow/)
-
-- [GitHub Help Documentation](https://help.github.com/)
-- [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/)
 
 ## Getting started
 
