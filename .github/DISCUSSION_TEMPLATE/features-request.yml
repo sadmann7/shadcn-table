@@ -1,0 +1,25 @@
+title: "[features]: "
+labels: ["Features Request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Thanks for taking the time to create a feature request! Please search open/closed requests before submitting, as the feature or a similar one may have already been requested.
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Description
+      description: Tell us about your feature request
+      placeholder: "A dashboard for an e-commerce website showing sales, orders, and customers..."
+    validations:
+      required: true
+
+  - type: input
+    id: feature-example-url
+    attributes:
+      label: Example
+      description: Link to an example of the feature
+      placeholder: ex. https://example.com
+    validations:
+      required: false
