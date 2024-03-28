@@ -1,0 +1,35 @@
+# This template is heavily inspired by the acme-corp and shadcn-ui/ui repositories.
+# See: https://github.com/juliusmarminge/acme-corp/blob/main/.github/ISSUE_TEMPLATE/bug_report.yml
+# See: https://github.com/shadcn-ui/ui/blob/main/.github/ISSUE_TEMPLATE/feature_request.yml
+
+name: 🐞 Bug Report
+description: Create a bug report to help us improve
+title: "bug: "
+labels: ["🐞❔ unconfirmed bug"]
+body:
+  - type: textarea
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of the bug, as well as what you expected to happen when encountering it.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: How to reproduce
+      description: A step-by-step description of how to reproduce the bug.
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. See error
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Link to reproduction
+      description: A link to a CodeSandbox or StackBlitz that includes a minimal reproduction of the problem. In rare cases when not applicable, you can link to a GitHub repository that we can easily run to recreate the issue. If a report is vague and does not have a reproduction, it will be closed without warning.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional information
+      description: Add any other information related to the bug here, screenshots if applicable.
