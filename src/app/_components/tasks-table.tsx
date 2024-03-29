@@ -5,8 +5,6 @@ import { type Task } from "@/db/schema"
 import { type ColumnDef } from "@tanstack/react-table"
 
 import { useDataTable } from "@/hooks/use-data-table"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
 import { DataTable } from "@/components/data-table/data-table"
 
 import { deleteTasks } from "../_lib/mutations"
@@ -17,6 +15,7 @@ import {
   searchableColumns,
 } from "./tasks-table-columns"
 import { TasksTableFloatingBar } from "./tasks-table-floating-bar"
+import { useTasksTable } from "./tasks-table-provider"
 
 interface TasksTableProps {
   tasksPromise: ReturnType<typeof getTasks>
@@ -32,52 +31,31 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
     []
   )
 
+  // Using the useTasksTable hook to showcase some features. Feel free to remove the TasksTableProvider component.
+  const { enableAdvancedFilter, showFloatingBar } = useTasksTable()
+
   const { table } = useDataTable({
     data,
     columns,
     pageCount,
     searchableColumns,
     filterableColumns,
+    enableAdvancedFilter,
   })
 
-  // Toggling some data-table states for demo
-  const id = React.useId()
-  const [showAdvancedFilter, setShowAdvancedFilter] = React.useState(false)
-  const [showFloatingBar, setShowFloatingBar] = React.useState(false)
-
   return (
-    <div className="space-y-4 overflow-hidden">
-      <div className="flex w-fit items-center justify-center space-x-4 overflow-x-auto rounded-md border p-4">
-        <div className="flex items-center space-x-2">
-          <Switch
-            id={`show-advanced-filter-${id}`}
-            checked={showAdvancedFilter}
-            onCheckedChange={setShowAdvancedFilter}
-          />
-          <Label htmlFor={`show-advanced-filter-${id}`}>Advanced filter</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <Switch
-            id={`show-floating-bar-${id}`}
-            checked={!!showFloatingBar}
-            onCheckedChange={setShowFloatingBar}
-          />
-          <Label htmlFor={`show-floating-bar-${id}`}>Floating bar</Label>
-        </div>
-      </div>
-      <DataTable
-        table={table}
-        columns={columns}
-        searchableColumns={searchableColumns}
-        filterableColumns={filterableColumns}
-        advancedFilter={showAdvancedFilter}
-        floatingBar={
-          showFloatingBar ? <TasksTableFloatingBar table={table} /> : null
-        }
-        deleteRowsAction={() =>
-          deleteTasks({ rows: table.getFilteredSelectedRowModel().rows })
-        }
-      />
-    </div>
+    <DataTable
+      table={table}
+      columns={columns}
+      searchableColumns={searchableColumns}
+      filterableColumns={filterableColumns}
+      enableAdvancedFilter={enableAdvancedFilter}
+      floatingBar={
+        showFloatingBar ? <TasksTableFloatingBar table={table} /> : null
+      }
+      deleteRowsAction={() =>
+        deleteTasks({ rows: table.getFilteredSelectedRowModel().rows })
+      }
+    />
   )
 }

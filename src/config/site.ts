@@ -1,7 +1,7 @@
 export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
-  name: "Shadcn Table",
+  name: "Table",
   description:
     "Shadcn table component with server side sorting, pagination, and filtering",
   url:

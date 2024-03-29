@@ -1,6 +1,9 @@
 import {
   eq,
   ilike,
+  inArray,
+  isNotNull,
+  isNull,
   not,
   notLike,
   type Column,
@@ -8,24 +11,54 @@ import {
   type ColumnDataType,
 } from "drizzle-orm"
 
+import { type DataTableConfig } from "@/config/data-table"
+
 export function filterColumn({
   column,
   value,
+  isSelectable,
 }: {
   column: Column<ColumnBaseConfig<ColumnDataType, string>, object, object>
   value: string
+  isSelectable?: boolean
 }) {
-  const [filterValue, filterVariety] = value?.split(".") ?? []
+  const [filterValue, filterOperator] = (value?.split("~").filter(Boolean) ??
+    []) as [DataTableConfig["operators"]["comparison"][number]["value"], string]
 
-  switch (filterVariety) {
-    case "contains":
+  if (isSelectable) {
+    switch (filterOperator) {
+      case "eq":
+        return inArray(column, filterValue.split(".").filter(Boolean) ?? [])
+      case "notEq":
+        return not(
+          inArray(column, filterValue.split(".").filter(Boolean) ?? [])
+        )
+      case "isNull":
+        return isNull(column)
+      case "isNotNull":
+        return isNotNull(column)
+      default:
+        return inArray(column, filterValue.split("."))
+    }
+  }
+
+  switch (filterOperator) {
+    case "ilike":
       return ilike(column, `%${filterValue}%`)
-    case "does not contain":
+    case "notIlike":
       return notLike(column, `%${filterValue}%`)
-    case "is":
+    case "startsWith":
+      return ilike(column, `${filterValue}%`)
+    case "endsWith":
+      return ilike(column, `%${filterValue}`)
+    case "eq":
       return eq(column, filterValue)
-    case "is not":
+    case "notEq":
       return not(eq(column, filterValue))
+    case "isNull":
+      return isNull(column)
+    case "isNotNull":
+      return isNotNull(column)
     default:
       return ilike(column, `%${filterValue}%`)
   }

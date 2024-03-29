@@ -3,14 +3,13 @@ import "server-only"
 import { unstable_noStore as noStore } from "next/cache"
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
-import { and, asc, count, desc, inArray, or } from "drizzle-orm"
-import { type z } from "zod"
+import { and, asc, count, desc, or } from "drizzle-orm"
 
 import { filterColumn } from "@/lib/filter-column"
 
-import { type getTasksSchema } from "./validations"
+import { type GetTasksSchema } from "./validations"
 
-export async function getTasks(input: z.infer<typeof getTasksSchema>) {
+export async function getTasks(input: GetTasksSchema) {
   noStore()
   try {
     const { page, per_page, sort, title, status, priority, operator } = input
@@ -24,10 +23,6 @@ export async function getTasks(input: z.infer<typeof getTasksSchema>) {
       keyof Task | undefined,
       "asc" | "desc" | undefined,
     ]) ?? ["title", "desc"]
-
-    const statuses = (status?.split(".") as Task["status"][]) ?? []
-
-    const priorities = (priority?.split(".") as Task["priority"][]) ?? []
 
     // Transaction is used to ensure both queries are executed in a single transaction
     const { data, total } = await db.transaction(async (tx) => {
@@ -47,12 +42,20 @@ export async function getTasks(input: z.infer<typeof getTasksSchema>) {
                     })
                   : undefined,
                 // Filter tasks by status
-                statuses.length > 0
-                  ? inArray(tasks.status, statuses)
+                !!status
+                  ? filterColumn({
+                      column: tasks.status,
+                      value: status,
+                      isSelectable: true,
+                    })
                   : undefined,
                 // Filter tasks by priority
-                priorities.length > 0
-                  ? inArray(tasks.priority, priorities)
+                !!priority
+                  ? filterColumn({
+                      column: tasks.priority,
+                      value: priority,
+                      isSelectable: true,
+                    })
                   : undefined
               )
             : or(
@@ -64,12 +67,20 @@ export async function getTasks(input: z.infer<typeof getTasksSchema>) {
                     })
                   : undefined,
                 // Filter tasks by status
-                statuses.length > 0
-                  ? inArray(tasks.status, statuses)
+                !!status
+                  ? filterColumn({
+                      column: tasks.status,
+                      value: status,
+                      isSelectable: true,
+                    })
                   : undefined,
                 // Filter tasks by priority
-                priorities.length > 0
-                  ? inArray(tasks.priority, priorities)
+                !!priority
+                  ? filterColumn({
+                      column: tasks.priority,
+                      value: priority,
+                      isSelectable: true,
+                    })
                   : undefined
               )
         )
@@ -97,12 +108,20 @@ export async function getTasks(input: z.infer<typeof getTasksSchema>) {
                     })
                   : undefined,
                 // Filter tasks by status
-                statuses.length > 0
-                  ? inArray(tasks.status, statuses)
+                !!status
+                  ? filterColumn({
+                      column: tasks.status,
+                      value: status,
+                      isSelectable: true,
+                    })
                   : undefined,
                 // Filter tasks by priority
-                priorities.length > 0
-                  ? inArray(tasks.priority, priorities)
+                !!priority
+                  ? filterColumn({
+                      column: tasks.priority,
+                      value: priority,
+                      isSelectable: true,
+                    })
                   : undefined
               )
             : or(
@@ -114,12 +133,20 @@ export async function getTasks(input: z.infer<typeof getTasksSchema>) {
                     })
                   : undefined,
                 // Filter tasks by status
-                statuses.length > 0
-                  ? inArray(tasks.status, statuses)
+                !!status
+                  ? filterColumn({
+                      column: tasks.status,
+                      value: status,
+                      isSelectable: true,
+                    })
                   : undefined,
                 // Filter tasks by priority
-                priorities.length > 0
-                  ? inArray(tasks.priority, priorities)
+                !!priority
+                  ? filterColumn({
+                      column: tasks.priority,
+                      value: priority,
+                      isSelectable: true,
+                    })
                   : undefined
               )
         )

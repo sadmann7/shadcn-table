@@ -60,6 +60,13 @@ interface UseDataTableProps<TData, TValue> {
    * @example filterableColumns={[{ id: "status", title: "Status", options: ["todo", "in-progress", "done", "canceled"]}]}
    */
   filterableColumns?: DataTableFilterableColumn<TData>[]
+
+  /**
+   * Enables notion like filters when enabled. It needs to be passed when using advanced filter, to opt out of the default filterable columns.
+   * @default false
+   * @type boolean
+   */
+  enableAdvancedFilter?: boolean
 }
 
 const schema = z.object({
@@ -74,6 +81,7 @@ export function useDataTable<TData, TValue>({
   pageCount,
   searchableColumns = [],
   filterableColumns = [],
+  enableAdvancedFilter = false,
 }: UseDataTableProps<TData, TValue>) {
   const router = useRouter()
   const pathname = usePathname()
@@ -102,6 +110,7 @@ export function useDataTable<TData, TValue>({
     },
     [searchParams]
   )
+
   // Initial column filters
   const initialColumnFilters: ColumnFiltersState = React.useMemo(() => {
     return Array.from(searchParams.entries()).reduce<ColumnFiltersState>(
@@ -207,6 +216,9 @@ export function useDataTable<TData, TValue>({
   const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
+    // Opt out when advanced filter is enabled, because it contains additional params
+    if (enableAdvancedFilter) return
+
     // Prevent resetting the page on initial render
     if (!mounted) {
       setMounted(true)

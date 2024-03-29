@@ -4,15 +4,14 @@ import { toast } from "sonner"
 
 import { getErrorMessage } from "@/lib/handle-error"
 
-import { deleteTask, updateTaskPriority, updateTaskStatus } from "./actions"
+import { deleteTask, updateTask } from "./actions"
 
-export function deleteTasks({
-  rows,
-  onSucess,
-}: {
+interface DeleteTasksInput {
   rows: Row<Task>[]
   onSucess?: () => void
-}) {
+}
+
+export function deleteTasks({ rows, onSucess }: DeleteTasksInput) {
   toast.promise(
     Promise.all(
       rows.map(async (row) =>
@@ -32,50 +31,27 @@ export function deleteTasks({
   )
 }
 
-export function updateTasksStatus({
-  rows,
-  status,
-  onSucess,
-}: {
-  rows: Row<Task>[]
-  status: string
-  onSucess?: () => void
-}) {
-  toast.promise(
-    Promise.all(
-      rows.map(async (row) =>
-        updateTaskStatus({
-          id: row.original.id,
-          status: status as Task["status"],
-        })
-      )
-    ),
-    {
-      loading: "Updating...",
-      success: () => {
-        onSucess?.()
-        return "Tasks updated"
-      },
-      error: (err) => getErrorMessage(err),
-    }
-  )
+interface UpdateTasksInput extends DeleteTasksInput {
+  label?: Task["label"]
+  status?: Task["status"]
+  priority?: Task["priority"]
 }
 
-export function updateTasksPriority({
+export function updateTasks({
   rows,
+  label,
+  status,
   priority,
   onSucess,
-}: {
-  rows: Row<Task>[]
-  priority: string
-  onSucess?: () => void
-}) {
+}: UpdateTasksInput) {
   toast.promise(
     Promise.all(
       rows.map(async (row) =>
-        updateTaskPriority({
+        updateTask({
           id: row.original.id,
-          priority: priority as Task["priority"],
+          label,
+          status,
+          priority,
         })
       )
     ),

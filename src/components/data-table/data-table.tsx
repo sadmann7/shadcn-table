@@ -57,7 +57,7 @@ interface DataTableProps<TData, TValue> {
    * @default false
    * @type boolean
    */
-  advancedFilter?: boolean
+  enableAdvancedFilter?: boolean
 
   /**
    * The floating bar to render at the bottom of the table on row selection.
@@ -68,7 +68,7 @@ interface DataTableProps<TData, TValue> {
   floatingBar?: React.ReactNode | null
 
   /**
-   * The link to create a new row, will be rendered as a button.
+   * The link to create a new row. When provided, renders a button to create a new row.
    * @default undefined
    * @type string
    * @example newRowLink="/tasks/new"
@@ -76,10 +76,10 @@ interface DataTableProps<TData, TValue> {
   newRowLink?: string
 
   /**
-   * The action to delete rows, will be rendered as a button.
+   * The action to delete rows. When provided, renders a button to delete selected rows.
    * @default undefined
    * @type React.MouseEventHandler<HTMLButtonElement> | undefined
-   * @example deleteRowsAction={(event) => deleteSelectedRows(dataTable, event)}
+   * @example deleteRowsAction={() => deleteSelectedRows({ rows: table.getFilteredSelectedRowModel().rows })}
    */
   deleteRowsAction?: React.MouseEventHandler<HTMLButtonElement>
 }
@@ -89,14 +89,14 @@ export function DataTable<TData, TValue>({
   columns,
   searchableColumns = [],
   filterableColumns = [],
-  advancedFilter = false,
+  enableAdvancedFilter = false,
   floatingBar,
   newRowLink,
   deleteRowsAction,
 }: DataTableProps<TData, TValue>) {
   return (
     <div className="w-full space-y-2.5 overflow-auto">
-      {advancedFilter ? (
+      {enableAdvancedFilter ? (
         <DataTableAdvancedToolbar
           table={table}
           filterableColumns={filterableColumns}

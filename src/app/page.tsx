@@ -5,6 +5,7 @@ import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { Shell } from "@/components/shell"
 
 import { TasksTable } from "./_components/tasks-table"
+import { TasksTableProvider } from "./_components/tasks-table-provider"
 import { getTasks } from "./_lib/queries"
 import { searchParamsSchema } from "./_lib/validations"
 
@@ -19,18 +20,20 @@ export default function IndexPage({ searchParams }: IndexPageProps) {
 
   return (
     <Shell>
-      <React.Suspense
-        fallback={
-          <DataTableSkeleton columnCount={4} filterableColumnCount={2} />
-        }
-      >
-        {/**
-         * The `TasksTable` component is used to render the `DataTable` component within it.
-         * This is done because the table columns need to be memoized, and the `useDataTable` hook needs to be called in a client component.
-         * By encapsulating the `DataTable` component within the `tasktableshell` component, we can ensure that the necessary logic and state management is handled correctly.
-         */}
-        <TasksTable tasksPromise={tasksPromise} />
-      </React.Suspense>
+      <TasksTableProvider>
+        <React.Suspense
+          fallback={
+            <DataTableSkeleton columnCount={4} filterableColumnCount={2} />
+          }
+        >
+          {/**
+           * The `TasksTable` component is used to render the `DataTable` component within it.
+           * This is done because the table columns need to be memoized, and the `useDataTable` hook needs to be called in a client component.
+           * By encapsulating the `DataTable` component within the `tasktableshell` component, we can ensure that the necessary logic and state management is handled correctly.
+           */}
+          <TasksTable tasksPromise={tasksPromise} />
+        </React.Suspense>
+      </TasksTableProvider>
     </Shell>
   )
 }

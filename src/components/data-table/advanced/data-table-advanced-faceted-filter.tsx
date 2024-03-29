@@ -17,15 +17,17 @@ interface DataTableAdvancedFacetedFilterProps<TData, TValue> {
   column?: Column<TData, TValue>
   title?: string
   options: Option[]
+  selectedValues: Set<string>
+  updateSelectedValues(values: string[]): void
 }
 
 export function DataTableAdvancedFacetedFilter<TData, TValue>({
   column,
   title,
   options,
+  selectedValues,
+  updateSelectedValues,
 }: DataTableAdvancedFacetedFilterProps<TData, TValue>) {
-  const selectedValues = new Set(column?.getFilterValue() as string[])
-
   return (
     <Command className="p-1">
       <CommandInput
@@ -39,6 +41,7 @@ export function DataTableAdvancedFacetedFilter<TData, TValue>({
         <CommandGroup className="px-0">
           {options.map((option) => {
             const isSelected = selectedValues.has(option.value)
+
             return (
               <CommandItem
                 key={option.value}
@@ -52,6 +55,7 @@ export function DataTableAdvancedFacetedFilter<TData, TValue>({
                   column?.setFilterValue(
                     filterValues.length ? filterValues : undefined
                   )
+                  updateSelectedValues(filterValues)
                 }}
               >
                 <div
@@ -80,7 +84,11 @@ export function DataTableAdvancedFacetedFilter<TData, TValue>({
             <CommandSeparator />
             <CommandGroup className="p-0 pt-1">
               <CommandItem
-                onSelect={() => column?.setFilterValue(undefined)}
+                onSelect={() => {
+                  column?.setFilterValue(undefined)
+                  selectedValues.clear()
+                  updateSelectedValues([])
+                }}
                 className="justify-center text-center"
               >
                 Clear filters

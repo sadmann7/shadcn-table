@@ -39,7 +39,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 
-import { deleteTask, updateTaskLabel } from "../_lib/actions"
+import { deleteTask, updateTask } from "../_lib/actions"
 
 export function getColumns(): ColumnDef<Task>[] {
   return [
@@ -215,7 +215,7 @@ export function getColumns(): ColumnDef<Task>[] {
                     onValueChange={(value) => {
                       startUpdateTransition(() => {
                         toast.promise(
-                          updateTaskLabel({
+                          updateTask({
                             id: row.original.id,
                             label: value as Task["label"],
                           }),

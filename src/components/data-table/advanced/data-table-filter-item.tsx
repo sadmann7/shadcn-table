@@ -4,6 +4,7 @@ import type { DataTableFilterOption } from "@/types"
 import { TrashIcon } from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
 
+import { dataTableConfig } from "@/config/data-table"
 import { cn } from "@/lib/utils"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
@@ -24,43 +25,39 @@ import {
 
 import { DataTableAdvancedFacetedFilter } from "./data-table-advanced-faceted-filter"
 
-interface DataTableAdvancedFilterItemProps<TData> {
+interface DataTableFilterItemProps<TData> {
   table: Table<TData>
   selectedOption: DataTableFilterOption<TData>
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
+  defaultOpen: boolean
 }
 
-export function DataTableAdvancedFilterItem<TData>({
+export function DataTableFilterItem<TData>({
   table,
   selectedOption,
   setSelectedOptions,
-}: DataTableAdvancedFilterItemProps<TData>) {
+  defaultOpen,
+}: DataTableFilterItemProps<TData>) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [value, setValue] = React.useState("")
   const debounceValue = useDebounce(value, 500)
-  const [open, setOpen] = React.useState(true)
+  const [open, setOpen] = React.useState(defaultOpen)
 
-  const selectedValues =
+  const selectedValues = new Set(
+    table.getColumn(String(selectedOption.value))?.getFilterValue() as string[]
+  )
+  const selectedItems = Array.from(selectedValues)
+
+  const operators =
     selectedOption.items.length > 0
-      ? Array.from(
-          new Set(
-            table
-              .getColumn(String(selectedOption.value))
-              ?.getFilterValue() as string[]
-          )
-        )
-      : []
+      ? dataTableConfig.operators.selectables
+      : dataTableConfig.operators.comparison
 
-  const filterVarieties =
-    selectedOption.items.length > 0
-      ? ["is", "is not"]
-      : ["contains", "does not contain", "is", "is not"]
-
-  const [filterVariety, setFilterVariety] = React.useState(filterVarieties[0])
+  const [selectedOperator, setSelectedOperator] = React.useState(operators[0])
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -81,31 +78,28 @@ export function DataTableAdvancedFilterItem<TData>({
   )
 
   React.useEffect(() => {
-    if (debounceValue.length > 0) {
+    if (debounceValue) {
+      const filterValue = `${debounceValue}~${selectedOperator?.value}`
+
       router.push(
         `${pathname}?${createQueryString({
-          [selectedOption.value]: `${debounceValue}${
-            debounceValue.length > 0 ? `.${filterVariety}` : ""
-          }`,
-        })}`,
-        {
-          scroll: false,
-        }
+          [selectedOption.value]: filterValue,
+        })}`
       )
     }
 
-    if (debounceValue.length === 0) {
-      router.push(
-        `${pathname}?${createQueryString({
-          [selectedOption.value]: null,
-        })}`,
-        {
-          scroll: false,
-        }
-      )
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debounceValue, filterVariety, selectedOption.value])
+  }, [debounceValue, selectedOperator?.value, selectedOption.value])
+
+  function updateSelectedValues(values: string[]) {
+    const filterValue = `${values.join(".")}~${selectedOperator?.value}`
+
+    router.push(
+      `${pathname}?${createQueryString({
+        [selectedOption.value]: filterValue,
+      })}`
+    )
+  }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -115,19 +109,19 @@ export function DataTableAdvancedFilterItem<TData>({
           size="sm"
           className={cn(
             "h-7 truncate rounded-full",
-            (selectedValues.length > 0 || value.length > 0) && "bg-muted/50"
+            (selectedItems.length > 0 || value.length > 0) && "bg-muted/50"
           )}
         >
-          {value.length > 0 || selectedValues.length > 0 ? (
+          {value.length > 0 || selectedItems.length > 0 ? (
             <>
               <span className="font-medium capitalize">
                 {selectedOption.label}:
               </span>
-              {selectedValues.length > 0 ? (
+              {selectedItems.length > 0 ? (
                 <span className="ml-1">
-                  {selectedValues.length > 2
-                    ? `${selectedValues.length} selected`
-                    : selectedValues.join(", ")}
+                  {selectedItems.length > 2
+                    ? `${selectedItems.length} selected`
+                    : selectedItems.join(", ")}
                 </span>
               ) : (
                 <span className="ml-1">{value}</span>
@@ -138,19 +132,29 @@ export function DataTableAdvancedFilterItem<TData>({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-60 space-y-1.5 p-2 text-xs" align="start">
+      <PopoverContent className="w-60 space-y-1.5 p-2" align="start">
         <div className="flex items-center space-x-1 pl-1 pr-0.5">
           <div className="flex flex-1 items-center space-x-1">
-            <div className="capitalize">{selectedOption.label}</div>
-            <Select onValueChange={(value) => setFilterVariety(value)}>
-              <SelectTrigger className="h-auto w-fit truncate border-none px-2 py-0.5 hover:bg-muted/50">
-                <SelectValue placeholder={filterVarieties[0]} />
+            <div className="text-xs capitalize text-muted-foreground">
+              {selectedOption.label}
+            </div>
+            <Select
+              onValueChange={(value) =>
+                setSelectedOperator(operators.find((c) => c.value === value))
+              }
+            >
+              <SelectTrigger className="h-auto w-fit truncate border-none px-2 py-0.5 text-xs hover:bg-muted/50">
+                <SelectValue placeholder={selectedOperator?.label} />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {filterVarieties.map((variety) => (
-                    <SelectItem key={variety} value={variety}>
-                      {variety}
+                  {operators.map((item) => (
+                    <SelectItem
+                      key={item.value}
+                      value={item.value}
+                      className="py-1"
+                    >
+                      {item.label}
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -161,18 +165,18 @@ export function DataTableAdvancedFilterItem<TData>({
             aria-label="Remove filter"
             variant="ghost"
             size="icon"
-            className="size-8"
+            className="size-7 text-muted-foreground"
             onClick={() => {
+              setSelectedOptions((prev) =>
+                prev.filter((item) => item.id !== selectedOption.id)
+              )
+
+              selectedValues.clear()
+
               router.push(
                 `${pathname}?${createQueryString({
                   [selectedOption.value]: null,
-                })}`,
-                {
-                  scroll: false,
-                }
-              )
-              setSelectedOptions((prev) =>
-                prev.filter((item) => item.value !== selectedOption.value)
+                })}`
               )
             }}
           >
@@ -190,12 +194,15 @@ export function DataTableAdvancedFilterItem<TData>({
               )}
               title={selectedOption.label}
               options={selectedOption.items}
+              selectedValues={selectedValues}
+              updateSelectedValues={updateSelectedValues}
             />
           )
         ) : (
           <Input
             placeholder="Type here..."
             className="h-8"
+            defaultValue={value}
             value={value}
             onChange={(event) => setValue(event.target.value)}
             autoFocus

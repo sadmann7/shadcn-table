@@ -9,6 +9,7 @@ import {
 } from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
 
+import { dataTableConfig, type DataTableConfig } from "@/config/data-table"
 import { useDebounce } from "@/hooks/use-debounce"
 import { Button } from "@/components/ui/button"
 import {
@@ -35,17 +36,6 @@ import { Separator } from "@/components/ui/separator"
 
 import { DataTableFacetedFilter } from "../data-table-faceted-filter"
 
-const operators = [
-  {
-    label: "And",
-    value: "and",
-  },
-  {
-    label: "Or",
-    value: "or",
-  },
-]
-
 interface DataTableMultiFilterProps<TData> {
   table: Table<TData>
   allOptions: DataTableFilterOption<TData>[]
@@ -53,6 +43,7 @@ interface DataTableMultiFilterProps<TData> {
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
+  defaultOpen: boolean
 }
 
 export function DataTableMultiFilter<TData>({
@@ -60,9 +51,12 @@ export function DataTableMultiFilter<TData>({
   allOptions,
   options,
   setSelectedOptions,
+  defaultOpen,
 }: DataTableMultiFilterProps<TData>) {
-  const [open, setOpen] = React.useState(true)
-  const [operator, setOperator] = React.useState(operators[0])
+  const [open, setOpen] = React.useState(defaultOpen)
+  const [operator, setOperator] = React.useState(
+    dataTableConfig.operators.logical[0]
+  )
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -111,12 +105,20 @@ export function DataTableMultiFilter<TData>({
   )
 }
 
-interface MultiFilterRowProps<TData> extends DataTableMultiFilterProps<TData> {
+interface MultiFilterRowProps<TData> {
   i: number
+  table: Table<TData>
+  allOptions: DataTableFilterOption<TData>[]
   option: DataTableFilterOption<TData>
-  operator?: (typeof operators)[number]
+  options: DataTableFilterOption<TData>[]
+  setSelectedOptions: React.Dispatch<
+    React.SetStateAction<DataTableFilterOption<TData>[]>
+  >
+  operator?: DataTableConfig["operators"]["logical"][number]
   setOperator: React.Dispatch<
-    React.SetStateAction<(typeof operators)[number] | undefined>
+    React.SetStateAction<
+      DataTableConfig["operators"]["logical"][number] | undefined
+    >
   >
 }
 
@@ -222,7 +224,9 @@ export function MultiFilterRow<TData>({
         <Select
           value={operator?.value}
           onValueChange={(value) =>
-            setOperator(operators.find((o) => o.value === value))
+            setOperator(
+              dataTableConfig.operators.logical.find((o) => o.value === value)
+            )
           }
         >
           <SelectTrigger className="h-8 w-fit text-xs">
@@ -230,7 +234,7 @@ export function MultiFilterRow<TData>({
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {operators.map((operator) => (
+              {dataTableConfig.operators.logical.map((operator) => (
                 <SelectItem
                   key={operator.value}
                   value={operator.value}
@@ -254,11 +258,10 @@ export function MultiFilterRow<TData>({
               if (item.id === option.id) {
                 return {
                   ...item,
-                  value,
+                  value: value as keyof TData,
                 }
-              } else {
-                return item
               }
+              return item
             })
           )
         }}
@@ -341,7 +344,7 @@ export function MultiFilterRow<TData>({
                 {
                   id: crypto.randomUUID(),
                   label: String(selectedOption?.label),
-                  value: String(selectedOption?.value),
+                  value: String(selectedOption?.value) as keyof TData,
                   isMulti: true,
                   items: selectedOption?.items ?? [],
                 },

@@ -8,22 +8,18 @@ export const searchParamsSchema = z.object({
   title: z.string().optional(),
   status: z.string().optional(),
   priority: z.string().optional(),
-  operator: z.string().optional(),
+  operator: z.enum(["and", "or"]).optional(),
 })
 
 export const getTasksSchema = searchParamsSchema
 
-export const updateTaskLabelSchema = z.object({
+export type GetTasksSchema = z.infer<typeof getTasksSchema>
+
+export const updateTaskSchema = z.object({
   id: z.string(),
-  label: z.enum(tasks.label.enumValues),
+  label: z.enum(tasks.label.enumValues).optional(),
+  status: z.enum(tasks.status.enumValues).optional(),
+  priority: z.enum(tasks.priority.enumValues).optional(),
 })
 
-export const updateTaskStatusSchema = z.object({
-  id: z.string(),
-  status: z.enum(tasks.status.enumValues),
-})
-
-export const updateTaskPrioritySchema = z.object({
-  id: z.string(),
-  priority: z.enum(tasks.priority.enumValues),
-})
+export type UpdateTaskSchema = z.infer<typeof updateTaskSchema>

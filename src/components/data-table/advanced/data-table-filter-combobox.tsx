@@ -25,26 +25,28 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-interface DataTableAdvancedFilterProps<TData> {
+interface DataTableFilterComboboxProps<TData> {
   options: DataTableFilterOption<TData>[]
   selectedOptions: DataTableFilterOption<TData>[]
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
+  setOpenMenu: React.Dispatch<React.SetStateAction<boolean>>
   children?: React.ReactNode
 }
 
-export function DataTableAdvancedFilter<TData>({
+export function DataTableFilterCombobox<TData>({
   options,
   selectedOptions,
   setSelectedOptions,
+  setOpenMenu,
   children,
-}: DataTableAdvancedFilterProps<TData>) {
+}: DataTableFilterComboboxProps<TData>) {
   const [value, setValue] = React.useState("")
   const [open, setOpen] = React.useState(false)
   const [selectedOption, setSelectedOption] = React.useState<
-    DataTableFilterOption<TData> | undefined
-  >(options[0])
+    DataTableFilterOption<TData>
+  >(options[0] ?? ({} as DataTableFilterOption<TData>))
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -56,11 +58,11 @@ export function DataTableAdvancedFilter<TData>({
             role="combobox"
             className="capitalize"
           >
-            Filter
             <CaretSortIcon
-              className="ml-2 size-4 shrink-0 opacity-50"
+              className="mr-2 size-4 shrink-0"
               aria-hidden="true"
             />
+            Filter
           </Button>
         )}
       </PopoverTrigger>
@@ -70,37 +72,39 @@ export function DataTableAdvancedFilter<TData>({
           <CommandList>
             <CommandEmpty>No item found.</CommandEmpty>
             <CommandGroup>
-              {options.map((option) => (
-                <CommandItem
-                  key={String(option.value)}
-                  className="capitalize"
-                  value={String(option.value)}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue)
-                    setOpen(false)
-                    setSelectedOption(option)
-                    setSelectedOptions((prev) => {
-                      if (currentValue === value) {
-                        return prev.filter(
-                          (item) => item.value !== option.value
-                        )
-                      } else {
-                        return [...prev, option]
-                      }
-                    })
-                  }}
-                >
-                  {option.items.length > 0 ? (
-                    <ChevronDownIcon
-                      className="mr-2 size-4"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    <TextIcon className="mr-2 size-4" aria-hidden="true" />
-                  )}
-                  {option.label}
-                </CommandItem>
-              ))}
+              {options
+                .filter(
+                  (option) =>
+                    !selectedOptions.some(
+                      (selectedOption) => selectedOption.value === option.value
+                    )
+                )
+                .map((option) => (
+                  <CommandItem
+                    key={String(option.value)}
+                    className="capitalize"
+                    value={String(option.value)}
+                    onSelect={(currentValue) => {
+                      setValue(currentValue === value ? "" : currentValue)
+                      setOpen(false)
+                      setSelectedOption(option)
+                      setSelectedOptions((prev) => {
+                        return [...prev, { ...option }]
+                      })
+                      setOpenMenu(true)
+                    }}
+                  >
+                    {option.items.length > 0 ? (
+                      <ChevronDownIcon
+                        className="mr-2 size-4"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <TextIcon className="mr-2 size-4" aria-hidden="true" />
+                    )}
+                    {option.label}
+                  </CommandItem>
+                ))}
             </CommandGroup>
             <CommandSeparator />
             <CommandGroup>
@@ -112,11 +116,12 @@ export function DataTableAdvancedFilter<TData>({
                     {
                       id: crypto.randomUUID(),
                       label: String(selectedOption?.label),
-                      value: String(selectedOption?.value),
+                      value: selectedOption?.value ?? "",
                       items: selectedOption?.items ?? [],
                       isMulti: true,
                     },
                   ])
+                  setOpenMenu(true)
                 }}
               >
                 <PlusIcon className="mr-2 size-4" aria-hidden="true" />

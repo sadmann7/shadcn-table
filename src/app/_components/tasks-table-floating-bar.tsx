@@ -1,3 +1,4 @@
+import * as React from "react"
 import { tasks, type Task } from "@/db/schema"
 import {
   ArrowUpIcon,
@@ -21,11 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-import {
-  deleteTasks,
-  updateTasksPriority,
-  updateTasksStatus,
-} from "../_lib/mutations"
+import { deleteTasks, updateTasks } from "../_lib/mutations"
 
 interface TasksTableFloatingBarProps {
   table: Table<Task>
@@ -33,6 +30,8 @@ interface TasksTableFloatingBarProps {
 
 export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
+
+  const [isPending, startTransition] = React.useTransition()
 
   return (
     <div className="mx-auto flex w-fit items-center gap-5 rounded-md border bg-muted/50 px-4 py-2">
@@ -56,13 +55,15 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
       </div>
       <div className="flex items-center">
         <Select
-          onValueChange={(value) =>
-            updateTasksStatus({
-              rows,
-              status: value,
-              onSucess: () => table.toggleAllRowsSelected(false),
+          onValueChange={(value: Task["status"]) => {
+            startTransition(() => {
+              updateTasks({
+                rows,
+                status: value,
+                onSucess: () => table.toggleAllRowsSelected(false),
+              })
             })
-          }
+          }}
         >
           <Tooltip>
             <SelectTrigger asChild>
@@ -71,6 +72,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                   variant="ghost"
                   size="icon"
                   className="size-7 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
+                  disabled={isPending}
                 >
                   <CheckCircledIcon className="size-4" aria-hidden="true" />
                 </Button>
@@ -91,13 +93,15 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
           </SelectContent>
         </Select>
         <Select
-          onValueChange={(value) =>
-            updateTasksPriority({
-              rows,
-              priority: value,
-              onSucess: () => table.toggleAllRowsSelected(false),
+          onValueChange={(value: Task["priority"]) => {
+            startTransition(() => {
+              updateTasks({
+                rows,
+                priority: value,
+                onSucess: () => table.toggleAllRowsSelected(false),
+              })
             })
-          }
+          }}
         >
           <Tooltip>
             <SelectTrigger asChild>
@@ -106,6 +110,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                   variant="ghost"
                   size="icon"
                   className="size-7 data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
+                  disabled={isPending}
                 >
                   <ArrowUpIcon className="size-4" aria-hidden="true" />
                 </Button>
@@ -136,11 +141,14 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
               size="icon"
               className="size-7"
               onClick={() => {
-                deleteTasks({
-                  rows,
-                  onSucess: () => table.toggleAllRowsSelected(false),
+                startTransition(() => {
+                  deleteTasks({
+                    rows,
+                    onSucess: () => table.toggleAllRowsSelected(false),
+                  })
                 })
               }}
+              disabled={isPending}
             >
               <TrashIcon className="size-4" aria-hidden="true" />
             </Button>

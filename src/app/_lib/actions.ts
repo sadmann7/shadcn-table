@@ -6,16 +6,11 @@ import { tasks, type Task } from "@/db/schema"
 import { faker } from "@faker-js/faker"
 import { eq } from "drizzle-orm"
 import { customAlphabet } from "nanoid"
-import type { z } from "zod"
 
 import { getErrorMessage } from "@/lib/handle-error"
 import { createId } from "@/lib/utils"
 
-import type {
-  updateTaskLabelSchema,
-  updateTaskPrioritySchema,
-  updateTaskStatusSchema,
-} from "./validations"
+import type { UpdateTaskSchema } from "./validations"
 
 export async function seedTasks({
   count = 100,
@@ -58,35 +53,22 @@ export async function seedTasks({
   }
 }
 
-export async function updateTaskLabel({
+export async function updateTask({
   id,
   label,
-}: z.infer<typeof updateTaskLabelSchema>) {
-  noStore()
-  try {
-    await db.update(tasks).set({ label }).where(eq(tasks.id, id))
-
-    revalidatePath("/")
-
-    return {
-      data: null,
-      error: null,
-    }
-  } catch (err) {
-    return {
-      data: null,
-      error: getErrorMessage(err),
-    }
-  }
-}
-
-export async function updateTaskStatus({
-  id,
   status,
-}: z.infer<typeof updateTaskStatusSchema>) {
+  priority,
+}: UpdateTaskSchema) {
   noStore()
   try {
-    await db.update(tasks).set({ status }).where(eq(tasks.id, id))
+    await db
+      .update(tasks)
+      .set({
+        label,
+        status,
+        priority,
+      })
+      .where(eq(tasks.id, id))
 
     revalidatePath("/")
 
@@ -94,22 +76,6 @@ export async function updateTaskStatus({
       data: null,
       error: null,
     }
-  } catch (err) {
-    return {
-      data: null,
-      error: getErrorMessage(err),
-    }
-  }
-}
-
-export async function updateTaskPriority({
-  id,
-  priority,
-}: z.infer<typeof updateTaskPrioritySchema>) {
-  try {
-    await db.update(tasks).set({ priority }).where(eq(tasks.id, id))
-
-    revalidatePath("/")
   } catch (err) {
     return {
       data: null,

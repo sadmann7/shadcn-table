@@ -9,9 +9,9 @@ export type Option = {
 }
 
 export interface DataTableFilterOption<TData> {
-  id?: string
+  id: string
   label: string
-  value: keyof TData | string
+  value: keyof TData
   items: Option[]
   isMulti?: boolean
 }
