@@ -62,31 +62,9 @@ This is a Shadcn table component with server-side sorting, filtering, and pagina
    pnpm run db:push
    ```
 
-## Codebase Overview
+## Build your own Table
 
-Watch the codebase overview video on [YouTube](https://www.youtube.com/watch?v=BsvjF5Y6-C8&t=1s).
-
-Consider subscribing to Kavin Desi Valli's [YouTube channel](https://www.youtube.com/@livecode247) for more videos.
-
-## How do I deploy this?
-
-Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
-
-## How to use the data-table component
-
-1. Clone the Repo
-
-   ```bash
-   git clone https://github.com/sadmann7/shadcn-table
-   ```
-
-   OR
-
-   ```bash
-   git clone https://github.com/arvind-iyer-2001/shadcn-table
-   ```
-
-2. Copy the following folders and files into your project (configured with ) at the exact specific locations
+1. Copy the following folders and files into your project (configured with ) at the exact specific locations
 
    - `src/components/data-table`
    - `src/db/index.ts`
@@ -99,23 +77,23 @@ Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
    ```bash
    pnpm dlx shadcn-ui@latest init
 
-   pnpm dlx shadcn-ui@latest add button badge checkbox command dialog dropdown-menu input popover select separator skeleton table toast
+   pnpm dlx shadcn-ui@latest add button badge checkbox command dialog dropdown-menu input popover select separator skeleton table toast tooltip
 
    pnpm add drizzle-orm postgres @tanstack/react-table zod sonner @t3-oss/env-nextjs
    pnpm add -D drizzle-kit dotenv-cli pg tsx
    ```
 
-3. Configure your Environment Variables
+2. Configure your Environment Variables
    Then set up the Database URL, for this example, we're using PlanetScale MySQL2 Database. Our schemas will also be made using this.
 
-4. Database Actions: For this you can use any ORM of your choice, but for the sake of this particular example, we're using [Drizzle ORM](https://orm.drizzle.team) and [Neon](https://neon.tech/).
+3. Database Actions: For this you can use any ORM of your choice, but for the sake of this particular example, we're using [Drizzle ORM](https://orm.drizzle.team) and [Neon](https://neon.tech/).
 
    As an example, lets use the `tasks` table.
 
    - Create the Table Schema at `@/db/schema.ts`
    - Create the associated zod validations `@/lib/validations/tasks.ts` file
 
-5. Setting up the Table
+4. Setting up the Table
 
    - **Create Files**: Create `page.tsx` and, if needed, `layout.tsx` in your app directory.
    - **Copy Directories**: Copy `./_components` and `./_lib` directories into your project.
@@ -127,3 +105,13 @@ Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
    - **Memoize Table Columns**: In `./_components/tasks-table.tsx`, memoize columns defined in `./_components/tasks-table-columns.tsx` using `React.useMemo` hook to prevent unnecessary re-renders.
    - **Use Data Table Hook**: In `./_components/tasks-table.tsx`, call `./hooks/useTasksTable.tsx` hook to handle server-side pagination, sorting, and filtering.
    - **Remove Tasks Table Provider**: Make sure to remove the provider from `./components/tasks-table-provider.tsx`. The provider is used to showcase some additional features like floating bar and advanced filters.
+
+## Codebase Overview
+
+Watch the codebase overview video on [YouTube](https://www.youtube.com/watch?v=BsvjF5Y6-C8&t=1s).
+
+Consider subscribing to Kavin Desi Valli's [YouTube channel](https://www.youtube.com/@livecode247) for more videos.
+
+## How do I deploy this?
+
+Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.

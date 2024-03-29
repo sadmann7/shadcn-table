@@ -54,6 +54,7 @@ interface DataTableProps<TData, TValue> {
 
   /**
    * Enables notion like filters when enabled.
+   * Advanced filters and column filters cannot be used at the same time.
    * @default false
    * @type boolean
    */

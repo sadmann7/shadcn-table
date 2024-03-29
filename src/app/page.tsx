@@ -23,7 +23,12 @@ export default function IndexPage({ searchParams }: IndexPageProps) {
       <TasksTableProvider>
         <React.Suspense
           fallback={
-            <DataTableSkeleton columnCount={4} filterableColumnCount={2} />
+            <DataTableSkeleton
+              columnCount={5}
+              searchableColumnCount={1}
+              filterableColumnCount={2}
+              cellWidths={["8%", "60%", "12%", "12%", "8%"]}
+            />
           }
         >
           {/**
