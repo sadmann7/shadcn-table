@@ -19,25 +19,31 @@ import {
 
 import { deleteTasks } from "../_lib/mutations"
 
-interface DeleteTasksDialogProps {
+interface DeleteTasksDialogProps
+  extends React.ComponentPropsWithoutRef<typeof Dialog> {
   tasks: Row<Task>[]
-  onSuccess: () => void
+  onSuccess?: () => void
+  showTrigger?: boolean
 }
 
 export function DeleteTasksDialog({
   tasks,
   onSuccess,
+  showTrigger = true,
+  ...props
 }: DeleteTasksDialogProps) {
   const [isDeletePending, startDeleteTransition] = React.useTransition()
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          <TrashIcon className="mr-2 size-4" aria-hidden="true" />
-          Delete ({tasks.length})
-        </Button>
-      </DialogTrigger>
+    <Dialog {...props}>
+      {showTrigger ? (
+        <DialogTrigger asChild>
+          <Button variant="outline" size="sm">
+            <TrashIcon className="mr-2 size-4" aria-hidden="true" />
+            Delete ({tasks.length})
+          </Button>
+        </DialogTrigger>
+      ) : null}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>
@@ -51,21 +57,23 @@ export function DeleteTasksDialog({
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <Button
-            aria-label="Delete selected rows"
-            variant="destructive"
-            onClick={() => {
-              startDeleteTransition(() => {
-                deleteTasks({
-                  rows: tasks,
-                  onSucess: onSuccess,
+          <DialogClose asChild>
+            <Button
+              aria-label="Delete selected rows"
+              variant="destructive"
+              onClick={() => {
+                startDeleteTransition(() => {
+                  deleteTasks({
+                    rows: tasks,
+                    onSucess: onSuccess,
+                  })
                 })
-              })
-            }}
-            disabled={isDeletePending}
-          >
-            Delete
-          </Button>
+              }}
+              disabled={isDeletePending}
+            >
+              Delete
+            </Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
