@@ -1,15 +1,15 @@
 "use client"
 
 import { useTheme } from "next-themes"
-import { Toaster as RadToaster } from "sonner"
+import { Toaster as Sonner } from "sonner"
 
-type ToasterProps = React.ComponentProps<typeof RadToaster>
+type ToasterProps = React.ComponentProps<typeof Sonner>
 
 function Toaster({ ...props }: ToasterProps) {
   const { theme = "system" } = useTheme()
 
   return (
-    <RadToaster
+    <Sonner
       theme={theme as ToasterProps["theme"]}
       // eslint-disable-next-line tailwindcss/no-custom-classname
       className="toaster group"

@@ -23,18 +23,12 @@ const Command = React.forwardRef<
 ))
 Command.displayName = CommandPrimitive.displayName
 
-interface CommandDialogProps extends DialogProps {
-  className?: string
-}
+interface CommandDialogProps extends DialogProps {}
 
-const CommandDialog = ({
-  children,
-  className,
-  ...props
-}: CommandDialogProps) => {
+const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   return (
     <Dialog {...props}>
-      <DialogContent className={cn("overflow-hidden p-0", className)}>
+      <DialogContent className="overflow-hidden p-0">
         <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:size-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:size-5">
           {children}
         </Command>
@@ -45,23 +39,10 @@ const CommandDialog = ({
 
 const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input> & {
-    showIcon?: boolean
-  }
->(({ className, showIcon = true, ...props }, ref) =>
-  showIcon ? (
-    <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
-      <MagnifyingGlassIcon className="mr-2 size-4 shrink-0 opacity-50" />
-      <CommandPrimitive.Input
-        ref={ref}
-        className={cn(
-          "flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
-          className
-        )}
-        {...props}
-      />
-    </div>
-  ) : (
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
+>(({ className, ...props }, ref) => (
+  <div className="flex items-center border-b px-3" cmdk-input-wrapper="">
+    <MagnifyingGlassIcon className="mr-2 size-4 shrink-0 opacity-50" />
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
@@ -70,8 +51,8 @@ const CommandInput = React.forwardRef<
       )}
       {...props}
     />
-  )
-)
+  </div>
+))
 
 CommandInput.displayName = CommandPrimitive.Input.displayName
 

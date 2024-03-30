@@ -35,7 +35,7 @@ export function useTasksTable() {
 
 export function TasksTableProvider({ children }: React.PropsWithChildren) {
   const [enableAdvancedFilter, setEnableAdvancedFilter] = React.useState(false)
-  const [showFloatingBar, setShowFloatingBar] = React.useState(true)
+  const [showFloatingBar, setShowFloatingBar] = React.useState(false)
 
   return (
     <TasksTableContext.Provider
