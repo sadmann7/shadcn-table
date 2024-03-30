@@ -89,28 +89,10 @@ export function DataTableFilterItem<TData>({
     [searchParams]
   )
 
-  // Update query string (key=value~operator)
-  React.useEffect(() => {
-    if (selectedOption.items.length > 0) return
-
-    const newSearchParams = createQueryString({
-      [String(selectedOption.value)]:
-        debounceValue.length > 0
-          ? `${debounceValue}~${selectedOperator?.value}`
-          : null,
-    })
-    router.push(`${pathname}?${newSearchParams}`)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    debounceValue,
-    selectedOperator?.value,
-    selectedOption.items.length,
-    selectedOption.value,
-  ])
-
-  // Update query string (key=value1.value2.value3~operator)
+  // Update query string
   React.useEffect(() => {
     if (selectedOption.items.length > 0) {
+      // key=value1.value2.value3~operator
       const newSearchParams = createQueryString({
         [String(selectedOption.value)]:
           filterValues.length > 0
@@ -118,15 +100,19 @@ export function DataTableFilterItem<TData>({
             : null,
       })
       router.push(`${pathname}?${newSearchParams}`)
+    } else {
+      // key=value~operator
+      const newSearchParams = createQueryString({
+        [String(selectedOption.value)]:
+          debounceValue.length > 0
+            ? `${debounceValue}~${selectedOperator?.value}`
+            : null,
+      })
+      router.push(`${pathname}?${newSearchParams}`)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    filterValues,
-    selectedOperator?.value,
-    selectedOption.items.length,
-    selectedOption.value,
-  ])
+  }, [selectedOption, debounceValue])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
