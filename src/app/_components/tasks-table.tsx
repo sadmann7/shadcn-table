@@ -25,7 +25,8 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
   // Learn more about React.use here: https://react.dev/reference/react/use
   const { data, pageCount } = React.use(tasksPromise)
 
-  // Memoize the columns so they don't re-render on every render
+  // do the memoization to the columns so they don't re-render on every render
+  // learn more about memo in https://react.dev/reference/react/memo
   const columns = React.useMemo<ColumnDef<Task, unknown>[]>(
     () => getColumns(),
     []
