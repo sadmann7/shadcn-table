@@ -15,6 +15,15 @@ export const getTasksSchema = searchParamsSchema
 
 export type GetTasksSchema = z.infer<typeof getTasksSchema>
 
+export const createTaskSchema = z.object({
+  title: z.string(),
+  label: z.enum(tasks.label.enumValues),
+  status: z.enum(tasks.status.enumValues),
+  priority: z.enum(tasks.priority.enumValues),
+})
+
+export type CreateTaskSchema = z.infer<typeof createTaskSchema>
+
 export const updateTaskSchema = z.object({
   id: z.string(),
   label: z.enum(tasks.label.enumValues).optional(),

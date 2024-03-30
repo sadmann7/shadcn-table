@@ -10,20 +10,19 @@ import { customAlphabet } from "nanoid"
 import { getErrorMessage } from "@/lib/handle-error"
 import { createId } from "@/lib/utils"
 
-import type { UpdateTaskSchema } from "./validations"
+import type { CreateTaskSchema, UpdateTaskSchema } from "./validations"
 
-export async function seedTasks({
-  count = 100,
-  reset = false,
-}: {
-  count?: number
-  reset?: boolean
-}) {
+export async function seedTasks(
+  input: { count: number; reset?: boolean } = {
+    count: 100,
+    reset: false,
+  }
+) {
   noStore()
   try {
     const allTasks: Task[] = []
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < input.count; i++) {
       allTasks.push({
         id: createId(),
         code: `TASK-${customAlphabet("0123456789", 4)()}`,
@@ -43,7 +42,7 @@ export async function seedTasks({
       })
     }
 
-    reset && (await db.delete(tasks))
+    input.reset && (await db.delete(tasks))
 
     console.log("📝 Inserting tasks", allTasks.length)
 
@@ -53,22 +52,49 @@ export async function seedTasks({
   }
 }
 
-export async function updateTask({
-  id,
-  label,
-  status,
-  priority,
-}: UpdateTaskSchema) {
+export async function createTask(
+  input: CreateTaskSchema & { anotherTaskId: string }
+) {
+  noStore()
+  try {
+    await Promise.all([
+      db.insert(tasks).values({
+        id: createId(),
+        code: `TASK-${customAlphabet("0123456789", 4)()}`,
+        title: input.title,
+        status: input.status,
+        label: input.label,
+        priority: input.priority,
+      }),
+      // Delete another task to maintain the same number of tasks
+      deleteTask({ id: input.anotherTaskId }),
+    ])
+
+    revalidatePath("/")
+
+    return {
+      data: null,
+      error: null,
+    }
+  } catch (err) {
+    return {
+      data: null,
+      error: getErrorMessage(err),
+    }
+  }
+}
+
+export async function updateTask(input: UpdateTaskSchema) {
   noStore()
   try {
     await db
       .update(tasks)
       .set({
-        label,
-        status,
-        priority,
+        label: input.label,
+        status: input.status,
+        priority: input.priority,
       })
-      .where(eq(tasks.id, id))
+      .where(eq(tasks.id, input.id))
 
     revalidatePath("/")
 

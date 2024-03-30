@@ -6,12 +6,13 @@ import { getErrorMessage } from "@/lib/handle-error"
 
 import { deleteTask, updateTask } from "./actions"
 
-interface DeleteTasksInput {
+export function deleteTasks({
+  rows,
+  onSucess,
+}: {
   rows: Row<Task>[]
   onSucess?: () => void
-}
-
-export function deleteTasks({ rows, onSucess }: DeleteTasksInput) {
+}) {
   toast.promise(
     Promise.all(
       rows.map(async (row) =>
@@ -31,19 +32,19 @@ export function deleteTasks({ rows, onSucess }: DeleteTasksInput) {
   )
 }
 
-interface UpdateTasksInput extends DeleteTasksInput {
-  label?: Task["label"]
-  status?: Task["status"]
-  priority?: Task["priority"]
-}
-
 export function updateTasks({
   rows,
   label,
   status,
   priority,
   onSucess,
-}: UpdateTasksInput) {
+}: {
+  rows: Row<Task>[]
+  label?: Task["label"]
+  status?: Task["status"]
+  priority?: Task["priority"]
+  onSucess?: () => void
+}) {
   toast.promise(
     Promise.all(
       rows.map(async (row) =>

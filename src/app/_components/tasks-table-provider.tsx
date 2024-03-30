@@ -35,7 +35,7 @@ export function useTasksTable() {
 
 export function TasksTableProvider({ children }: React.PropsWithChildren) {
   const [enableAdvancedFilter, setEnableAdvancedFilter] = React.useState(false)
-  const [showFloatingBar, setShowFloatingBar] = React.useState(false)
+  const [showFloatingBar, setShowFloatingBar] = React.useState(true)
 
   return (
     <TasksTableContext.Provider
@@ -65,13 +65,11 @@ export function TasksTableProvider({ children }: React.PropsWithChildren) {
             side="bottom"
             align="center"
             sideOffset={6}
-            className="max-w-60 border bg-background px-4 py-2 font-semibold text-foreground"
+            className="flex max-w-60 flex-col space-y-1.5 border bg-background px-4 py-2 font-semibold text-foreground"
           >
-            <div className="flex flex-col space-y-1.5">
-              <div>Toggle advanced filter</div>
-              <div className="text-xs text-muted-foreground">
-                A notion like query builder to filter rows.
-              </div>
+            <div>Toggle advanced filter</div>
+            <div className="text-xs text-muted-foreground">
+              A notion like query builder to filter rows.
             </div>
           </TooltipContent>
         </Tooltip>
@@ -93,13 +91,11 @@ export function TasksTableProvider({ children }: React.PropsWithChildren) {
             side="bottom"
             align="center"
             sideOffset={6}
-            className="max-w-60 border bg-background px-4 py-2 font-semibold text-foreground"
+            className="flex max-w-60 flex-col space-y-1.5 border bg-background px-4 py-2 font-semibold text-foreground"
           >
-            <div className="flex flex-col space-y-1.5">
-              <div>Toggle floating bar</div>
-              <div className="text-xs text-muted-foreground">
-                A floating bar to perform actions on selected rows.
-              </div>
+            <div>Toggle floating bar</div>
+            <div className="text-xs text-muted-foreground">
+              A floating bar to perform actions on selected rows.
             </div>
           </TooltipContent>
         </Tooltip>

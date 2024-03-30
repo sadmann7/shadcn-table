@@ -41,6 +41,32 @@ import { DataTableColumnHeader } from "@/components/data-table/data-table-column
 
 import { deleteTask, updateTask } from "../_lib/actions"
 
+export const searchableColumns: DataTableSearchableColumn<Task>[] = [
+  {
+    id: "title",
+    placeholder: "Filter titles...",
+  },
+]
+
+export const filterableColumns: DataTableFilterableColumn<Task>[] = [
+  {
+    id: "status",
+    title: "Status",
+    options: tasks.status.enumValues.map((status) => ({
+      label: status[0]?.toUpperCase() + status.slice(1),
+      value: status,
+    })),
+  },
+  {
+    id: "priority",
+    title: "Priority",
+    options: tasks.priority.enumValues.map((priority) => ({
+      label: priority[0]?.toUpperCase() + priority.slice(1),
+      value: priority,
+    })),
+  },
+]
+
 export function getColumns(): ColumnDef<Task>[] {
   return [
     {
@@ -154,9 +180,7 @@ export function getColumns(): ColumnDef<Task>[] {
           (priority) => priority === row.original.priority
         )
 
-        if (!priority) {
-          return null
-        }
+        if (!priority) return null
 
         return (
           <div className="flex items-center">
@@ -206,7 +230,7 @@ export function getColumns(): ColumnDef<Task>[] {
                 <DotsHorizontalIcon className="size-4" aria-hidden="true" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-[160px]">
+            <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
@@ -272,29 +296,3 @@ export function getColumns(): ColumnDef<Task>[] {
     },
   ]
 }
-
-export const searchableColumns: DataTableSearchableColumn<Task>[] = [
-  {
-    id: "title",
-    placeholder: "Filter titles...",
-  },
-]
-
-export const filterableColumns: DataTableFilterableColumn<Task>[] = [
-  {
-    id: "status",
-    title: "Status",
-    options: tasks.status.enumValues.map((status) => ({
-      label: status[0]?.toUpperCase() + status.slice(1),
-      value: status,
-    })),
-  },
-  {
-    id: "priority",
-    title: "Priority",
-    options: tasks.priority.enumValues.map((priority) => ({
-      label: priority[0]?.toUpperCase() + priority.slice(1),
-      value: priority,
-    })),
-  },
-]

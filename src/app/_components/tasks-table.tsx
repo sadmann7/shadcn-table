@@ -1,13 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { type Task } from "@/db/schema"
-import { type ColumnDef } from "@tanstack/react-table"
 
 import { useDataTable } from "@/hooks/use-data-table"
+import { DataTableAdvancedToolbar } from "@/components/data-table/advanced/data-table-advanced-toolbar"
 import { DataTable } from "@/components/data-table/data-table"
+import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 
-import { deleteTasks } from "../_lib/mutations"
 import { type getTasks } from "../_lib/queries"
 import {
   filterableColumns,
@@ -16,24 +15,21 @@ import {
 } from "./tasks-table-columns"
 import { TasksTableFloatingBar } from "./tasks-table-floating-bar"
 import { useTasksTable } from "./tasks-table-provider"
+import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions"
 
 interface TasksTableProps {
   tasksPromise: ReturnType<typeof getTasks>
 }
 
 export function TasksTable({ tasksPromise }: TasksTableProps) {
+  // Flags for showcasing some additional features. Feel free to remove it.
+  const { enableAdvancedFilter, showFloatingBar } = useTasksTable()
+
   // Learn more about React.use here: https://react.dev/reference/react/use
   const { data, pageCount } = React.use(tasksPromise)
 
-  // do the memoization to the columns so they don't re-render on every render
-  // learn more about memo in https://react.dev/reference/react/memo
-  const columns = React.useMemo<ColumnDef<Task, unknown>[]>(
-    () => getColumns(),
-    []
-  )
-
-  // Using the useTasksTable hook to showcase some features. Feel free to remove the TasksTableProvider component.
-  const { enableAdvancedFilter, showFloatingBar } = useTasksTable()
+  // Memoize the columns so they don't re-render on every render
+  const columns = React.useMemo(() => getColumns(), [])
 
   const { table } = useDataTable({
     data,
@@ -45,18 +41,31 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
   })
 
   return (
-    <DataTable
-      table={table}
-      columns={columns}
-      searchableColumns={searchableColumns}
-      filterableColumns={filterableColumns}
-      enableAdvancedFilter={enableAdvancedFilter}
-      floatingBar={
-        showFloatingBar ? <TasksTableFloatingBar table={table} /> : null
-      }
-      deleteRowsAction={() =>
-        deleteTasks({ rows: table.getFilteredSelectedRowModel().rows })
-      }
-    />
+    <div className="w-full space-y-2.5 overflow-auto">
+      {enableAdvancedFilter ? (
+        <DataTableAdvancedToolbar
+          table={table}
+          filterableColumns={filterableColumns}
+          searchableColumns={searchableColumns}
+        >
+          <TasksTableToolbarActions table={table} />
+        </DataTableAdvancedToolbar>
+      ) : (
+        <DataTableToolbar
+          table={table}
+          filterableColumns={filterableColumns}
+          searchableColumns={searchableColumns}
+        >
+          <TasksTableToolbarActions table={table} />
+        </DataTableToolbar>
+      )}
+      <DataTable
+        table={table}
+        columns={columns}
+        floatingBar={
+          showFloatingBar ? <TasksTableFloatingBar table={table} /> : null
+        }
+      />
+    </div>
   )
 }

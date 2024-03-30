@@ -1,8 +1,4 @@
 import * as React from "react"
-import type {
-  DataTableFilterableColumn,
-  DataTableSearchableColumn,
-} from "@/types"
 import {
   flexRender,
   type ColumnDef,
@@ -18,9 +14,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { DataTableAdvancedToolbar } from "./advanced/data-table-advanced-toolbar"
 import { DataTablePagination } from "./data-table-pagination"
-import { DataTableToolbar } from "./data-table-toolbar"
 
 interface DataTableProps<TData, TValue> {
   /**
@@ -37,81 +31,21 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
 
   /**
-   * The searchable columns of the table.
-   * @default []
-   * @type {id: keyof TData, title: string}[]
-   * @example searchableColumns={[{ id: "title", title: "titles" }]}
-   */
-  searchableColumns?: DataTableSearchableColumn<TData>[]
-
-  /**
-   * The filterable columns of the table. When provided, renders dynamic faceted filters, and the advancedFilter prop is ignored.
-   * @default []
-   * @type {id: keyof TData, title: string, options: { label: string, value: string, icon?: React.ComponentType<{ className?: string }> }[]}[]
-   * @example filterableColumns={[{ id: "status", title: "Status", options: ["todo", "in-progress", "done", "canceled"]}]}
-   */
-  filterableColumns?: DataTableFilterableColumn<TData>[]
-
-  /**
-   * Enables notion like filters when enabled.
-   * Advanced filters and column filters cannot be used at the same time.
-   * @default false
-   * @type boolean
-   */
-  enableAdvancedFilter?: boolean
-
-  /**
    * The floating bar to render at the bottom of the table on row selection.
    * @default null
    * @type React.ReactNode | null
    * @example floatingBar={<TasksTableFloatingBar table={table} />}
    */
   floatingBar?: React.ReactNode | null
-
-  /**
-   * The link to create a new row. When provided, renders a button to create a new row.
-   * @default undefined
-   * @type string
-   * @example newRowLink="/tasks/new"
-   */
-  newRowLink?: string
-
-  /**
-   * The action to delete rows. When provided, renders a button to delete selected rows.
-   * @default undefined
-   * @type React.MouseEventHandler<HTMLButtonElement> | undefined
-   * @example deleteRowsAction={() => deleteSelectedRows({ rows: table.getFilteredSelectedRowModel().rows })}
-   */
-  deleteRowsAction?: React.MouseEventHandler<HTMLButtonElement>
 }
 
 export function DataTable<TData, TValue>({
   table,
   columns,
-  searchableColumns = [],
-  filterableColumns = [],
-  enableAdvancedFilter = false,
-  floatingBar,
-  newRowLink,
-  deleteRowsAction,
+  floatingBar = null,
 }: DataTableProps<TData, TValue>) {
   return (
     <div className="w-full space-y-2.5 overflow-auto">
-      {enableAdvancedFilter ? (
-        <DataTableAdvancedToolbar
-          table={table}
-          filterableColumns={filterableColumns}
-          searchableColumns={searchableColumns}
-        />
-      ) : (
-        <DataTableToolbar
-          table={table}
-          filterableColumns={filterableColumns}
-          searchableColumns={searchableColumns}
-          newRowLink={newRowLink}
-          deleteRowsAction={deleteRowsAction}
-        />
-      )}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -164,9 +98,7 @@ export function DataTable<TData, TValue>({
       </div>
       <div className="flex flex-col gap-2.5">
         <DataTablePagination table={table} />
-        {floatingBar && table.getFilteredSelectedRowModel().rows.length > 0
-          ? floatingBar
-          : null}
+        {table.getFilteredSelectedRowModel().rows.length > 0 && floatingBar}
       </div>
     </div>
   )

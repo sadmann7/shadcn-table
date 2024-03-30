@@ -24,6 +24,7 @@
     "shadcn:add": "pnpm dlx shadcn-ui@latest add"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.4",
     "@radix-ui/react-checkbox": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
@@ -48,6 +49,7 @@
     "postgres": "^3.4.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.51.2",
     "server-only": "^0.0.1",
     "sonner": "^1.4.3",
     "tailwind-merge": "^2.2.1",

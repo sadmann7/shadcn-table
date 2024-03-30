@@ -62,7 +62,7 @@ interface UseDataTableProps<TData, TValue> {
   filterableColumns?: DataTableFilterableColumn<TData>[]
 
   /**
-   * Opt out of the column filters when advanced filter is enabled.
+   * Enable notion like column filters.
    * Advanced filters and column filters cannot be used at the same time.
    * @default false
    * @type boolean

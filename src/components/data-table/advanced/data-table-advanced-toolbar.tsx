@@ -22,12 +22,14 @@ interface DataTableAdvancedToolbarProps<TData> {
   table: Table<TData>
   searchableColumns?: DataTableSearchableColumn<TData>[]
   filterableColumns?: DataTableFilterableColumn<TData>[]
+  children?: React.ReactNode
 }
 
 export function DataTableAdvancedToolbar<TData>({
   table,
   filterableColumns = [],
   searchableColumns = [],
+  children,
 }: DataTableAdvancedToolbarProps<TData>) {
   const searchParams = useSearchParams()
 
@@ -79,7 +81,8 @@ export function DataTableAdvancedToolbar<TData>({
 
   return (
     <div className="flex w-full flex-col space-y-2.5 overflow-auto p-1">
-      <div className="ml-auto flex items-center space-x-2">
+      <div className="ml-auto flex items-center gap-2">
+        {children}
         {(options.length > 0 && selectedOptions.length > 0) ||
         openFilterBuilder ? (
           <Button
