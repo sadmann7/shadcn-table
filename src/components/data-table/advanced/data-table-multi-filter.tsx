@@ -55,7 +55,7 @@ export function DataTableMultiFilter<TData>({
 }: DataTableMultiFilterProps<TData>) {
   const [open, setOpen] = React.useState(defaultOpen)
   const [operator, setOperator] = React.useState(
-    dataTableConfig.operators.logical[0]
+    dataTableConfig.logicalOperators[0]
   )
 
   return (
@@ -114,10 +114,10 @@ interface MultiFilterRowProps<TData> {
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
-  operator?: DataTableConfig["operators"]["logical"][number]
+  operator?: DataTableConfig["logicalOperators"][number]
   setOperator: React.Dispatch<
     React.SetStateAction<
-      DataTableConfig["operators"]["logical"][number] | undefined
+      DataTableConfig["logicalOperators"][number] | undefined
     >
   >
 }
@@ -225,7 +225,7 @@ export function MultiFilterRow<TData>({
           value={operator?.value}
           onValueChange={(value) =>
             setOperator(
-              dataTableConfig.operators.logical.find((o) => o.value === value)
+              dataTableConfig.logicalOperators.find((o) => o.value === value)
             )
           }
         >
@@ -234,7 +234,7 @@ export function MultiFilterRow<TData>({
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
-              {dataTableConfig.operators.logical.map((operator) => (
+              {dataTableConfig.logicalOperators.map((operator) => (
                 <SelectItem
                   key={operator.value}
                   value={operator.value}

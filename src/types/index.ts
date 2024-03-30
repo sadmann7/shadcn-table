@@ -8,14 +8,6 @@ export type Option = {
   icon?: React.ComponentType<{ className?: string }>
 }
 
-export interface DataTableFilterOption<TData> {
-  id: string
-  label: string
-  value: keyof TData
-  items: Option[]
-  isMulti?: boolean
-}
-
 export interface DataTableSearchableColumn<TData> {
   id: keyof TData
   placeholder?: string
@@ -25,4 +17,14 @@ export interface DataTableFilterableColumn<TData> {
   id: keyof TData
   title: string
   options: Option[]
+}
+
+export interface DataTableFilterOption<TData> {
+  id: string
+  label: string
+  value: keyof TData
+  items: Option[]
+  filterValues?: string[]
+  filterOperator?: string
+  isMulti?: boolean
 }

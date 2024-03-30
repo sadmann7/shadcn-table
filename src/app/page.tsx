@@ -27,7 +27,8 @@ export default function IndexPage({ searchParams }: IndexPageProps) {
               columnCount={5}
               searchableColumnCount={1}
               filterableColumnCount={2}
-              cellWidths={["8%", "60%", "12%", "12%", "8%"]}
+              cellWidths={["10rem", "40rem", "12rem", "12rem", "8rem"]}
+              shrinkZero
             />
           }
         >

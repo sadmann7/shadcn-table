@@ -23,22 +23,27 @@ export function filterColumn({
   isSelectable?: boolean
 }) {
   const [filterValue, filterOperator] = (value?.split("~").filter(Boolean) ??
-    []) as [DataTableConfig["operators"]["comparison"][number]["value"], string]
+    []) as [
+    string,
+    DataTableConfig["comparisonOperators"][number]["value"] | undefined,
+  ]
+
+  if (!filterValue) return
 
   if (isSelectable) {
     switch (filterOperator) {
       case "eq":
-        return inArray(column, filterValue.split(".").filter(Boolean) ?? [])
+        return inArray(column, filterValue?.split(".").filter(Boolean) ?? [])
       case "notEq":
         return not(
-          inArray(column, filterValue.split(".").filter(Boolean) ?? [])
+          inArray(column, filterValue?.split(".").filter(Boolean) ?? [])
         )
       case "isNull":
         return isNull(column)
       case "isNotNull":
         return isNotNull(column)
       default:
-        return inArray(column, filterValue.split("."))
+        return inArray(column, filterValue?.split(".") ?? [])
     }
   }
 

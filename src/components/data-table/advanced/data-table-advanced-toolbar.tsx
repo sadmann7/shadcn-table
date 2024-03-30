@@ -31,36 +31,6 @@ export function DataTableAdvancedToolbar<TData>({
 }: DataTableAdvancedToolbarProps<TData>) {
   const searchParams = useSearchParams()
 
-  const initialSelectedOptions = React.useMemo(() => {
-    const selectedOptions: DataTableFilterOption<TData>[] = []
-
-    filterableColumns.forEach((column) => {
-      const filterValue = searchParams.get(String(column.id))
-      if (filterValue) {
-        selectedOptions.push({
-          id: crypto.randomUUID(),
-          label: column.title,
-          value: column.id,
-          items: column.options,
-        })
-      }
-    })
-
-    return selectedOptions
-  }, [filterableColumns, searchParams])
-
-  const [openMenu, setOpenMenu] = React.useState(false)
-  const [selectedOptions, setSelectedOptions] = React.useState<
-    DataTableFilterOption<TData>[]
-  >(initialSelectedOptions)
-  const [open, setOpen] = React.useState(false)
-
-  React.useEffect(() => {
-    if (selectedOptions.length > 0) {
-      setOpen(true)
-    }
-  }, [selectedOptions])
-
   const options: DataTableFilterOption<TData>[] = React.useMemo(() => {
     const searchableOptions = searchableColumns.map((column) => ({
       id: crypto.randomUUID(),
@@ -78,11 +48,45 @@ export function DataTableAdvancedToolbar<TData>({
     return [...searchableOptions, ...filterableOptions]
   }, [filterableColumns, searchableColumns])
 
+  const initialSelectedOptions = React.useMemo(() => {
+    return options
+      .filter((option) => searchParams.has(option.value as string))
+      .map((option) => {
+        const value = searchParams.get(String(option.value)) as string
+        const [filterValue, filterOperator] =
+          value?.split("~").filter(Boolean) ?? []
+
+        return {
+          ...option,
+          filterValues: filterValue?.split(".") ?? [],
+          filterOperator,
+        }
+      })
+  }, [options, searchParams])
+
+  const [selectedOptions, setSelectedOptions] = React.useState<
+    DataTableFilterOption<TData>[]
+  >(initialSelectedOptions)
+  const [openFilterBuilder, setOpenFilterBuilder] = React.useState(
+    initialSelectedOptions.length > 0 || false
+  )
+  const [openCombobox, setOpenCombobox] = React.useState(false)
+
+  function onFilterComboboxItemSelect() {
+    setOpenFilterBuilder(true)
+    setOpenCombobox(true)
+  }
+
   return (
     <div className="flex w-full flex-col space-y-2.5 overflow-auto p-1">
       <div className="ml-auto flex items-center space-x-2">
-        {(options.length > 0 && selectedOptions.length > 0) || open ? (
-          <Button variant="outline" size="sm" onClick={() => setOpen(!open)}>
+        {(options.length > 0 && selectedOptions.length > 0) ||
+        openFilterBuilder ? (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setOpenFilterBuilder(!openFilterBuilder)}
+          >
             <CaretSortIcon
               className="mr-2 size-4 shrink-0"
               aria-hidden="true"
@@ -99,12 +103,17 @@ export function DataTableAdvancedToolbar<TData>({
             )}
             selectedOptions={selectedOptions}
             setSelectedOptions={setSelectedOptions}
-            setOpenMenu={setOpenMenu}
+            onSelect={onFilterComboboxItemSelect}
           />
         )}
         <DataTableViewOptions table={table} />
       </div>
-      <div className={cn("flex items-center gap-2", !open && "hidden")}>
+      <div
+        className={cn(
+          "flex items-center gap-2",
+          !openFilterBuilder && "hidden"
+        )}
+      >
         {selectedOptions
           .filter((option) => !option.isMulti)
           .map((selectedOption) => (
@@ -112,8 +121,9 @@ export function DataTableAdvancedToolbar<TData>({
               key={String(selectedOption.value)}
               table={table}
               selectedOption={selectedOption}
+              selectedOptions={selectedOptions}
               setSelectedOptions={setSelectedOptions}
-              defaultOpen={openMenu}
+              defaultOpen={openCombobox}
             />
           ))}
         {selectedOptions.some((option) => option.isMulti) ? (
@@ -122,7 +132,7 @@ export function DataTableAdvancedToolbar<TData>({
             allOptions={options}
             options={selectedOptions.filter((option) => option.isMulti)}
             setSelectedOptions={setSelectedOptions}
-            defaultOpen={openMenu}
+            defaultOpen={openCombobox}
           />
         ) : null}
         {options.length > 0 && options.length > selectedOptions.length ? (
@@ -130,14 +140,14 @@ export function DataTableAdvancedToolbar<TData>({
             options={options}
             selectedOptions={selectedOptions}
             setSelectedOptions={setSelectedOptions}
-            setOpenMenu={setOpenMenu}
+            onSelect={onFilterComboboxItemSelect}
           >
             <Button
               variant="outline"
               size="sm"
               role="combobox"
               className="h-7 rounded-full"
-              onClick={() => setOpenMenu(true)}
+              onClick={() => setOpenCombobox(true)}
             >
               <PlusIcon className="mr-2 size-4 opacity-50" aria-hidden="true" />
               Add filter

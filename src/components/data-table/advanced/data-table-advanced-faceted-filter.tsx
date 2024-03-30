@@ -1,4 +1,4 @@
-import type { Option } from "@/types"
+import type { DataTableFilterOption, Option } from "@/types"
 import { CheckIcon } from "@radix-ui/react-icons"
 import { type Column } from "@tanstack/react-table"
 
@@ -18,7 +18,9 @@ interface DataTableAdvancedFacetedFilterProps<TData, TValue> {
   title?: string
   options: Option[]
   selectedValues: Set<string>
-  updateSelectedValues(values: string[]): void
+  setSelectedOptions: React.Dispatch<
+    React.SetStateAction<DataTableFilterOption<TData>[]>
+  >
 }
 
 export function DataTableAdvancedFacetedFilter<TData, TValue>({
@@ -26,7 +28,7 @@ export function DataTableAdvancedFacetedFilter<TData, TValue>({
   title,
   options,
   selectedValues,
-  updateSelectedValues,
+  setSelectedOptions,
 }: DataTableAdvancedFacetedFilterProps<TData, TValue>) {
   return (
     <Command className="p-1">
@@ -55,7 +57,16 @@ export function DataTableAdvancedFacetedFilter<TData, TValue>({
                   column?.setFilterValue(
                     filterValues.length ? filterValues : undefined
                   )
-                  updateSelectedValues(filterValues)
+                  setSelectedOptions((prev) =>
+                    prev.map((item) =>
+                      item.value === column?.id
+                        ? {
+                            ...item,
+                            filterValues,
+                          }
+                        : item
+                    )
+                  )
                 }}
               >
                 <div
@@ -82,12 +93,20 @@ export function DataTableAdvancedFacetedFilter<TData, TValue>({
         {selectedValues.size > 0 && (
           <>
             <CommandSeparator />
-            <CommandGroup className="p-0 pt-1">
+            <CommandGroup>
               <CommandItem
                 onSelect={() => {
                   column?.setFilterValue(undefined)
-                  selectedValues.clear()
-                  updateSelectedValues([])
+                  setSelectedOptions((prev) =>
+                    prev.map((item) =>
+                      item.value === column?.id
+                        ? {
+                            ...item,
+                            filterValues: [],
+                          }
+                        : item
+                    )
+                  )
                 }}
                 className="justify-center text-center"
               >

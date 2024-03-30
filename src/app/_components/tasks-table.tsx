@@ -40,7 +40,7 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
     pageCount,
     searchableColumns,
     filterableColumns,
-    enableAdvancedFilter,
+    enableAdvancedFilter: !enableAdvancedFilter,
   })
 
   return (
@@ -49,7 +49,7 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
       columns={columns}
       searchableColumns={searchableColumns}
       filterableColumns={filterableColumns}
-      enableAdvancedFilter={enableAdvancedFilter}
+      enableAdvancedFilter={!enableAdvancedFilter}
       floatingBar={
         showFloatingBar ? <TasksTableFloatingBar table={table} /> : null
       }

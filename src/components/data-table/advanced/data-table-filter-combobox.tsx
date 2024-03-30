@@ -31,7 +31,7 @@ interface DataTableFilterComboboxProps<TData> {
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
-  setOpenMenu: React.Dispatch<React.SetStateAction<boolean>>
+  onSelect: () => void
   children?: React.ReactNode
 }
 
@@ -39,7 +39,7 @@ export function DataTableFilterCombobox<TData>({
   options,
   selectedOptions,
   setSelectedOptions,
-  setOpenMenu,
+  onSelect,
   children,
 }: DataTableFilterComboboxProps<TData>) {
   const [value, setValue] = React.useState("")
@@ -66,7 +66,7 @@ export function DataTableFilterCombobox<TData>({
           </Button>
         )}
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0" align="end">
+      <PopoverContent className="w-[12.5rem] p-0" align="end">
         <Command>
           <CommandInput placeholder="Filter by..." />
           <CommandList>
@@ -91,7 +91,7 @@ export function DataTableFilterCombobox<TData>({
                       setSelectedOptions((prev) => {
                         return [...prev, { ...option }]
                       })
-                      setOpenMenu(true)
+                      onSelect()
                     }}
                   >
                     {option.items.length > 0 ? (
@@ -115,13 +115,13 @@ export function DataTableFilterCombobox<TData>({
                     ...selectedOptions,
                     {
                       id: crypto.randomUUID(),
-                      label: String(selectedOption?.label),
+                      label: selectedOption?.label ?? "",
                       value: selectedOption?.value ?? "",
                       items: selectedOption?.items ?? [],
                       isMulti: true,
                     },
                   ])
-                  setOpenMenu(true)
+                  onSelect()
                 }}
               >
                 <PlusIcon className="mr-2 size-4" aria-hidden="true" />

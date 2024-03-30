@@ -28,6 +28,7 @@ import { DataTableAdvancedFacetedFilter } from "./data-table-advanced-faceted-fi
 interface DataTableFilterItemProps<TData> {
   table: Table<TData>
   selectedOption: DataTableFilterOption<TData>
+  selectedOptions: DataTableFilterOption<TData>[]
   setSelectedOptions: React.Dispatch<
     React.SetStateAction<DataTableFilterOption<TData>[]>
   >
@@ -37,27 +38,38 @@ interface DataTableFilterItemProps<TData> {
 export function DataTableFilterItem<TData>({
   table,
   selectedOption,
+  selectedOptions,
   setSelectedOptions,
   defaultOpen,
 }: DataTableFilterItemProps<TData>) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const [value, setValue] = React.useState("")
-  const debounceValue = useDebounce(value, 500)
-  const [open, setOpen] = React.useState(defaultOpen)
+
+  const column = table.getColumn(
+    selectedOption.value ? String(selectedOption.value) : ""
+  )
 
   const selectedValues = new Set(
-    table.getColumn(String(selectedOption.value))?.getFilterValue() as string[]
+    selectedOptions.find((item) => item.value === column?.id)?.filterValues
   )
-  const selectedItems = Array.from(selectedValues)
+
+  const filterValues = Array.from(selectedValues)
+  const filterOperator = selectedOptions.find(
+    (item) => item.value === column?.id
+  )?.filterOperator
 
   const operators =
     selectedOption.items.length > 0
-      ? dataTableConfig.operators.selectables
-      : dataTableConfig.operators.comparison
+      ? dataTableConfig.selectableOperators
+      : dataTableConfig.comparisonOperators
 
-  const [selectedOperator, setSelectedOperator] = React.useState(operators[0])
+  const [value, setValue] = React.useState(filterValues[0] ?? "")
+  const debounceValue = useDebounce(value, 500)
+  const [open, setOpen] = React.useState(defaultOpen)
+  const [selectedOperator, setSelectedOperator] = React.useState(
+    operators.find((c) => c.value === filterOperator) ?? operators[0]
+  )
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -77,29 +89,44 @@ export function DataTableFilterItem<TData>({
     [searchParams]
   )
 
+  // Update query string (key=value~operator)
   React.useEffect(() => {
-    if (debounceValue) {
-      const filterValue = `${debounceValue}~${selectedOperator?.value}`
+    if (selectedOption.items.length > 0) return
 
-      router.push(
-        `${pathname}?${createQueryString({
-          [selectedOption.value]: filterValue,
-        })}`
-      )
+    const newSearchParams = createQueryString({
+      [String(selectedOption.value)]:
+        debounceValue.length > 0
+          ? `${debounceValue}~${selectedOperator?.value}`
+          : null,
+    })
+    router.push(`${pathname}?${newSearchParams}`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    debounceValue,
+    selectedOperator?.value,
+    selectedOption.items.length,
+    selectedOption.value,
+  ])
+
+  // Update query string (key=value1.value2.value3~operator)
+  React.useEffect(() => {
+    if (selectedOption.items.length > 0) {
+      const newSearchParams = createQueryString({
+        [String(selectedOption.value)]:
+          filterValues.length > 0
+            ? `${filterValues.join(".")}~${selectedOperator?.value}`
+            : null,
+      })
+      router.push(`${pathname}?${newSearchParams}`)
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debounceValue, selectedOperator?.value, selectedOption.value])
-
-  function updateSelectedValues(values: string[]) {
-    const filterValue = `${values.join(".")}~${selectedOperator?.value}`
-
-    router.push(
-      `${pathname}?${createQueryString({
-        [selectedOption.value]: filterValue,
-      })}`
-    )
-  }
+  }, [
+    filterValues,
+    selectedOperator?.value,
+    selectedOption.items.length,
+    selectedOption.value,
+  ])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -108,28 +135,26 @@ export function DataTableFilterItem<TData>({
           variant="outline"
           size="sm"
           className={cn(
-            "h-7 truncate rounded-full",
-            (selectedItems.length > 0 || value.length > 0) && "bg-muted/50"
+            "h-7 gap-0 truncate rounded-full",
+            (selectedValues.size > 0 || value.length > 0) && "bg-muted/50"
           )}
         >
-          {value.length > 0 || selectedItems.length > 0 ? (
-            <>
-              <span className="font-medium capitalize">
-                {selectedOption.label}:
-              </span>
-              {selectedItems.length > 0 ? (
-                <span className="ml-1">
-                  {selectedItems.length > 2
-                    ? `${selectedItems.length} selected`
-                    : selectedItems.join(", ")}
+          <span className="font-medium capitalize">{selectedOption.label}</span>
+          {selectedOption.items.length > 0
+            ? selectedValues.size > 0 && (
+                <span className="text-muted-foreground">
+                  <span className="text-foreground">: </span>
+                  {selectedValues.size > 2
+                    ? `${selectedValues.size} selected`
+                    : filterValues.join(", ")}
                 </span>
-              ) : (
-                <span className="ml-1">{value}</span>
+              )
+            : value.length > 0 && (
+                <span className="text-muted-foreground">
+                  <span className="text-foreground">: </span>
+                  {value}
+                </span>
               )}
-            </>
-          ) : (
-            <span className="capitalize">{selectedOption.label}</span>
-          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-60 space-y-1.5 p-2" align="start">
@@ -139,6 +164,7 @@ export function DataTableFilterItem<TData>({
               {selectedOption.label}
             </div>
             <Select
+              value={selectedOperator?.value}
               onValueChange={(value) =>
                 setSelectedOperator(operators.find((c) => c.value === value))
               }
@@ -168,41 +194,33 @@ export function DataTableFilterItem<TData>({
             className="size-7 text-muted-foreground"
             onClick={() => {
               setSelectedOptions((prev) =>
-                prev.filter((item) => item.id !== selectedOption.id)
+                prev.filter((item) => item.value !== selectedOption.value)
               )
 
-              selectedValues.clear()
-
-              router.push(
-                `${pathname}?${createQueryString({
-                  [selectedOption.value]: null,
-                })}`
-              )
+              const newSearchParams = createQueryString({
+                [String(selectedOption.value)]: null,
+              })
+              router.push(`${pathname}?${newSearchParams}`)
             }}
           >
             <TrashIcon className="size-4" aria-hidden="true" />
           </Button>
         </div>
         {selectedOption.items.length > 0 ? (
-          table.getColumn(
-            selectedOption.value ? String(selectedOption.value) : ""
-          ) && (
+          column && (
             <DataTableAdvancedFacetedFilter
               key={String(selectedOption.value)}
-              column={table.getColumn(
-                selectedOption.value ? String(selectedOption.value) : ""
-              )}
+              column={column}
               title={selectedOption.label}
               options={selectedOption.items}
               selectedValues={selectedValues}
-              updateSelectedValues={updateSelectedValues}
+              setSelectedOptions={setSelectedOptions}
             />
           )
         ) : (
           <Input
             placeholder="Type here..."
             className="h-8"
-            defaultValue={value}
             value={value}
             onChange={(event) => setValue(event.target.value)}
             autoFocus

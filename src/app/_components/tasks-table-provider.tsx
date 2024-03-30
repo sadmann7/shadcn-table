@@ -46,16 +46,16 @@ export function TasksTableProvider({ children }: React.PropsWithChildren) {
         setShowFloatingBar,
       }}
     >
-      <div className="flex w-full items-center justify-center space-x-2 overflow-x-auto rounded-md border p-4">
+      <div className="flex w-full items-center space-x-2 overflow-x-auto">
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
               className={cn({
                 "bg-accent": enableAdvancedFilter,
               })}
-              onClick={() => setEnableAdvancedFilter((prev) => !prev)}
+              onClick={() => setEnableAdvancedFilter(!enableAdvancedFilter)}
             >
               <MixIcon className="mr-2 size-4 shrink-0" aria-hidden="true" />
               Advanced filter
@@ -78,12 +78,12 @@ export function TasksTableProvider({ children }: React.PropsWithChildren) {
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
               className={cn({
                 "bg-accent": showFloatingBar,
               })}
-              onClick={() => setShowFloatingBar((prev) => !prev)}
+              onClick={() => setShowFloatingBar(!showFloatingBar)}
             >
               <SquareIcon className="mr-2 size-4 shrink-0" aria-hidden="true" />
               Toggle floating bar

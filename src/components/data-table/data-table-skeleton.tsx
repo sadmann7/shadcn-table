@@ -1,5 +1,3 @@
-import * as React from "react"
-
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
@@ -46,13 +44,20 @@ interface DataTableSkeletonProps {
   showViewOptions?: boolean
 
   /**
-   * The widths of the cells in the table.
+   * The width of each cell in the table.
    * The length of the array should be equal to the columnCount.
    * Any valid CSS width value is accepted.
    * @default ["auto"]
-   * @type React.CSSProperties["width"][] | undefined
+   * @type string[] | undefined
    */
-  cellWidths?: React.CSSProperties["width"][]
+  cellWidths?: string[]
+
+  /**
+   * Flag to prevent the table from shrinking to fit the content.
+   * @default false
+   * @type boolean | undefined
+   */
+  shrinkZero?: boolean
 }
 
 export function DataTableSkeleton({
@@ -62,6 +67,7 @@ export function DataTableSkeleton({
   filterableColumnCount = 0,
   showViewOptions = true,
   cellWidths = ["auto"],
+  shrinkZero = false,
 }: DataTableSkeletonProps) {
   return (
     <div className="w-full space-y-3 overflow-auto">
@@ -88,7 +94,13 @@ export function DataTableSkeleton({
             {Array.from({ length: 1 }).map((_, i) => (
               <TableRow key={i} className="hover:bg-transparent">
                 {Array.from({ length: columnCount }).map((_, j) => (
-                  <TableHead key={j} style={{ width: cellWidths[j] }}>
+                  <TableHead
+                    key={j}
+                    style={{
+                      width: cellWidths[j],
+                      minWidth: shrinkZero ? cellWidths[j] : "auto",
+                    }}
+                  >
                     <Skeleton className="h-6 w-full" />
                   </TableHead>
                 ))}
@@ -99,7 +111,13 @@ export function DataTableSkeleton({
             {Array.from({ length: rowCount }).map((_, i) => (
               <TableRow key={i} className="hover:bg-transparent">
                 {Array.from({ length: columnCount }).map((_, j) => (
-                  <TableCell key={j} style={{ width: cellWidths[j] }}>
+                  <TableCell
+                    key={j}
+                    style={{
+                      width: cellWidths[j],
+                      minWidth: shrinkZero ? cellWidths[j] : "auto",
+                    }}
+                  >
                     <Skeleton className="h-6 w-full" />
                   </TableCell>
                 ))}
