@@ -21,6 +21,7 @@ import { type ColumnDef } from "@tanstack/react-table"
 import { toast } from "sonner"
 
 import { getErrorMessage } from "@/lib/handle-error"
+import { formatDate } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -213,6 +214,14 @@ export function getColumns(): ColumnDef<Task>[] {
       filterFn: (row, id, value) => {
         return Array.isArray(value) && value.includes(row.getValue(id))
       },
+    },
+    {
+      accessorKey: "createdAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Created At" />
+      ),
+      cell: ({ cell }) => formatDate(cell.getValue() as Date),
+      enableColumnFilter: false,
     },
     {
       id: "actions",

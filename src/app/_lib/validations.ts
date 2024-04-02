@@ -8,6 +8,8 @@ export const searchParamsSchema = z.object({
   title: z.string().optional(),
   status: z.string().optional(),
   priority: z.string().optional(),
+  from: z.string().optional(),
+  to: z.string().optional(),
   operator: z.enum(["and", "or"]).optional(),
 })
 

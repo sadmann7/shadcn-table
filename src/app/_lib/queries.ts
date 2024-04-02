@@ -3,7 +3,7 @@ import "server-only"
 import { unstable_noStore as noStore } from "next/cache"
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
-import { and, asc, count, desc, or } from "drizzle-orm"
+import { and, asc, count, desc, gte, lte, or } from "drizzle-orm"
 
 import { filterColumn } from "@/lib/filter-column"
 
@@ -12,17 +12,31 @@ import { type GetTasksSchema } from "./validations"
 export async function getTasks(input: GetTasksSchema) {
   noStore()
   try {
-    const { page, per_page, sort, title, status, priority, operator } = input
+    const {
+      page,
+      per_page,
+      sort,
+      title,
+      status,
+      priority,
+      operator,
+      from,
+      to,
+    } = input
 
     // Offset to paginate the results
     const offset = (page - 1) * per_page
     // Column and order to sort by
     // Spliting the sort string by "." to get the column and order
     // Example: "title.desc" => ["title", "desc"]
-    const [column, order] = (sort?.split(".") as [
-      keyof Task | undefined,
-      "asc" | "desc" | undefined,
-    ]) ?? ["title", "desc"]
+    const [column, order] = (sort?.split(".").filter(Boolean) ?? [
+      "createdAt",
+      "desc",
+    ]) as [keyof Task | undefined, "asc" | "desc" | undefined]
+
+    // Filter tasks by date range
+    const fromDay = from ? new Date(from) : undefined
+    const toDay = to ? new Date(to) : undefined
 
     // Transaction is used to ensure both queries are executed in a single transaction
     const { data, total } = await db.transaction(async (tx) => {
@@ -56,6 +70,13 @@ export async function getTasks(input: GetTasksSchema) {
                       value: priority,
                       isSelectable: true,
                     })
+                  : undefined,
+                // Filter by createdAt
+                fromDay && toDay
+                  ? and(
+                      gte(tasks.createdAt, fromDay),
+                      lte(tasks.createdAt, toDay)
+                    )
                   : undefined
               )
             : or(
@@ -81,6 +102,13 @@ export async function getTasks(input: GetTasksSchema) {
                       value: priority,
                       isSelectable: true,
                     })
+                  : undefined,
+                // Filter by createdAt
+                fromDay && toDay
+                  ? and(
+                      gte(tasks.createdAt, fromDay),
+                      lte(tasks.createdAt, toDay)
+                    )
                   : undefined
               )
         )
@@ -122,6 +150,13 @@ export async function getTasks(input: GetTasksSchema) {
                       value: priority,
                       isSelectable: true,
                     })
+                  : undefined,
+                // Filter by createdAt
+                fromDay && toDay
+                  ? and(
+                      gte(tasks.createdAt, fromDay),
+                      lte(tasks.createdAt, toDay)
+                    )
                   : undefined
               )
             : or(
@@ -147,6 +182,13 @@ export async function getTasks(input: GetTasksSchema) {
                       value: priority,
                       isSelectable: true,
                     })
+                  : undefined,
+                // Filter by createdAt
+                fromDay && toDay
+                  ? and(
+                      gte(tasks.createdAt, fromDay),
+                      lte(tasks.createdAt, toDay)
+                    )
                   : undefined
               )
         )

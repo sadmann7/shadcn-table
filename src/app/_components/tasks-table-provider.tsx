@@ -1,15 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { MixIcon, SquareIcon } from "@radix-ui/react-icons"
+import { LapTimerIcon, MixIcon, SquareIcon } from "@radix-ui/react-icons"
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { DateRangePicker } from "@/components/date-range-picker"
+import { ToggleButton } from "@/components/toggle-button"
 
 interface TasksTableContextProps {
   enableAdvancedFilter: boolean
@@ -36,6 +31,7 @@ export function useTasksTable() {
 export function TasksTableProvider({ children }: React.PropsWithChildren) {
   const [enableAdvancedFilter, setEnableAdvancedFilter] = React.useState(false)
   const [showFloatingBar, setShowFloatingBar] = React.useState(false)
+  const [showDateRangeFilter, setShowDateRangeFilter] = React.useState(false)
 
   return (
     <TasksTableContext.Provider
@@ -47,58 +43,38 @@ export function TasksTableProvider({ children }: React.PropsWithChildren) {
       }}
     >
       <div className="flex w-full items-center space-x-2 overflow-x-auto">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className={cn({
-                "bg-accent": enableAdvancedFilter,
-              })}
-              onClick={() => setEnableAdvancedFilter(!enableAdvancedFilter)}
-            >
-              <MixIcon className="mr-2 size-4 shrink-0" aria-hidden="true" />
-              Advanced filter
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent
-            side="bottom"
-            align="center"
-            sideOffset={6}
-            className="flex max-w-60 flex-col space-y-1.5 border bg-background px-4 py-2 font-semibold text-foreground"
+        <div className="flex flex-1 items-center space-x-2">
+          <ToggleButton
+            pressed={enableAdvancedFilter}
+            onClick={() => setEnableAdvancedFilter(!enableAdvancedFilter)}
+            tooltipTitle="Toggle advanced filter"
+            tooltipDescription="A notion like query builder to filter rows."
           >
-            <div>Toggle advanced filter</div>
-            <div className="text-xs text-muted-foreground">
-              A notion like query builder to filter rows.
-            </div>
-          </TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className={cn({
-                "bg-accent": showFloatingBar,
-              })}
-              onClick={() => setShowFloatingBar(!showFloatingBar)}
-            >
-              <SquareIcon className="mr-2 size-4 shrink-0" aria-hidden="true" />
-              Toggle floating bar
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent
-            side="bottom"
-            align="center"
-            sideOffset={6}
-            className="flex max-w-60 flex-col space-y-1.5 border bg-background px-4 py-2 font-semibold text-foreground"
+            <MixIcon className="mr-2 size-4 shrink-0" aria-hidden="true" />
+            Advanced filter
+          </ToggleButton>
+          <ToggleButton
+            pressed={showFloatingBar}
+            onClick={() => setShowFloatingBar(!showFloatingBar)}
+            tooltipTitle="Toggle floating bar"
+            tooltipDescription="A floating bar to perform actions on selected rows."
           >
-            <div>Toggle floating bar</div>
-            <div className="text-xs text-muted-foreground">
-              A floating bar to perform actions on selected rows.
-            </div>
-          </TooltipContent>
-        </Tooltip>
+            <SquareIcon className="mr-2 size-4 shrink-0" aria-hidden="true" />
+            Floating bar
+          </ToggleButton>
+          <ToggleButton
+            pressed={showDateRangeFilter}
+            onClick={() => setShowDateRangeFilter(!showDateRangeFilter)}
+            tooltipTitle="Toggle date range filter"
+            tooltipDescription="A filter to filter rows by date range."
+          >
+            <LapTimerIcon className="mr-2 size-4 shrink-0" aria-hidden="true" />
+            Date range filter
+          </ToggleButton>
+        </div>
+        {showDateRangeFilter ? (
+          <DateRangePicker size="sm" align="end" className="w-60" />
+        ) : null}
       </div>
       {children}
     </TasksTableContext.Provider>

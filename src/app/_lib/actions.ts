@@ -8,7 +8,7 @@ import { eq } from "drizzle-orm"
 import { customAlphabet } from "nanoid"
 
 import { getErrorMessage } from "@/lib/handle-error"
-import { createId } from "@/lib/utils"
+import { generateId } from "@/lib/utils"
 
 import type { CreateTaskSchema, UpdateTaskSchema } from "./validations"
 
@@ -24,7 +24,7 @@ export async function seedTasks(
 
     for (let i = 0; i < input.count; i++) {
       allTasks.push({
-        id: createId(),
+        id: generateId(),
         code: `TASK-${customAlphabet("0123456789", 4)()}`,
         title: faker.hacker
           .phrase()
@@ -39,6 +39,8 @@ export async function seedTasks(
           faker.helpers.shuffle<Task["priority"]>(
             tasks.priority.enumValues
           )[0] ?? "low",
+        createdAt: new Date(),
+        updatedAt: new Date(),
       })
     }
 
@@ -59,7 +61,7 @@ export async function createTask(
   try {
     await Promise.all([
       db.insert(tasks).values({
-        id: createId(),
+        id: generateId(),
         code: `TASK-${customAlphabet("0123456789", 4)()}`,
         title: input.title,
         status: input.status,
