@@ -3,7 +3,6 @@
 import * as React from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { CalendarIcon } from "@radix-ui/react-icons"
-import { type PopoverContentProps } from "@radix-ui/react-popover"
 import { addDays, format } from "date-fns"
 import type { DateRange } from "react-day-picker"
 
@@ -17,17 +16,51 @@ import {
 } from "@/components/ui/popover"
 
 interface DateRangePickerProps
-  extends React.ComponentPropsWithoutRef<typeof PopoverTrigger>,
-    ButtonProps {
+  extends React.ComponentPropsWithoutRef<typeof PopoverContent> {
+  /**
+   * The selected date range.
+   * @default undefined
+   * @type DateRange
+   * @example { from: new Date(), to: new Date() }
+   */
   dateRange?: DateRange
+
+  /**
+   * The number of days to display in the date range picker.
+   * @default undefined
+   * @type number
+   * @example 7
+   */
   dayCount?: number
-  align?: PopoverContentProps["align"]
+
+  /**
+   * The variant of the calendar trigger button.
+   * @default "outline"
+   * @type "default" | "outline" | "secondary" | "ghost"
+   */
+  triggerVariant?: Exclude<ButtonProps["variant"], "destructive" | "link">
+
+  /**
+   * The size of the calendar trigger button.
+   * @default "default"
+   * @type "default" | "sm" | "lg"
+   */
+  triggerSize?: Exclude<ButtonProps["size"], "icon">
+
+  /**
+   * The class name of the calendar trigger button.
+   * @default undefined
+   * @type string
+   */
+  triggerClassName?: string
 }
 
 export function DateRangePicker({
   dateRange,
   dayCount,
-  align,
+  triggerVariant = "outline",
+  triggerSize = "default",
+  triggerClassName,
   className,
   ...props
 }: DateRangePickerProps) {
@@ -50,37 +83,30 @@ export function DateRangePicker({
     return [fromDay, toDay]
   }, [dateRange, dayCount])
 
-  const [date, setDate] = React.useState<DateRange | undefined>({ from, to })
-
-  // Create query string
-  const createQueryString = React.useCallback(
-    (params: Record<string, string | number | null>) => {
-      const newSearchParams = new URLSearchParams(searchParams?.toString())
-
-      for (const [key, value] of Object.entries(params)) {
-        if (value === null) {
-          newSearchParams.delete(key)
-        } else {
-          newSearchParams.set(key, String(value))
-        }
-      }
-
-      return newSearchParams.toString()
-    },
-    [searchParams]
-  )
+  const [date, setDate] = React.useState<DateRange | undefined>({
+    from,
+    to,
+  })
 
   // Update query string
   React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
-        from: date?.from ? format(date.from, "yyyy-MM-dd") : null,
-        to: date?.to ? format(date.to, "yyyy-MM-dd") : null,
-      })}`,
-      {
-        scroll: false,
-      }
-    )
+    const newSearchParams = new URLSearchParams(searchParams)
+    if (date?.from) {
+      newSearchParams.set("from", format(date.from, "yyyy-MM-dd"))
+    } else {
+      newSearchParams.delete("from")
+    }
+
+    if (date?.to) {
+      newSearchParams.set("to", format(date.to, "yyyy-MM-dd"))
+    } else {
+      newSearchParams.delete("to")
+    }
+
+    router.push(`${pathname}?${newSearchParams.toString()}`, {
+      scroll: false,
+    })
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date?.from, date?.to])
 
@@ -89,14 +115,13 @@ export function DateRangePicker({
       <Popover>
         <PopoverTrigger asChild>
           <Button
-            id="date"
-            variant={"outline"}
+            variant={triggerVariant}
+            size={triggerSize}
             className={cn(
               "w-full justify-start truncate text-left font-normal",
               !date && "text-muted-foreground",
-              className
+              triggerClassName
             )}
-            {...props}
           >
             <CalendarIcon className="mr-2 size-4" />
             {date?.from ? (
@@ -113,7 +138,7 @@ export function DateRangePicker({
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align={align}>
+        <PopoverContent className={cn("w-auto p-0", className)} {...props}>
           <Calendar
             initialFocus
             mode="range"

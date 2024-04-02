@@ -27,6 +27,7 @@ interface DataTableProps<TData, TValue> {
    * The columns of the table.
    * @default []
    * @type ColumnDef<TData, TValue>[]
+   * @example columns={[{accessorKey: "flipTrick", header: "Flip Trick", cell: ({row}) => <div>{row.getValue("flipTrick")}</div>}]
    */
   columns: ColumnDef<TData, TValue>[]
 

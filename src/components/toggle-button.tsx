@@ -1,3 +1,8 @@
+"use client"
+
+import * as React from "react"
+
+import { cn, composeEventHandlers } from "@/lib/utils"
 import { Button, type ButtonProps } from "@/components/ui/button"
 import {
   Tooltip,
@@ -6,17 +11,18 @@ import {
 } from "@/components/ui/tooltip"
 
 interface ToggleButtonProps extends ButtonProps {
-  pressed?: boolean
   tooltipTitle?: string
   tooltipDescription?: string
 }
 
 export function ToggleButton({
-  pressed,
   tooltipTitle,
   tooltipDescription,
+  className,
   ...props
 }: ToggleButtonProps) {
+  const [pressed, setPressed] = React.useState(false)
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -25,8 +31,16 @@ export function ToggleButton({
           data-state={pressed ? "on" : "off"}
           variant="outline"
           size="sm"
-          className="data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
+          className={cn(
+            "data-[state=on]:bg-accent data-[state=on]:text-accent-foreground",
+            className
+          )}
           {...props}
+          onClick={composeEventHandlers(props.onClick, () => {
+            if (!props.disabled) {
+              setPressed(!pressed)
+            }
+          })}
         />
       </TooltipTrigger>
       <TooltipContent
