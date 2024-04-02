@@ -45,7 +45,7 @@
     "geist": "^1.2.2",
     "million": "^3.0.4",
     "nanoid": "^5.0.6",
-    "next": "14.2.0-canary.51",
+    "next": "14.2.0-canary.52",
     "next-themes": "^0.3.0",
     "postgres": "^3.4.3",
     "react": "18.2.0",
