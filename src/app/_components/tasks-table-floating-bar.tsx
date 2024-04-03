@@ -85,7 +85,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                   updateTasks({
                     rows,
                     status: value,
-                    onSucess: () => table.toggleAllRowsSelected(false),
+                    onSuccess: () => table.toggleAllRowsSelected(false),
                   })
                 })
               }}
@@ -127,7 +127,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                   updateTasks({
                     rows,
                     priority: value,
-                    onSucess: () => table.toggleAllRowsSelected(false),
+                    onSuccess: () => table.toggleAllRowsSelected(false),
                   })
                 })
               }}
@@ -173,7 +173,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                     startTransition(() => {
                       deleteTasks({
                         rows,
-                        onSucess: () => table.toggleAllRowsSelected(false),
+                        onSuccess: () => table.toggleAllRowsSelected(false),
                       })
                     })
                   }}
