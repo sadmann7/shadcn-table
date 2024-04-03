@@ -1,9 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { LapTimerIcon, MixIcon, SquareIcon } from "@radix-ui/react-icons"
+import { MixIcon, SquareIcon } from "@radix-ui/react-icons"
 
-import { DateRangePicker } from "@/components/date-range-picker"
 import { ToggleButton } from "@/components/toggle-button"
 
 interface TasksTableContextProps {
@@ -31,7 +30,6 @@ export function useTasksTable() {
 export function TasksTableProvider({ children }: React.PropsWithChildren) {
   const [enableAdvancedFilter, setEnableAdvancedFilter] = React.useState(false)
   const [showFloatingBar, setShowFloatingBar] = React.useState(false)
-  const [showDateRangeFilter, setShowDateRangeFilter] = React.useState(false)
 
   return (
     <TasksTableContext.Provider
@@ -59,22 +57,7 @@ export function TasksTableProvider({ children }: React.PropsWithChildren) {
           <SquareIcon className="mr-2 size-4 shrink-0" aria-hidden="true" />
           Floating bar
         </ToggleButton>
-        <ToggleButton
-          onClick={() => setShowDateRangeFilter(!showDateRangeFilter)}
-          tooltipTitle="Toggle date range filter"
-          tooltipDescription="A filter to filter rows by date range."
-        >
-          <LapTimerIcon className="mr-2 size-4 shrink-0" aria-hidden="true" />
-          Date range filter
-        </ToggleButton>
       </div>
-      {showDateRangeFilter ? (
-        <DateRangePicker
-          triggerSize="sm"
-          triggerClassName="ml-auto w-60"
-          align="end"
-        />
-      ) : null}
       {children}
     </TasksTableContext.Provider>
   )
