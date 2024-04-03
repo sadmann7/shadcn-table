@@ -34,6 +34,13 @@ interface DateRangePickerProps
   dayCount?: number
 
   /**
+   * The placeholder text of the calendar trigger button.
+   * @default "Pick a date"
+   * @type string | undefined
+   */
+  placeholder?: string
+
+  /**
    * The variant of the calendar trigger button.
    * @default "outline"
    * @type "default" | "outline" | "secondary" | "ghost"
@@ -58,6 +65,7 @@ interface DateRangePickerProps
 export function DateRangePicker({
   dateRange,
   dayCount,
+  placeholder = "Pick a date",
   triggerVariant = "outline",
   triggerSize = "default",
   triggerClassName,
@@ -87,6 +95,8 @@ export function DateRangePicker({
     from,
     to,
   })
+
+  console.log({ date })
 
   // Update query string
   React.useEffect(() => {
@@ -134,7 +144,7 @@ export function DateRangePicker({
                 format(date.from, "LLL dd, y")
               )
             ) : (
-              <span>Pick a date</span>
+              <span>{placeholder}</span>
             )}
           </Button>
         </PopoverTrigger>
