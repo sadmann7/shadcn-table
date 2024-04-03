@@ -65,7 +65,7 @@ export function DeleteTasksDialog({
                 startDeleteTransition(() => {
                   deleteTasks({
                     rows: tasks,
-                    onSucess: onSuccess,
+                    onSuccess,
                   })
                 })
               }}

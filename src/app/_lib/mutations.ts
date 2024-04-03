@@ -8,10 +8,10 @@ import { deleteTask, updateTask } from "./actions"
 
 export function deleteTasks({
   rows,
-  onSucess,
+  onSuccess,
 }: {
   rows: Row<Task>[]
-  onSucess?: () => void
+  onSuccess?: () => void
 }) {
   toast.promise(
     Promise.all(
@@ -24,7 +24,7 @@ export function deleteTasks({
     {
       loading: "Deleting...",
       success: () => {
-        onSucess?.()
+        onSuccess?.()
         return "Tasks deleted"
       },
       error: (err) => getErrorMessage(err),
@@ -37,13 +37,13 @@ export function updateTasks({
   label,
   status,
   priority,
-  onSucess,
+  onSuccess,
 }: {
   rows: Row<Task>[]
   label?: Task["label"]
   status?: Task["status"]
   priority?: Task["priority"]
-  onSucess?: () => void
+  onSuccess?: () => void
 }) {
   toast.promise(
     Promise.all(
@@ -59,7 +59,7 @@ export function updateTasks({
     {
       loading: "Updating...",
       success: () => {
-        onSucess?.()
+        onSuccess?.()
         return "Tasks updated"
       },
       error: (err) => getErrorMessage(err),
