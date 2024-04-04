@@ -2,11 +2,7 @@
 
 import * as React from "react"
 import { useSearchParams } from "next/navigation"
-import type {
-  DataTableFilterableColumn,
-  DataTableFilterOption,
-  DataTableSearchableColumn,
-} from "@/types"
+import type { DataTableFilterField, DataTableFilterOption } from "@/types"
 import { CaretSortIcon, PlusIcon } from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
 
@@ -20,35 +16,27 @@ import { DataTableMultiFilter } from "./data-table-multi-filter"
 
 interface DataTableAdvancedToolbarProps<TData> {
   table: Table<TData>
-  searchableColumns?: DataTableSearchableColumn<TData>[]
-  filterableColumns?: DataTableFilterableColumn<TData>[]
+  filterFields?: DataTableFilterField<TData>[]
   children?: React.ReactNode
 }
 
 export function DataTableAdvancedToolbar<TData>({
   table,
-  filterableColumns = [],
-  searchableColumns = [],
+  filterFields = [],
   children,
 }: DataTableAdvancedToolbarProps<TData>) {
   const searchParams = useSearchParams()
 
-  const options: DataTableFilterOption<TData>[] = React.useMemo(() => {
-    const searchableOptions = searchableColumns.map((column) => ({
-      id: crypto.randomUUID(),
-      label: String(column.id),
-      value: column.id,
-      items: [],
-    }))
-    const filterableOptions = filterableColumns.map((column) => ({
-      id: crypto.randomUUID(),
-      label: column.title,
-      value: column.id,
-      items: column.options,
-    }))
-
-    return [...searchableOptions, ...filterableOptions]
-  }, [filterableColumns, searchableColumns])
+  const options = React.useMemo<DataTableFilterOption<TData>[]>(() => {
+    return filterFields.map((field) => {
+      return {
+        id: crypto.randomUUID(),
+        label: field.label,
+        value: field.value,
+        options: field.options ?? [],
+      }
+    })
+  }, [filterFields])
 
   const initialSelectedOptions = React.useMemo(() => {
     return options

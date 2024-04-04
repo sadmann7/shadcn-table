@@ -60,7 +60,7 @@ export function DataTableFilterItem<TData>({
   )?.filterOperator
 
   const operators =
-    selectedOption.items.length > 0
+    selectedOption.options.length > 0
       ? dataTableConfig.selectableOperators
       : dataTableConfig.comparisonOperators
 
@@ -91,7 +91,7 @@ export function DataTableFilterItem<TData>({
 
   // Update query string
   React.useEffect(() => {
-    if (selectedOption.items.length > 0) {
+    if (selectedOption.options.length > 0) {
       // key=value1.value2.value3~operator
       const newSearchParams = createQueryString({
         [String(selectedOption.value)]:
@@ -126,7 +126,7 @@ export function DataTableFilterItem<TData>({
           )}
         >
           <span className="font-medium capitalize">{selectedOption.label}</span>
-          {selectedOption.items.length > 0
+          {selectedOption.options.length > 0
             ? selectedValues.size > 0 && (
                 <span className="text-muted-foreground">
                   <span className="text-foreground">: </span>
@@ -192,13 +192,13 @@ export function DataTableFilterItem<TData>({
             <TrashIcon className="size-4" aria-hidden="true" />
           </Button>
         </div>
-        {selectedOption.items.length > 0 ? (
+        {selectedOption.options.length > 0 ? (
           column && (
             <DataTableAdvancedFacetedFilter
               key={String(selectedOption.value)}
               column={column}
               title={selectedOption.label}
-              options={selectedOption.items}
+              options={selectedOption.options}
               selectedValues={selectedValues}
               setSelectedOptions={setSelectedOptions}
             />

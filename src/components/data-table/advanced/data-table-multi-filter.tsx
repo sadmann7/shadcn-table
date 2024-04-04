@@ -142,7 +142,7 @@ export function MultiFilterRow<TData>({
     DataTableFilterOption<TData> | undefined
   >(options[0])
 
-  const filterVarieties = selectedOption?.items.length
+  const filterVarieties = selectedOption?.options.length
     ? ["is", "is not"]
     : ["contains", "does not contain", "is", "is not"]
 
@@ -150,10 +150,10 @@ export function MultiFilterRow<TData>({
 
   // Update filter variety
   React.useEffect(() => {
-    if (selectedOption?.items.length) {
+    if (selectedOption?.options.length) {
       setFilterVariety("is")
     }
-  }, [selectedOption?.items.length])
+  }, [selectedOption?.options.length])
 
   // Create query string
   const createQueryString = React.useCallback(
@@ -300,7 +300,7 @@ export function MultiFilterRow<TData>({
           </SelectGroup>
         </SelectContent>
       </Select>
-      {selectedOption?.items.length ? (
+      {selectedOption?.options.length ? (
         table.getColumn(selectedOption.value ? String(option.value) : "") && (
           <DataTableFacetedFilter
             key={selectedOption.id}
@@ -308,7 +308,7 @@ export function MultiFilterRow<TData>({
               selectedOption.value ? String(selectedOption.value) : ""
             )}
             title={selectedOption.label}
-            options={selectedOption.items}
+            options={selectedOption.options}
           />
         )
       ) : (
@@ -339,14 +339,16 @@ export function MultiFilterRow<TData>({
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
+              if (!selectedOption) return
+
               setSelectedOptions((prev) => [
                 ...prev,
                 {
                   id: crypto.randomUUID(),
-                  label: String(selectedOption?.label),
-                  value: String(selectedOption?.value) as keyof TData,
+                  label: selectedOption.label,
+                  value: selectedOption.value,
+                  options: selectedOption.options ?? [],
                   isMulti: true,
-                  items: selectedOption?.items ?? [],
                 },
               ])
             }}

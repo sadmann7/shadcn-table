@@ -94,7 +94,7 @@ export function DataTableFilterCombobox<TData>({
                       onSelect()
                     }}
                   >
-                    {option.items.length > 0 ? (
+                    {option.options.length > 0 ? (
                       <ChevronDownIcon
                         className="mr-2 size-4"
                         aria-hidden="true"
@@ -117,7 +117,7 @@ export function DataTableFilterCombobox<TData>({
                       id: crypto.randomUUID(),
                       label: selectedOption?.label ?? "",
                       value: selectedOption?.value ?? "",
-                      items: selectedOption?.items ?? [],
+                      options: selectedOption?.options ?? [],
                       isMulti: true,
                     },
                   ])

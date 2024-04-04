@@ -1,10 +1,7 @@
 "use client"
 
 import * as React from "react"
-import type {
-  DataTableFilterableColumn,
-  DataTableSearchableColumn,
-} from "@/types"
+import type { DataTableFilterField } from "@/types"
 import { Cross2Icon } from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
 
@@ -15,18 +12,24 @@ import { DataTableViewOptions } from "@/components/data-table/data-table-view-op
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
-  filterableColumns?: DataTableFilterableColumn<TData>[]
-  searchableColumns?: DataTableSearchableColumn<TData>[]
+  filterFields?: DataTableFilterField<TData>[]
   children?: React.ReactNode
 }
 
 export function DataTableToolbar<TData>({
   table,
-  filterableColumns = [],
-  searchableColumns = [],
+  filterFields = [],
   children,
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
+
+  // Memoize computation of searchableColumns and filterableColumns
+  const { searchableColumns, filterableColumns } = React.useMemo(() => {
+    return {
+      searchableColumns: filterFields.filter((field) => !field.options),
+      filterableColumns: filterFields.filter((field) => field.options),
+    }
+  }, [filterFields])
 
   return (
     <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
@@ -34,18 +37,18 @@ export function DataTableToolbar<TData>({
         {searchableColumns.length > 0 &&
           searchableColumns.map(
             (column) =>
-              table.getColumn(column.id ? String(column.id) : "") && (
+              table.getColumn(column.value ? String(column.value) : "") && (
                 <Input
-                  key={String(column.id)}
+                  key={String(column.value)}
                   placeholder={column.placeholder}
                   value={
                     (table
-                      .getColumn(String(column.id))
+                      .getColumn(String(column.value))
                       ?.getFilterValue() as string) ?? ""
                   }
                   onChange={(event) =>
                     table
-                      .getColumn(String(column.id))
+                      .getColumn(String(column.value))
                       ?.setFilterValue(event.target.value)
                   }
                   className="h-8 w-[150px] lg:w-[250px]"
@@ -55,12 +58,14 @@ export function DataTableToolbar<TData>({
         {filterableColumns.length > 0 &&
           filterableColumns.map(
             (column) =>
-              table.getColumn(column.id ? String(column.id) : "") && (
+              table.getColumn(column.value ? String(column.value) : "") && (
                 <DataTableFacetedFilter
-                  key={String(column.id)}
-                  column={table.getColumn(column.id ? String(column.id) : "")}
-                  title={column.title}
-                  options={column.options}
+                  key={String(column.value)}
+                  column={table.getColumn(
+                    column.value ? String(column.value) : ""
+                  )}
+                  title={column.label}
+                  options={column.options ?? []}
                 />
               )
           )}

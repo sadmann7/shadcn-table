@@ -9,11 +9,7 @@ import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 import { DateRangePicker } from "@/components/date-range-picker"
 
 import { type getTasks } from "../_lib/queries"
-import {
-  filterableColumns,
-  getColumns,
-  searchableColumns,
-} from "./tasks-table-columns"
+import { filterFields, getColumns } from "./tasks-table-columns"
 import { TasksTableFloatingBar } from "./tasks-table-floating-bar"
 import { useTasksTable } from "./tasks-table-provider"
 import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions"
@@ -36,8 +32,7 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
     data,
     columns,
     pageCount,
-    searchableColumns,
-    filterableColumns,
+    filterFields,
     enableAdvancedFilter,
   })
 
@@ -49,19 +44,11 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
         align="end"
       />
       {enableAdvancedFilter ? (
-        <DataTableAdvancedToolbar
-          table={table}
-          filterableColumns={filterableColumns}
-          searchableColumns={searchableColumns}
-        >
+        <DataTableAdvancedToolbar table={table} filterFields={filterFields}>
           <TasksTableToolbarActions table={table} />
         </DataTableAdvancedToolbar>
       ) : (
-        <DataTableToolbar
-          table={table}
-          filterableColumns={filterableColumns}
-          searchableColumns={searchableColumns}
-        >
+        <DataTableToolbar table={table} filterFields={filterFields}>
           <TasksTableToolbarActions table={table} />
         </DataTableToolbar>
       )}
