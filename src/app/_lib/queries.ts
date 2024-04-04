@@ -33,7 +33,7 @@ export async function getTasks({
       "desc",
     ]) as [keyof Task | undefined, "asc" | "desc" | undefined]
 
-    // Filter tasks by date range
+    // Convert the date strings to Date objects
     const fromDay = from ? new Date(from) : undefined
     const toDay = to ? new Date(to) : undefined
 
@@ -66,11 +66,7 @@ export async function getTasks({
             // Filter by createdAt
             fromDay && toDay
               ? and(gte(tasks.createdAt, fromDay), lte(tasks.createdAt, toDay))
-              : fromDay
-                ? gte(tasks.createdAt, fromDay)
-                : toDay
-                  ? lte(tasks.createdAt, toDay)
-                  : undefined
+              : undefined
           )
         : or(
             // Filter tasks by title
@@ -99,11 +95,7 @@ export async function getTasks({
             // Filter by createdAt
             fromDay && toDay
               ? and(gte(tasks.createdAt, fromDay), lte(tasks.createdAt, toDay))
-              : fromDay
-                ? gte(tasks.createdAt, fromDay)
-                : toDay
-                  ? lte(tasks.createdAt, toDay)
-                  : undefined
+              : undefined
           )
 
     // Transaction is used to ensure both queries are executed in a single transaction
