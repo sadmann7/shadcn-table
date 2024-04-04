@@ -46,6 +46,8 @@ interface UseDataTableProps<TData, TValue> {
    * Defines filter fields for the table. Supports both dynamic faceted filters and search filters.
    * - Faceted filters are rendered when `options` are provided for a filter field.
    * - Otherwise, search filters are rendered.
+   *
+   * The indie filter field `value` represents the corresponding column name in the database table.
    * @default []
    * @type { label: string, value: keyof TData, placeholder?: string, options?: { label: string, value: string, icon?: React.ComponentType<{ className?: string }> }[] }[]
    * @example
@@ -54,7 +56,6 @@ interface UseDataTableProps<TData, TValue> {
    * const filterFields = [
    *   { label: "Title", value: "title", placeholder: "Search titles" }
    * ];
-   *
    * // Render a faceted filter
    * const filterFields = [
    *   {

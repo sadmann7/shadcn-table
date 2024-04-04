@@ -96,8 +96,6 @@ export function DateRangePicker({
     to,
   })
 
-  console.log({ date })
-
   // Update query string
   React.useEffect(() => {
     const newSearchParams = new URLSearchParams(searchParams)

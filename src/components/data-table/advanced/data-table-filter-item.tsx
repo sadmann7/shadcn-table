@@ -132,7 +132,10 @@ export function DataTableFilterItem<TData>({
                   <span className="text-foreground">: </span>
                   {selectedValues.size > 2
                     ? `${selectedValues.size} selected`
-                    : filterValues.join(", ")}
+                    : selectedOption.options
+                        .filter((item) => selectedValues.has(item.value))
+                        .map((item) => item.label)
+                        .join(", ")}
                 </span>
               )
             : value.length > 0 && (
