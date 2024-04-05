@@ -6,7 +6,6 @@ import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableAdvancedToolbar } from "@/components/data-table/advanced/data-table-advanced-toolbar"
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
-import { DateRangePicker } from "@/components/date-range-picker"
 
 import { type getTasks } from "../_lib/queries"
 import { filterFields, getColumns } from "./tasks-table-columns"
@@ -38,11 +37,6 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
 
   return (
     <div className="w-full space-y-2.5 overflow-auto">
-      <DateRangePicker
-        triggerSize="sm"
-        triggerClassName="ml-auto w-56 sm:w-60"
-        align="end"
-      />
       {enableAdvancedFilter ? (
         <DataTableAdvancedToolbar table={table} filterFields={filterFields}>
           <TasksTableToolbarActions table={table} />

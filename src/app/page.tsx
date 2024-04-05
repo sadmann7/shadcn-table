@@ -2,6 +2,7 @@ import * as React from "react"
 import type { SearchParams } from "@/types"
 
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
+import { DateRangePicker } from "@/components/date-range-picker"
 import { Shell } from "@/components/shell"
 
 import { TasksTable } from "./_components/tasks-table"
@@ -19,8 +20,22 @@ export default function IndexPage({ searchParams }: IndexPageProps) {
   const tasksPromise = getTasks(search)
 
   return (
-    <Shell>
+    <Shell className="gap-2">
+      {/**
+       * The `TasksTableProvider` is use to enable some feature flags for the `TasksTable` component.
+       * Feel free to remove this, as it's not required for the `TasksTable` component to work.
+       */}
       <TasksTableProvider>
+        {/**
+         * The `DateRangePicker` component is used to render the date range picker UI.
+         * It is used to filter the tasks based on the selected date range it was created at.
+         * The business logic for filtering the tasks based on the selected date range is handled inside the component.
+         */}
+        <DateRangePicker
+          triggerSize="sm"
+          triggerClassName="ml-auto w-56 sm:w-60"
+          align="end"
+        />
         <React.Suspense
           fallback={
             <DataTableSkeleton
