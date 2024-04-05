@@ -19,7 +19,7 @@ interface TasksTableProps {
 }
 
 export function TasksTable({ tasksPromise }: TasksTableProps) {
-  // Flags for showcasing some additional features. Feel free to remove it.
+  // Flags for showcasing some additional features. Feel free to remove them.
   const { enableAdvancedFilter, showFloatingBar } = useTasksTable()
 
   // Learn more about React.use here: https://react.dev/reference/react/use

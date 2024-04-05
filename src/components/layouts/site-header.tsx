@@ -15,7 +15,7 @@ export function SiteHeader() {
             {siteConfig.name}
           </span>
         </Link>
-        <nav className="flex items-center gap-6 text-sm">
+        <nav className="flex w-full items-center gap-6 text-sm">
           <Link
             href="https://www.sadmn.com/blog/shadcn-table"
             target="_blank"

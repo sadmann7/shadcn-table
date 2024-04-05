@@ -18,17 +18,15 @@ This is a Shadcn table component with server-side sorting, filtering, and pagina
 - **Database:** [Neon](https://neon.tech)
 - **ORM:** [Drizzle ORM](https://orm.drizzle.team)
 - **Validation:** [Zod](https://zod.dev)
-- **Optimizing compiler:** [million](https://million.dev)
 
 ## Features
 
 - [x] Server-side pagination, sorting, and filtering (via `useDataTable` hook)
 - [x] Customizable columns (`dataTable` and `columns` props)
-- [x] Dynamic debounced search inputs (`searchableColumns` prop)
-- [x] Dynamic faceted filters (`filterableColumns` prop)
-- [x] Optional notion like advanced filtering (`advancedFilter` prop)
-- [x] Optional floating bar on row selection, rendred at the bottom (`floatingBar` prop)
-- [x] Action to delete rows (`deleteRowsAction` prop)
+- [x] Dynamic debounced search filters, and faceted filters (`filterFields` prop)
+- [x] Dynamic `Data-Table-Toolbar` with search, filters, and actions
+- [x] Optional `Notion` like advanced filtering (`enableAdvancedFilter` prop)
+- [x] Optional `Linear` like floating bar on row selection (`floatingBar` prop)
 
 ## Running Locally
 

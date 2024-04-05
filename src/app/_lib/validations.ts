@@ -27,7 +27,7 @@ export const createTaskSchema = z.object({
 export type CreateTaskSchema = z.infer<typeof createTaskSchema>
 
 export const updateTaskSchema = z.object({
-  id: z.string(),
+  title: z.string().optional(),
   label: z.enum(tasks.label.enumValues).optional(),
   status: z.enum(tasks.status.enumValues).optional(),
   priority: z.enum(tasks.priority.enumValues).optional(),

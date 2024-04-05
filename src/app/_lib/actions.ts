@@ -86,12 +86,13 @@ export async function createTask(
   }
 }
 
-export async function updateTask(input: UpdateTaskSchema) {
+export async function updateTask(input: UpdateTaskSchema & { id: string }) {
   noStore()
   try {
     await db
       .update(tasks)
       .set({
+        title: input.title,
         label: input.label,
         status: input.status,
         priority: input.priority,

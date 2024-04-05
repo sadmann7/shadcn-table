@@ -39,6 +39,7 @@ import { DataTableColumnHeader } from "@/components/data-table/data-table-column
 
 import { updateTask } from "../_lib/actions"
 import { DeleteTasksDialog } from "./delete-tasks-dialog"
+import { UpdateTaskSheet } from "./update-task-sheet"
 
 export const filterFields: DataTableFilterField<Task>[] = [
   {
@@ -222,11 +223,18 @@ export function getColumns(): ColumnDef<Task>[] {
       id: "actions",
       cell: function Cell({ row }) {
         const [isUpdatePending, startUpdateTransition] = React.useTransition()
+        const [showUpdateTaskSheet, setShowUpdateTaskSheet] =
+          React.useState(false)
         const [showDeleteTaskDialog, setShowDeleteTaskDialog] =
           React.useState(false)
 
         return (
           <>
+            <UpdateTaskSheet
+              open={showUpdateTaskSheet}
+              onOpenChange={setShowUpdateTaskSheet}
+              task={row.original}
+            />
             <DeleteTasksDialog
               open={showDeleteTaskDialog}
               onOpenChange={setShowDeleteTaskDialog}
@@ -244,6 +252,9 @@ export function getColumns(): ColumnDef<Task>[] {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem onSelect={() => setShowUpdateTaskSheet(true)}>
+                  Edit
+                </DropdownMenuItem>
                 <DropdownMenuSub>
                   <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
                   <DropdownMenuSubContent>

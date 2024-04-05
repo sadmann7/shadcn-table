@@ -17,6 +17,6 @@ const nextConfig = {
 //   auto: { rsc: true },
 // }
 
-// TODO: Add back millionConfig once it's fixed
+// TODO: Add back millionConfig once it's working properly
 // export default million.next(nextConfig, millionConfig)
 export default nextConfig
