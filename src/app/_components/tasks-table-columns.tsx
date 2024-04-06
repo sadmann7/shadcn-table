@@ -217,7 +217,6 @@ export function getColumns(): ColumnDef<Task>[] {
         <DataTableColumnHeader column={column} title="Created At" />
       ),
       cell: ({ cell }) => formatDate(cell.getValue() as Date),
-      enableColumnFilter: false,
     },
     {
       id: "actions",
