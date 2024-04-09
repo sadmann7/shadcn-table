@@ -16,7 +16,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -34,6 +33,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
+import { Textarea } from "@/components/ui/textarea"
 
 import { updateTask } from "../_lib/actions"
 import { updateTaskSchema, type UpdateTaskSchema } from "../_lib/validations"
@@ -84,7 +84,7 @@ export function UpdateTaskSheet({
 
   return (
     <Sheet onOpenChange={onOpenChange} {...props}>
-      <SheetContent className="flex w-full flex-col gap-6 sm:w-2/5">
+      <SheetContent className="flex flex-col gap-6 sm:max-w-md">
         <SheetHeader className="text-left">
           <SheetTitle>Update task</SheetTitle>
           <SheetDescription>
@@ -103,7 +103,11 @@ export function UpdateTaskSheet({
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Do a kickflip" {...field} />
+                    <Textarea
+                      placeholder="Do a kickflip"
+                      className="resize-none"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

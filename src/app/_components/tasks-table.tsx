@@ -48,7 +48,6 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
       )}
       <DataTable
         table={table}
-        columns={columns}
         floatingBar={
           showFloatingBar ? <TasksTableFloatingBar table={table} /> : null
         }

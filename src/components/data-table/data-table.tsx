@@ -1,9 +1,5 @@
 import * as React from "react"
-import {
-  flexRender,
-  type ColumnDef,
-  type Table as TanstackTable,
-} from "@tanstack/react-table"
+import { flexRender, type Table as TanstackTable } from "@tanstack/react-table"
 
 import {
   Table,
@@ -16,20 +12,12 @@ import {
 
 import { DataTablePagination } from "./data-table-pagination"
 
-interface DataTableProps<TData, TValue> {
+interface DataTableProps<TData> {
   /**
    * The table instance returned from useDataTable hook with pagination, sorting, filtering, etc.
    * @type TanstackTable<TData>
    */
   table: TanstackTable<TData>
-
-  /**
-   * The columns of the table.
-   * @default []
-   * @type ColumnDef<TData, TValue>[]
-   * @example columns={[{accessorKey: "flipTrick", header: "Flip Trick", cell: ({row}) => <div>{row.getValue("flipTrick")}</div>}]
-   */
-  columns: ColumnDef<TData, TValue>[]
 
   /**
    * The floating bar to render at the bottom of the table on row selection.
@@ -40,11 +28,10 @@ interface DataTableProps<TData, TValue> {
   floatingBar?: React.ReactNode | null
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData>({
   table,
-  columns,
   floatingBar = null,
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps<TData>) {
   return (
     <div className="w-full space-y-2.5 overflow-auto">
       <div className="rounded-md border">
@@ -87,7 +74,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={table.getAllColumns().length}
                   className="h-24 text-center"
                 >
                   No results.

@@ -77,7 +77,7 @@ export function getColumns(): ColumnDef<Task>[] {
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
-          className="translate-y-[2px]"
+          className="translate-y-0.5"
         />
       ),
       cell: ({ row }) => (
@@ -85,7 +85,7 @@ export function getColumns(): ColumnDef<Task>[] {
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
-          className="translate-y-[2px]"
+          className="translate-y-0.5"
         />
       ),
       enableSorting: false,
@@ -96,7 +96,7 @@ export function getColumns(): ColumnDef<Task>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Task" />
       ),
-      cell: ({ row }) => <div className="w-[80px]">{row.getValue("code")}</div>,
+      cell: ({ row }) => <div className="w-20">{row.getValue("code")}</div>,
       enableSorting: false,
       enableHiding: false,
     },
@@ -113,7 +113,7 @@ export function getColumns(): ColumnDef<Task>[] {
         return (
           <div className="flex space-x-2">
             {label && <Badge variant="outline">{label}</Badge>}
-            <span className="max-w-[500px] truncate font-medium">
+            <span className="max-w-[31.25rem] truncate font-medium">
               {row.getValue("title")}
             </span>
           </div>
@@ -133,7 +133,7 @@ export function getColumns(): ColumnDef<Task>[] {
         if (!status) return null
 
         return (
-          <div className="flex w-[100px] items-center">
+          <div className="flex w-[6.25rem] items-center">
             {status === "canceled" ? (
               <CrossCircledIcon
                 className="mr-2 size-4 text-muted-foreground"

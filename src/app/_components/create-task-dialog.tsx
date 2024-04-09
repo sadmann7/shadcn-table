@@ -28,7 +28,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -37,6 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 
 import { createTask } from "../_lib/actions"
 import { createTaskSchema, type CreateTaskSchema } from "../_lib/validations"
@@ -108,7 +108,11 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Do a kickflip" {...field} />
+                    <Textarea
+                      placeholder="Do a kickflip"
+                      className="resize-none"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

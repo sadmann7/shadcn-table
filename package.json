@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "clean": "rm -rf node_modules && rm -rf .next",
+    "clean": "rimraf --glob **/node_modules **/dist **/.next pnpm-lock.yaml **/.tsbuildinfo",
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
@@ -79,6 +79,7 @@
     "postcss": "^8.4.35",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
+    "rimraf": "^5.0.5",
     "tailwindcss": "^3.4.1",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3"
