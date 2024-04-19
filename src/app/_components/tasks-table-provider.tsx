@@ -1,22 +1,25 @@
 "use client"
 
 import * as React from "react"
-import { MixIcon, SquareIcon } from "@radix-ui/react-icons"
 
-import { ToggleButton } from "@/components/toggle-button"
+import { dataTableConfig, type DataTableConfig } from "@/config/data-table"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+type FeatureFlagValue = DataTableConfig["featureFlags"][number]["value"]
 
 interface TasksTableContextProps {
-  enableAdvancedFilter: boolean
-  setEnableAdvancedFilter: React.Dispatch<React.SetStateAction<boolean>>
-  showFloatingBar: boolean
-  setShowFloatingBar: React.Dispatch<React.SetStateAction<boolean>>
+  featureFlags: FeatureFlagValue[]
+  setFeatureFlags: React.Dispatch<React.SetStateAction<FeatureFlagValue[]>>
 }
 
 const TasksTableContext = React.createContext<TasksTableContextProps>({
-  enableAdvancedFilter: false,
-  setEnableAdvancedFilter: () => {},
-  showFloatingBar: false,
-  setShowFloatingBar: () => {},
+  featureFlags: [],
+  setFeatureFlags: () => {},
 })
 
 export function useTasksTable() {
@@ -28,35 +31,53 @@ export function useTasksTable() {
 }
 
 export function TasksTableProvider({ children }: React.PropsWithChildren) {
-  const [enableAdvancedFilter, setEnableAdvancedFilter] = React.useState(false)
-  const [showFloatingBar, setShowFloatingBar] = React.useState(false)
+  const [featureFlags, setFeatureFlags] = React.useState<FeatureFlagValue[]>([])
 
   return (
     <TasksTableContext.Provider
       value={{
-        enableAdvancedFilter,
-        setEnableAdvancedFilter,
-        showFloatingBar,
-        setShowFloatingBar,
+        featureFlags,
+        setFeatureFlags,
       }}
     >
-      <div className="flex w-full items-center space-x-2 overflow-x-auto">
-        <ToggleButton
-          onClick={() => setEnableAdvancedFilter(!enableAdvancedFilter)}
-          tooltipTitle="Toggle advanced filter"
-          tooltipDescription="A notion like query builder to filter rows."
+      <div className="w-full overflow-x-auto">
+        <ToggleGroup
+          type="multiple"
+          variant="outline"
+          size="sm"
+          value={featureFlags}
+          onValueChange={(value: FeatureFlagValue[]) => setFeatureFlags(value)}
+          className="w-fit"
         >
-          <MixIcon className="mr-2 size-4 shrink-0" aria-hidden="true" />
-          Advanced filter
-        </ToggleButton>
-        <ToggleButton
-          onClick={() => setShowFloatingBar(!showFloatingBar)}
-          tooltipTitle="Toggle floating bar"
-          tooltipDescription="A floating bar to perform actions on selected rows."
-        >
-          <SquareIcon className="mr-2 size-4 shrink-0" aria-hidden="true" />
-          Floating bar
-        </ToggleButton>
+          {dataTableConfig.featureFlags.map((flag) => (
+            <Tooltip key={flag.value} delayDuration={500}>
+              <ToggleGroupItem
+                value={flag.value}
+                className="whitespace-nowrap px-3 text-xs"
+                asChild
+              >
+                <TooltipTrigger>
+                  <flag.icon
+                    className="mr-2 size-3.5 shrink-0"
+                    aria-hidden="true"
+                  />
+                  {flag.label}
+                </TooltipTrigger>
+              </ToggleGroupItem>
+              <TooltipContent
+                align="start"
+                side="bottom"
+                sideOffset={6}
+                className="flex max-w-60 flex-col space-y-1.5 border bg-background px-3 py-2 font-semibold text-foreground"
+              >
+                <div>{flag.tooltipTitle}</div>
+                <div className="text-xs text-muted-foreground">
+                  {flag.tooltipDescription}
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </ToggleGroup>
       </div>
       {children}
     </TasksTableContext.Provider>

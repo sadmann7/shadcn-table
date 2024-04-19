@@ -18,8 +18,8 @@ interface TasksTableProps {
 }
 
 export function TasksTable({ tasksPromise }: TasksTableProps) {
-  // Flags for showcasing some additional features. Feel free to remove them.
-  const { enableAdvancedFilter, showFloatingBar } = useTasksTable()
+  // Feature flags for showcasing some additional features. Feel free to remove them.
+  const { featureFlags } = useTasksTable()
 
   // Learn more about React.use here: https://react.dev/reference/react/use
   const { data, pageCount } = React.use(tasksPromise)
@@ -33,14 +33,14 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
     pageCount,
     // optional props
     filterFields,
-    enableAdvancedFilter,
+    enableAdvancedFilter: featureFlags.includes("advancedFilter"),
     defaultPerPage: 10,
     defaultSort: "createdAt.desc",
   })
 
   return (
     <div className="w-full space-y-2.5 overflow-auto">
-      {enableAdvancedFilter ? (
+      {featureFlags.includes("advancedFilter") ? (
         <DataTableAdvancedToolbar table={table} filterFields={filterFields}>
           <TasksTableToolbarActions table={table} />
         </DataTableAdvancedToolbar>
@@ -52,7 +52,9 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
       <DataTable
         table={table}
         floatingBar={
-          showFloatingBar ? <TasksTableFloatingBar table={table} /> : null
+          featureFlags.includes("floatingBar") ? (
+            <TasksTableFloatingBar table={table} />
+          ) : null
         }
       />
     </div>

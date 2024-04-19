@@ -302,7 +302,7 @@ export function useDataTable<TData, TValue>({
     // After cumulating all the changes, push new params
     router.push(`${pathname}?${createQueryString(newParamsObject)}`)
 
-    table.setPageIndex(0);
+    table.setPageIndex(0)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [

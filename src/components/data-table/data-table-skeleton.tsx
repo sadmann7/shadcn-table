@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
@@ -8,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-interface DataTableSkeletonProps {
+interface DataTableSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * The number of columns in the table.
    * @type number
@@ -53,6 +54,13 @@ interface DataTableSkeletonProps {
   cellWidths?: string[]
 
   /**
+   * Flag to show the pagination bar.
+   * @default true
+   * @type boolean | undefined
+   */
+  withPagination?: boolean
+
+  /**
    * Flag to prevent the table from shrinking to fit the content.
    * @default false
    * @type boolean | undefined
@@ -60,17 +68,22 @@ interface DataTableSkeletonProps {
   shrinkZero?: boolean
 }
 
-export function DataTableSkeleton({
-  columnCount,
-  rowCount = 10,
-  searchableColumnCount = 0,
-  filterableColumnCount = 0,
-  showViewOptions = true,
-  cellWidths = ["auto"],
-  shrinkZero = false,
-}: DataTableSkeletonProps) {
+export function DataTableSkeleton(props: DataTableSkeletonProps) {
+  const {
+    columnCount,
+    rowCount = 10,
+    searchableColumnCount = 0,
+    filterableColumnCount = 0,
+    showViewOptions = true,
+    cellWidths = ["auto"],
+    withPagination = true,
+    shrinkZero = false,
+    className,
+    ...skeletonProps
+  } = props
+
   return (
-    <div className="w-full space-y-3 overflow-auto">
+    <div className={cn(className)} {...skeletonProps}>
       <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
         <div className="flex flex-1 items-center space-x-2">
           {searchableColumnCount > 0
@@ -126,24 +139,26 @@ export function DataTableSkeleton({
           </TableBody>
         </Table>
       </div>
-      <div className="flex w-full flex-col-reverse items-center justify-between gap-4 overflow-auto px-2 py-1 sm:flex-row sm:gap-8">
-        <Skeleton className="h-8 w-40" />
-        <div className="flex flex-col-reverse items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
-          <div className="flex items-center space-x-2">
-            <Skeleton className="h-8 w-24" />
-            <Skeleton className="h-8 w-[4.5rem]" />
-          </div>
-          <div className="flex items-center justify-center text-sm font-medium">
-            <Skeleton className="h-8 w-20" />
-          </div>
-          <div className="flex items-center space-x-2">
-            <Skeleton className="hidden size-8 lg:block" />
-            <Skeleton className="size-8" />
-            <Skeleton className="size-8" />
-            <Skeleton className="hidden size-8 lg:block" />
+      {withPagination ? (
+        <div className="flex w-full flex-col-reverse items-center justify-between gap-4 overflow-auto px-2 py-1 sm:flex-row sm:gap-8">
+          <Skeleton className="h-8 w-40" />
+          <div className="flex flex-col-reverse items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
+            <div className="flex items-center space-x-2">
+              <Skeleton className="h-8 w-24" />
+              <Skeleton className="h-8 w-[4.5rem]" />
+            </div>
+            <div className="flex items-center justify-center text-sm font-medium">
+              <Skeleton className="h-8 w-20" />
+            </div>
+            <div className="flex items-center space-x-2">
+              <Skeleton className="hidden size-8 lg:block" />
+              <Skeleton className="size-8" />
+              <Skeleton className="size-8" />
+              <Skeleton className="hidden size-8 lg:block" />
+            </div>
           </div>
         </div>
-      </div>
+      ) : null}
     </div>
   )
 }

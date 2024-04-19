@@ -20,7 +20,7 @@ export default function IndexPage({ searchParams }: IndexPageProps) {
   const tasksPromise = getTasks(search)
 
   return (
-    <Shell className="gap-2">
+    <Shell className="gap-2 overflow-hidden">
       {/**
        * The `TasksTableProvider` is use to enable some feature flags for the `TasksTable` component.
        * Feel free to remove this, as it's not required for the `TasksTable` component to work.
