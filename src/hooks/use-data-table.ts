@@ -43,6 +43,22 @@ interface UseDataTableProps<TData, TValue> {
   pageCount: number
 
   /**
+   * The default number of rows per page.
+   * @default 10
+   * @type number | undefined
+   * @example 10
+   */
+  defaultPerPage?: number
+
+  /**
+   * The default sort order.
+   * @default "createdAt.desc"
+   * @type string | undefined
+   * @example "createdAt.desc"
+   */
+  defaultSort?: string
+
+  /**
    * Defines filter fields for the table. Supports both dynamic faceted filters and search filters.
    * - Faceted filters are rendered when `options` are provided for a filter field.
    * - Otherwise, search filters are rendered.
@@ -84,14 +100,16 @@ interface UseDataTableProps<TData, TValue> {
 
 const schema = z.object({
   page: z.coerce.number().default(1),
-  per_page: z.coerce.number().default(10),
-  sort: z.string().optional().default("createdAt.desc"),
+  per_page: z.coerce.number().optional(),
+  sort: z.string().optional(),
 })
 
 export function useDataTable<TData, TValue>({
   data,
   columns,
   pageCount,
+  defaultPerPage = 10,
+  defaultSort = "createdAt.desc",
   filterFields = [],
   enableAdvancedFilter = false,
 }: UseDataTableProps<TData, TValue>) {
@@ -100,9 +118,10 @@ export function useDataTable<TData, TValue>({
   const searchParams = useSearchParams()
 
   // Search params
-  const { page, per_page, sort } = schema.parse(
-    Object.fromEntries(searchParams)
-  )
+  const search = schema.parse(Object.fromEntries(searchParams))
+  const page = search.page
+  const perPage = search.per_page ?? defaultPerPage
+  const sort = search.sort ?? defaultSort
   const [column, order] = sort?.split(".") ?? []
 
   // Memoize computation of searchableColumns and filterableColumns
@@ -171,7 +190,7 @@ export function useDataTable<TData, TValue>({
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
       pageIndex: page - 1,
-      pageSize: per_page,
+      pageSize: perPage,
     })
 
   const pagination = React.useMemo(

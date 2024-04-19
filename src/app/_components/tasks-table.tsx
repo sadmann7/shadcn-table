@@ -31,8 +31,11 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
     data,
     columns,
     pageCount,
+    // optional props
     filterFields,
     enableAdvancedFilter,
+    defaultPerPage: 10,
+    defaultSort: "createdAt.desc",
   })
 
   return (
