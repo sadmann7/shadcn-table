@@ -46,17 +46,17 @@ interface UseDataTableProps<TData, TValue> {
    * The default number of rows per page.
    * @default 10
    * @type number | undefined
-   * @example 10
+   * @example 20
    */
   defaultPerPage?: number
 
   /**
    * The default sort order.
    * @default "createdAt.desc"
-   * @type string | undefined
-   * @example "createdAt.desc"
+   * @type `${Extract<keyof TData, string | number>}.${"asc" | "desc"}` | undefined
+   * @example "updatedAt.desc"
    */
-  defaultSort?: string
+  defaultSort?: `${Extract<keyof TData, string | number>}.${"asc" | "desc"}`
 
   /**
    * Defines filter fields for the table. Supports both dynamic faceted filters and search filters.
@@ -109,7 +109,7 @@ export function useDataTable<TData, TValue>({
   columns,
   pageCount,
   defaultPerPage = 10,
-  defaultSort = "createdAt.desc",
+  defaultSort = "createdAt.desc" as `${Extract<keyof TData, string | number>}.${"asc" | "desc"}`,
   filterFields = [],
   enableAdvancedFilter = false,
 }: UseDataTableProps<TData, TValue>) {
