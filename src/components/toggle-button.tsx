@@ -1,32 +1,31 @@
 "use client"
 
-
+import { cn, composeEventHandlers } from "@/lib/utils"
+import { useControllableState } from "@/hooks/use-controllable-state"
 import { Button, type ButtonProps } from "@/components/ui/button"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { useControllableState } from "@/hooks/use-controllable-state"
-import { cn, composeEventHandlers } from "@/lib/utils"
 
 interface ToggleButtonProps extends ButtonProps {
   /**
    * The controlled state of the toggle.
    */
-  pressed?: boolean;
+  pressed?: boolean
 
   /**
    * The state of the toggle when initially rendered. Use `defaultPressed`
    * if you do not need to control the state of the toggle.
    * @defaultValue false
    */
-  defaultPressed?: boolean;
+  defaultPressed?: boolean
 
   /**
    * The callback that fires when the state of the toggle changes.
    */
-  onPressedChange?(pressed: boolean): void;
+  onPressedChange?(pressed: boolean): void
 
   /**
    * The title of the tooltip.
