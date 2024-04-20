@@ -15,13 +15,13 @@ export function generateId({ length = 8, prefix = "" } = {}) {
 
 export function formatDate(
   date: Date | string | number,
-  options: Intl.DateTimeFormatOptions = {}
+  opts: Intl.DateTimeFormatOptions = {}
 ) {
   return new Intl.DateTimeFormat("en-US", {
-    month: options.month ?? "long",
-    day: options.day ?? "numeric",
-    year: options.year ?? "numeric",
-    ...options,
+    month: opts.month ?? "long",
+    day: opts.day ?? "numeric",
+    year: opts.year ?? "numeric",
+    ...opts,
   }).format(new Date(date))
 }
 
