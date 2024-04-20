@@ -3,6 +3,7 @@
 import * as React from "react"
 import { type Task } from "@/db/schema"
 import type { DataTableFilterField } from "@/types"
+import { CheckIcon } from "@radix-ui/react-icons"
 
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableAdvancedToolbar } from "@/components/data-table/advanced/data-table-advanced-toolbar"
@@ -33,14 +34,29 @@ export function TasksTable({ promises }: TasksTableProps) {
   // Feature flags for showcasing some additional features. Feel free to remove them.
   const { featureFlags } = useTasksTable()
 
-  // Learn more about React.use here: https://react.dev/reference/react/use
   const [{ data, pageCount }, taskCountByStatus, taskCountByPriority] =
     React.use(promises)
 
   // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo(() => getColumns(), [])
 
-  // Filter fields for the data table
+  /**
+   * If the count for each filterable option is not required, you can use enumValues to generate the options.
+   * For example:
+   *
+   * ```ts
+   * export const filterFields: DataTableFilterField<Task>[] = [
+   *   {
+   *     label: "Status",
+   *     value: "status",
+   *     options: tasks.status.enumValues.map((status) => ({
+   *       label: status[0]?.toUpperCase() + status.slice(1),
+   *       value: status,
+   *     })),
+   *   }
+   * ]
+   * ```
+   */
   const filterFields: DataTableFilterField<Task>[] = [
     {
       label: "Title",
@@ -54,6 +70,7 @@ export function TasksTable({ promises }: TasksTableProps) {
         label: status[0]?.toUpperCase() + status.slice(1),
         value: status,
         count,
+        icon: CheckIcon,
       })),
     },
     {

@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { tasks, type Task } from "@/db/schema"
-import type { DataTableFilterField } from "@/types"
 import {
   ArrowDownIcon,
   ArrowRightIcon,
@@ -40,30 +39,6 @@ import { DataTableColumnHeader } from "@/components/data-table/data-table-column
 import { updateTask } from "../_lib/actions"
 import { DeleteTasksDialog } from "./delete-tasks-dialog"
 import { UpdateTaskSheet } from "./update-task-sheet"
-
-export const filterFields: DataTableFilterField<Task>[] = [
-  {
-    label: "Title",
-    value: "title",
-    placeholder: "Filter titles...",
-  },
-  {
-    label: "Status",
-    value: "status",
-    options: tasks.status.enumValues.map((status) => ({
-      label: status[0]?.toUpperCase() + status.slice(1),
-      value: status,
-    })),
-  },
-  {
-    label: "Priority",
-    value: "priority",
-    options: tasks.priority.enumValues.map((priority) => ({
-      label: priority[0]?.toUpperCase() + priority.slice(1),
-      value: priority,
-    })),
-  },
-]
 
 export function getColumns(): ColumnDef<Task>[] {
   return [

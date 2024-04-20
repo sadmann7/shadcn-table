@@ -55,6 +55,10 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
             />
           }
         >
+          {/**
+           * Passing promises and consuming them using React.use for triggering the suspense fallback.
+           * @see https://react.dev/reference/react/use
+           */}
           <TasksTable promises={promises} />
         </React.Suspense>
       </TasksTableProvider>

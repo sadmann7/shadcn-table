@@ -83,7 +83,10 @@ export function DataTableSkeleton(props: DataTableSkeletonProps) {
   } = props
 
   return (
-    <div className={cn(className)} {...skeletonProps}>
+    <div
+      className={cn("w-full space-y-2.5 overflow-auto", className)}
+      {...skeletonProps}
+    >
       <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
         <div className="flex flex-1 items-center space-x-2">
           {searchableColumnCount > 0
@@ -140,21 +143,21 @@ export function DataTableSkeleton(props: DataTableSkeletonProps) {
         </Table>
       </div>
       {withPagination ? (
-        <div className="flex w-full flex-col-reverse items-center justify-between gap-4 overflow-auto px-2 py-1 sm:flex-row sm:gap-8">
-          <Skeleton className="h-8 w-40" />
-          <div className="flex flex-col-reverse items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
+        <div className="flex w-full  items-center justify-between gap-4 overflow-auto p-1 sm:gap-8">
+          <Skeleton className="h-7 w-40 shrink-0" />
+          <div className="flex items-center gap-4 sm:gap-6 lg:gap-8">
             <div className="flex items-center space-x-2">
-              <Skeleton className="h-8 w-24" />
-              <Skeleton className="h-8 w-[4.5rem]" />
+              <Skeleton className="h-7 w-24" />
+              <Skeleton className="h-7 w-[4.5rem]" />
             </div>
             <div className="flex items-center justify-center text-sm font-medium">
-              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-7 w-20" />
             </div>
             <div className="flex items-center space-x-2">
-              <Skeleton className="hidden size-8 lg:block" />
-              <Skeleton className="size-8" />
-              <Skeleton className="size-8" />
-              <Skeleton className="hidden size-8 lg:block" />
+              <Skeleton className="hidden size-7 lg:block" />
+              <Skeleton className="size-7" />
+              <Skeleton className="size-7" />
+              <Skeleton className="hidden size-7 lg:block" />
             </div>
           </div>
         </div>
