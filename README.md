@@ -98,7 +98,7 @@ This is a shadcn table component with server-side sorting, filtering, and pagina
    - **Update Queries/Mutations**: Modify `./_lib/queries.ts`, `./_lib/actions.ts`, and `./_lib/mutations.ts` to match your database operations.
    - **Update Floating Bar**: Update `./_components/tasks-table-floating-bar.tsx` to match your table's actions (optional).
    - **Define Table Columns**: Update `./_components/tasks-table-columns.tsx` to define column headers, actions, searchable and filterable columns.
-   - **Setup Data Fetching**: In `./page.tsx`, define `getTasksPromise` for use in `./_components/tasks-table.tsx`.
+   - **Setup Data Fetching**: In `./page.tsx`, define `getTasksPromise`, `getTaskCountByStatus`, and `getTaskCountByPriority`.
    - **Fetch Data**: In `./_components/tasks-table.tsx`, consume the `getTasksPromise` promise using the `React.use` hook. The promise is passed to trigger the `suspense` boundary.
    - **Memoize Table Columns**: In `./_components/tasks-table.tsx`, memoize columns defined in `./_components/tasks-table-columns.tsx` using `React.useMemo` hook to prevent unnecessary re-renders.
    - **Use Data Table Hook**: In `./_components/tasks-table.tsx`, call `./hooks/useTasksTable.tsx` hook to handle server-side pagination, sorting, and filtering.

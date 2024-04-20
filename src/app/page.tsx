@@ -28,7 +28,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
   ])
 
   return (
-    <Shell className="gap-2 overflow-hidden">
+    <Shell className="gap-2">
       {/**
        * The `TasksTableProvider` is use to enable some feature flags for the `TasksTable` component.
        * Feel free to remove this, as it's not required for the `TasksTable` component to work.
