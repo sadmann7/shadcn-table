@@ -22,6 +22,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { Kbd } from "@/components/kbd"
 
 import { deleteTasks, updateTasks } from "../_lib/mutations"
 
@@ -71,9 +72,9 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
               </TooltipTrigger>
               <TooltipContent className="flex items-center border bg-accent font-semibold text-foreground dark:bg-zinc-900">
                 <p className="mr-2">Clear selection</p>
-                <kbd className="rounded-sm border bg-background px-1 py-px text-[0.7rem]">
+                <Kbd abbrTitle="Escape" variant="outline">
                   Esc
-                </kbd>
+                </Kbd>
               </TooltipContent>
             </Tooltip>
           </div>
