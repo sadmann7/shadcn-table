@@ -87,6 +87,11 @@ export function DataTableAdvancedFacetedFilter<TData, TValue>({
                   />
                 )}
                 <span>{option.label}</span>
+                {option.count && (
+                  <span className="ml-auto flex size-4 items-center justify-center font-mono text-xs">
+                    {option.count}
+                  </span>
+                )}
               </CommandItem>
             )
           })}

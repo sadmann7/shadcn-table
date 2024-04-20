@@ -10,18 +10,11 @@ import { filterColumn } from "@/lib/filter-column"
 
 import { type GetTasksSchema } from "./validations"
 
-export async function getTasks({
-  page,
-  per_page,
-  sort,
-  title,
-  status,
-  priority,
-  operator,
-  from,
-  to,
-}: GetTasksSchema) {
+export async function getTasks(input: GetTasksSchema) {
   noStore()
+  const { page, per_page, sort, title, status, priority, operator, from, to } =
+    input
+
   try {
     // Offset to paginate the results
     const offset = (page - 1) * per_page
@@ -133,5 +126,37 @@ export async function getTasks({
     return { data, pageCount }
   } catch (err) {
     return { data: [], pageCount: 0 }
+  }
+}
+
+export async function getTaskCountByStatus() {
+  noStore()
+  try {
+    return await db
+      .select({
+        status: tasks.status,
+        count: count(),
+      })
+      .from(tasks)
+      .groupBy(tasks.status)
+      .execute()
+  } catch (err) {
+    return []
+  }
+}
+
+export async function getTaskCountByPriority() {
+  noStore()
+  try {
+    return await db
+      .select({
+        priority: tasks.priority,
+        count: count(),
+      })
+      .from(tasks)
+      .groupBy(tasks.priority)
+      .execute()
+  } catch (err) {
+    return []
   }
 }

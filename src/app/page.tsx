@@ -7,17 +7,25 @@ import { Shell } from "@/components/shell"
 
 import { TasksTable } from "./_components/tasks-table"
 import { TasksTableProvider } from "./_components/tasks-table-provider"
-import { getTasks } from "./_lib/queries"
+import {
+  getTaskCountByPriority,
+  getTaskCountByStatus,
+  getTasks,
+} from "./_lib/queries"
 import { searchParamsSchema } from "./_lib/validations"
 
 export interface IndexPageProps {
   searchParams: SearchParams
 }
 
-export default function IndexPage({ searchParams }: IndexPageProps) {
+export default async function IndexPage({ searchParams }: IndexPageProps) {
   const search = searchParamsSchema.parse(searchParams)
 
-  const tasksPromise = getTasks(search)
+  const promises = Promise.all([
+    getTasks(search),
+    getTaskCountByStatus(),
+    getTaskCountByPriority(),
+  ])
 
   return (
     <Shell className="gap-2 overflow-hidden">
@@ -47,12 +55,7 @@ export default function IndexPage({ searchParams }: IndexPageProps) {
             />
           }
         >
-          {/**
-           * The `TasksTable` component is used to render the `DataTable` component within it.
-           * This is done because the table columns need to be memoized, and the `useDataTable` hook needs to be called in a client component.
-           * By encapsulating the `DataTable` component within the `tasktableshell` component, we can ensure that the necessary logic and state management is handled correctly.
-           */}
-          <TasksTable tasksPromise={tasksPromise} />
+          <TasksTable promises={promises} />
         </React.Suspense>
       </TasksTableProvider>
     </Shell>

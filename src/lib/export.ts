@@ -21,7 +21,7 @@ export function exportTableToCSV<TData>(
     excludeColumns?: (keyof TData | "select" | "actions")[]
   } = {}
 ): void {
-  const { filename = "table", excludeColumns = ["select", "actions"] } = opts
+  const { filename = "table", excludeColumns = [] } = opts
 
   // Retrieve headers (column names)
   const headers = table
