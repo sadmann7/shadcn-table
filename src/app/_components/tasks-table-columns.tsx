@@ -2,17 +2,7 @@
 
 import * as React from "react"
 import { tasks, type Task } from "@/db/schema"
-import {
-  ArrowDownIcon,
-  ArrowRightIcon,
-  ArrowUpIcon,
-  CheckCircledIcon,
-  CircleIcon,
-  CrossCircledIcon,
-  DotsHorizontalIcon,
-  QuestionMarkCircledIcon,
-  StopwatchIcon,
-} from "@radix-ui/react-icons"
+import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
 import { toast } from "sonner"
 
@@ -37,6 +27,7 @@ import {
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 
 import { updateTask } from "../_lib/actions"
+import { getPriorityIcon, getStatusIcon } from "../_lib/utils"
 import { DeleteTasksDialog } from "./delete-tasks-dialog"
 import { UpdateTaskSheet } from "./update-task-sheet"
 
@@ -107,34 +98,14 @@ export function getColumns(): ColumnDef<Task>[] {
 
         if (!status) return null
 
+        const Icon = getStatusIcon(status)
+
         return (
           <div className="flex w-[6.25rem] items-center">
-            {status === "canceled" ? (
-              <CrossCircledIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            ) : status === "done" ? (
-              <CheckCircledIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            ) : status === "in-progress" ? (
-              <StopwatchIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            ) : status === "todo" ? (
-              <QuestionMarkCircledIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            ) : (
-              <CircleIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            )}
+            <Icon
+              className="mr-2 size-4 text-muted-foreground"
+              aria-hidden="true"
+            />
             <span className="capitalize">{status}</span>
           </div>
         )
@@ -155,29 +126,14 @@ export function getColumns(): ColumnDef<Task>[] {
 
         if (!priority) return null
 
+        const Icon = getPriorityIcon(priority)
+
         return (
           <div className="flex items-center">
-            {priority === "low" ? (
-              <ArrowDownIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            ) : priority === "medium" ? (
-              <ArrowRightIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            ) : priority === "high" ? (
-              <ArrowUpIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            ) : (
-              <CircleIcon
-                className="mr-2 size-4 text-muted-foreground"
-                aria-hidden="true"
-              />
-            )}
+            <Icon
+              className="mr-2 size-4 text-muted-foreground"
+              aria-hidden="true"
+            />
             <span className="capitalize">{priority}</span>
           </div>
         )

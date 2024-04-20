@@ -3,7 +3,6 @@
 import * as React from "react"
 import { type Task } from "@/db/schema"
 import type { DataTableFilterField } from "@/types"
-import { CheckIcon } from "@radix-ui/react-icons"
 
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableAdvancedToolbar } from "@/components/data-table/advanced/data-table-advanced-toolbar"
@@ -15,6 +14,7 @@ import type {
   getTaskCountByStatus,
   getTasks,
 } from "../_lib/queries"
+import { getPriorityIcon, getStatusIcon } from "../_lib/utils"
 import { getColumns } from "./tasks-table-columns"
 import { TasksTableFloatingBar } from "./tasks-table-floating-bar"
 import { useTasksTable } from "./tasks-table-provider"
@@ -70,7 +70,7 @@ export function TasksTable({ promises }: TasksTableProps) {
         label: status[0]?.toUpperCase() + status.slice(1),
         value: status,
         count,
-        icon: CheckIcon,
+        icon: getStatusIcon(status),
       })),
     },
     {
@@ -80,6 +80,7 @@ export function TasksTable({ promises }: TasksTableProps) {
         label: priority[0]?.toUpperCase() + priority.slice(1),
         value: priority,
         count,
+        icon: getPriorityIcon(priority),
       })),
     },
   ]
