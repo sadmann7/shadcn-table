@@ -7,11 +7,7 @@ import { Shell } from "@/components/shell"
 
 import { TasksTable } from "./_components/tasks-table"
 import { TasksTableProvider } from "./_components/tasks-table-provider"
-import {
-  getTaskCountByPriority,
-  getTaskCountByStatus,
-  getTasks,
-} from "./_lib/queries"
+import { getTasks } from "./_lib/queries"
 import { searchParamsSchema } from "./_lib/validations"
 
 export interface IndexPageProps {
@@ -21,11 +17,7 @@ export interface IndexPageProps {
 export default async function IndexPage({ searchParams }: IndexPageProps) {
   const search = searchParamsSchema.parse(searchParams)
 
-  const promises = Promise.all([
-    getTasks(search),
-    getTaskCountByStatus(),
-    getTaskCountByPriority(),
-  ])
+  const tasksPromise = getTasks(search)
 
   return (
     <Shell className="gap-2">
@@ -59,7 +51,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
            * Passing promises and consuming them using React.use for triggering the suspense fallback.
            * @see https://react.dev/reference/react/use
            */}
-          <TasksTable promises={promises} />
+          <TasksTable tasksPromise={tasksPromise} />
         </React.Suspense>
       </TasksTableProvider>
     </Shell>

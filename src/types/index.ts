@@ -7,8 +7,8 @@ export interface SearchParams {
 export interface Option {
   label: string
   value: string
-  count?: number
   icon?: React.ComponentType<{ className?: string }>
+  withCount?: boolean
 }
 
 export interface DataTableFilterField<TData> {
