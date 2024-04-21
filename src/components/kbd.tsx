@@ -4,12 +4,12 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const kbdVariants = cva(
-  "select-none rounded border px-1.5 py-0.5 font-mono text-[0.7rem] font-normal shadow-sm disabled:opacity-50",
+  "select-none rounded border px-1.5 py-px font-mono text-[0.7rem] font-normal shadow-sm disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "bg-accent",
-        outline: "bg-background",
+        default: "bg-accent text-accent-foreground",
+        outline: "bg-background text-foreground",
       },
     },
     defaultVariants: {
