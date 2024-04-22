@@ -46,7 +46,7 @@ dependencies:
     version: 1.0.7(@types/react-dom@18.2.25)(@types/react@18.2.79)(react-dom@18.2.0)(react@18.2.0)
   '@t3-oss/env-nextjs':
     specifier: ^0.10.0
-    version: 0.10.0(typescript@5.4.5)(zod@3.23.0)
+    version: 0.10.0(typescript@5.4.5)(zod@3.23.3)
   '@tanstack/react-table':
     specifier: ^8.16.0
     version: 8.16.0(react-dom@18.2.0)(react@18.2.0)
@@ -109,7 +109,7 @@ dependencies:
     version: 1.0.7(tailwindcss@3.4.3)
   zod:
     specifier: ^3.22.4
-    version: 3.23.0
+    version: 3.23.3
 
 devDependencies:
   '@faker-js/faker':
@@ -874,14 +874,14 @@ packages:
     engines: {node: '>=18.14.1'}
     dev: true
 
-  /@hono/zod-validator@0.2.1(hono@4.2.5)(zod@3.23.0):
+  /@hono/zod-validator@0.2.1(hono@4.2.5)(zod@3.23.3):
     resolution: {integrity: sha512-HFoxln7Q6JsE64qz2WBS28SD33UB2alp3aRKmcWnNLDzEL1BLsWfbdX6e1HIiUprHYTIXf5y7ax8eYidKUwyaA==}
     peerDependencies:
       hono: '>=3.9.0'
       zod: ^3.19.1
     dependencies:
       hono: 4.2.5
-      zod: 3.23.0
+      zod: 3.23.3
     dev: true
 
   /@hookform/resolvers@3.3.4(react-hook-form@7.51.3):
@@ -1885,7 +1885,7 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@t3-oss/env-core@0.10.0(typescript@5.4.5)(zod@3.23.0):
+  /@t3-oss/env-core@0.10.0(typescript@5.4.5)(zod@3.23.3):
     resolution: {integrity: sha512-2NJM7kBPYfxkvLSt0cX4UnQR3YMNOoqHKUWEEbxrqad0R1eqj1j2ZxU4HByQzYW8tBUD+kCSd00xJPoju/WJ1Q==}
     peerDependencies:
       typescript: '>=5.0.0'
@@ -1895,10 +1895,10 @@ packages:
         optional: true
     dependencies:
       typescript: 5.4.5
-      zod: 3.23.0
+      zod: 3.23.3
     dev: false
 
-  /@t3-oss/env-nextjs@0.10.0(typescript@5.4.5)(zod@3.23.0):
+  /@t3-oss/env-nextjs@0.10.0(typescript@5.4.5)(zod@3.23.3):
     resolution: {integrity: sha512-JMpWF8dyI3ska1wFX92An7Y7AQicRn11be0z10c3TletATvdmFJzazb28VbgAX6fKuXJRRxBoiKNGIdLWVVsig==}
     peerDependencies:
       typescript: '>=5.0.0'
@@ -1907,9 +1907,9 @@ packages:
       typescript:
         optional: true
     dependencies:
-      '@t3-oss/env-core': 0.10.0(typescript@5.4.5)(zod@3.23.0)
+      '@t3-oss/env-core': 0.10.0(typescript@5.4.5)(zod@3.23.3)
       typescript: 5.4.5
-      zod: 3.23.0
+      zod: 3.23.3
     dev: false
 
   /@tanstack/react-table@8.16.0(react-dom@18.2.0)(react@18.2.0):
@@ -2764,7 +2764,7 @@ packages:
     dependencies:
       '@esbuild-kit/esm-loader': 2.6.5
       '@hono/node-server': 1.11.0
-      '@hono/zod-validator': 0.2.1(hono@4.2.5)(zod@3.23.0)
+      '@hono/zod-validator': 0.2.1(hono@4.2.5)(zod@3.23.3)
       camelcase: 7.0.1
       chalk: 5.3.0
       commander: 9.5.0
@@ -2778,7 +2778,7 @@ packages:
       minimatch: 7.4.6
       semver: 7.6.0
       superjson: 2.2.1
-      zod: 3.23.0
+      zod: 3.23.3
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -5574,5 +5574,5 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /zod@3.23.0:
-    resolution: {integrity: sha512-OFLT+LTocvabn6q76BTwVB0hExEBS0IduTr3cqZyMqEDbOnYmcU+y0tUAYbND4uwclpBGi4I4UUBGzylWpjLGA==}
+  /zod@3.23.3:
+    resolution: {integrity: sha512-tPvq1B/2Yu/dh2uAIH2/BhUlUeLIUvAjr6dpL/75I0pCYefHgjhXk1o1Kob3kTU8C7yU1j396jFHlsVWFi9ogg==}
