@@ -52,9 +52,9 @@ interface UseDataTableProps<TData, TValue> {
 
   /**
    * The default sort order.
-   * @default "createdAt.desc"
+   * @default undefined
    * @type `${Extract<keyof TData, string | number>}.${"asc" | "desc"}` | undefined
-   * @example "updatedAt.desc"
+   * @example "createdAt.desc"
    */
   defaultSort?: `${Extract<keyof TData, string | number>}.${"asc" | "desc"}`
 
@@ -109,7 +109,7 @@ export function useDataTable<TData, TValue>({
   columns,
   pageCount,
   defaultPerPage = 10,
-  defaultSort = "createdAt.desc" as `${Extract<keyof TData, string | number>}.${"asc" | "desc"}`,
+  defaultSort,
   filterFields = [],
   enableAdvancedFilter = false,
 }: UseDataTableProps<TData, TValue>) {

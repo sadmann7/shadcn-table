@@ -61,7 +61,7 @@ interface DataTableSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
   withPagination?: boolean
 
   /**
-   * Flag to prevent the table from shrinking to fit the content.
+   * Flag to prevent the table cells from shrinking.
    * @default false
    * @type boolean | undefined
    */
