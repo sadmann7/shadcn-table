@@ -17,7 +17,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
-import { deleteTasks } from "../_lib/mutations"
+import { deleteTasks } from "../_lib/client-actions"
 
 interface DeleteTasksDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {

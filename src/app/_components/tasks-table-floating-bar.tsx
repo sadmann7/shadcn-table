@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/tooltip"
 import { Kbd } from "@/components/kbd"
 
-import { deleteTasks, updateTasks } from "../_lib/mutations"
+import { deleteTasks, updateTasks } from "../_lib/client-actions"
 
 interface TasksTableFloatingBarProps {
   table: Table<Task>
