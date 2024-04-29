@@ -4,11 +4,13 @@ import {
   ArrowUpIcon,
   CheckCircledIcon,
   Cross2Icon,
+  DownloadIcon,
   TrashIcon,
 } from "@radix-ui/react-icons"
 import { SelectTrigger } from "@radix-ui/react-select"
 import { type Table } from "@tanstack/react-table"
 
+import { exportTableToCSV } from "@/lib/export"
 import { Button } from "@/components/ui/button"
 import {
   Select,
@@ -164,6 +166,26 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                 </SelectGroup>
               </SelectContent>
             </Select>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="size-7 border"
+                  onClick={() => {
+                    startTransition(() => {
+                      exportTableToCSV(table, { onlySelected: true })
+                    })
+                  }}
+                  disabled={isPending}
+                >
+                  <DownloadIcon className="size-4" aria-hidden="true" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className=" border bg-accent font-semibold text-foreground dark:bg-zinc-900">
+                <p>Export tasks</p>
+              </TooltipContent>
+            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button

@@ -19,9 +19,15 @@ export function exportTableToCSV<TData>(
      * @example ["select", "actions"]
      */
     excludeColumns?: (keyof TData | "select" | "actions")[]
+
+    /**
+     * Whether to export only the selected rows.
+     * @default false
+     */
+    onlySelected?: boolean
   } = {}
 ): void {
-  const { filename = "table", excludeColumns = [] } = opts
+  const { filename = "table", excludeColumns = [], onlySelected = false } = opts
 
   // Retrieve headers (column names)
   const headers = table
@@ -32,7 +38,10 @@ export function exportTableToCSV<TData>(
   // Build CSV content
   const csvContent = [
     headers.join(","),
-    ...table.getRowModel().rows.map((row) =>
+    ...(onlySelected
+      ? table.getFilteredSelectedRowModel().rows
+      : table.getRowModel().rows
+    ).map((row) =>
       headers
         .map((header) => {
           const cellValue = row.getValue(header)
