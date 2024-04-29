@@ -7,9 +7,8 @@ import { TailwindIndicator } from "@/components/tailwind-indicator"
 import "@/styles/globals.css"
 
 import type { Metadata, Viewport } from "next"
-import { GeistMono } from "geist/font/mono"
-import { GeistSans } from "geist/font/sans"
 
+import { fontMono, fontSans } from "@/lib/font"
 import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
@@ -71,8 +70,8 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          GeistSans.variable,
-          GeistMono.variable
+          fontSans.variable,
+          fontMono.variable
         )}
       >
         <ThemeProvider
