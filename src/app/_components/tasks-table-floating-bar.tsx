@@ -174,7 +174,10 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                   className="size-7 border"
                   onClick={() => {
                     startTransition(() => {
-                      exportTableToCSV(table, { onlySelected: true })
+                      exportTableToCSV(table, {
+                        excludeColumns: ["select", "actions"],
+                        onlySelected: true,
+                      })
                     })
                   }}
                   disabled={isPending}
