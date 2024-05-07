@@ -141,7 +141,7 @@ devDependencies:
     version: 10.4.19(postcss@8.4.38)
   dotenv-cli:
     specifier: ^7.4.1
-    version: 7.4.1
+    version: 7.4.2
   drizzle-kit:
     specifier: ^0.20.14
     version: 0.20.18
@@ -3146,8 +3146,8 @@ packages:
       esutils: 2.0.3
     dev: true
 
-  /dotenv-cli@7.4.1:
-    resolution: {integrity: sha512-fE1aywjRrWGxV3miaiUr3d2zC/VAiuzEGghi+QzgIA9fEf/M5hLMaRSXb4IxbUAwGmaLi0IozdZddnVU96acag==}
+  /dotenv-cli@7.4.2:
+    resolution: {integrity: sha512-SbUj8l61zIbzyhIbg0FwPJq6+wjbzdn9oEtozQpZ6kW2ihCcapKVZj49oCT3oPM+mgQm+itgvUQcG5szxVrZTA==}
     hasBin: true
     dependencies:
       cross-spawn: 7.0.3
