@@ -1,6 +1,7 @@
 import * as React from "react"
 import { flexRender, type Table as TanstackTable } from "@tanstack/react-table"
 
+import { cn } from "@/lib/utils"
 import {
   Table,
   TableBody,
@@ -9,10 +10,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { DataTablePagination } from "@/components/data-table/data-table-pagination"
 
-import { DataTablePagination } from "./data-table-pagination"
-
-interface DataTableProps<TData> {
+interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * The table instance returned from useDataTable hook with pagination, sorting, filtering, etc.
    * @type TanstackTable<TData>
@@ -31,9 +31,16 @@ interface DataTableProps<TData> {
 export function DataTable<TData>({
   table,
   floatingBar = null,
+  children,
+  className,
+  ...props
 }: DataTableProps<TData>) {
   return (
-    <div className="w-full space-y-2.5 overflow-auto">
+    <div
+      className={cn("w-full space-y-2.5 overflow-auto", className)}
+      {...props}
+    >
+      {children}
       <div className="rounded-md border">
         <Table>
           <TableHeader>

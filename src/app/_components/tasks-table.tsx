@@ -80,7 +80,14 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
   })
 
   return (
-    <div className="w-full space-y-2.5 overflow-auto">
+    <DataTable
+      table={table}
+      floatingBar={
+        featureFlags.includes("floatingBar") ? (
+          <TasksTableFloatingBar table={table} />
+        ) : null
+      }
+    >
       {featureFlags.includes("advancedFilter") ? (
         <DataTableAdvancedToolbar table={table} filterFields={filterFields}>
           <TasksTableToolbarActions table={table} />
@@ -90,14 +97,6 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
           <TasksTableToolbarActions table={table} />
         </DataTableToolbar>
       )}
-      <DataTable
-        table={table}
-        floatingBar={
-          featureFlags.includes("floatingBar") ? (
-            <TasksTableFloatingBar table={table} />
-          ) : null
-        }
-      />
-    </div>
+    </DataTable>
   )
 }
