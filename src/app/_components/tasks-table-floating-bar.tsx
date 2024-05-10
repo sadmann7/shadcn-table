@@ -55,7 +55,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
   }, [table])
 
   return (
-    <div className="fixed inset-x-0 bottom-4 z-50 w-full px-4">
+    <div className="fixed inset-x-0 bottom-4 z-50 mx-auto w-fit px-4">
       <div className="w-full overflow-x-auto">
         <div className="mx-auto flex w-fit items-center gap-2 rounded-md border bg-card p-2 shadow-2xl">
           <div className="flex h-7 items-center rounded-md border border-dashed pl-2.5 pr-1">
