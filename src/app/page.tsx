@@ -35,6 +35,11 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
           triggerSize="sm"
           triggerClassName="ml-auto w-56 sm:w-60"
           align="end"
+          dateRange={
+            search.from && search.to
+              ? { from: new Date(search.from), to: new Date(search.to) }
+              : undefined
+          }
         />
         <React.Suspense
           fallback={

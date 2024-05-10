@@ -4,7 +4,7 @@ import { unstable_noStore as noStore, revalidatePath } from "next/cache"
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import { faker } from "@faker-js/faker"
-import { eq } from "drizzle-orm"
+import { eq, inArray } from "drizzle-orm"
 import { customAlphabet } from "nanoid"
 
 import { getErrorMessage } from "@/lib/handle-error"
@@ -61,7 +61,6 @@ export async function createTask(
   try {
     await Promise.all([
       db.insert(tasks).values({
-        id: generateId(),
         code: `TASK-${customAlphabet("0123456789", 4)()}`,
         title: input.title,
         status: input.status,
@@ -69,7 +68,7 @@ export async function createTask(
         priority: input.priority,
       }),
       // Delete another task to maintain the same number of tasks
-      deleteTask({ id: input.anotherTaskId }),
+      db.delete(tasks).where(eq(tasks.id, input.anotherTaskId)),
     ])
 
     revalidatePath("/")
@@ -113,6 +112,37 @@ export async function updateTask(input: UpdateTaskSchema & { id: string }) {
   }
 }
 
+export async function updateTasks(input: {
+  ids: string[]
+  label?: Task["label"]
+  status?: Task["status"]
+  priority?: Task["priority"]
+}) {
+  noStore()
+  try {
+    await db
+      .update(tasks)
+      .set({
+        label: input.label,
+        status: input.status,
+        priority: input.priority,
+      })
+      .where(inArray(tasks.id, input.ids))
+
+    revalidatePath("/")
+
+    return {
+      data: null,
+      error: null,
+    }
+  } catch (err) {
+    return {
+      data: null,
+      error: getErrorMessage(err),
+    }
+  }
+}
+
 export async function deleteTask(input: { id: string }) {
   try {
     await db.delete(tasks).where(eq(tasks.id, input.id))
@@ -121,6 +151,27 @@ export async function deleteTask(input: { id: string }) {
     await seedTasks({ count: 1 })
 
     revalidatePath("/")
+  } catch (err) {
+    return {
+      data: null,
+      error: getErrorMessage(err),
+    }
+  }
+}
+
+export async function deleteTasks(input: { ids: string[] }) {
+  try {
+    await db.delete(tasks).where(inArray(tasks.id, input.ids))
+
+    revalidatePath("/")
+
+    // Create new tasks for the deleted ones
+    await seedTasks({ count: input.ids.length })
+
+    return {
+      data: null,
+      error: null,
+    }
   } catch (err) {
     return {
       data: null,

@@ -2,8 +2,9 @@
 
 import * as React from "react"
 import { type Task } from "@/db/schema"
-import { TrashIcon } from "@radix-ui/react-icons"
+import { ReloadIcon, TrashIcon } from "@radix-ui/react-icons"
 import { type Row } from "@tanstack/react-table"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -17,19 +18,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
-import { deleteTasks } from "../_lib/client-actions"
+import { deleteTasks } from "../_lib/actions"
 
 interface DeleteTasksDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  tasks: Row<Task>[]
-  onSuccess?: () => void
+  tasks: Row<Task>["original"][]
   showTrigger?: boolean
+  onSuccess?: () => void
 }
 
 export function DeleteTasksDialog({
   tasks,
-  onSuccess,
   showTrigger = true,
+  onSuccess,
   ...props
 }: DeleteTasksDialogProps) {
   const [isDeletePending, startDeleteTransition] = React.useTransition()
@@ -57,23 +58,35 @@ export function DeleteTasksDialog({
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <DialogClose asChild>
-            <Button
-              aria-label="Delete selected rows"
-              variant="destructive"
-              onClick={() => {
-                startDeleteTransition(() => {
-                  deleteTasks({
-                    rows: tasks,
-                    onSuccess,
-                  })
+          <Button
+            aria-label="Delete selected rows"
+            variant="destructive"
+            onClick={() => {
+              startDeleteTransition(async () => {
+                const { error } = await deleteTasks({
+                  ids: tasks.map((task) => task.id),
                 })
-              }}
-              disabled={isDeletePending}
-            >
-              Delete
-            </Button>
-          </DialogClose>
+
+                if (error) {
+                  toast.error(error)
+                  return
+                }
+
+                props.onOpenChange?.(false)
+                toast.success("Tasks deleted")
+                onSuccess?.()
+              })
+            }}
+            disabled={isDeletePending}
+          >
+            {isDeletePending && (
+              <ReloadIcon
+                className="mr-2 size-4 animate-spin"
+                aria-hidden="true"
+              />
+            )}
+            Delete
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

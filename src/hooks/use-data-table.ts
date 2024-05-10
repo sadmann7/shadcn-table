@@ -232,7 +232,6 @@ export function useDataTable<TData, TValue>({
           : null,
       })}`
     )
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sorting])
 

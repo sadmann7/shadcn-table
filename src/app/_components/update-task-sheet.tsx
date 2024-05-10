@@ -3,10 +3,10 @@
 import * as React from "react"
 import { tasks, type Task } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { ReloadIcon } from "@radix-ui/react-icons"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
-import { getErrorMessage } from "@/lib/handle-error"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -43,11 +43,7 @@ interface UpdateTaskSheetProps
   task: Task
 }
 
-export function UpdateTaskSheet({
-  task,
-  onOpenChange,
-  ...props
-}: UpdateTaskSheetProps) {
+export function UpdateTaskSheet({ task, ...props }: UpdateTaskSheetProps) {
   const [isUpdatePending, startUpdateTransition] = React.useTransition()
 
   const form = useForm<UpdateTaskSchema>({
@@ -61,29 +57,25 @@ export function UpdateTaskSheet({
   })
 
   function onSubmit(input: UpdateTaskSchema) {
-    startUpdateTransition(() => {
-      toast.promise(
-        updateTask({
-          id: task.id,
-          ...input,
-        }),
-        {
-          loading: "Updating task...",
-          success: () => {
-            onOpenChange?.(false)
-            return "Task updated"
-          },
-          error: (error) => {
-            onOpenChange?.(false)
-            return getErrorMessage(error)
-          },
-        }
-      )
+    startUpdateTransition(async () => {
+      const { error } = await updateTask({
+        id: task.id,
+        ...input,
+      })
+
+      if (error) {
+        toast.error(error)
+        return
+      }
+
+      form.reset()
+      props.onOpenChange?.(false)
+      toast.success("Task updated")
     })
   }
 
   return (
-    <Sheet onOpenChange={onOpenChange} {...props}>
+    <Sheet {...props}>
       <SheetContent className="flex flex-col gap-6 sm:max-w-md">
         <SheetHeader className="text-left">
           <SheetTitle>Update task</SheetTitle>
@@ -218,7 +210,15 @@ export function UpdateTaskSheet({
                   Cancel
                 </Button>
               </SheetClose>
-              <Button disabled={isUpdatePending}>Save</Button>
+              <Button disabled={isUpdatePending}>
+                {isUpdatePending && (
+                  <ReloadIcon
+                    className="mr-2 size-4 animate-spin"
+                    aria-hidden="true"
+                  />
+                )}
+                Save
+              </Button>
             </SheetFooter>
           </form>
         </Form>

@@ -5,10 +5,12 @@ import {
   CheckCircledIcon,
   Cross2Icon,
   DownloadIcon,
+  ReloadIcon,
   TrashIcon,
 } from "@radix-ui/react-icons"
 import { SelectTrigger } from "@radix-ui/react-select"
 import { type Table } from "@tanstack/react-table"
+import { toast } from "sonner"
 
 import { exportTableToCSV } from "@/lib/export"
 import { Button } from "@/components/ui/button"
@@ -26,7 +28,7 @@ import {
 } from "@/components/ui/tooltip"
 import { Kbd } from "@/components/kbd"
 
-import { deleteTasks, updateTasks } from "../_lib/client-actions"
+import { deleteTasks, updateTasks } from "../_lib/actions"
 
 interface TasksTableFloatingBarProps {
   table: Table<Task>
@@ -36,6 +38,9 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows
 
   const [isPending, startTransition] = React.useTransition()
+  const [method, setMethod] = React.useState<
+    "update-status" | "update-priority" | "export" | "delete"
+  >()
 
   // Clear selection on Escape key press
   React.useEffect(() => {
@@ -72,7 +77,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                   />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent className="flex items-center border bg-accent font-semibold text-foreground dark:bg-zinc-900">
+              <TooltipContent className="flex items-center border bg-accent px-2 py-1 font-semibold text-foreground dark:bg-zinc-900">
                 <p className="mr-2">Clear selection</p>
                 <Kbd abbrTitle="Escape" variant="outline">
                   Esc
@@ -84,16 +89,24 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
           <div className="flex items-center gap-1.5">
             <Select
               onValueChange={(value: Task["status"]) => {
-                startTransition(() => {
-                  updateTasks({
-                    rows,
+                setMethod("update-status")
+
+                startTransition(async () => {
+                  const { error } = await updateTasks({
+                    ids: rows.map((row) => row.original.id),
                     status: value,
-                    onSuccess: () => table.toggleAllRowsSelected(false),
                   })
+
+                  if (error) {
+                    toast.error(error)
+                    return
+                  }
+
+                  toast.success("Tasks updated")
                 })
               }}
             >
-              <Tooltip>
+              <Tooltip delayDuration={250}>
                 <SelectTrigger asChild>
                   <TooltipTrigger asChild>
                     <Button
@@ -102,7 +115,17 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                       className="size-7 border data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
                       disabled={isPending}
                     >
-                      <CheckCircledIcon className="size-4" aria-hidden="true" />
+                      {isPending && method === "update-status" ? (
+                        <ReloadIcon
+                          className="size-3.5 animate-spin"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <CheckCircledIcon
+                          className="size-3.5"
+                          aria-hidden="true"
+                        />
+                      )}
                     </Button>
                   </TooltipTrigger>
                 </SelectTrigger>
@@ -126,16 +149,24 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
             </Select>
             <Select
               onValueChange={(value: Task["priority"]) => {
-                startTransition(() => {
-                  updateTasks({
-                    rows,
+                setMethod("update-priority")
+
+                startTransition(async () => {
+                  const { error } = await updateTasks({
+                    ids: rows.map((row) => row.original.id),
                     priority: value,
-                    onSuccess: () => table.toggleAllRowsSelected(false),
                   })
+
+                  if (error) {
+                    toast.error(error)
+                    return
+                  }
+
+                  toast.success("Tasks updated")
                 })
               }}
             >
-              <Tooltip>
+              <Tooltip delayDuration={250}>
                 <SelectTrigger asChild>
                   <TooltipTrigger asChild>
                     <Button
@@ -144,7 +175,14 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                       className="size-7 border data-[state=open]:bg-accent data-[state=open]:text-accent-foreground"
                       disabled={isPending}
                     >
-                      <ArrowUpIcon className="size-4" aria-hidden="true" />
+                      {isPending && method === "update-priority" ? (
+                        <ReloadIcon
+                          className="size-3.5 animate-spin"
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <ArrowUpIcon className="size-3.5" aria-hidden="true" />
+                      )}
                     </Button>
                   </TooltipTrigger>
                 </SelectTrigger>
@@ -166,13 +204,15 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <Tooltip>
+            <Tooltip delayDuration={250}>
               <TooltipTrigger asChild>
                 <Button
                   variant="secondary"
                   size="icon"
                   className="size-7 border"
                   onClick={() => {
+                    setMethod("export")
+
                     startTransition(() => {
                       exportTableToCSV(table, {
                         excludeColumns: ["select", "actions"],
@@ -182,30 +222,52 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                   }}
                   disabled={isPending}
                 >
-                  <DownloadIcon className="size-4" aria-hidden="true" />
+                  {isPending && method === "export" ? (
+                    <ReloadIcon
+                      className="size-3.5 animate-spin"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <DownloadIcon className="size-3.5" aria-hidden="true" />
+                  )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent className=" border bg-accent font-semibold text-foreground dark:bg-zinc-900">
                 <p>Export tasks</p>
               </TooltipContent>
             </Tooltip>
-            <Tooltip>
+            <Tooltip delayDuration={250}>
               <TooltipTrigger asChild>
                 <Button
                   variant="secondary"
                   size="icon"
                   className="size-7 border"
                   onClick={() => {
-                    startTransition(() => {
-                      deleteTasks({
-                        rows,
-                        onSuccess: () => table.toggleAllRowsSelected(false),
+                    setMethod("delete")
+
+                    startTransition(async () => {
+                      const { error } = await deleteTasks({
+                        ids: rows.map((row) => row.original.id),
                       })
+
+                      if (error) {
+                        toast.error(error)
+                        return
+                      }
+
+                      table.toggleAllRowsSelected(false)
                     })
                   }}
                   disabled={isPending}
                 >
-                  <TrashIcon className="size-4" aria-hidden="true" />
+                  {isPending && method === "delete" ? (
+                    <ReloadIcon
+                      className="size-3.5 animate-spin"
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <TrashIcon className="size-3.5" aria-hidden="true" />
+                  )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent className=" border bg-accent font-semibold text-foreground dark:bg-zinc-900">

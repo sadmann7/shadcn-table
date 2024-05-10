@@ -21,8 +21,10 @@ export function TasksTableToolbarActions({
     <div className="flex items-center gap-2">
       {table.getFilteredSelectedRowModel().rows.length > 0 ? (
         <DeleteTasksDialog
-          tasks={table.getFilteredSelectedRowModel().rows}
-          onSuccess={() => table.toggleAllPageRowsSelected(false)}
+          tasks={table
+            .getFilteredSelectedRowModel()
+            .rows.map((row) => row.original)}
+          onSuccess={() => table.toggleAllRowsSelected(false)}
         />
       ) : null}
       <CreateTaskDialog prevTasks={table.getFilteredRowModel().rows} />
@@ -41,7 +43,7 @@ export function TasksTableToolbarActions({
       </Button>
       {/**
        * Other actions can be added here.
-       * For example, export, import, etc.
+       * For example, import, view, etc.
        */}
     </div>
   )

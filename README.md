@@ -95,7 +95,7 @@ This is a shadcn table component with server-side sorting, filtering, and pagina
 
    - **Create Files**: Create `page.tsx` and, if needed, `layout.tsx` in your app directory.
    - **Copy Directories**: Copy `./_components` and `./_lib` directories into your project.
-   - **Update Queries/Mutations**: Modify `./_lib/queries.ts`, `./_lib/actions.ts`, and `./_lib/client-actions.ts` to match your database operations.
+   - **Update Queries/Mutations**: Modify `./_lib/queries.ts`, and `./_lib/actions.ts` to match your database operations.
    - **Update Floating Bar**: Update `./_components/tasks-table-floating-bar.tsx` to match your table's actions (optional).
    - **Define Table Columns**: Update `./_components/tasks-table-columns.tsx` to define column headers, actions, searchable and filterable columns.
    - **Setup Data Fetching**: In `./page.tsx`, define `getTasksPromise`, `getTaskCountByStatus`, and `getTaskCountByPriority`.

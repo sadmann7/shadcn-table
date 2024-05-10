@@ -168,8 +168,9 @@ export function getColumns(): ColumnDef<Task>[] {
             <DeleteTasksDialog
               open={showDeleteTaskDialog}
               onOpenChange={setShowDeleteTaskDialog}
-              tasks={[row]}
+              tasks={[row.original]}
               showTrigger={false}
+              onSuccess={() => row.toggleSelected(false)}
             />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
