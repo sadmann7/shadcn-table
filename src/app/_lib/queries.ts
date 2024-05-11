@@ -4,7 +4,7 @@ import { unstable_noStore as noStore } from "next/cache"
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import type { DrizzleWhere } from "@/types"
-import { and, asc, count, desc, gte, lte, or } from "drizzle-orm"
+import { and, asc, count, desc, gte, lte, or, type SQL } from "drizzle-orm"
 
 import { filterColumn } from "@/lib/filter-column"
 
@@ -30,66 +30,36 @@ export async function getTasks(input: GetTasksSchema) {
     const fromDay = from ? new Date(from) : undefined
     const toDay = to ? new Date(to) : undefined
 
+    const expressions: (SQL<unknown> | undefined)[] = [
+      title
+        ? filterColumn({
+            column: tasks.title,
+            value: title,
+          })
+        : undefined,
+      // Filter tasks by status
+      !!status
+        ? filterColumn({
+            column: tasks.status,
+            value: status,
+            isSelectable: true,
+          })
+        : undefined,
+      // Filter tasks by priority
+      !!priority
+        ? filterColumn({
+            column: tasks.priority,
+            value: priority,
+            isSelectable: true,
+          })
+        : undefined,
+      // Filter by createdAt
+      fromDay && toDay
+        ? and(gte(tasks.createdAt, fromDay), lte(tasks.createdAt, toDay))
+        : undefined,
+    ]
     const where: DrizzleWhere<Task> =
-      !operator || operator === "and"
-        ? and(
-            // Filter tasks by title
-            title
-              ? filterColumn({
-                  column: tasks.title,
-                  value: title,
-                })
-              : undefined,
-            // Filter tasks by status
-            !!status
-              ? filterColumn({
-                  column: tasks.status,
-                  value: status,
-                  isSelectable: true,
-                })
-              : undefined,
-            // Filter tasks by priority
-            !!priority
-              ? filterColumn({
-                  column: tasks.priority,
-                  value: priority,
-                  isSelectable: true,
-                })
-              : undefined,
-            // Filter by createdAt
-            fromDay && toDay
-              ? and(gte(tasks.createdAt, fromDay), lte(tasks.createdAt, toDay))
-              : undefined
-          )
-        : or(
-            // Filter tasks by title
-            title
-              ? filterColumn({
-                  column: tasks.title,
-                  value: title,
-                })
-              : undefined,
-            // Filter tasks by status
-            !!status
-              ? filterColumn({
-                  column: tasks.status,
-                  value: status,
-                  isSelectable: true,
-                })
-              : undefined,
-            // Filter tasks by priority
-            !!priority
-              ? filterColumn({
-                  column: tasks.priority,
-                  value: priority,
-                  isSelectable: true,
-                })
-              : undefined,
-            // Filter by createdAt
-            fromDay && toDay
-              ? and(gte(tasks.createdAt, fromDay), lte(tasks.createdAt, toDay))
-              : undefined
-          )
+      !operator || operator === "and" ? and(...expressions) : or(...expressions)
 
     // Transaction is used to ensure both queries are executed in a single transaction
     const { data, total } = await db.transaction(async (tx) => {
