@@ -112,7 +112,7 @@ export function DataTableFilterItem<TData>({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedOption, debounceValue])
+  }, [selectedOption, debounceValue, selectedOperator])
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
