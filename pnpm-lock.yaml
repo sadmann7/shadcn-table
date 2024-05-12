@@ -49,7 +49,7 @@ dependencies:
     version: 0.10.1(typescript@5.4.5)(zod@3.23.8)
   '@tanstack/react-table':
     specifier: ^8.16.0
-    version: 8.16.0(react-dom@18.3.1)(react@18.3.1)
+    version: 8.17.0(react-dom@18.3.1)(react@18.3.1)
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
@@ -2278,8 +2278,8 @@ packages:
       zod: 3.23.8
     dev: false
 
-  /@tanstack/react-table@8.16.0(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-rKRjnt8ostqN2fercRVOIH/dq7MAmOENCMvVlKx6P9Iokhh6woBGnIZEkqsY/vEJf1jN3TqLOb34xQGLVRuhAg==}
+  /@tanstack/react-table@8.17.0(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-LSJxTDzlKGs8EN7/UHB1l3yLR9HUIxoHFkTbTjHaUUGL4kgYZFYhsQsdDJSIykG86qpIA/6gSWmtwNfy5Iprhw==}
     engines: {node: '>=12'}
     peerDependencies:
       react: '>=16.8'
