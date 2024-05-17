@@ -4,23 +4,9 @@
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1709909205617,
-      "tag": "0000_married_blob",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1712015942668,
-      "tag": "0001_magenta_red_wolf",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1712017296933,
-      "tag": "0002_fat_strong_guy",
+      "version": "6",
+      "when": 1715957734792,
+      "tag": "0000_normal_lorna_dane",
       "breakpoints": true
     }
   ]
