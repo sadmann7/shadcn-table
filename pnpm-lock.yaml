@@ -156,7 +156,7 @@ devDependencies:
     version: 9.1.0(eslint@8.57.0)
   eslint-plugin-tailwindcss:
     specifier: ^3.15.1
-    version: 3.16.0(tailwindcss@3.4.3)
+    version: 3.17.0(tailwindcss@3.4.3)
   pg:
     specifier: ^8.11.5
     version: 8.11.5
@@ -3750,9 +3750,9 @@ packages:
       string.prototype.matchall: 4.0.11
     dev: true
 
-  /eslint-plugin-tailwindcss@3.16.0(tailwindcss@3.4.3):
-    resolution: {integrity: sha512-OVMNBDvSc7eqZTfLVoEo900bxZUu74W5Cp/VPa2hYqKIGbfTq/UfKIX6df+xkPmD3jVW21n4VblLBLd8dHTjeQ==}
-    engines: {node: '>=12.13.0'}
+  /eslint-plugin-tailwindcss@3.17.0(tailwindcss@3.4.3):
+    resolution: {integrity: sha512-Ofl7tNh57a3W8BKHstKZSkD2gSCEkw54ycwZ958IK9zUR8TiNYdp8b0WGoLWLeyOAbeF1VPVJFBnlkJeIM2kVg==}
+    engines: {node: '>=14.0.0'}
     peerDependencies:
       tailwindcss: ^3.4.0
     dependencies:
