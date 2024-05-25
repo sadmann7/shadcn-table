@@ -8,6 +8,7 @@ await import("./src/env.js")
 const nextConfig = {
   experimental: {
     ppr: true,
+    reactCompiler: true,
   },
 }
 
