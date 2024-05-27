@@ -8,7 +8,7 @@ import { eq, inArray } from "drizzle-orm"
 import { customAlphabet } from "nanoid"
 
 import { getErrorMessage } from "@/lib/handle-error"
-import { generateId } from "@/lib/utils"
+import { generateId } from "@/lib/id"
 
 import type { CreateTaskSchema, UpdateTaskSchema } from "./validations"
 

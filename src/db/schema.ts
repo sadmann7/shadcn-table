@@ -3,7 +3,7 @@ import { sql } from "drizzle-orm"
 import { pgEnum, timestamp, varchar } from "drizzle-orm/pg-core"
 
 import { databasePrefix } from "@/lib/constants"
-import { generateId } from "@/lib/utils"
+import { generateId } from "@/lib/id"
 
 export const statusEnum = pgEnum(`${databasePrefix}_status`, [
   "todo",
