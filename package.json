@@ -39,7 +39,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tanstack/react-table": "^8.16.0",
-    "babel-plugin-react-compiler": "0.0.0-experimental-592953e-20240517",
+    "babel-plugin-react-compiler": "0.0.0-experimental-938cd9a-20240601",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",

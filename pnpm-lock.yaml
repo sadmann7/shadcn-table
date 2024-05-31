@@ -51,8 +51,8 @@ dependencies:
     specifier: ^8.16.0
     version: 8.17.3(react-dom@19.0.0-rc-f994737d14-20240522)(react@19.0.0-rc-f994737d14-20240522)
   babel-plugin-react-compiler:
-    specifier: 0.0.0-experimental-592953e-20240517
-    version: 0.0.0-experimental-592953e-20240517
+    specifier: 0.0.0-experimental-938cd9a-20240601
+    version: 0.0.0-experimental-938cd9a-20240601
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
@@ -76,7 +76,7 @@ dependencies:
     version: 5.0.7
   next:
     specifier: 15.0.0-rc.0
-    version: 15.0.0-rc.0(@babel/core@7.24.6)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522)(react@19.0.0-rc-f994737d14-20240522)
+    version: 15.0.0-rc.0(@babel/core@7.24.6)(babel-plugin-react-compiler@0.0.0-experimental-938cd9a-20240601)(react-dom@19.0.0-rc-f994737d14-20240522)(react@19.0.0-rc-f994737d14-20240522)
   next-themes:
     specifier: ^0.3.0
     version: 0.3.0(react-dom@19.0.0-rc-f994737d14-20240522)(react@19.0.0-rc-f994737d14-20240522)
@@ -2796,8 +2796,8 @@ packages:
       dequal: 2.0.3
     dev: true
 
-  /babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517:
-    resolution: {integrity: sha512-OjG1SVaeQZaJrqkMFJatg8W/MTow8Ak5rx2SI0ETQBO1XvOk/XZGMbltNCPdFJLKghBYoBjC+Y3Ap/Xr7B01mA==}
+  /babel-plugin-react-compiler@0.0.0-experimental-938cd9a-20240601:
+    resolution: {integrity: sha512-t+uBHxbfxq2z4j83ZYgOsV0dlSaRgPfhrYB5+CMv6ByXUAv5wm7m7YLFx67fWKrG3eDhq3+KH1OMeFypuDLkUA==}
     dependencies:
       '@babel/generator': 7.2.0
       '@babel/types': 7.24.6
@@ -3944,7 +3944,7 @@ packages:
     peerDependencies:
       next: '>=13.2.0 <15.0.0-0'
     dependencies:
-      next: 15.0.0-rc.0(@babel/core@7.24.6)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522)(react@19.0.0-rc-f994737d14-20240522)
+      next: 15.0.0-rc.0(@babel/core@7.24.6)(babel-plugin-react-compiler@0.0.0-experimental-938cd9a-20240601)(react-dom@19.0.0-rc-f994737d14-20240522)(react@19.0.0-rc-f994737d14-20240522)
     dev: false
 
   /gensync@1.0.0-beta.2:
@@ -4566,7 +4566,7 @@ packages:
       react-dom: 19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522)
     dev: false
 
-  /next@15.0.0-rc.0(@babel/core@7.24.6)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522)(react@19.0.0-rc-f994737d14-20240522):
+  /next@15.0.0-rc.0(@babel/core@7.24.6)(babel-plugin-react-compiler@0.0.0-experimental-938cd9a-20240601)(react-dom@19.0.0-rc-f994737d14-20240522)(react@19.0.0-rc-f994737d14-20240522):
     resolution: {integrity: sha512-IWcCvxUSCAuOK5gig4+9yiyt/dLKpIa+WT01Qcx4CBE4TtwJljyTDnCVVn64jDZ4qmSzsaEYXpb4DTI8qbk03A==}
     engines: {node: '>=18.17.0'}
     hasBin: true
@@ -4589,7 +4589,7 @@ packages:
     dependencies:
       '@next/env': 15.0.0-rc.0
       '@swc/helpers': 0.5.11
-      babel-plugin-react-compiler: 0.0.0-experimental-592953e-20240517
+      babel-plugin-react-compiler: 0.0.0-experimental-938cd9a-20240601
       busboy: 1.6.0
       caniuse-lite: 1.0.30001621
       graceful-fs: 4.2.11
