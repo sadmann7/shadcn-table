@@ -1,6 +1,7 @@
 import * as React from "react"
 import type { SearchParams } from "@/types"
 
+import { Skeleton } from "@/components/ui/skeleton"
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
 import { Shell } from "@/components/shell"
@@ -31,16 +32,13 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
          * It is used to filter the tasks based on the selected date range it was created at.
          * The business logic for filtering the tasks based on the selected date range is handled inside the component.
          */}
-        <DateRangePicker
-          triggerSize="sm"
-          triggerClassName="ml-auto w-56 sm:w-60"
-          align="end"
-          dateRange={
-            search.from && search.to
-              ? { from: new Date(search.from), to: new Date(search.to) }
-              : undefined
-          }
-        />
+        <React.Suspense fallback={<Skeleton className="h-7 w-52" />}>
+          <DateRangePicker
+            triggerSize="sm"
+            triggerClassName="ml-auto w-56 sm:w-60"
+            align="end"
+          />
+        </React.Suspense>
         <React.Suspense
           fallback={
             <DataTableSkeleton

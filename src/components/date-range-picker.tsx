@@ -76,7 +76,10 @@ export function DateRangePicker({
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  const [from, to] = React.useMemo(() => {
+  const [date, setDate] = React.useState<DateRange | undefined>(() => {
+    const fromParam = searchParams.get("from")
+    const toParam = searchParams.get("to")
+
     let fromDay: Date | undefined
     let toDay: Date | undefined
 
@@ -88,12 +91,10 @@ export function DateRangePicker({
       fromDay = addDays(toDay, -dayCount)
     }
 
-    return [fromDay, toDay]
-  }, [dateRange, dayCount])
-
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from,
-    to,
+    return {
+      from: fromParam ? new Date(fromParam) : fromDay,
+      to: toParam ? new Date(toParam) : toDay,
+    }
   })
 
   // Update query string
@@ -111,7 +112,7 @@ export function DateRangePicker({
       newSearchParams.delete("to")
     }
 
-    router.push(`${pathname}?${newSearchParams.toString()}`, {
+    router.replace(`${pathname}?${newSearchParams.toString()}`, {
       scroll: false,
     })
 

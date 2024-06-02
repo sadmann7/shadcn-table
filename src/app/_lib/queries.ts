@@ -4,7 +4,7 @@ import { unstable_noStore as noStore } from "next/cache"
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import type { DrizzleWhere } from "@/types"
-import { and, asc, count, desc, gte, lte, or, type SQL } from "drizzle-orm"
+import { and, asc, count, desc, gte, lte, or, sql, type SQL } from "drizzle-orm"
 
 import { filterColumn } from "@/lib/filter-column"
 
@@ -26,9 +26,9 @@ export async function getTasks(input: GetTasksSchema) {
       "desc",
     ]) as [keyof Task | undefined, "asc" | "desc" | undefined]
 
-    // Convert the date strings to Date objects
-    const fromDay = from ? new Date(from) : undefined
-    const toDay = to ? new Date(to) : undefined
+    // Convert the date strings to date objects
+    const fromDay = from ? sql`to_date(${from}, 'yyyy-mm-dd')` : undefined
+    const toDay = to ? sql`to_date(${to}, 'yyy-mm-dd')` : undefined
 
     const expressions: (SQL<unknown> | undefined)[] = [
       title
