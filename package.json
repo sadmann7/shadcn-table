@@ -80,7 +80,7 @@
     "pg": "^8.11.5",
     "postcss": "^8.4.38",
     "prettier": "^3.2.5",
-    "prettier-plugin-tailwindcss": "^0.5.14",
+    "prettier-plugin-tailwindcss": "^0.6.0",
     "rimraf": "^5.0.6",
     "tailwindcss": "^3.4.3",
     "tsx": "^4.10.0",
