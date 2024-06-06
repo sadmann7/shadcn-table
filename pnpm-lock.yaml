@@ -177,7 +177,7 @@ devDependencies:
     version: 3.4.4
   tsx:
     specifier: ^4.11.0
-    version: 4.11.1
+    version: 4.12.0
   typescript:
     specifier: ^5.4.5
     version: 5.4.5
@@ -5256,8 +5256,8 @@ packages:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
     dev: false
 
-  /tsx@4.11.1:
-    resolution: {integrity: sha512-8ZmVC4OlQipEh3XBclB9YIih1XlNerBJ5NSwo5p76lIWIZdoSF+jFOVm9Gc/FQQ9554mZfxEEq9yTZfdghGYrw==}
+  /tsx@4.12.0:
+    resolution: {integrity: sha512-642NAWAbDqPZINjmL32Lh/B+pd8vbVj6LHPsWm09IIHqQuWhCrNfcPTjRlHFWvv3FfM4vt9NLReBIjUNj5ZhDg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     dependencies:
