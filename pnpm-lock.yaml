@@ -168,7 +168,7 @@ devDependencies:
     version: 3.3.1
   prettier-plugin-tailwindcss:
     specifier: ^0.6.1
-    version: 0.6.1(@ianvs/prettier-plugin-sort-imports@4.2.1)(prettier@3.3.1)
+    version: 0.6.2(@ianvs/prettier-plugin-sort-imports@4.2.1)(prettier@3.3.1)
   rimraf:
     specifier: ^5.0.7
     version: 5.0.7
@@ -4643,8 +4643,8 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier-plugin-tailwindcss@0.6.1(@ianvs/prettier-plugin-sort-imports@4.2.1)(prettier@3.3.1):
-    resolution: {integrity: sha512-AnbeYZu0WGj+QgKciUgdMnRxrqcxltleZPgdwfA5104BHM3siBLONN/HLW1yS2HvzSNkzpQ/JAj+LN0jcJO+0w==}
+  /prettier-plugin-tailwindcss@0.6.2(@ianvs/prettier-plugin-sort-imports@4.2.1)(prettier@3.3.1):
+    resolution: {integrity: sha512-eFefm4cg+1c2B57+H274Qm//CTWBdtQN9ansl0YTP/8TC8x3bugCTQSS/e4FC5Ctl9djhTzsbcMrZ7x2/abIow==}
     engines: {node: '>=14.21.3'}
     peerDependencies:
       '@ianvs/prettier-plugin-sort-imports': '*'
