@@ -97,7 +97,7 @@ dependencies:
     version: 0.0.1
   sonner:
     specifier: ^1.4.41
-    version: 1.4.41(react-dom@18.3.1)(react@18.3.1)
+    version: 1.5.0(react-dom@18.3.1)(react@18.3.1)
   tailwind-merge:
     specifier: ^2.3.0
     version: 2.3.0
@@ -4994,8 +4994,8 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /sonner@1.4.41(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-uG511ggnnsw6gcn/X+YKkWPo5ep9il9wYi3QJxHsYe7yTZ4+cOd1wuodOUmOpFuXL+/RE3R04LczdNCDygTDgQ==}
+  /sonner@1.5.0(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-FBjhG/gnnbN6FY0jaNnqZOMmB73R+5IiyYAw8yBj7L54ER7HB3fOSE5OFiQiE2iXWxeXKvg6fIP4LtVppHEdJA==}
     peerDependencies:
       react: ^18.0.0
       react-dom: ^18.0.0
