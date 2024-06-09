@@ -27,7 +27,7 @@ export function TasksTableToolbarActions({
           onSuccess={() => table.toggleAllRowsSelected(false)}
         />
       ) : null}
-      <CreateTaskDialog prevTasks={table.getFilteredRowModel().rows} />
+      <CreateTaskDialog />
       <Button
         variant="outline"
         size="sm"

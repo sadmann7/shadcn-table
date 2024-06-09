@@ -3,73 +3,51 @@
 import { unstable_noStore as noStore, revalidatePath } from "next/cache"
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
-import { faker } from "@faker-js/faker"
-import { eq, inArray } from "drizzle-orm"
+import { takeFirstOrThrow } from "@/db/utils"
+import { asc, eq, inArray, not } from "drizzle-orm"
 import { customAlphabet } from "nanoid"
 
 import { getErrorMessage } from "@/lib/handle-error"
-import { generateId } from "@/lib/id"
 
+import { generateRandomTask } from "./utils"
 import type { CreateTaskSchema, UpdateTaskSchema } from "./validations"
 
-export async function seedTasks(
-  input: { count: number; reset?: boolean } = {
-    count: 100,
-    reset: false,
-  }
-) {
+export async function createTask(input: CreateTaskSchema) {
   noStore()
   try {
-    const allTasks: Task[] = []
+    await db.transaction(async (tx) => {
+      const newTask = await tx
+        .insert(tasks)
+        .values({
+          code: `TASK-${customAlphabet("0123456789", 4)()}`,
+          title: input.title,
+          status: input.status,
+          label: input.label,
+          priority: input.priority,
+        })
+        .returning({
+          id: tasks.id,
+        })
+        .then(takeFirstOrThrow)
 
-    for (let i = 0; i < input.count; i++) {
-      allTasks.push({
-        id: generateId(),
-        code: `TASK-${customAlphabet("0123456789", 4)()}`,
-        title: faker.hacker
-          .phrase()
-          .replace(/^./, (letter) => letter.toUpperCase()),
-        status:
-          faker.helpers.shuffle<Task["status"]>(tasks.status.enumValues)[0] ??
-          "todo",
-        label:
-          faker.helpers.shuffle<Task["label"]>(tasks.label.enumValues)[0] ??
-          "bug",
-        priority:
-          faker.helpers.shuffle<Task["priority"]>(
-            tasks.priority.enumValues
-          )[0] ?? "low",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
-    }
-
-    input.reset && (await db.delete(tasks))
-
-    console.log("📝 Inserting tasks", allTasks.length)
-
-    await db.insert(tasks).values(allTasks)
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-export async function createTask(
-  input: CreateTaskSchema & { anotherTaskId: string }
-) {
-  noStore()
-  try {
-    await Promise.all([
-      db.insert(tasks).values({
-        code: `TASK-${customAlphabet("0123456789", 4)()}`,
-        title: input.title,
-        status: input.status,
-        label: input.label,
-        priority: input.priority,
-      }),
-      // Delete another task to maintain the same number of tasks
-      db.delete(tasks).where(eq(tasks.id, input.anotherTaskId)),
-    ])
+      // Delete a task to keep the total number of tasks constant
+      await tx.delete(tasks).where(
+        eq(
+          tasks.id,
+          (
+            await tx
+              .select({
+                id: tasks.id,
+              })
+              .from(tasks)
+              .limit(1)
+              .where(not(eq(tasks.id, newTask.id)))
+              .orderBy(asc(tasks.createdAt))
+              .then(takeFirstOrThrow)
+          ).id
+        )
+      )
+    })
 
     revalidatePath("/")
 
@@ -145,10 +123,12 @@ export async function updateTasks(input: {
 
 export async function deleteTask(input: { id: string }) {
   try {
-    await db.delete(tasks).where(eq(tasks.id, input.id))
+    await db.transaction(async (tx) => {
+      await tx.delete(tasks).where(eq(tasks.id, input.id))
 
-    // Create a new task for the deleted one
-    await seedTasks({ count: 1 })
+      // Create a new task for the deleted one
+      await tx.insert(tasks).values(generateRandomTask())
+    })
 
     revalidatePath("/")
   } catch (err) {
@@ -161,12 +141,14 @@ export async function deleteTask(input: { id: string }) {
 
 export async function deleteTasks(input: { ids: string[] }) {
   try {
-    await db.delete(tasks).where(inArray(tasks.id, input.ids))
+    await db.transaction(async (tx) => {
+      await tx.delete(tasks).where(inArray(tasks.id, input.ids))
+
+      // Create new tasks for the deleted ones
+      await tx.insert(tasks).values(input.ids.map(() => generateRandomTask()))
+    })
 
     revalidatePath("/")
-
-    // Create new tasks for the deleted ones
-    await seedTasks({ count: input.ids.length })
 
     return {
       data: null,

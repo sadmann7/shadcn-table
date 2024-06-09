@@ -29,13 +29,15 @@ export const tasks = pgTable("tasks", {
   id: varchar("id", { length: 30 })
     .$defaultFn(() => generateId())
     .primaryKey(),
-  code: varchar("code", { length: 256 }).unique(),
+  code: varchar("code", { length: 256 }).notNull().unique(),
   title: varchar("title", { length: 256 }),
   status: statusEnum("status").notNull().default("todo"),
   label: labelEnum("label").notNull().default("bug"),
   priority: priorityEnum("priority").notNull().default("low"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").default(sql`current_timestamp`),
+  updatedAt: timestamp("updated_at")
+    .default(sql`current_timestamp`)
+    .$onUpdate(() => new Date()),
 })
 
 export type Task = typeof tasks.$inferSelect

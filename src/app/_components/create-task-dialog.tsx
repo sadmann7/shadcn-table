@@ -1,10 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { tasks, type Task } from "@/db/schema"
+import { tasks } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { PlusIcon, ReloadIcon } from "@radix-ui/react-icons"
-import { type Row } from "@tanstack/react-table"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -40,11 +39,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { createTask } from "../_lib/actions"
 import { createTaskSchema, type CreateTaskSchema } from "../_lib/validations"
 
-interface CreateTaskDialogProps {
-  prevTasks: Row<Task>[]
-}
-
-export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
+export function CreateTaskDialog() {
   const [open, setOpen] = React.useState(false)
   const [isCreatePending, startCreateTransition] = React.useTransition()
 
@@ -53,16 +48,8 @@ export function CreateTaskDialog({ prevTasks }: CreateTaskDialogProps) {
   })
 
   function onSubmit(input: CreateTaskSchema) {
-    const anotherTaskId =
-      prevTasks[Math.floor(Math.random() * prevTasks.length)]?.id
-
-    if (!anotherTaskId) return
-
     startCreateTransition(async () => {
-      const { error } = await createTask({
-        ...input,
-        anotherTaskId,
-      })
+      const { error } = await createTask(input)
 
       if (error) {
         toast.error(error)
