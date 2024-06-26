@@ -18,7 +18,10 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
    * @type TanstackTable<TData>
    */
   table: TanstackTable<TData>
-
+  
+  // Sticky Prop
+  isSticky?: boolean;
+  
   /**
    * The floating bar to render at the bottom of the table on row selection.
    * @default null
@@ -29,6 +32,7 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export function DataTable<TData>({
+  isSticky,
   table,
   floatingBar = null,
   children,
@@ -41,7 +45,7 @@ export function DataTable<TData>({
       {children}
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader isSticky={isSticky}>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
