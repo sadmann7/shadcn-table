@@ -17,10 +17,11 @@ import { useTasksTable } from "./tasks-table-provider"
 import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions"
 
 interface TasksTableProps {
+  isSticky?: boolean;
   tasksPromise: ReturnType<typeof getTasks>
 }
 
-export function TasksTable({ tasksPromise }: TasksTableProps) {
+export function TasksTable({ tasksPromise, isSticky }: TasksTableProps) {
   // Feature flags for showcasing some additional features. Feel free to remove them.
   const { featureFlags } = useTasksTable()
 
@@ -82,6 +83,7 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
   return (
     <DataTable
       table={table}
+      isSticky={isSticky} 
       floatingBar={
         featureFlags.includes("floatingBar") ? (
           <TasksTableFloatingBar table={table} />
