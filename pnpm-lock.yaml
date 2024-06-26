@@ -114,7 +114,7 @@ devDependencies:
     version: 8.4.1
   '@ianvs/prettier-plugin-sort-imports':
     specifier: ^4.2.1
-    version: 4.2.1(prettier@3.3.2)
+    version: 4.3.0(prettier@3.3.2)
   '@total-typescript/ts-reset':
     specifier: ^0.5.1
     version: 0.5.1
@@ -168,7 +168,7 @@ devDependencies:
     version: 3.3.2
   prettier-plugin-tailwindcss:
     specifier: ^0.6.1
-    version: 0.6.5(@ianvs/prettier-plugin-sort-imports@4.2.1)(prettier@3.3.2)
+    version: 0.6.5(@ianvs/prettier-plugin-sort-imports@4.3.0)(prettier@3.3.2)
   rimraf:
     specifier: ^5.0.7
     version: 5.0.7
@@ -1103,8 +1103,8 @@ packages:
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
     dev: true
 
-  /@ianvs/prettier-plugin-sort-imports@4.2.1(prettier@3.3.2):
-    resolution: {integrity: sha512-NKN1LVFWUDGDGr3vt+6Ey3qPeN/163uR1pOPAlkWpgvAqgxQ6kSdUf1F0it8aHUtKRUzEGcK38Wxd07O61d7+Q==}
+  /@ianvs/prettier-plugin-sort-imports@4.3.0(prettier@3.3.2):
+    resolution: {integrity: sha512-OOMtUcO4J3LoL63dOKAe7bn+lSRRPeit2DqNHpx+wvBp3Grejo2PMaK4Mp1mwy8pnat64ccSgk/lBZbsAdLErw==}
     peerDependencies:
       '@vue/compiler-sfc': 2.7.x || 3.x
       prettier: 2 || 3
@@ -4894,7 +4894,7 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier-plugin-tailwindcss@0.6.5(@ianvs/prettier-plugin-sort-imports@4.2.1)(prettier@3.3.2):
+  /prettier-plugin-tailwindcss@0.6.5(@ianvs/prettier-plugin-sort-imports@4.3.0)(prettier@3.3.2):
     resolution: {integrity: sha512-axfeOArc/RiGHjOIy9HytehlC0ZLeMaqY09mm8YCkMzznKiDkwFzOpBvtuhuv3xG5qB73+Mj7OCe2j/L1ryfuQ==}
     engines: {node: '>=14.21.3'}
     peerDependencies:
@@ -4946,7 +4946,7 @@ packages:
       prettier-plugin-svelte:
         optional: true
     dependencies:
-      '@ianvs/prettier-plugin-sort-imports': 4.2.1(prettier@3.3.2)
+      '@ianvs/prettier-plugin-sort-imports': 4.3.0(prettier@3.3.2)
       prettier: 3.3.2
     dev: true
 
