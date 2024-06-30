@@ -201,20 +201,6 @@ export function useDataTable<TData, TValue>({
     [pageIndex, pageSize]
   )
 
-  React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
-        page: pageIndex + 1,
-        per_page: pageSize,
-      })}`,
-      {
-        scroll: false,
-      }
-    )
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageIndex, pageSize])
-
   // Handle server-side sorting
   const [sorting, setSorting] = React.useState<SortingState>([
     {
@@ -226,14 +212,20 @@ export function useDataTable<TData, TValue>({
   React.useEffect(() => {
     router.push(
       `${pathname}?${createQueryString({
-        page,
+        page: pageIndex + 1,
+        per_page: pageSize,
         sort: sorting[0]?.id
           ? `${sorting[0]?.id}.${sorting[0]?.desc ? "desc" : "asc"}`
           : null,
-      })}`
+      })}`,
+      {
+        scroll: false,
+      }
     )
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sorting])
+  }, [pageIndex, pageSize, sorting])
+
 
   // Handle server-side filtering
   const debouncedSearchableColumnFilters = JSON.parse(
