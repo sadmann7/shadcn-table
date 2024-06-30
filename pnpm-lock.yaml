@@ -49,7 +49,7 @@ dependencies:
     version: 0.10.1(typescript@5.5.2)(zod@3.23.8)
   '@tanstack/react-table':
     specifier: ^8.17.3
-    version: 8.19.1(react-dom@18.3.1)(react@18.3.1)
+    version: 8.19.2(react-dom@18.3.1)(react@18.3.1)
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
@@ -2337,20 +2337,20 @@ packages:
       zod: 3.23.8
     dev: false
 
-  /@tanstack/react-table@8.19.1(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-2jWJ2mhaXtBZ2h4k6azADFFrAPOGHw/fy/obIXwfCMFf63BKW/tHLp87oWDotFN/aKUo5Vj2cGBDRXfwTgiYPg==}
+  /@tanstack/react-table@8.19.2(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-itoSIAkA/Vsg+bjY23FSemcTyPhc5/1YjYyaMsr9QSH/cdbZnQxHVWrpWn0Sp2BWN71qkzR7e5ye8WuMmwyOjg==}
     engines: {node: '>=12'}
     peerDependencies:
       react: '>=16.8'
       react-dom: '>=16.8'
     dependencies:
-      '@tanstack/table-core': 8.19.1
+      '@tanstack/table-core': 8.19.2
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
     dev: false
 
-  /@tanstack/table-core@8.19.1:
-    resolution: {integrity: sha512-HePba/tRC6MCSHi8o9LktxpOfkV8u2hjGHllHNl5E6+/8mgtSuOSRr5VempH33qsYeIfgk42SiiayP777LZ9kQ==}
+  /@tanstack/table-core@8.19.2:
+    resolution: {integrity: sha512-KpRjhgehIhbfH78ARm/GJDXGnpdw4bCg3qas6yjWSi7czJhI/J6pWln7NHtmBkGE9ZbohiiNtLqwGzKmBfixig==}
     engines: {node: '>=12'}
     dev: false
 
