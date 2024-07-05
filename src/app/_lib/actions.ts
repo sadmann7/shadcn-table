@@ -1,16 +1,36 @@
 "use server"
 
 import { unstable_noStore as noStore, revalidatePath } from "next/cache"
-import { db } from "@/db"
+import { db } from "@/db/index"
 import { tasks, type Task } from "@/db/schema"
 import { takeFirstOrThrow } from "@/db/utils"
-import { asc, eq, inArray, not } from "drizzle-orm"
+import { asc, count, eq, inArray, not } from "drizzle-orm"
 import { customAlphabet } from "nanoid"
 
 import { getErrorMessage } from "@/lib/handle-error"
 
 import { generateRandomTask } from "./utils"
 import type { CreateTaskSchema, UpdateTaskSchema } from "./validations"
+
+export async function seedTasks(input: { count: number }) {
+  const count = input.count ?? 100
+
+  try {
+    const allTasks: Task[] = []
+
+    for (let i = 0; i < count; i++) {
+      allTasks.push(generateRandomTask())
+    }
+
+    await db.delete(tasks)
+
+    console.log("📝 Inserting tasks", allTasks.length)
+
+    await db.insert(tasks).values(allTasks).onConflictDoNothing()
+  } catch (err) {
+    console.error(err)
+  }
+}
 
 export async function createTask(input: CreateTaskSchema) {
   noStore()
@@ -152,6 +172,48 @@ export async function deleteTasks(input: { ids: string[] }) {
 
     return {
       data: null,
+      error: null,
+    }
+  } catch (err) {
+    return {
+      data: null,
+      error: getErrorMessage(err),
+    }
+  }
+}
+
+export async function getChunkedTasks(input: { chunkSize?: number } = {}) {
+  try {
+    const chunkSize = input.chunkSize ?? 1000
+
+    const totalTasks = await db
+      .select({
+        count: count(),
+      })
+      .from(tasks)
+      .then(takeFirstOrThrow)
+
+    const totalChunks = Math.ceil(totalTasks.count / chunkSize)
+
+    let chunkedTasks
+
+    for (let i = 0; i < totalChunks; i++) {
+      chunkedTasks = await db
+        .select()
+        .from(tasks)
+        .limit(chunkSize)
+        .offset(i * chunkSize)
+        .then((tasks) =>
+          tasks.map((task) => ({
+            ...task,
+            createdAt: task.createdAt.toString(),
+            updatedAt: task.updatedAt?.toString(),
+          }))
+        )
+    }
+
+    return {
+      data: chunkedTasks,
       error: null,
     }
   } catch (err) {
