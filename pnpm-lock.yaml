@@ -63,8 +63,8 @@ dependencies:
     specifier: ^3.6.0
     version: 3.6.0
   drizzle-orm:
-    specifier: ^0.31.0
-    version: 0.31.4(@types/react@18.3.3)(pg@8.12.0)(postgres@3.4.4)(react@18.3.1)
+    specifier: ^0.32.0
+    version: 0.32.0(@types/react@18.3.3)(pg@8.12.0)(postgres@3.4.4)(react@18.3.1)
   export-to-csv:
     specifier: ^1.3.0
     version: 1.3.0
@@ -3162,8 +3162,8 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.31.4(@types/react@18.3.3)(pg@8.12.0)(postgres@3.4.4)(react@18.3.1):
-    resolution: {integrity: sha512-VGD9SH9aStF2z4QOTnVlVX/WghV/EnuEzTmsH3fSVp2E4fFgc8jl3viQrS/XUJx1ekW4rVVLJMH42SfGQdjX3Q==}
+  /drizzle-orm@0.32.0(@types/react@18.3.3)(pg@8.12.0)(postgres@3.4.4)(react@18.3.1):
+    resolution: {integrity: sha512-99IlfVGPNHzOFEXo9Phyu5At5TALLsY2t6WxFFy68rYd9Ej4cHX/7WjdPOn7JNRW69MNeNtP8XrDQg43SppuAA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=3'
