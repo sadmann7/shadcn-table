@@ -72,7 +72,7 @@
     "@typescript-eslint/parser": "^7.11.0",
     "autoprefixer": "^10.4.19",
     "dotenv-cli": "^7.4.2",
-    "drizzle-kit": "^0.22.1",
+    "drizzle-kit": "^0.23.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.3",
     "eslint-config-prettier": "^9.1.0",
