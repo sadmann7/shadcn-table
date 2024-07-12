@@ -226,7 +226,6 @@ export function useDataTable<TData, TValue>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageIndex, pageSize, sorting])
 
-
   // Handle server-side filtering
   const debouncedSearchableColumnFilters = JSON.parse(
     useDebounce(
