@@ -7,7 +7,10 @@ await import("./src/env.js")
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   experimental: {
-    // ppr: true,
+    ppr: true,
+    reactCompiler: {
+      compilationMode: "annotation",
+    },
   },
   // Already doing linting and typechecking as separate tasks in CI
   eslint: { ignoreDuringBuilds: true },
