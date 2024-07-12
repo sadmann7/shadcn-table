@@ -7,7 +7,7 @@ This is a shadcn table component with server-side sorting, filtering, and pagina
 > **Warning**
 > This project is still in development and is not ready for production use.
 >
-> It uses new technologies (ppr, and drizzle ORM) which are subject to change and may break your application.
+> It uses new technologies (ppr, react compiler) which are subject to change and may break your application.
 
 ## Tech Stack
 
