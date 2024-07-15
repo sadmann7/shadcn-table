@@ -1,3 +1,5 @@
+"use memo"
+
 import * as React from "react"
 import type { SearchParams } from "@/types"
 

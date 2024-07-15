@@ -1,15 +1,16 @@
 "use client"
+"use memo"
 
 import * as React from "react"
 import { tasks, type Task } from "@/db/schema"
-import type { DataTableFilterField } from "@/types"
+import { type DataTableFilterField } from "@/types"
 
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTableAdvancedToolbar } from "@/components/data-table/advanced/data-table-advanced-toolbar"
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 
-import type { getTasks } from "../_lib/queries"
+import { type getTasks } from "../_lib/queries"
 import { getPriorityIcon, getStatusIcon } from "../_lib/utils"
 import { getColumns } from "./tasks-table-columns"
 import { TasksTableFloatingBar } from "./tasks-table-floating-bar"
