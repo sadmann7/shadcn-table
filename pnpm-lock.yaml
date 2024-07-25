@@ -164,8 +164,8 @@ devDependencies:
     specifier: ^9.1.0
     version: 9.1.0(eslint@8.57.0)
   eslint-plugin-react-compiler:
-    specifier: 0.0.0-experimental-0998c1e-20240625
-    version: 0.0.0-experimental-0998c1e-20240625(eslint@8.57.0)
+    specifier: 0.0.0-experimental-47e15aa-20240725
+    version: 0.0.0-experimental-47e15aa-20240725(eslint@8.57.0)
   eslint-plugin-tailwindcss:
     specifier: ^3.17.0
     version: 3.17.4(tailwindcss@3.4.6)
@@ -4076,8 +4076,8 @@ packages:
       string.prototype.includes: 2.0.0
     dev: true
 
-  /eslint-plugin-react-compiler@0.0.0-experimental-0998c1e-20240625(eslint@8.57.0):
-    resolution: {integrity: sha512-npq2RomExoQI3jETs4OrifaygyJYgOcX/q74Q9OC7GmffLh5zSJaQpzjs2fi61NMNkJyIvTBD0C6sKTGGcetOw==}
+  /eslint-plugin-react-compiler@0.0.0-experimental-47e15aa-20240725(eslint@8.57.0):
+    resolution: {integrity: sha512-kc++BYUMmCvEM54mrdEZtc5nWskmUVDNza6/Jezee02CBLh+ftPHl4hDtophy4puUAMhZ+p2loJi1gM36hhDbQ==}
     engines: {node: ^14.17.0 || ^16.0.0 || >= 18.0.0}
     peerDependencies:
       eslint: '>=7'
