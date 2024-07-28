@@ -232,6 +232,7 @@ export function getColumns(): ColumnDef<Task>[] {
           </>
         )
       },
+      size: 40,
     },
   ]
 }

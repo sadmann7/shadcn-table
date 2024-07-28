@@ -33,8 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
-
-import { DataTableFacetedFilter } from "../data-table-faceted-filter"
+import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
 
 interface DataTableMultiFilterProps<TData> {
   table: Table<TData>

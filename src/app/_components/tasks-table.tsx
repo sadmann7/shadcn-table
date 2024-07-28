@@ -73,11 +73,15 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
     data,
     columns,
     pageCount,
-    // optional props
+    /* optional props */
     filterFields,
     enableAdvancedFilter: featureFlags.includes("advancedFilter"),
-    defaultPerPage: 10,
-    defaultSort: "createdAt.desc",
+    state: {
+      sorting: [{ id: "createdAt", desc: true }],
+      pagination: { pageIndex: 0, pageSize: 10 },
+      columnPinning: { right: ["actions"] },
+    },
+    /* */
   })
 
   return (

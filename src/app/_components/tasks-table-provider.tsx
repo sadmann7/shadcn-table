@@ -40,7 +40,7 @@ export function TasksTableProvider({ children }: React.PropsWithChildren) {
         setFeatureFlags,
       }}
     >
-      {/* <div className="w-full overflow-x-auto">
+      <div className="w-full overflow-x-auto">
         <ToggleGroup
           type="multiple"
           variant="outline"
@@ -78,7 +78,7 @@ export function TasksTableProvider({ children }: React.PropsWithChildren) {
             </Tooltip>
           ))}
         </ToggleGroup>
-      </div> */}
+      </div>
       {children}
     </TasksTableContext.Provider>
   )

@@ -1,6 +1,7 @@
 import * as React from "react"
 import { flexRender, type Table as TanstackTable } from "@tanstack/react-table"
 
+import { getCommonPinningStyles } from "@/lib/data-table"
 import { cn } from "@/lib/utils"
 import {
   Table,
@@ -48,7 +49,13 @@ export function DataTable<TData>({
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      style={{
+                        ...getCommonPinningStyles({ column: header.column }),
+                      }}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -69,7 +76,12 @@ export function DataTable<TData>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      style={{
+                        ...getCommonPinningStyles({ column: cell.column }),
+                      }}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
