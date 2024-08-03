@@ -15,6 +15,7 @@ import {
   type PaginationState,
   type SortingState,
   type TableOptions,
+  type TableState,
   type VisibilityState,
 } from "@tanstack/react-table"
 import { z } from "zod"
@@ -70,21 +71,12 @@ interface UseDataTableProps<TData>
    */
   enableAdvancedFilter?: boolean
 
-  /**
-   * The default number of rows per page.
-   * @default 10
-   * @type number | undefined
-   * @example 20
-   */
-  defaultPerPage?: number
-
-  /**
-   * The default sort order.
-   * @default undefined
-   * @type `${Extract<keyof TData, string | number>}.${"asc" | "desc"}` | undefined
-   * @example "createdAt.desc"
-   */
-  defaultSort?: `${Extract<keyof TData, string | number>}.${"asc" | "desc"}`
+  initialState?: Omit<Partial<TableState>, "sorting"> & {
+    sorting?: {
+      id: Extract<keyof TData, string>
+      desc: boolean
+    }[]
+  }
 }
 
 const searchParamsSchema = z.object({
@@ -97,8 +89,6 @@ export function useDataTable<TData>({
   pageCount = -1,
   filterFields = [],
   enableAdvancedFilter = false,
-  defaultPerPage = 10,
-  defaultSort,
   ...props
 }: UseDataTableProps<TData>) {
   const router = useRouter()
@@ -108,8 +98,11 @@ export function useDataTable<TData>({
   // Search params
   const search = searchParamsSchema.parse(Object.fromEntries(searchParams))
   const page = search.page
-  const perPage = search.per_page ?? defaultPerPage
-  const sort = search.sort ?? defaultSort
+  const perPage =
+    search.per_page ?? props.initialState?.pagination?.pageSize ?? 10
+  const sort =
+    search.sort ??
+    `${props.initialState?.sorting?.[0]?.id}.${props.initialState?.sorting?.[0]?.desc ? "desc" : "asc"}`
   const [column, order] = sort?.split(".") ?? []
 
   // Memoize computation of searchableColumns and filterableColumns
@@ -291,6 +284,7 @@ export function useDataTable<TData>({
   ])
 
   const table = useReactTable({
+    ...props,
     pageCount,
     state: {
       pagination,
@@ -314,7 +308,6 @@ export function useDataTable<TData>({
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
-    ...props,
   })
 
   return { table }
