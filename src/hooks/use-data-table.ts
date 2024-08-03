@@ -15,7 +15,6 @@ import {
   type PaginationState,
   type SortingState,
   type TableOptions,
-  type TableState,
   type VisibilityState,
 } from "@tanstack/react-table"
 import { z } from "zod"
@@ -26,7 +25,6 @@ interface UseDataTableProps<TData>
   extends Omit<
       TableOptions<TData>,
       | "pageCount"
-      | "state"
       | "getCoreRowModel"
       | "manualFiltering"
       | "manualPagination"
@@ -72,13 +70,21 @@ interface UseDataTableProps<TData>
    */
   enableAdvancedFilter?: boolean
 
-  state?: Omit<Partial<TableState>, "sorting"> & {
-    sorting?: {
-      id: Extract<keyof TData, string>
-      desc: boolean
-    }[]
-    pagination?: { pageSize: number }
-  }
+  /**
+   * The default number of rows per page.
+   * @default 10
+   * @type number | undefined
+   * @example 20
+   */
+  defaultPerPage?: number
+
+  /**
+   * The default sort order.
+   * @default undefined
+   * @type `${Extract<keyof TData, string | number>}.${"asc" | "desc"}` | undefined
+   * @example "createdAt.desc"
+   */
+  defaultSort?: `${Extract<keyof TData, string | number>}.${"asc" | "desc"}`
 }
 
 const searchParamsSchema = z.object({
@@ -91,7 +97,8 @@ export function useDataTable<TData>({
   pageCount = -1,
   filterFields = [],
   enableAdvancedFilter = false,
-  state,
+  defaultPerPage = 10,
+  defaultSort,
   ...props
 }: UseDataTableProps<TData>) {
   const router = useRouter()
@@ -99,9 +106,10 @@ export function useDataTable<TData>({
   const searchParams = useSearchParams()
 
   // Search params
-  const { page, per_page, sort } = searchParamsSchema.parse(
-    Object.fromEntries(searchParams)
-  )
+  const search = searchParamsSchema.parse(Object.fromEntries(searchParams))
+  const page = search.page
+  const perPage = search.per_page ?? defaultPerPage
+  const sort = search.sort ?? defaultSort
   const [column, order] = sort?.split(".") ?? []
 
   // Memoize computation of searchableColumns and filterableColumns
@@ -169,8 +177,8 @@ export function useDataTable<TData>({
   // Handle server-side pagination
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
-      pageIndex: page - 1 ?? state?.pagination?.pageIndex ?? 0,
-      pageSize: per_page ?? state?.pagination?.pageSize ?? 10,
+      pageIndex: page - 1,
+      pageSize: perPage,
     })
 
   const pagination = React.useMemo(
@@ -184,8 +192,8 @@ export function useDataTable<TData>({
   // Handle server-side sorting
   const [sorting, setSorting] = React.useState<SortingState>([
     {
-      id: column ?? state?.sorting?.[0]?.id ?? "",
-      desc: order === "desc" ?? state?.sorting?.[0]?.desc ?? false,
+      id: column ?? "",
+      desc: order === "desc",
     },
   ])
 
@@ -285,7 +293,6 @@ export function useDataTable<TData>({
   const table = useReactTable({
     pageCount,
     state: {
-      ...state,
       pagination,
       sorting,
       columnVisibility,

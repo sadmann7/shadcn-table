@@ -76,9 +76,9 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
     /* optional props */
     filterFields,
     enableAdvancedFilter: featureFlags.includes("advancedFilter"),
+    defaultPerPage: 10,
+    defaultSort: "createdAt.desc",
     state: {
-      sorting: [{ id: "createdAt", desc: true }],
-      pagination: { pageIndex: 0, pageSize: 10 },
       columnPinning: { right: ["actions"] },
     },
     // For remembering the previous row selection on page change
