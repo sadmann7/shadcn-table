@@ -3,7 +3,6 @@
 import * as React from "react"
 import { tasks, type Task } from "@/db/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { ReloadIcon } from "@radix-ui/react-icons"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -34,6 +33,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet"
 import { Textarea } from "@/components/ui/textarea"
+import { Icons } from "@/components/icons"
 
 import { updateTask } from "../_lib/actions"
 import { updateTaskSchema, type UpdateTaskSchema } from "../_lib/validations"
@@ -221,7 +221,7 @@ export function UpdateTaskSheet({ task, ...props }: UpdateTaskSheetProps) {
               </SheetClose>
               <Button disabled={isUpdatePending}>
                 {isUpdatePending && (
-                  <ReloadIcon
+                  <Icons.spinner
                     className="mr-2 size-4 animate-spin"
                     aria-hidden="true"
                   />

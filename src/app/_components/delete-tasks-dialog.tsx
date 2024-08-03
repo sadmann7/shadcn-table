@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { type Task } from "@/db/schema"
-import { ReloadIcon, TrashIcon } from "@radix-ui/react-icons"
+import { TrashIcon } from "@radix-ui/react-icons"
 import { type Row } from "@tanstack/react-table"
 import { toast } from "sonner"
 
@@ -28,6 +28,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import { Icons } from "@/components/icons"
 
 import { deleteTasks } from "../_lib/actions"
 
@@ -95,7 +96,7 @@ export function DeleteTasksDialog({
               disabled={isDeletePending}
             >
               {isDeletePending && (
-                <ReloadIcon
+                <Icons.spinner
                   className="mr-2 size-4 animate-spin"
                   aria-hidden="true"
                 />
@@ -138,7 +139,7 @@ export function DeleteTasksDialog({
             disabled={isDeletePending}
           >
             {isDeletePending && (
-              <ReloadIcon
+              <Icons.spinner
                 className="mr-2 size-4 animate-spin"
                 aria-hidden="true"
               />
