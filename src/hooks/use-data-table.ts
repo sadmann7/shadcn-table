@@ -175,8 +175,8 @@ export function useDataTable<TData>({
   // Handle server-side pagination
   const [{ pageIndex, pageSize }, setPagination] =
     React.useState<PaginationState>({
-      pageIndex: page - 1,
-      pageSize: state?.pagination?.pageSize ?? per_page ?? 10,
+      pageIndex: page - 1 ?? state?.pagination?.pageIndex ?? 0,
+      pageSize: per_page ?? state?.pagination?.pageSize ?? 10,
     })
 
   const pagination = React.useMemo(
@@ -188,14 +188,12 @@ export function useDataTable<TData>({
   )
 
   // Handle server-side sorting
-  const [sorting, setSorting] = React.useState<SortingState>(
-    state?.sorting ?? [
-      {
-        id: column ?? "",
-        desc: order === "desc",
-      },
-    ]
-  )
+  const [sorting, setSorting] = React.useState<SortingState>([
+    {
+      id: column ?? state?.sorting?.[0]?.id ?? "",
+      desc: order === "desc" ?? state?.sorting?.[0]?.desc ?? false,
+    },
+  ])
 
   React.useEffect(() => {
     router.push(

@@ -81,7 +81,7 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
       pagination: { pageIndex: 0, pageSize: 10 },
       columnPinning: { right: ["actions"] },
     },
-    // For remembering the row selection state when paginating
+    // For remembering the previous row selection on page change
     getRowId: (originalRow, index) => `${originalRow.id}-${index}`,
     /* */
   })
