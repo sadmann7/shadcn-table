@@ -16,7 +16,7 @@ import { generateId } from "@/lib/id"
 
 export function generateRandomTask(): Task {
   return {
-    id: generateId(),
+    id: generateId("task"),
     code: `TASK-${customAlphabet("0123456789", 4)()}`,
     title: faker.hacker
       .phrase()

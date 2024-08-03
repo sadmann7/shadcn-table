@@ -7,8 +7,8 @@ const prefixes = {
 interface GenerateIdOptions {
   /**
    * The length of the generated ID.
-   * @default 16
-   * @example 16 => "abc123def456ghi7"
+   * @default 12
+   * @example 12 => "abc123def456"
    * */
   length?: number
   /**

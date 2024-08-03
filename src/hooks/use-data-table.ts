@@ -11,10 +11,10 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-  type ColumnDef,
   type ColumnFiltersState,
   type PaginationState,
   type SortingState,
+  type TableOptions,
   type TableState,
   type VisibilityState,
 } from "@tanstack/react-table"
@@ -22,27 +22,17 @@ import { z } from "zod"
 
 import { useDebounce } from "@/hooks/use-debounce"
 
-interface UseDataTableProps<TData, TValue> {
-  /**
-   * The data for the table.
-   * @default []
-   * @type TData[]
-   */
-  data: TData[]
-
-  /**
-   * The columns of the table.
-   * @default []
-   * @type ColumnDef<TData, TValue>[]
-   */
-  columns: ColumnDef<TData, TValue>[]
-
-  /**
-   * The number of pages in the table.
-   * @type number
-   */
-  pageCount: number
-
+interface UseDataTableProps<TData>
+  extends Omit<
+      TableOptions<TData>,
+      | "pageCount"
+      | "state"
+      | "getCoreRowModel"
+      | "manualFiltering"
+      | "manualPagination"
+      | "manualSorting"
+    >,
+    Required<Pick<TableOptions<TData>, "pageCount">> {
   /**
    * Defines filter fields for the table. Supports both dynamic faceted filters and search filters.
    * - Faceted filters are rendered when `options` are provided for a filter field.
@@ -82,11 +72,6 @@ interface UseDataTableProps<TData, TValue> {
    */
   enableAdvancedFilter?: boolean
 
-  /**
-   * The initial state of the table.
-   * Can be used to set the initial pagination, sorting, column visibility, row selection, column grouping, column pinning, and column filters.
-   * @default {}
-   */
   state?: Omit<Partial<TableState>, "sorting"> & {
     sorting?: {
       id: Extract<keyof TData, string>
@@ -101,14 +86,13 @@ const searchParamsSchema = z.object({
   sort: z.string().optional(),
 })
 
-export function useDataTable<TData, TValue>({
-  data,
-  columns,
-  pageCount,
+export function useDataTable<TData>({
+  pageCount = -1,
   filterFields = [],
   enableAdvancedFilter = false,
   state,
-}: UseDataTableProps<TData, TValue>) {
+  ...props
+}: UseDataTableProps<TData>) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -302,9 +286,7 @@ export function useDataTable<TData, TValue>({
   ])
 
   const table = useReactTable({
-    data,
-    columns,
-    pageCount: pageCount ?? -1,
+    pageCount,
     state: {
       ...state,
       pagination,
@@ -328,6 +310,7 @@ export function useDataTable<TData, TValue>({
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
+    ...props,
   })
 
   return { table }

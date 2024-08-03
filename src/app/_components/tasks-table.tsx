@@ -81,8 +81,12 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
       pagination: { pageIndex: 0, pageSize: 10 },
       columnPinning: { right: ["actions"] },
     },
+    // For remebering the row selection
+    getRowId: (originalRow, index) => `${originalRow.id}-${index}`,
     /* */
   })
+
+  console.log({ data })
 
   return (
     <DataTable

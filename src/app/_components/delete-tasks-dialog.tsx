@@ -48,22 +48,20 @@ export function DeleteTasksDialog({
   const isDesktop = useMediaQuery("(min-width: 640px)")
 
   function onDelete() {
-    return () => {
-      startDeleteTransition(async () => {
-        const { error } = await deleteTasks({
-          ids: tasks.map((task) => task.id),
-        })
-
-        if (error) {
-          toast.error(error)
-          return
-        }
-
-        props.onOpenChange?.(false)
-        toast.success("Tasks deleted")
-        onSuccess?.()
+    startDeleteTransition(async () => {
+      const { error } = await deleteTasks({
+        ids: tasks.map((task) => task.id),
       })
-    }
+
+      if (error) {
+        toast.error(error)
+        return
+      }
+
+      props.onOpenChange?.(false)
+      toast.success("Tasks deleted")
+      onSuccess?.()
+    })
   }
 
   if (isDesktop) {
