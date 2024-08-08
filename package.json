@@ -52,7 +52,7 @@
     "next-themes": "^0.3.0",
     "postgres": "^3.4.4",
     "react": "19.0.0-rc-fb9a90fa48-20240614",
-    "react-day-picker": "^8.10.1",
+    "react-day-picker": "^9.0.0",
     "react-dom": "19.0.0-rc-fb9a90fa48-20240614",
     "react-hook-form": "^7.51.5",
     "server-only": "^0.0.1",
