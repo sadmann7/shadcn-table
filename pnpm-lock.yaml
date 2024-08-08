@@ -152,8 +152,8 @@ devDependencies:
     specifier: ^7.4.2
     version: 7.4.2
   drizzle-kit:
-    specifier: ^0.23.0
-    version: 0.23.2
+    specifier: ^0.24.0
+    version: 0.24.0
   eslint:
     specifier: ^8.57.0
     version: 8.57.0
@@ -3548,8 +3548,8 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /drizzle-kit@0.23.2:
-    resolution: {integrity: sha512-NWkQ7GD2OTbQ7HzcjsaCOf3n0tlFPSEAF38fvDpwDj8jRbGWGFtN2cD8I8wp4lU+5Os/oyP2xycTKGLHdPipUw==}
+  /drizzle-kit@0.24.0:
+    resolution: {integrity: sha512-rUl5Rf5HLOVkAwHEVEi8xgulIRWzoys0q77RHGCxv5e9v8AI3JGFg7Ug5K1kn513RwNZbuNJMUKOXo0j8kPRgg==}
     hasBin: true
     dependencies:
       '@drizzle-team/brocli': 0.8.2
