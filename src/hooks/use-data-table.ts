@@ -92,7 +92,7 @@ interface UseDataTableProps<TData>
    */
   startTransition?: React.TransitionStartFunction
 
-  // Extend to make the sorting id type-safe
+  // Extend to make the sorting id typesafe
   initialState?: Omit<Partial<TableState>, "sorting"> & {
     sorting?: {
       id: Extract<keyof TData, string>
