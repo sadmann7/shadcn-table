@@ -21,6 +21,7 @@ import {
 import { z } from "zod"
 
 import { useDebounce } from "@/hooks/use-debounce"
+import { useQueryString } from "@/hooks/use-query-string"
 
 interface UseDataTableProps<TData>
   extends Omit<
@@ -54,8 +55,6 @@ interface UseDataTableProps<TData>
    *     options: [
    *       { label: "Todo", value: "todo" },
    *       { label: "In Progress", value: "in-progress" },
-   *       { label: "Done", value: "done" },
-   *       { label: "Canceled", value: "canceled" }
    *     ]
    *   }
    * ];
@@ -71,6 +70,29 @@ interface UseDataTableProps<TData>
    */
   enableAdvancedFilter?: boolean
 
+  /**
+   * The method to use when updating the URL.
+   * - "push" - Pushes a new entry onto the history stack.
+   * - "replace" - Replaces the current entry on the history stack.
+   * @default "replace"
+   */
+  method?: "push" | "replace"
+
+  /**
+   * Indicates whether the page should scroll to the top when the URL changes.
+   * @default false
+   */
+  scroll?: boolean
+
+  /**
+   * A callback function that is called before updating the URL.
+   * Can be use to retrieve the loading state of the route transition.
+   * @see https://react.dev/reference/react/useTransition
+   *
+   */
+  startTransition?: React.TransitionStartFunction
+
+  // Extend to make the sorting id type-safe
   initialState?: Omit<Partial<TableState>, "sorting"> & {
     sorting?: {
       id: Extract<keyof TData, string>
@@ -89,6 +111,9 @@ export function useDataTable<TData>({
   pageCount = -1,
   filterFields = [],
   enableAdvancedFilter = false,
+  method = "replace",
+  scroll = false,
+  startTransition,
   ...props
 }: UseDataTableProps<TData>) {
   const router = useRouter()
@@ -114,22 +139,7 @@ export function useDataTable<TData>({
   }, [filterFields])
 
   // Create query string
-  const createQueryString = React.useCallback(
-    (params: Record<string, string | number | null>) => {
-      const newSearchParams = new URLSearchParams(searchParams?.toString())
-
-      for (const [key, value] of Object.entries(params)) {
-        if (value === null) {
-          newSearchParams.delete(key)
-        } else {
-          newSearchParams.set(key, String(value))
-        }
-      }
-
-      return newSearchParams.toString()
-    },
-    [searchParams]
-  )
+  const { createQueryString } = useQueryString(searchParams)
 
   // Initial column filters
   const initialColumnFilters: ColumnFiltersState = React.useMemo(() => {
@@ -191,21 +201,28 @@ export function useDataTable<TData>({
   ])
 
   React.useEffect(() => {
-    router.push(
-      `${pathname}?${createQueryString({
+    function onUrlChange() {
+      const url = `${pathname}?${createQueryString({
         page: pageIndex + 1,
         per_page: pageSize,
         sort: sorting[0]?.id
           ? `${sorting[0]?.id}.${sorting[0]?.desc ? "desc" : "asc"}`
           : null,
-      })}`,
-      {
-        scroll: false,
-      }
-    )
+      })}`
+
+      method === "push"
+        ? router.push(url, { scroll })
+        : router.replace(url, { scroll })
+    }
+
+    startTransition
+      ? startTransition(() => {
+          onUrlChange()
+        })
+      : onUrlChange()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageIndex, pageSize, sorting])
+  }, [pageIndex, pageSize, sorting, method, scroll])
 
   // Handle server-side filtering
   const debouncedSearchableColumnFilters = JSON.parse(
@@ -271,7 +288,19 @@ export function useDataTable<TData>({
     }
 
     // After cumulating all the changes, push new params
-    router.push(`${pathname}?${createQueryString(newParamsObject)}`)
+    function onUrlChange() {
+      const url = `${pathname}?${createQueryString(newParamsObject)}`
+
+      method === "push"
+        ? router.push(url, { scroll })
+        : router.replace(url, { scroll })
+    }
+
+    startTransition
+      ? startTransition(() => {
+          onUrlChange()
+        })
+      : onUrlChange()
 
     table.setPageIndex(0)
 
@@ -281,6 +310,8 @@ export function useDataTable<TData>({
     JSON.stringify(debouncedSearchableColumnFilters),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(filterableColumnFilters),
+    method,
+    scroll,
   ])
 
   const table = useReactTable({
