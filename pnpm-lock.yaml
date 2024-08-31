@@ -147,7 +147,7 @@ devDependencies:
     version: 7.18.0(eslint@8.57.0)(typescript@5.5.4)
   autoprefixer:
     specifier: ^10.4.19
-    version: 10.4.20(postcss@8.4.41)
+    version: 10.4.20(postcss@8.4.42)
   dotenv-cli:
     specifier: ^7.4.2
     version: 7.4.2
@@ -174,7 +174,7 @@ devDependencies:
     version: 8.12.0
   postcss:
     specifier: ^8.4.38
-    version: 8.4.41
+    version: 8.4.42
   prettier:
     specifier: ^3.3.0
     version: 3.3.3
@@ -3116,7 +3116,7 @@ packages:
     resolution: {integrity: sha512-OH/2E5Fg20h2aPrbe+QL8JZQFko0YZaF+j4mnQ7BGhfavO7OpSLa8a0y9sBwomHdSbkhTS8TQNayBfnW5DwbvQ==}
     dev: true
 
-  /autoprefixer@10.4.20(postcss@8.4.41):
+  /autoprefixer@10.4.20(postcss@8.4.42):
     resolution: {integrity: sha512-XY25y5xSv/wEoqzDyXXME4AFfkZI0P23z6Fs3YgymDnKJkCGOnkL0iTxCa85UTqaSgfcqyf3UA6+c7wUvx/16g==}
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
@@ -3128,7 +3128,7 @@ packages:
       fraction.js: 4.3.7
       normalize-range: 0.1.2
       picocolors: 1.0.1
-      postcss: 8.4.41
+      postcss: 8.4.42
       postcss-value-parser: 4.2.0
     dev: true
 
@@ -4134,7 +4134,7 @@ packages:
       tailwindcss: ^3.4.0
     dependencies:
       fast-glob: 3.3.2
-      postcss: 8.4.41
+      postcss: 8.4.42
       tailwindcss: 3.4.10
     dev: true
 
@@ -5312,27 +5312,27 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
-  /postcss-import@15.1.0(postcss@8.4.41):
+  /postcss-import@15.1.0(postcss@8.4.42):
     resolution: {integrity: sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       postcss: ^8.0.0
     dependencies:
-      postcss: 8.4.41
+      postcss: 8.4.42
       postcss-value-parser: 4.2.0
       read-cache: 1.0.0
       resolve: 1.22.8
 
-  /postcss-js@4.0.1(postcss@8.4.41):
+  /postcss-js@4.0.1(postcss@8.4.42):
     resolution: {integrity: sha512-dDLF8pEO191hJMtlHFPRa8xsizHaM82MLfNkUHdUtVEV3tgTp5oj+8qbEqYM57SLfc74KSbw//4SeJma2LRVIw==}
     engines: {node: ^12 || ^14 || >= 16}
     peerDependencies:
       postcss: ^8.4.21
     dependencies:
       camelcase-css: 2.0.1
-      postcss: 8.4.41
+      postcss: 8.4.42
 
-  /postcss-load-config@4.0.2(postcss@8.4.41):
+  /postcss-load-config@4.0.2(postcss@8.4.42):
     resolution: {integrity: sha512-bSVhyJGL00wMVoPUzAVAnbEoWyqRxkjv64tUl427SKnPrENtq6hJwUojroMz2VB+Q1edmi4IfrAPpami5VVgMQ==}
     engines: {node: '>= 14'}
     peerDependencies:
@@ -5345,16 +5345,16 @@ packages:
         optional: true
     dependencies:
       lilconfig: 3.1.2
-      postcss: 8.4.41
+      postcss: 8.4.42
       yaml: 2.5.0
 
-  /postcss-nested@6.2.0(postcss@8.4.41):
+  /postcss-nested@6.2.0(postcss@8.4.42):
     resolution: {integrity: sha512-HQbt28KulC5AJzG+cZtj9kvKB93CFCdLvog1WFLf1D+xmMvPGlBstkpTEZfK5+AN9hfJocyBFCNiqyS48bpgzQ==}
     engines: {node: '>=12.0'}
     peerDependencies:
       postcss: ^8.2.14
     dependencies:
-      postcss: 8.4.41
+      postcss: 8.4.42
       postcss-selector-parser: 6.1.2
 
   /postcss-selector-parser@6.1.2:
@@ -5376,8 +5376,8 @@ packages:
       source-map-js: 1.2.0
     dev: false
 
-  /postcss@8.4.41:
-    resolution: {integrity: sha512-TesUflQ0WKZqAvg52PWL6kHgLKP6xB6heTOdoYM0Wt2UHyxNa4K25EZZMgKns3BH1RLVbZCREPpLY0rhnNoHVQ==}
+  /postcss@8.4.42:
+    resolution: {integrity: sha512-hywKUQB9Ra4dR1mGhldy5Aj1X3MWDSIA1cEi+Uy0CjheLvP6Ual5RlwMCh8i/X121yEDLDIKBsrCQ8ba3FDMfQ==}
     engines: {node: ^10 || ^12 || >=14}
     dependencies:
       nanoid: 3.3.7
@@ -6054,11 +6054,11 @@ packages:
       normalize-path: 3.0.0
       object-hash: 3.0.0
       picocolors: 1.0.1
-      postcss: 8.4.41
-      postcss-import: 15.1.0(postcss@8.4.41)
-      postcss-js: 4.0.1(postcss@8.4.41)
-      postcss-load-config: 4.0.2(postcss@8.4.41)
-      postcss-nested: 6.2.0(postcss@8.4.41)
+      postcss: 8.4.42
+      postcss-import: 15.1.0(postcss@8.4.42)
+      postcss-js: 4.0.1(postcss@8.4.42)
+      postcss-load-config: 4.0.2(postcss@8.4.42)
+      postcss-nested: 6.2.0(postcss@8.4.42)
       postcss-selector-parser: 6.1.2
       resolve: 1.22.8
       sucrase: 3.35.0
