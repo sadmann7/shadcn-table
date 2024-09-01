@@ -70,7 +70,7 @@ dependencies:
     version: 0.33.0(pg@8.12.0)(postgres@3.4.4)(react@19.0.0-rc-fb9a90fa48-20240614)(types-react@19.0.0-rc.1)
   export-to-csv:
     specifier: ^1.3.0
-    version: 1.3.0
+    version: 1.4.0
   geist:
     specifier: ^1.3.0
     version: 1.3.1(next@15.0.0-rc.0)
@@ -4231,8 +4231,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /export-to-csv@1.3.0:
-    resolution: {integrity: sha512-msPjbfozZdYzDghAEKmCVH5veMeKHNacplE6noXvGiA8AeV1qa/SOxp6JXDjF9R8Kf6v3ypI6jskiY19dkhZeA==}
+  /export-to-csv@1.4.0:
+    resolution: {integrity: sha512-6CX17Cu+rC2Fi2CyZ4CkgVG3hLl6BFsdAxfXiZkmDFIDY4mRx2y2spdeH6dqPHI9rP+AsHEfGeKz84Uuw7+Pmg==}
     engines: {node: ^v12.20.0 || >=v14.13.0}
     dev: false
 
