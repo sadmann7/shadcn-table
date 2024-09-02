@@ -73,9 +73,9 @@ This is a shadcn table with server-side sorting, filtering, and pagination. It i
    Also install the required shadcn components and other required packages with the following commands:
 
    ```bash
-   pnpm dlx shadcn-ui@latest init
+   pnpm dlx shadcn@latest init
 
-   pnpm dlx shadcn-ui@latest add badge button calendar checkbox command dialog dropdown-menu form input label popover select separator skeleton sonner table toggle-group tooltip
+   pnpm dlx shadcn@latest add badge button calendar checkbox command dialog dropdown-menu form input label popover select separator skeleton sonner table toggle-group tooltip
 
    pnpm add drizzle-orm postgres @tanstack/react-table zod @t3-oss/env-nextjs
    pnpm add -D drizzle-kit dotenv-cli pg tsx
