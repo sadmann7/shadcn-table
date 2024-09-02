@@ -126,7 +126,7 @@ devDependencies:
     version: 4.3.1(prettier@3.3.3)
   '@total-typescript/ts-reset':
     specifier: ^0.6.0
-    version: 0.6.0
+    version: 0.6.1
   '@types/eslint':
     specifier: ^8.56.10
     version: 8.56.12
@@ -2676,8 +2676,8 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /@total-typescript/ts-reset@0.6.0:
-    resolution: {integrity: sha512-HWZnkM+5z3INAUZMohVXvX8/vm9sjmfmV2NRAswvv5WsU2m+OZsHAVZ0fl8xf2QH9kyPkinghVW6g3DOQ2xt5Q==}
+  /@total-typescript/ts-reset@0.6.1:
+    resolution: {integrity: sha512-cka47fVSo6lfQDIATYqb/vO1nvFfbPw7uWLayIXIhGETj0wcOOlrlkobOMDNQOFr9QOafegUPq13V2+6vtD7yg==}
     dev: true
 
   /@types/eslint@8.56.12:
