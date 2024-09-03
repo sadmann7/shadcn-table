@@ -14,7 +14,7 @@
     "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
     "check": "pnpm lint && pnpm typecheck && pnpm format:check",
-    "shadcn:add": "pnpm dlx shadcn-ui@latest add",
+    "shadcn:add": "pnpm dlx shadcn@latest add",
     "db:generate": "dotenv drizzle-kit generate",
     "db:introspect": "dotenv drizzle-kit introspect",
     "db:push": "dotenv drizzle-kit push",
