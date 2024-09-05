@@ -63,7 +63,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@faker-js/faker": "^8.4.1",
+    "@faker-js/faker": "^9.0.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
     "@total-typescript/ts-reset": "^0.6.0",
     "@types/eslint": "^8.56.10",
