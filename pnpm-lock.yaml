@@ -132,7 +132,7 @@ devDependencies:
     version: 8.56.12
   '@types/node':
     specifier: ^20.14.2
-    version: 20.16.8
+    version: 20.16.10
   '@types/react':
     specifier: npm:types-react@rc
     version: /types-react@19.0.0-rc.1
@@ -2725,8 +2725,8 @@ packages:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
 
-  /@types/node@20.16.8:
-    resolution: {integrity: sha512-sbo5JmfbZNkyDv+2HCccr9Y9ZkKJBMTru7UdAsCojMGjKNjdaOV73bqEW242QrHEZL8R4LbHMrW+FHB5lZ5/bw==}
+  /@types/node@20.16.10:
+    resolution: {integrity: sha512-vQUKgWTjEIRFCvK6CyriPH3MZYiYlNy0fKiEYHWbcoWLEgs4opurGGKlebrTLqdSMIbXImH6XExNiIyNUv3WpA==}
     dependencies:
       undici-types: 6.19.8
     dev: true
