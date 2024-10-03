@@ -86,9 +86,8 @@ interface UseDataTableProps<TData>
 
   /**
    * A callback function that is called before updating the URL.
-   * Can be use to retrieve the loading state of the route transition.
+   * Can be use to retrieve the pending state of the route transition.
    * @see https://react.dev/reference/react/useTransition
-   *
    */
   startTransition?: React.TransitionStartFunction
 
