@@ -323,8 +323,6 @@ export function useDataTable<TData>({
         })
       : onUrlChange()
 
-    table.setPageIndex(0)
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     // eslint-disable-next-line react-hooks/exhaustive-deps
