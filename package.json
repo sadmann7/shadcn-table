@@ -50,6 +50,7 @@
     "nanoid": "^5.0.7",
     "next": "15.0.0-rc.0",
     "next-themes": "^0.3.0",
+    "nuqs": "^1.19.3",
     "postgres": "^3.4.4",
     "react": "19.0.0-rc-fb9a90fa48-20240614",
     "react-day-picker": "^8.10.1",
