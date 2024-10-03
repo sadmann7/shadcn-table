@@ -19,7 +19,12 @@ import {
   type Updater,
   type VisibilityState,
 } from "@tanstack/react-table"
-import { parseAsInteger, parseAsString, useQueryState } from "nuqs"
+import {
+  parseAsInteger,
+  parseAsString,
+  useQueryState,
+  type UseQueryStateOptions,
+} from "nuqs"
 
 import { useDebounce } from "@/hooks/use-debounce"
 import { useQueryString } from "@/hooks/use-query-string"
@@ -72,9 +77,8 @@ interface UseDataTableProps<TData>
   enableAdvancedFilter?: boolean
 
   /**
-   * The method to use when updating the URL.
-   * - "push" - Pushes a new entry onto the history stack.
-   * - "replace" - Replaces the current entry on the history stack.
+   * Determines how query updates affect history.
+   * `push` creates a new history entry; `replace` (default) updates the current entry.
    * @default "replace"
    */
   history?: "push" | "replace"
@@ -86,17 +90,34 @@ interface UseDataTableProps<TData>
   scroll?: boolean
 
   /**
-   * Indicates whether to use shallow routing.
-   * @default false
+   * Shallow mode keeps query states client-side, avoiding server calls.
+   * Setting to `false` triggers a network request with the updated querystring.
+   * @default true
    */
   shallow?: boolean
 
   /**
-   * A callback function that is called before updating the URL.
-   * Can be use to retrieve the pending state of the route transition.
+   * Maximum time (ms) to wait between URL query string updates.
+   * Helps with browser rate-limiting. Minimum effective value is 50ms.
+   * @default 50
+   */
+  throttleMs?: number
+
+  /**
+   * Observe Server Component loading states for non-shallow updates.
+   * Pass `startTransition` from `React.useTransition()`.
+   * Sets `shallow` to `false` automatically.
+   * So shallow: true` and `startTransition` cannot be used at the same time.
    * @see https://react.dev/reference/react/useTransition
    */
   startTransition?: React.TransitionStartFunction
+
+  /**
+   * Clear URL query key-value pair when state is set to default.
+   * Keep URL meaning consistent when defaults change.
+   * @default false
+   */
+  clearOnDefault?: boolean
 
   // Extend to make the sorting id typesafe
   initialState?: Omit<Partial<TableState>, "sorting"> & {
@@ -113,7 +134,9 @@ export function useDataTable<TData>({
   enableAdvancedFilter = false,
   history = "replace",
   scroll = false,
-  shallow = false,
+  shallow = true,
+  throttleMs = 50,
+  clearOnDefault = false,
   startTransition,
   ...props
 }: UseDataTableProps<TData>) {
@@ -122,22 +145,29 @@ export function useDataTable<TData>({
   const searchParams = useSearchParams()
   const { createQueryString } = useQueryString(searchParams)
 
+  const queryOptions: Omit<UseQueryStateOptions<string>, "parse"> = {
+    history,
+    scroll,
+    shallow,
+    throttleMs,
+    clearOnDefault,
+    startTransition,
+  }
+
   const [page, setPage] = useQueryState(
     "page",
-    parseAsInteger
-      .withOptions({ scroll, shallow, startTransition })
-      .withDefault(1)
+    parseAsInteger.withOptions(queryOptions).withDefault(1)
   )
   const [perPage, setPerPage] = useQueryState(
     "per_page",
     parseAsInteger
-      .withOptions({ scroll, shallow, startTransition })
+      .withOptions(queryOptions)
       .withDefault(props.initialState?.pagination?.pageSize ?? 10)
   )
   const [sort, setSort] = useQueryState(
     "sort",
     parseAsString
-      .withOptions({ scroll, shallow, startTransition })
+      .withOptions(queryOptions)
       .withDefault(
         `${props.initialState?.sorting?.[0]?.id}.${props.initialState?.sorting?.[0]?.desc ? "desc" : "asc"}`
       )
@@ -191,7 +221,7 @@ export function useDataTable<TData>({
 
   // Handle server-side pagination
   const pagination: PaginationState = {
-    pageIndex: page - 1,
+    pageIndex: page - 1, // zero-based index to one-based index
     pageSize: perPage,
   }
 
@@ -207,12 +237,7 @@ export function useDataTable<TData>({
   }
 
   // Handle server-side sorting
-  const sorting: SortingState = [
-    {
-      id: column ?? "",
-      desc: order === "desc",
-    },
-  ]
+  const sorting: SortingState = [{ id: column ?? "", desc: order === "desc" }]
 
   function onSortingChange(updater: Updater<SortingState>) {
     if (typeof updater === "function") {

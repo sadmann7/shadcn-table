@@ -73,16 +73,14 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
     data,
     columns,
     pageCount,
-    /* optional props */
     filterFields,
     enableAdvancedFilter: featureFlags.includes("advancedFilter"),
     initialState: {
       sorting: [{ id: "createdAt", desc: true }],
       columnPinning: { right: ["actions"] },
     },
-    // For remembering the previous row selection on page change
     getRowId: (originalRow, index) => `${originalRow.id}-${index}`,
-    /* */
+    shallow: true,
   })
 
   return (
