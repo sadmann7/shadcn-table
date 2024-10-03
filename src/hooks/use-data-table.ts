@@ -16,9 +16,10 @@ import {
   type SortingState,
   type TableOptions,
   type TableState,
+  type Updater,
   type VisibilityState,
 } from "@tanstack/react-table"
-import { z } from "zod"
+import { parseAsInteger, parseAsString, useQueryState } from "nuqs"
 
 import { useDebounce } from "@/hooks/use-debounce"
 import { useQueryString } from "@/hooks/use-query-string"
@@ -76,13 +77,19 @@ interface UseDataTableProps<TData>
    * - "replace" - Replaces the current entry on the history stack.
    * @default "replace"
    */
-  method?: "push" | "replace"
+  history?: "push" | "replace"
 
   /**
    * Indicates whether the page should scroll to the top when the URL changes.
    * @default false
    */
   scroll?: boolean
+
+  /**
+   * Indicates whether to use shallow routing.
+   * @default false
+   */
+  shallow?: boolean
 
   /**
    * A callback function that is called before updating the URL.
@@ -100,33 +107,42 @@ interface UseDataTableProps<TData>
   }
 }
 
-const searchParamsSchema = z.object({
-  page: z.coerce.number().default(1),
-  per_page: z.coerce.number().optional(),
-  sort: z.string().optional(),
-})
-
 export function useDataTable<TData>({
   pageCount = -1,
   filterFields = [],
   enableAdvancedFilter = false,
-  method = "replace",
+  history = "replace",
   scroll = false,
+  shallow = false,
   startTransition,
   ...props
 }: UseDataTableProps<TData>) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const { createQueryString } = useQueryString(searchParams)
 
-  // Search params
-  const search = searchParamsSchema.parse(Object.fromEntries(searchParams))
-  const page = search.page
-  const perPage =
-    search.per_page ?? props.initialState?.pagination?.pageSize ?? 10
-  const sort =
-    search.sort ??
-    `${props.initialState?.sorting?.[0]?.id}.${props.initialState?.sorting?.[0]?.desc ? "desc" : "asc"}`
+  const [page, setPage] = useQueryState(
+    "page",
+    parseAsInteger
+      .withOptions({ scroll, shallow, startTransition })
+      .withDefault(1)
+  )
+  const [perPage, setPerPage] = useQueryState(
+    "per_page",
+    parseAsInteger
+      .withOptions({ scroll, shallow, startTransition })
+      .withDefault(props.initialState?.pagination?.pageSize ?? 10)
+  )
+  const [sort, setSort] = useQueryState(
+    "sort",
+    parseAsString
+      .withOptions({ scroll, shallow, startTransition })
+      .withDefault(
+        `${props.initialState?.sorting?.[0]?.id}.${props.initialState?.sorting?.[0]?.desc ? "desc" : "asc"}`
+      )
+  )
+
   const [column, order] = sort?.split(".") ?? []
 
   // Memoize computation of searchableColumns and filterableColumns
@@ -136,9 +152,6 @@ export function useDataTable<TData>({
       filterableColumns: filterFields.filter((field) => field.options),
     }
   }, [filterFields])
-
-  // Create query string
-  const { createQueryString } = useQueryString(searchParams)
 
   // Initial column filters
   const initialColumnFilters: ColumnFiltersState = React.useMemo(() => {
@@ -177,51 +190,38 @@ export function useDataTable<TData>({
     React.useState<ColumnFiltersState>(initialColumnFilters)
 
   // Handle server-side pagination
-  const [{ pageIndex, pageSize }, setPagination] =
-    React.useState<PaginationState>({
-      pageIndex: page - 1,
-      pageSize: perPage,
-    })
+  const pagination: PaginationState = {
+    pageIndex: page - 1,
+    pageSize: perPage,
+  }
 
-  const pagination = React.useMemo(
-    () => ({
-      pageIndex,
-      pageSize,
-    }),
-    [pageIndex, pageSize]
-  )
+  function onPaginationChange(updater: Updater<PaginationState>) {
+    if (typeof updater === "function") {
+      const newPagination = updater(pagination)
+      void setPage(newPagination.pageIndex + 1)
+      void setPerPage(newPagination.pageSize)
+    } else {
+      void setPage(updater.pageIndex + 1)
+      void setPerPage(updater.pageSize)
+    }
+  }
 
   // Handle server-side sorting
-  const [sorting, setSorting] = React.useState<SortingState>([
+  const sorting: SortingState = [
     {
       id: column ?? "",
       desc: order === "desc",
     },
-  ])
+  ]
 
-  React.useEffect(() => {
-    function onUrlChange() {
-      const url = `${pathname}?${createQueryString({
-        page: pageIndex + 1,
-        per_page: pageSize,
-        sort: sorting[0]?.id
-          ? `${sorting[0]?.id}.${sorting[0]?.desc ? "desc" : "asc"}`
-          : null,
-      })}`
-
-      method === "push"
-        ? router.push(url, { scroll })
-        : router.replace(url, { scroll })
+  function onSortingChange(updater: Updater<SortingState>) {
+    if (typeof updater === "function") {
+      const newSorting = updater(sorting)
+      void setSort(
+        `${newSorting[0]?.id}.${newSorting[0]?.desc ? "desc" : "asc"}`
+      )
     }
-
-    startTransition
-      ? startTransition(() => {
-          onUrlChange()
-        })
-      : onUrlChange()
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageIndex, pageSize, sorting, method, scroll])
+  }
 
   // Handle server-side filtering
   const debouncedSearchableColumnFilters = JSON.parse(
@@ -290,7 +290,7 @@ export function useDataTable<TData>({
     function onUrlChange() {
       const url = `${pathname}?${createQueryString(newParamsObject)}`
 
-      method === "push"
+      history === "push"
         ? router.push(url, { scroll })
         : router.replace(url, { scroll })
     }
@@ -309,7 +309,7 @@ export function useDataTable<TData>({
     JSON.stringify(debouncedSearchableColumnFilters),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(filterableColumnFilters),
-    method,
+    history,
     scroll,
   ])
 
@@ -325,8 +325,8 @@ export function useDataTable<TData>({
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
-    onPaginationChange: setPagination,
-    onSortingChange: setSorting,
+    onPaginationChange,
+    onSortingChange,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
