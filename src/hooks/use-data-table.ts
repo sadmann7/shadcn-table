@@ -145,7 +145,7 @@ export function useDataTable<TData>({
   const searchParams = useSearchParams()
   const { createQueryString } = useQueryString(searchParams)
 
-  const queryOptions: Omit<UseQueryStateOptions<string>, "parse"> = {
+  const queryStateOptions: Omit<UseQueryStateOptions<string>, "parse"> = {
     history,
     scroll,
     shallow,
@@ -156,18 +156,18 @@ export function useDataTable<TData>({
 
   const [page, setPage] = useQueryState(
     "page",
-    parseAsInteger.withOptions(queryOptions).withDefault(1)
+    parseAsInteger.withOptions(queryStateOptions).withDefault(1)
   )
   const [perPage, setPerPage] = useQueryState(
     "per_page",
     parseAsInteger
-      .withOptions(queryOptions)
+      .withOptions(queryStateOptions)
       .withDefault(props.initialState?.pagination?.pageSize ?? 10)
   )
   const [sort, setSort] = useQueryState(
     "sort",
     parseAsString
-      .withOptions(queryOptions)
+      .withOptions(queryStateOptions)
       .withDefault(
         `${props.initialState?.sorting?.[0]?.id}.${props.initialState?.sorting?.[0]?.desc ? "desc" : "asc"}`
       )
@@ -175,26 +175,26 @@ export function useDataTable<TData>({
   const [column, order] = sort?.split(".") ?? []
 
   const pagination: PaginationState = {
-    pageIndex: page - 1, // zero-based index to one-based index
+    pageIndex: page - 1, // zero-based index -> one-based index
     pageSize: perPage,
   }
 
-  function onPaginationChange(updater: Updater<PaginationState>) {
-    if (typeof updater === "function") {
-      const newPagination = updater(pagination)
+  function onPaginationChange(updaterOrValue: Updater<PaginationState>) {
+    if (typeof updaterOrValue === "function") {
+      const newPagination = updaterOrValue(pagination)
       void setPage(newPagination.pageIndex + 1)
       void setPerPage(newPagination.pageSize)
     } else {
-      void setPage(updater.pageIndex + 1)
-      void setPerPage(updater.pageSize)
+      void setPage(updaterOrValue.pageIndex + 1)
+      void setPerPage(updaterOrValue.pageSize)
     }
   }
 
   const sorting: SortingState = [{ id: column ?? "", desc: order === "desc" }]
 
-  function onSortingChange(updater: Updater<SortingState>) {
-    if (typeof updater === "function") {
-      const newSorting = updater(sorting)
+  function onSortingChange(updaterOrValue: Updater<SortingState>) {
+    if (typeof updaterOrValue === "function") {
+      const newSorting = updaterOrValue(sorting)
       void setSort(
         `${newSorting[0]?.id}.${newSorting[0]?.desc ? "desc" : "asc"}`
       )

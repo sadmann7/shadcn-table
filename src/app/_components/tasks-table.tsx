@@ -80,7 +80,7 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
       columnPinning: { right: ["actions"] },
     },
     getRowId: (originalRow, index) => `${originalRow.id}-${index}`,
-    shallow: true,
+    shallow: false,
   })
 
   return (
