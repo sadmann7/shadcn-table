@@ -246,7 +246,7 @@ export function useDataTable<TData>({
     React.useState<ColumnFiltersState>(initialColumnFilters)
 
   // Handle server-side filtering
-  const debouncedSearchableColumnFilters = JSON.parse(
+  const debouncedSearchFilters = JSON.parse(
     useDebounce(
       JSON.stringify(
         columnFilters.filter((filter) => {
@@ -257,7 +257,7 @@ export function useDataTable<TData>({
     )
   ) as ColumnFiltersState
 
-  const filterableColumnFilters = columnFilters.filter((filter) => {
+  const facetedFilters = columnFilters.filter((filter) => {
     return filterableColumns.find((column) => column.value === filter.id)
   })
 
@@ -279,7 +279,7 @@ export function useDataTable<TData>({
     }
 
     // Handle debounced searchable column filters
-    for (const column of debouncedSearchableColumnFilters) {
+    for (const column of debouncedSearchFilters) {
       if (typeof column.value === "string") {
         Object.assign(newParamsObject, {
           [column.id]: typeof column.value === "string" ? column.value : null,
@@ -288,7 +288,7 @@ export function useDataTable<TData>({
     }
 
     // Handle filterable column filters
-    for (const column of filterableColumnFilters) {
+    for (const column of facetedFilters) {
       if (typeof column.value === "object" && Array.isArray(column.value)) {
         Object.assign(newParamsObject, { [column.id]: column.value.join(".") })
       }
@@ -298,11 +298,9 @@ export function useDataTable<TData>({
     for (const key of searchParams.keys()) {
       if (
         (searchableColumns.find((column) => column.value === key) &&
-          !debouncedSearchableColumnFilters.find(
-            (column) => column.id === key
-          )) ||
+          !debouncedSearchFilters.find((column) => column.id === key)) ||
         (filterableColumns.find((column) => column.value === key) &&
-          !filterableColumnFilters.find((column) => column.id === key))
+          !facetedFilters.find((column) => column.id === key))
       ) {
         Object.assign(newParamsObject, { [key]: null })
       }
@@ -326,9 +324,9 @@ export function useDataTable<TData>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    JSON.stringify(debouncedSearchableColumnFilters),
+    JSON.stringify(debouncedSearchFilters),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    JSON.stringify(filterableColumnFilters),
+    JSON.stringify(facetedFilters),
     history,
     scroll,
   ])
