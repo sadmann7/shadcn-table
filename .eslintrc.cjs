@@ -4,11 +4,7 @@ const config = {
   parserOptions: {
     project: true,
   },
-  plugins: [
-    "@typescript-eslint",
-    "tailwindcss",
-    "eslint-plugin-react-compiler",
-  ],
+  plugins: ["@typescript-eslint", "tailwindcss"],
   extends: [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended-type-checked",
@@ -42,7 +38,7 @@ const config = {
         },
       },
     ],
-    "react-compiler/react-compiler": "warn",
+    "@typescript-eslint/no-empty-object-type": "off",
   },
   settings: {
     tailwindcss: {

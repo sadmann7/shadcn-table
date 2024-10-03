@@ -1,5 +1,4 @@
 "use client"
-"use memo"
 
 import * as React from "react"
 import { tasks, type Task } from "@/db/schema"
@@ -80,6 +79,8 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
       columnPinning: { right: ["actions"] },
     },
     getRowId: (originalRow, index) => `${originalRow.id}-${index}`,
+    shallow: false,
+    clearOnDefault: true,
   })
 
   const Toolbar = featureFlags.includes("advancedFilter")

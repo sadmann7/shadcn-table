@@ -307,16 +307,16 @@ export function useDataTable<TData>({
     function onUrlChange() {
       const url = `${pathname}?${createQueryString(newParamsObject)}`
 
-      history === "push"
+      void (history === "push"
         ? router.push(url, { scroll })
-        : router.replace(url, { scroll })
+        : router.replace(url, { scroll }))
     }
 
-    startTransition
+    void (startTransition
       ? startTransition(() => {
           onUrlChange()
         })
-      : onUrlChange()
+      : onUrlChange())
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
