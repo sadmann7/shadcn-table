@@ -32,6 +32,7 @@ import { useQueryString } from "@/hooks/use-query-string"
 interface UseDataTableProps<TData>
   extends Omit<
       TableOptions<TData>,
+      | "state"
       | "pageCount"
       | "getCoreRowModel"
       | "manualFiltering"
@@ -138,6 +139,7 @@ export function useDataTable<TData>({
   throttleMs = 50,
   clearOnDefault = false,
   startTransition,
+  initialState,
   ...props
 }: UseDataTableProps<TData>) {
   const router = useRouter()
@@ -162,14 +164,14 @@ export function useDataTable<TData>({
     "per_page",
     parseAsInteger
       .withOptions(queryStateOptions)
-      .withDefault(props.initialState?.pagination?.pageSize ?? 10)
+      .withDefault(initialState?.pagination?.pageSize ?? 10)
   )
   const [sort, setSort] = useQueryState(
     "sort",
     parseAsString
       .withOptions(queryStateOptions)
       .withDefault(
-        `${props.initialState?.sorting?.[0]?.id}.${props.initialState?.sorting?.[0]?.desc ? "desc" : "asc"}`
+        `${initialState?.sorting?.[0]?.id}.${initialState?.sorting?.[0]?.desc ? "desc" : "asc"}`
       )
   )
   const [column, order] = sort?.split(".") ?? []
@@ -325,6 +327,7 @@ export function useDataTable<TData>({
 
   const table = useReactTable({
     ...props,
+    initialState,
     pageCount,
     state: {
       pagination,
