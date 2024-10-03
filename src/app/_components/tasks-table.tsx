@@ -82,6 +82,10 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
     getRowId: (originalRow, index) => `${originalRow.id}-${index}`,
   })
 
+  const Toolbar = featureFlags.includes("advancedFilter")
+    ? DataTableAdvancedToolbar
+    : DataTableToolbar
+
   return (
     <DataTable
       table={table}
@@ -91,15 +95,9 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
         ) : null
       }
     >
-      {featureFlags.includes("advancedFilter") ? (
-        <DataTableAdvancedToolbar table={table} filterFields={filterFields}>
-          <TasksTableToolbarActions table={table} />
-        </DataTableAdvancedToolbar>
-      ) : (
-        <DataTableToolbar table={table} filterFields={filterFields}>
-          <TasksTableToolbarActions table={table} />
-        </DataTableToolbar>
-      )}
+      <Toolbar table={table} filterFields={filterFields}>
+        <TasksTableToolbarActions table={table} />
+      </Toolbar>
     </DataTable>
   )
 }
