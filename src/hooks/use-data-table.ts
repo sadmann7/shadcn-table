@@ -13,6 +13,7 @@ import {
   useReactTable,
   type ColumnFiltersState,
   type PaginationState,
+  type RowSelectionState,
   type SortingState,
   type TableOptions,
   type TableState,
@@ -174,6 +175,12 @@ export function useDataTable<TData>({
         `${initialState?.sorting?.[0]?.id}.${initialState?.sorting?.[0]?.desc ? "desc" : "asc"}`
       )
   )
+  const [rowSelection, setRowSelection] = React.useState<RowSelectionState>(
+    initialState?.rowSelection ?? {}
+  )
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>(initialState?.columnVisibility ?? {})
+
   const [column, order] = sort?.split(".") ?? []
 
   const pagination: PaginationState = {
@@ -240,10 +247,6 @@ export function useDataTable<TData>({
     )
   }, [filterableColumns, searchableColumns, searchParams])
 
-  // Table states
-  const [rowSelection, setRowSelection] = React.useState({})
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>(props?.state?.columnVisibility || {})
   const [columnFilters, setColumnFilters] =
     React.useState<ColumnFiltersState>(initialColumnFilters)
 
