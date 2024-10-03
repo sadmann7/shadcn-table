@@ -73,17 +73,18 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
     data,
     columns,
     pageCount,
-    /* optional props */
     filterFields,
     enableAdvancedFilter: featureFlags.includes("advancedFilter"),
     initialState: {
       sorting: [{ id: "createdAt", desc: true }],
       columnPinning: { right: ["actions"] },
     },
-    // For remembering the previous row selection on page change
     getRowId: (originalRow, index) => `${originalRow.id}-${index}`,
-    /* */
   })
+
+  const Toolbar = featureFlags.includes("advancedFilter")
+    ? DataTableAdvancedToolbar
+    : DataTableToolbar
 
   return (
     <DataTable
@@ -94,15 +95,9 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
         ) : null
       }
     >
-      {featureFlags.includes("advancedFilter") ? (
-        <DataTableAdvancedToolbar table={table} filterFields={filterFields}>
-          <TasksTableToolbarActions table={table} />
-        </DataTableAdvancedToolbar>
-      ) : (
-        <DataTableToolbar table={table} filterFields={filterFields}>
-          <TasksTableToolbarActions table={table} />
-        </DataTableToolbar>
-      )}
+      <Toolbar table={table} filterFields={filterFields}>
+        <TasksTableToolbarActions table={table} />
+      </Toolbar>
     </DataTable>
   )
 }

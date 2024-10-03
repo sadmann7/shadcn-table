@@ -13,12 +13,19 @@ import {
   useReactTable,
   type ColumnFiltersState,
   type PaginationState,
+  type RowSelectionState,
   type SortingState,
   type TableOptions,
   type TableState,
+  type Updater,
   type VisibilityState,
 } from "@tanstack/react-table"
-import { z } from "zod"
+import {
+  parseAsInteger,
+  parseAsString,
+  useQueryState,
+  type UseQueryStateOptions,
+} from "nuqs"
 
 import { useDebounce } from "@/hooks/use-debounce"
 import { useQueryString } from "@/hooks/use-query-string"
@@ -26,6 +33,7 @@ import { useQueryString } from "@/hooks/use-query-string"
 interface UseDataTableProps<TData>
   extends Omit<
       TableOptions<TData>,
+      | "state"
       | "pageCount"
       | "getCoreRowModel"
       | "manualFiltering"
@@ -71,12 +79,11 @@ interface UseDataTableProps<TData>
   enableAdvancedFilter?: boolean
 
   /**
-   * The method to use when updating the URL.
-   * - "push" - Pushes a new entry onto the history stack.
-   * - "replace" - Replaces the current entry on the history stack.
+   * Determines how query updates affect history.
+   * `push` creates a new history entry; `replace` (default) updates the current entry.
    * @default "replace"
    */
-  method?: "push" | "replace"
+  history?: "push" | "replace"
 
   /**
    * Indicates whether the page should scroll to the top when the URL changes.
@@ -85,11 +92,34 @@ interface UseDataTableProps<TData>
   scroll?: boolean
 
   /**
-   * A callback function that is called before updating the URL.
-   * Can be use to retrieve the pending state of the route transition.
+   * Shallow mode keeps query states client-side, avoiding server calls.
+   * Setting to `false` triggers a network request with the updated querystring.
+   * @default true
+   */
+  shallow?: boolean
+
+  /**
+   * Maximum time (ms) to wait between URL query string updates.
+   * Helps with browser rate-limiting. Minimum effective value is 50ms.
+   * @default 50
+   */
+  throttleMs?: number
+
+  /**
+   * Observe Server Component loading states for non-shallow updates.
+   * Pass `startTransition` from `React.useTransition()`.
+   * Sets `shallow` to `false` automatically.
+   * So shallow: true` and `startTransition` cannot be used at the same time.
    * @see https://react.dev/reference/react/useTransition
    */
   startTransition?: React.TransitionStartFunction
+
+  /**
+   * Clear URL query key-value pair when state is set to default.
+   * Keep URL meaning consistent when defaults change.
+   * @default false
+   */
+  clearOnDefault?: boolean
 
   // Extend to make the sorting id typesafe
   initialState?: Omit<Partial<TableState>, "sorting"> & {
@@ -100,34 +130,85 @@ interface UseDataTableProps<TData>
   }
 }
 
-const searchParamsSchema = z.object({
-  page: z.coerce.number().default(1),
-  per_page: z.coerce.number().optional(),
-  sort: z.string().optional(),
-})
-
 export function useDataTable<TData>({
   pageCount = -1,
   filterFields = [],
   enableAdvancedFilter = false,
-  method = "replace",
+  history = "replace",
   scroll = false,
+  shallow = true,
+  throttleMs = 50,
+  clearOnDefault = false,
   startTransition,
+  initialState,
   ...props
 }: UseDataTableProps<TData>) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const { createQueryString } = useQueryString(searchParams)
 
-  // Search params
-  const search = searchParamsSchema.parse(Object.fromEntries(searchParams))
-  const page = search.page
-  const perPage =
-    search.per_page ?? props.initialState?.pagination?.pageSize ?? 10
-  const sort =
-    search.sort ??
-    `${props.initialState?.sorting?.[0]?.id}.${props.initialState?.sorting?.[0]?.desc ? "desc" : "asc"}`
+  const queryStateOptions: Omit<UseQueryStateOptions<string>, "parse"> = {
+    history,
+    scroll,
+    shallow,
+    throttleMs,
+    clearOnDefault,
+    startTransition,
+  }
+
+  const [page, setPage] = useQueryState(
+    "page",
+    parseAsInteger.withOptions(queryStateOptions).withDefault(1)
+  )
+  const [perPage, setPerPage] = useQueryState(
+    "per_page",
+    parseAsInteger
+      .withOptions(queryStateOptions)
+      .withDefault(initialState?.pagination?.pageSize ?? 10)
+  )
+  const [sort, setSort] = useQueryState(
+    "sort",
+    parseAsString
+      .withOptions(queryStateOptions)
+      .withDefault(
+        `${initialState?.sorting?.[0]?.id}.${initialState?.sorting?.[0]?.desc ? "desc" : "asc"}`
+      )
+  )
+  const [rowSelection, setRowSelection] = React.useState<RowSelectionState>(
+    initialState?.rowSelection ?? {}
+  )
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>(initialState?.columnVisibility ?? {})
+
   const [column, order] = sort?.split(".") ?? []
+
+  const pagination: PaginationState = {
+    pageIndex: page - 1, // zero-based index -> one-based index
+    pageSize: perPage,
+  }
+
+  function onPaginationChange(updaterOrValue: Updater<PaginationState>) {
+    if (typeof updaterOrValue === "function") {
+      const newPagination = updaterOrValue(pagination)
+      void setPage(newPagination.pageIndex + 1)
+      void setPerPage(newPagination.pageSize)
+    } else {
+      void setPage(updaterOrValue.pageIndex + 1)
+      void setPerPage(updaterOrValue.pageSize)
+    }
+  }
+
+  const sorting: SortingState = [{ id: column ?? "", desc: order === "desc" }]
+
+  function onSortingChange(updaterOrValue: Updater<SortingState>) {
+    if (typeof updaterOrValue === "function") {
+      const newSorting = updaterOrValue(sorting)
+      void setSort(
+        `${newSorting[0]?.id}.${newSorting[0]?.desc ? "desc" : "asc"}`
+      )
+    }
+  }
 
   // Memoize computation of searchableColumns and filterableColumns
   const { searchableColumns, filterableColumns } = React.useMemo(() => {
@@ -136,9 +217,6 @@ export function useDataTable<TData>({
       filterableColumns: filterFields.filter((field) => field.options),
     }
   }, [filterFields])
-
-  // Create query string
-  const { createQueryString } = useQueryString(searchParams)
 
   // Initial column filters
   const initialColumnFilters: ColumnFiltersState = React.useMemo(() => {
@@ -169,62 +247,11 @@ export function useDataTable<TData>({
     )
   }, [filterableColumns, searchableColumns, searchParams])
 
-  // Table states
-  const [rowSelection, setRowSelection] = React.useState({})
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>(props?.state?.columnVisibility || {})
   const [columnFilters, setColumnFilters] =
     React.useState<ColumnFiltersState>(initialColumnFilters)
 
-  // Handle server-side pagination
-  const [{ pageIndex, pageSize }, setPagination] =
-    React.useState<PaginationState>({
-      pageIndex: page - 1,
-      pageSize: perPage,
-    })
-
-  const pagination = React.useMemo(
-    () => ({
-      pageIndex,
-      pageSize,
-    }),
-    [pageIndex, pageSize]
-  )
-
-  // Handle server-side sorting
-  const [sorting, setSorting] = React.useState<SortingState>([
-    {
-      id: column ?? "",
-      desc: order === "desc",
-    },
-  ])
-
-  React.useEffect(() => {
-    function onUrlChange() {
-      const url = `${pathname}?${createQueryString({
-        page: pageIndex + 1,
-        per_page: pageSize,
-        sort: sorting[0]?.id
-          ? `${sorting[0]?.id}.${sorting[0]?.desc ? "desc" : "asc"}`
-          : null,
-      })}`
-
-      method === "push"
-        ? router.push(url, { scroll })
-        : router.replace(url, { scroll })
-    }
-
-    startTransition
-      ? startTransition(() => {
-          onUrlChange()
-        })
-      : onUrlChange()
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageIndex, pageSize, sorting, method, scroll])
-
   // Handle server-side filtering
-  const debouncedSearchableColumnFilters = JSON.parse(
+  const debouncedSearchFilters = JSON.parse(
     useDebounce(
       JSON.stringify(
         columnFilters.filter((filter) => {
@@ -235,21 +262,13 @@ export function useDataTable<TData>({
     )
   ) as ColumnFiltersState
 
-  const filterableColumnFilters = columnFilters.filter((filter) => {
+  const facetedFilters = columnFilters.filter((filter) => {
     return filterableColumns.find((column) => column.value === filter.id)
   })
-
-  const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
     // Opt out when advanced filter is enabled, because it contains additional params
     if (enableAdvancedFilter) return
-
-    // Prevent resetting the page on initial render
-    if (!mounted) {
-      setMounted(true)
-      return
-    }
 
     // Initialize new params
     const newParamsObject = {
@@ -257,7 +276,7 @@ export function useDataTable<TData>({
     }
 
     // Handle debounced searchable column filters
-    for (const column of debouncedSearchableColumnFilters) {
+    for (const column of debouncedSearchFilters) {
       if (typeof column.value === "string") {
         Object.assign(newParamsObject, {
           [column.id]: typeof column.value === "string" ? column.value : null,
@@ -266,7 +285,7 @@ export function useDataTable<TData>({
     }
 
     // Handle filterable column filters
-    for (const column of filterableColumnFilters) {
+    for (const column of facetedFilters) {
       if (typeof column.value === "object" && Array.isArray(column.value)) {
         Object.assign(newParamsObject, { [column.id]: column.value.join(".") })
       }
@@ -276,11 +295,9 @@ export function useDataTable<TData>({
     for (const key of searchParams.keys()) {
       if (
         (searchableColumns.find((column) => column.value === key) &&
-          !debouncedSearchableColumnFilters.find(
-            (column) => column.id === key
-          )) ||
+          !debouncedSearchFilters.find((column) => column.id === key)) ||
         (filterableColumns.find((column) => column.value === key) &&
-          !filterableColumnFilters.find((column) => column.id === key))
+          !facetedFilters.find((column) => column.id === key))
       ) {
         Object.assign(newParamsObject, { [key]: null })
       }
@@ -290,7 +307,7 @@ export function useDataTable<TData>({
     function onUrlChange() {
       const url = `${pathname}?${createQueryString(newParamsObject)}`
 
-      method === "push"
+      history === "push"
         ? router.push(url, { scroll })
         : router.replace(url, { scroll })
     }
@@ -301,20 +318,19 @@ export function useDataTable<TData>({
         })
       : onUrlChange()
 
-    table.setPageIndex(0)
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    JSON.stringify(debouncedSearchableColumnFilters),
+    JSON.stringify(debouncedSearchFilters),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    JSON.stringify(filterableColumnFilters),
-    method,
+    JSON.stringify(facetedFilters),
+    history,
     scroll,
   ])
 
   const table = useReactTable({
     ...props,
+    initialState,
     pageCount,
     state: {
       pagination,
@@ -325,8 +341,8 @@ export function useDataTable<TData>({
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
-    onPaginationChange: setPagination,
-    onSortingChange: setSorting,
+    onPaginationChange,
+    onSortingChange,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
