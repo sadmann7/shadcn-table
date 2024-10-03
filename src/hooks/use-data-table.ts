@@ -172,8 +172,34 @@ export function useDataTable<TData>({
         `${props.initialState?.sorting?.[0]?.id}.${props.initialState?.sorting?.[0]?.desc ? "desc" : "asc"}`
       )
   )
-
   const [column, order] = sort?.split(".") ?? []
+
+  const pagination: PaginationState = {
+    pageIndex: page - 1, // zero-based index to one-based index
+    pageSize: perPage,
+  }
+
+  function onPaginationChange(updater: Updater<PaginationState>) {
+    if (typeof updater === "function") {
+      const newPagination = updater(pagination)
+      void setPage(newPagination.pageIndex + 1)
+      void setPerPage(newPagination.pageSize)
+    } else {
+      void setPage(updater.pageIndex + 1)
+      void setPerPage(updater.pageSize)
+    }
+  }
+
+  const sorting: SortingState = [{ id: column ?? "", desc: order === "desc" }]
+
+  function onSortingChange(updater: Updater<SortingState>) {
+    if (typeof updater === "function") {
+      const newSorting = updater(sorting)
+      void setSort(
+        `${newSorting[0]?.id}.${newSorting[0]?.desc ? "desc" : "asc"}`
+      )
+    }
+  }
 
   // Memoize computation of searchableColumns and filterableColumns
   const { searchableColumns, filterableColumns } = React.useMemo(() => {
@@ -218,35 +244,6 @@ export function useDataTable<TData>({
     React.useState<VisibilityState>({})
   const [columnFilters, setColumnFilters] =
     React.useState<ColumnFiltersState>(initialColumnFilters)
-
-  // Handle server-side pagination
-  const pagination: PaginationState = {
-    pageIndex: page - 1, // zero-based index to one-based index
-    pageSize: perPage,
-  }
-
-  function onPaginationChange(updater: Updater<PaginationState>) {
-    if (typeof updater === "function") {
-      const newPagination = updater(pagination)
-      void setPage(newPagination.pageIndex + 1)
-      void setPerPage(newPagination.pageSize)
-    } else {
-      void setPage(updater.pageIndex + 1)
-      void setPerPage(updater.pageSize)
-    }
-  }
-
-  // Handle server-side sorting
-  const sorting: SortingState = [{ id: column ?? "", desc: order === "desc" }]
-
-  function onSortingChange(updater: Updater<SortingState>) {
-    if (typeof updater === "function") {
-      const newSorting = updater(sorting)
-      void setSort(
-        `${newSorting[0]?.id}.${newSorting[0]?.desc ? "desc" : "asc"}`
-      )
-    }
-  }
 
   // Handle server-side filtering
   const debouncedSearchableColumnFilters = JSON.parse(
