@@ -261,17 +261,9 @@ export function useDataTable<TData>({
     return filterableColumns.find((column) => column.value === filter.id)
   })
 
-  const [mounted, setMounted] = React.useState(false)
-
   React.useEffect(() => {
     // Opt out when advanced filter is enabled, because it contains additional params
     if (enableAdvancedFilter) return
-
-    // Prevent resetting the page on initial render
-    if (!mounted) {
-      setMounted(true)
-      return
-    }
 
     // Initialize new params
     const newParamsObject = {
