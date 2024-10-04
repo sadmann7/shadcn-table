@@ -99,11 +99,8 @@ interface UseDataTableProps<TData>
   throttleMs?: number
 
   /**
-   * Maximum time (ms) to wait before applying the filter after the user stops typing.
-   * This helps to reduce the number of filter updates and improve performance,
-   * especially when dealing with large datasets. A lower value results in more frequent updates,
-   * while a higher value can lead to a delay in applying the filter.
-   * @default 500
+   * Debounce time (ms) for filter updates to enhance performance during rapid input.
+   * @default 300
    */
   debounceMs?: number
 
@@ -148,18 +145,12 @@ export function useDataTable<TData>({
   scroll = false,
   shallow = true,
   throttleMs = 50,
-  debounceMs = 500,
+  debounceMs = 300,
   clearOnDefault = false,
   startTransition,
   initialState,
   ...props
 }: UseDataTableProps<TData>) {
-  const [rowSelection, setRowSelection] = React.useState<RowSelectionState>(
-    initialState?.rowSelection ?? {}
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>(initialState?.columnVisibility ?? {})
-
   const queryStateOptions = React.useMemo<
     Omit<UseQueryStateOptions<string>, "parse">
   >(() => {
@@ -181,6 +172,12 @@ export function useDataTable<TData>({
     clearOnDefault,
     startTransition,
   ])
+
+  const [rowSelection, setRowSelection] = React.useState<RowSelectionState>(
+    initialState?.rowSelection ?? {}
+  )
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>(initialState?.columnVisibility ?? {})
 
   const [page, setPage] = useQueryState(
     "page",
@@ -228,8 +225,6 @@ export function useDataTable<TData>({
     setFilterValues,
     debounceMs
   )
-
-  console.log({ filterValues })
 
   // Paginate
   const pagination: PaginationState = {
@@ -348,9 +343,7 @@ export function useDataTable<TData>({
     onRowSelectionChange: setRowSelection,
     onPaginationChange,
     onSortingChange,
-    onColumnFiltersChange: enableAdvancedFilter
-      ? undefined
-      : onColumnFiltersChange,
+    onColumnFiltersChange,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: enableAdvancedFilter
