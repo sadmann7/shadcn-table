@@ -1,10 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { CalendarIcon } from "@radix-ui/react-icons"
-import { addDays, format } from "date-fns"
-import type { DateRange } from "react-day-picker"
+import { format } from "date-fns"
+import { parseAsString, useQueryStates } from "nuqs"
+import { type DateRange } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
 import { Button, type ButtonProps } from "@/components/ui/button"
@@ -23,15 +23,7 @@ interface DateRangePickerProps
    * @type DateRange
    * @example { from: new Date(), to: new Date() }
    */
-  dateRange?: DateRange
-
-  /**
-   * The number of days to display in the date range picker.
-   * @default undefined
-   * @type number
-   * @example 7
-   */
-  dayCount?: number
+  defaultDateRange?: DateRange
 
   /**
    * The placeholder text of the calendar trigger button.
@@ -60,64 +52,50 @@ interface DateRangePickerProps
    * @type string
    */
   triggerClassName?: string
+
+  /**
+   * Controls whether query states are updated client-side only (default: true).
+   * Setting to `false` triggers a network request to update the querystring.
+   * @default true
+   */
+  shallow?: boolean
 }
 
 export function DateRangePicker({
-  dateRange,
-  dayCount,
+  defaultDateRange,
   placeholder = "Pick a date",
   triggerVariant = "outline",
   triggerSize = "default",
   triggerClassName,
+  shallow = true,
   className,
   ...props
 }: DateRangePickerProps) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const [dateParams, setDateParams] = useQueryStates(
+    {
+      from: parseAsString.withDefault(
+        defaultDateRange?.from?.toISOString() ?? ""
+      ),
+      to: parseAsString.withDefault(defaultDateRange?.to?.toISOString() ?? ""),
+    },
+    {
+      clearOnDefault: true,
+      shallow,
+    }
+  )
 
-  const [date, setDate] = React.useState<DateRange | undefined>(() => {
-    const fromParam = searchParams.get("from")
-    const toParam = searchParams.get("to")
-
-    let fromDay: Date | undefined
-    let toDay: Date | undefined
-
-    if (dateRange) {
-      fromDay = dateRange.from
-      toDay = dateRange.to
-    } else if (dayCount) {
-      toDay = new Date()
-      fromDay = addDays(toDay, -dayCount)
+  const date = React.useMemo(() => {
+    function parseDate(dateString: string | null) {
+      if (!dateString) return undefined
+      const parsedDate = new Date(dateString)
+      return isNaN(parsedDate.getTime()) ? undefined : parsedDate
     }
 
     return {
-      from: fromParam ? new Date(fromParam) : fromDay,
-      to: toParam ? new Date(toParam) : toDay,
+      from: parseDate(dateParams.from) ?? defaultDateRange?.from,
+      to: parseDate(dateParams.to) ?? defaultDateRange?.to,
     }
-  })
-
-  // Update query string
-  React.useEffect(() => {
-    const newSearchParams = new URLSearchParams(searchParams)
-    if (date?.from) {
-      newSearchParams.set("from", format(date.from, "yyyy-MM-dd"))
-    } else {
-      newSearchParams.delete("from")
-    }
-
-    if (date?.to) {
-      newSearchParams.set("to", format(date.to, "yyyy-MM-dd"))
-    } else {
-      newSearchParams.delete("to")
-    }
-
-    router.replace(`${pathname}?${newSearchParams.toString()}`, {
-      scroll: false,
-    })
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [date?.from, date?.to])
+  }, [dateParams, defaultDateRange])
 
   return (
     <div className="grid gap-2">
@@ -149,10 +127,16 @@ export function DateRangePicker({
         </PopoverTrigger>
         <PopoverContent className={cn("w-auto p-0", className)} {...props}>
           <Calendar
+            initialFocus
             mode="range"
             defaultMonth={date?.from}
             selected={date}
-            onSelect={setDate}
+            onSelect={(newDateRange) => {
+              void setDateParams({
+                from: newDateRange?.from?.toISOString() ?? "",
+                to: newDateRange?.to?.toISOString() ?? "",
+              })
+            }}
             numberOfMonths={2}
           />
         </PopoverContent>

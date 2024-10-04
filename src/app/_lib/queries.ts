@@ -4,7 +4,7 @@ import { unstable_noStore as noStore } from "next/cache"
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
 import { type DrizzleWhere } from "@/types"
-import { and, asc, count, desc, gte, lte, or, sql, type SQL } from "drizzle-orm"
+import { and, asc, count, desc, gte, lte, or, type SQL } from "drizzle-orm"
 
 import { filterColumn } from "@/lib/filter-column"
 
@@ -12,61 +12,60 @@ import { type GetTasksSchema } from "./validations"
 
 export async function getTasks(input: GetTasksSchema) {
   noStore()
-  const { page, per_page, sort, title, status, priority, operator, from, to } =
-    input
 
   try {
     // Offset to paginate the results
-    const offset = (page - 1) * per_page
+    const offset = (input.page - 1) * input.per_page
     // Column and order to sort by
     // Spliting the sort string by "." to get the column and order
     // Example: "title.desc" => ["title", "desc"]
-    const [column, order] = (sort?.split(".").filter(Boolean) ?? [
+    const [column, order] = (input.sort?.split(".").filter(Boolean) ?? [
       "createdAt",
       "desc",
     ]) as [keyof Task | undefined, "asc" | "desc" | undefined]
 
     // Convert the date strings to date objects
-    const fromDay = from ? new Date(from) : undefined
-    const toDay = to ? new Date(to) : undefined
+    const fromDate = input.from ? new Date(input.from) : undefined
+    const toDate = input.to ? new Date(input.to) : undefined
 
     const expressions: (SQL<unknown> | undefined)[] = [
-      title
+      input.title
         ? filterColumn({
             column: tasks.title,
-            value: title,
+            value: input.title,
           })
         : undefined,
       // Filter tasks by status
-      !!status
+      !!input.status
         ? filterColumn({
             column: tasks.status,
-            value: status,
+            value: input.status,
             isSelectable: true,
           })
         : undefined,
       // Filter tasks by priority
-      !!priority
+      !!input.priority
         ? filterColumn({
             column: tasks.priority,
-            value: priority,
+            value: input.priority,
             isSelectable: true,
           })
         : undefined,
       // Filter by createdAt
-      fromDay && toDay
-        ? and(gte(tasks.createdAt, fromDay), lte(tasks.createdAt, toDay))
-        : undefined,
+      fromDate ? gte(tasks.createdAt, fromDate) : undefined,
+      toDate ? lte(tasks.createdAt, toDate) : undefined,
     ]
     const where: DrizzleWhere<Task> =
-      !operator || operator === "and" ? and(...expressions) : or(...expressions)
+      !input.operator || input.operator === "and"
+        ? and(...expressions)
+        : or(...expressions)
 
     // Transaction is used to ensure both queries are executed in a single transaction
     const { data, total } = await db.transaction(async (tx) => {
       const data = await tx
         .select()
         .from(tasks)
-        .limit(per_page)
+        .limit(input.per_page)
         .offset(offset)
         .where(where)
         .orderBy(
@@ -92,7 +91,7 @@ export async function getTasks(input: GetTasksSchema) {
       }
     })
 
-    const pageCount = Math.ceil(total / per_page)
+    const pageCount = Math.ceil(total / input.per_page)
     return { data, pageCount }
   } catch (err) {
     return { data: [], pageCount: 0 }

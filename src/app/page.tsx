@@ -39,6 +39,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
             triggerSize="sm"
             triggerClassName="ml-auto w-56 sm:w-60"
             align="end"
+            shallow={false}
           />
         </React.Suspense>
         <React.Suspense
