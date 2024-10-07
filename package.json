@@ -43,7 +43,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^4.1.0",
-    "drizzle-orm": "^0.33.0",
+    "drizzle-orm": "^0.34.0",
     "export-to-csv": "^1.4.0",
     "geist": "^1.3.1",
     "nanoid": "^5.0.7",
