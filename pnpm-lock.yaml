@@ -63,8 +63,8 @@ dependencies:
     specifier: ^4.1.0
     version: 4.1.0
   drizzle-orm:
-    specifier: ^0.33.0
-    version: 0.33.0(@types/react@18.3.11)(pg@8.13.0)(postgres@3.4.4)(react@18.3.1)
+    specifier: ^0.34.0
+    version: 0.34.1(@types/react@18.3.11)(pg@8.13.0)(postgres@3.4.4)(react@18.3.1)
   export-to-csv:
     specifier: ^1.4.0
     version: 1.4.0
@@ -3087,13 +3087,13 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.33.0(@types/react@18.3.11)(pg@8.13.0)(postgres@3.4.4)(react@18.3.1):
-    resolution: {integrity: sha512-SHy72R2Rdkz0LEq0PSG/IdvnT3nGiWuRk+2tXZQ90GVq/XQhpCzu/EFT3V2rox+w8MlkBQxifF8pCStNYnERfA==}
+  /drizzle-orm@0.34.1(@types/react@18.3.11)(pg@8.13.0)(postgres@3.4.4)(react@18.3.1):
+    resolution: {integrity: sha512-t+zCwyWWt8xTqtYV4doE/xYmT7hpv1L8pQ66zddEz+3VWyedBBtctjMAp22mAJPfyWurRQXUJ1nrTtqLq+DqNA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=3'
       '@electric-sql/pglite': '>=0.1.1'
-      '@libsql/client': '*'
+      '@libsql/client': '>=0.10.0'
       '@neondatabase/serverless': '>=0.1'
       '@op-engineering/op-sqlite': '>=2'
       '@opentelemetry/api': ^1.4.1
