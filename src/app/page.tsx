@@ -1,7 +1,7 @@
 "use memo"
 
 import * as React from "react"
-import type { SearchParams } from "@/types"
+import  {type SearchParams } from "@/types"
 
 import { Skeleton } from "@/components/ui/skeleton"
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
