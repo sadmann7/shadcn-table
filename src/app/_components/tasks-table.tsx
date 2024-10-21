@@ -11,9 +11,9 @@ import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 
 import { type getTasks } from "../_lib/queries"
 import { getPriorityIcon, getStatusIcon } from "../_lib/utils"
+import { useFeatureFlags } from "./feature-flags-provider"
 import { getColumns } from "./tasks-table-columns"
 import { TasksTableFloatingBar } from "./tasks-table-floating-bar"
-import { useTasksTable } from "./tasks-table-provider"
 import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions"
 
 interface TasksTableProps {
@@ -21,8 +21,7 @@ interface TasksTableProps {
 }
 
 export function TasksTable({ tasksPromise }: TasksTableProps) {
-  // Feature flags for showcasing some additional features. Feel free to remove them.
-  const { featureFlags } = useTasksTable()
+  const { featureFlags } = useFeatureFlags()
 
   const { data, pageCount } = React.use(tasksPromise)
 

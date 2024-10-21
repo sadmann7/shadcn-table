@@ -8,8 +8,8 @@ import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
 import { Shell } from "@/components/shell"
 
+import { FeatureFlagsProvider } from "./_components/feature-flags-provider"
 import { TasksTable } from "./_components/tasks-table"
-import { TasksTableProvider } from "./_components/tasks-table-provider"
 import { getTasks } from "./_lib/queries"
 import { searchParamsSchema } from "./_lib/validations"
 
@@ -24,7 +24,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
 
   return (
     <Shell className="gap-2">
-      <TasksTableProvider>
+      <FeatureFlagsProvider>
         <React.Suspense fallback={<Skeleton className="h-7 w-52" />}>
           <DateRangePicker
             triggerSize="sm"
@@ -50,7 +50,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
            */}
           <TasksTable tasksPromise={tasksPromise} />
         </React.Suspense>
-      </TasksTableProvider>
+      </FeatureFlagsProvider>
     </Shell>
   )
 }

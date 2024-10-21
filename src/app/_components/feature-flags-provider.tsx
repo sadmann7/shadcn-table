@@ -1,11 +1,9 @@
 "use client"
 
 import * as React from "react"
+import { useQueryState } from "nuqs"
 
 import { dataTableConfig, type DataTableConfig } from "@/config/data-table"
-import { useLocalStorage } from "@/hooks/use-local-storage"
-import { useMounted } from "@/hooks/use-mounted"
-import { Skeleton } from "@/components/ui/skeleton"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   Tooltip,
@@ -15,53 +13,48 @@ import {
 
 type FeatureFlagValue = DataTableConfig["featureFlags"][number]["value"]
 
-interface TasksTableContextProps {
+interface FeatureFlagsContextProps {
   featureFlags: FeatureFlagValue[]
-  setFeatureFlags: React.Dispatch<React.SetStateAction<FeatureFlagValue[]>>
+  setFeatureFlags: (value: FeatureFlagValue[]) => void
 }
 
-const TasksTableContext = React.createContext<TasksTableContextProps>({
+const FeatureFlagsContext = React.createContext<FeatureFlagsContextProps>({
   featureFlags: [],
   setFeatureFlags: () => {},
 })
 
-export function useTasksTable() {
-  const context = React.useContext(TasksTableContext)
+export function useFeatureFlags() {
+  const context = React.useContext(FeatureFlagsContext)
   if (!context) {
-    throw new Error("useTasksTable must be used within a TasksTableProvider")
+    throw new Error(
+      "useFeatureFlags must be used within a FeatureFlagsProvider"
+    )
   }
   return context
 }
 
-export function TasksTableProvider({ children }: React.PropsWithChildren) {
-  const mounted = useMounted()
-  const [featureFlags, setFeatureFlags] = useLocalStorage<FeatureFlagValue[]>(
+interface FeatureFlagsProviderProps {
+  children: React.ReactNode
+}
+
+export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
+  const [featureFlags, setFeatureFlags] = useQueryState<FeatureFlagValue[]>(
     "featureFlags",
-    []
+    {
+      defaultValue: [],
+      parse: (value) => value.split(",") as FeatureFlagValue[],
+      serialize: (value) => value.join(","),
+      eq: (a, b) =>
+        a.length === b.length && a.every((value, index) => value === b[index]),
+      clearOnDefault: true,
+    }
   )
 
-  if (!mounted) {
-    return (
-      <>
-        <div className="w-full overflow-x-auto">
-          <div className="flex items-center gap-1">
-            {Array.from({ length: dataTableConfig.featureFlags.length }).map(
-              (_, index) => (
-                <Skeleton key={index} className="h-7 w-32" />
-              )
-            )}
-          </div>
-        </div>
-        {children}
-      </>
-    )
-  }
-
   return (
-    <TasksTableContext.Provider
+    <FeatureFlagsContext.Provider
       value={{
         featureFlags,
-        setFeatureFlags,
+        setFeatureFlags: (value) => void setFeatureFlags(value),
       }}
     >
       <div className="w-full overflow-x-auto">
@@ -104,6 +97,6 @@ export function TasksTableProvider({ children }: React.PropsWithChildren) {
         </ToggleGroup>
       </div>
       {children}
-    </TasksTableContext.Provider>
+    </FeatureFlagsContext.Provider>
   )
 }
