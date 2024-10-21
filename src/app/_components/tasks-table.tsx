@@ -9,24 +9,33 @@ import { DataTableAdvancedToolbar } from "@/components/data-table/advanced/data-
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 
-import { type getTasks } from "../_lib/queries"
+import type {
+  getTaskPriorityCounts,
+  getTasks,
+  getTaskStatusCounts,
+} from "../_lib/queries"
 import { getPriorityIcon, getStatusIcon } from "../_lib/utils"
+import { useFeatureFlags } from "./feature-flags-provider"
 import { getColumns } from "./tasks-table-columns"
 import { TasksTableFloatingBar } from "./tasks-table-floating-bar"
-import { useTasksTable } from "./tasks-table-provider"
 import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions"
 
 interface TasksTableProps {
-  tasksPromise: ReturnType<typeof getTasks>
+  promises: Promise<
+    [
+      Awaited<ReturnType<typeof getTasks>>,
+      Awaited<ReturnType<typeof getTaskStatusCounts>>,
+      Awaited<ReturnType<typeof getTaskPriorityCounts>>,
+    ]
+  >
 }
 
-export function TasksTable({ tasksPromise }: TasksTableProps) {
-  // Feature flags for showcasing some additional features. Feel free to remove them.
-  const { featureFlags } = useTasksTable()
+export function TasksTable({ promises }: TasksTableProps) {
+  const { featureFlags } = useFeatureFlags()
 
-  const { data, pageCount } = React.use(tasksPromise)
+  const [{ data, pageCount }, statusCounts, priorityCounts] =
+    React.use(promises)
 
-  // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo(() => getColumns(), [])
 
   /**
@@ -53,7 +62,7 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
         label: status[0]?.toUpperCase() + status.slice(1),
         value: status,
         icon: getStatusIcon(status),
-        withCount: true,
+        count: statusCounts[status],
       })),
     },
     {
@@ -63,17 +72,20 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
         label: priority[0]?.toUpperCase() + priority.slice(1),
         value: priority,
         icon: getPriorityIcon(priority),
-        withCount: true,
+        count: priorityCounts[priority],
       })),
     },
   ]
+
+  const advancedFilter = featureFlags.includes("advancedFilter")
+  const floatingBar = featureFlags.includes("floatingBar")
 
   const { table } = useDataTable({
     data,
     columns,
     pageCount,
     filterFields,
-    enableAdvancedFilter: featureFlags.includes("advancedFilter"),
+    enableAdvancedFilter: advancedFilter,
     initialState: {
       sorting: [{ id: "createdAt", desc: true }],
       columnPinning: { right: ["actions"] },
@@ -83,18 +95,12 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
     clearOnDefault: true,
   })
 
-  const Toolbar = featureFlags.includes("advancedFilter")
-    ? DataTableAdvancedToolbar
-    : DataTableToolbar
+  const Toolbar = advancedFilter ? DataTableAdvancedToolbar : DataTableToolbar
 
   return (
     <DataTable
       table={table}
-      floatingBar={
-        featureFlags.includes("floatingBar") ? (
-          <TasksTableFloatingBar table={table} />
-        ) : null
-      }
+      floatingBar={floatingBar ? <TasksTableFloatingBar table={table} /> : null}
     >
       <Toolbar table={table} filterFields={filterFields}>
         <TasksTableToolbarActions table={table} />

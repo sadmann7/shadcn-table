@@ -33,17 +33,17 @@ export function filterColumn({
   if (isSelectable) {
     switch (filterOperator) {
       case "eq":
-        return inArray(column, filterValue?.split(".").filter(Boolean) ?? [])
+        return inArray(column, filterValue?.split(",").filter(Boolean) ?? [])
       case "notEq":
         return not(
-          inArray(column, filterValue?.split(".").filter(Boolean) ?? [])
+          inArray(column, filterValue?.split(",").filter(Boolean) ?? [])
         )
       case "isNull":
         return isNull(column)
       case "isNotNull":
         return isNotNull(column)
       default:
-        return inArray(column, filterValue?.split(".") ?? [])
+        return inArray(column, filterValue?.split(",") ?? [])
     }
   }
 
