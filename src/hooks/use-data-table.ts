@@ -287,14 +287,15 @@ export function useDataTable<TData>({
   }, [filterFields, enableAdvancedFilter])
 
   const onColumnFiltersChange = React.useCallback(
-    (updateOrValue: Updater<ColumnFiltersState>) => {
-      if (enableAdvancedFilter) return // Don't process filters if advanced filtering is enabled
+    (updaterOrValue: Updater<ColumnFiltersState>) => {
+      // Don't process filters if advanced filtering is enabled
+      if (enableAdvancedFilter) return
 
       setColumnFilters((prev) => {
         const next =
-          typeof updateOrValue === "function"
-            ? updateOrValue(prev)
-            : updateOrValue
+          typeof updaterOrValue === "function"
+            ? updaterOrValue(prev)
+            : updaterOrValue
 
         const filterUpdates = next.reduce<
           Record<string, string | string[] | null>
@@ -309,7 +310,6 @@ export function useDataTable<TData>({
           return acc
         }, {})
 
-        // Handle filter removal
         prev.forEach((prevFilter) => {
           if (!next.some((filter) => filter.id === prevFilter.id)) {
             filterUpdates[prevFilter.id] = null

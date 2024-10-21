@@ -25,7 +25,6 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
 
   const { data, pageCount } = React.use(tasksPromise)
 
-  // Memoize the columns so they don't re-render on every render
   const columns = React.useMemo(() => getColumns(), [])
 
   /**
@@ -67,12 +66,15 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
     },
   ]
 
+  const advancedFilter = featureFlags.includes("advancedFilter")
+  const floatingBar = featureFlags.includes("floatingBar")
+
   const { table } = useDataTable({
     data,
     columns,
     pageCount,
     filterFields,
-    enableAdvancedFilter: featureFlags.includes("advancedFilter"),
+    enableAdvancedFilter: advancedFilter,
     initialState: {
       sorting: [{ id: "createdAt", desc: true }],
       columnPinning: { right: ["actions"] },
@@ -82,18 +84,12 @@ export function TasksTable({ tasksPromise }: TasksTableProps) {
     clearOnDefault: true,
   })
 
-  const Toolbar = featureFlags.includes("advancedFilter")
-    ? DataTableAdvancedToolbar
-    : DataTableToolbar
+  const Toolbar = advancedFilter ? DataTableAdvancedToolbar : DataTableToolbar
 
   return (
     <DataTable
       table={table}
-      floatingBar={
-        featureFlags.includes("floatingBar") ? (
-          <TasksTableFloatingBar table={table} />
-        ) : null
-      }
+      floatingBar={floatingBar ? <TasksTableFloatingBar table={table} /> : null}
     >
       <Toolbar table={table} filterFields={filterFields}>
         <TasksTableToolbarActions table={table} />
