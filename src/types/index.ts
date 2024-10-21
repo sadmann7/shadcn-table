@@ -1,5 +1,7 @@
 import { type SQL } from "drizzle-orm"
 
+import { type DataTableConfig } from "@/config/data-table"
+
 export interface SearchParams {
   [key: string]: string | string[] | undefined
 }
@@ -32,3 +34,14 @@ export type DrizzleWhere<T> =
   | SQL<unknown>
   | ((aliases: T) => SQL<T> | undefined)
   | undefined
+
+export type ColumnType = "text" | "number" | "select" | "multi-select" | "date"
+
+export type Operator = DataTableConfig["operators"][number]["value"]
+
+export interface QueryBuilderOpts {
+  where?: SQL
+  orderBy?: SQL
+  distinct?: boolean
+  nullish?: boolean
+}

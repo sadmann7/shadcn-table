@@ -47,4 +47,20 @@ export const dataTableConfig = {
       tooltipDescription: "A floating bar that sticks to the top of the table.",
     },
   ],
+  operators: [
+    { label: "Contains", value: "iLike" as const },
+    { label: "Doesn't contain", value: "notILike" as const },
+    { label: "Is", value: "eq" as const },
+    { label: "Is not", value: "ne" as const },
+    { label: "Is empty", value: "isEmpty" as const },
+    { label: "Is not empty", value: "isNotEmpty" as const },
+    { label: "Is less than", value: "lt" as const },
+    { label: "Is less than or equal to", value: "lte" as const },
+    { label: "Is greater than", value: "gt" as const },
+    { label: "Is greater than or equal to", value: "gte" as const },
+  ],
+  joinOperators: [
+    { label: "And", value: "and" as const },
+    { label: "Or", value: "or" as const },
+  ],
 }

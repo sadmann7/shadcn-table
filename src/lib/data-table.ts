@@ -1,4 +1,7 @@
+import type { ColumnType, Operator } from "@/types"
 import { type Column } from "@tanstack/react-table"
+
+import { dataTableConfig } from "@/config/data-table"
 
 export function getCommonPinningStyles<TData>({
   column,
@@ -34,4 +37,45 @@ export function getCommonPinningStyles<TData>({
     width: column.getSize(),
     zIndex: isPinned ? 1 : 0,
   }
+}
+
+export function getFilterOperators(columnType: ColumnType): {
+  label: string
+  value: Operator
+}[] {
+  const numericOperators: Operator[] = [
+    "eq",
+    "ne",
+    "lt",
+    "lte",
+    "gt",
+    "gte",
+    "isEmpty",
+    "isNotEmpty",
+  ]
+  const selectOperators: Operator[] = ["eq", "ne", "isEmpty", "isNotEmpty"]
+  const textOperators: Operator[] = [
+    "iLike",
+    "notILike",
+    "eq",
+    "ne",
+    "isEmpty",
+    "isNotEmpty",
+  ]
+
+  if (columnType === "number" || columnType === "date") {
+    return dataTableConfig.operators.filter((op) =>
+      numericOperators.includes(op.value)
+    )
+  }
+
+  if (columnType === "select" || columnType === "multi-select") {
+    return dataTableConfig.operators.filter((op) =>
+      selectOperators.includes(op.value)
+    )
+  }
+
+  return dataTableConfig.operators.filter((op) =>
+    textOperators.includes(op.value)
+  )
 }
