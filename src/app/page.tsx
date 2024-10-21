@@ -24,16 +24,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
 
   return (
     <Shell className="gap-2">
-      {/**
-       * The `TasksTableProvider` is use to enable some feature flags for the `TasksTable` component.
-       * Feel free to remove this, as it's not required for the `TasksTable` component to work.
-       */}
       <TasksTableProvider>
-        {/**
-         * The `DateRangePicker` component is used to render the date range picker UI.
-         * It is used to filter the tasks based on the selected date range it was created at.
-         * The business logic for filtering the tasks based on the selected date range is handled inside the component.
-         */}
         <React.Suspense fallback={<Skeleton className="h-7 w-52" />}>
           <DateRangePicker
             triggerSize="sm"

@@ -3,6 +3,9 @@
 import * as React from "react"
 
 import { dataTableConfig, type DataTableConfig } from "@/config/data-table"
+import { useLocalStorage } from "@/hooks/use-local-storage"
+import { useMounted } from "@/hooks/use-mounted"
+import { Skeleton } from "@/components/ui/skeleton"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   Tooltip,
@@ -31,7 +34,28 @@ export function useTasksTable() {
 }
 
 export function TasksTableProvider({ children }: React.PropsWithChildren) {
-  const [featureFlags, setFeatureFlags] = React.useState<FeatureFlagValue[]>([])
+  const mounted = useMounted()
+  const [featureFlags, setFeatureFlags] = useLocalStorage<FeatureFlagValue[]>(
+    "featureFlags",
+    []
+  )
+
+  if (!mounted) {
+    return (
+      <>
+        <div className="w-full overflow-x-auto">
+          <div className="flex items-center gap-1">
+            {Array.from({ length: dataTableConfig.featureFlags.length }).map(
+              (_, index) => (
+                <Skeleton key={index} className="h-7 w-32" />
+              )
+            )}
+          </div>
+        </div>
+        {children}
+      </>
+    )
+  }
 
   return (
     <TasksTableContext.Provider
@@ -50,7 +74,7 @@ export function TasksTableProvider({ children }: React.PropsWithChildren) {
           className="w-fit"
         >
           {dataTableConfig.featureFlags.map((flag) => (
-            <Tooltip key={flag.value} delayDuration={250}>
+            <Tooltip key={flag.value}>
               <ToggleGroupItem
                 value={flag.value}
                 className="whitespace-nowrap px-3 text-xs"
