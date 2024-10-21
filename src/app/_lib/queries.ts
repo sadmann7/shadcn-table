@@ -3,7 +3,6 @@ import "server-only"
 import { unstable_noStore as noStore } from "next/cache"
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
-import { type DrizzleWhere } from "@/types"
 import { and, asc, count, desc, gte, lte, or, type SQL } from "drizzle-orm"
 
 import { filterColumn } from "@/lib/filter-column"
@@ -55,7 +54,7 @@ export async function getTasks(input: GetTasksSchema) {
       fromDate ? gte(tasks.createdAt, fromDate) : undefined,
       toDate ? lte(tasks.createdAt, toDate) : undefined,
     ]
-    const where: DrizzleWhere<Task> =
+    const where =
       !input.operator || input.operator === "and"
         ? and(...expressions)
         : or(...expressions)

@@ -9,8 +9,7 @@ export function getCommonPinningStyles<TData>({
 }: {
   column: Column<TData>
   /**
-   * Whether to show a box shadow on the right side of the last left pinned column or the left side of the first right pinned column.
-   * This is useful for creating a border between the pinned columns and the scrollable columns.
+   * Show box shadow between pinned and scrollable columns.
    * @default false
    */
   withBorder?: boolean
@@ -37,6 +36,13 @@ export function getCommonPinningStyles<TData>({
     width: column.getSize(),
     zIndex: isPinned ? 1 : 0,
   }
+}
+
+export function getDefaultFilterOperator(columnType: ColumnType): Operator {
+  if (columnType === "select" || columnType === "multi-select") {
+    return "iLike"
+  }
+  return "eq"
 }
 
 export function getFilterOperators(columnType: ColumnType): {

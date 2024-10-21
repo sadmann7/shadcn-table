@@ -30,11 +30,6 @@ export interface DataTableFilterOption<TData> {
   isMulti?: boolean
 }
 
-export type DrizzleWhere<T> =
-  | SQL<unknown>
-  | ((aliases: T) => SQL<T> | undefined)
-  | undefined
-
 export type ColumnType = "text" | "number" | "select" | "multi-select" | "date"
 
 export type Operator = DataTableConfig["operators"][number]["value"]

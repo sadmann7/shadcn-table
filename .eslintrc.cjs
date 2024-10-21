@@ -26,6 +26,7 @@ const config = {
       {
         argsIgnorePattern: "^_",
         varsIgnorePattern: "^_",
+        caughtErrorsIgnorePattern: "^err",
         ignoreRestSiblings: true,
       },
     ],

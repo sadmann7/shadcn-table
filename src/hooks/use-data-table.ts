@@ -208,7 +208,7 @@ export function useDataTable<TData>({
         // Faceted filter
         acc[field.value as string] = parseAsArrayOf(
           parseAsString,
-          "."
+          ","
         ).withOptions(queryStateOptions)
       } else {
         // Search filter
