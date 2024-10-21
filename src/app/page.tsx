@@ -8,7 +8,11 @@ import { Shell } from "@/components/shell"
 
 import { FeatureFlagsProvider } from "./_components/feature-flags-provider"
 import { TasksTable } from "./_components/tasks-table"
-import { getTasks } from "./_lib/queries"
+import {
+  getTaskPriorityCounts,
+  getTasks,
+  getTaskStatusCounts,
+} from "./_lib/queries"
 import { searchParamsSchema } from "./_lib/validations"
 
 export interface IndexPageProps {
@@ -18,7 +22,11 @@ export interface IndexPageProps {
 export default async function IndexPage({ searchParams }: IndexPageProps) {
   const search = searchParamsSchema.parse(searchParams)
 
-  const tasksPromise = getTasks(search)
+  const promises = Promise.all([
+    getTasks(search),
+    getTaskStatusCounts(),
+    getTaskPriorityCounts(),
+  ])
 
   return (
     <Shell className="gap-2">
@@ -42,7 +50,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
             />
           }
         >
-          <TasksTable tasksPromise={tasksPromise} />
+          <TasksTable promises={promises} />
         </React.Suspense>
       </FeatureFlagsProvider>
     </Shell>

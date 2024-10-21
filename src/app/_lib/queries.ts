@@ -1,9 +1,23 @@
 import "server-only"
 
-import { unstable_noStore as noStore } from "next/cache"
+import {
+  unstable_cache as cache,
+  unstable_noStore as noStore,
+} from "next/cache"
 import { db } from "@/db"
 import { tasks, type Task } from "@/db/schema"
-import { and, asc, count, desc, gte, lte, or, type SQL } from "drizzle-orm"
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  gt,
+  gte,
+  lte,
+  or,
+  type SQL,
+} from "drizzle-orm"
 
 import { filterColumn } from "@/lib/filter-column"
 
@@ -97,34 +111,118 @@ export async function getTasks(input: GetTasksSchema) {
   }
 }
 
-export async function getTaskCountByStatus() {
-  noStore()
-  try {
-    return await db
-      .select({
-        status: tasks.status,
-        count: count(),
-      })
-      .from(tasks)
-      .groupBy(tasks.status)
-      .execute()
-  } catch (err) {
-    return []
-  }
+export async function getTaskCountByStatus(status: Task["status"]) {
+  return cache(
+    async () => {
+      try {
+        return await db
+          .selectDistinct({
+            count: count(),
+          })
+          .from(tasks)
+          .where(eq(tasks.status, status))
+          .groupBy(tasks.status)
+          .having(gt(count(tasks.status), 0))
+          .then((res) => res[0]?.count ?? 0)
+      } catch (err) {
+        return 0
+      }
+    },
+    [`task-status-${status}`],
+    {
+      revalidate: 900,
+      tags: ["task-count", `task-status-${status}`],
+    }
+  )()
 }
 
-export async function getTaskCountByPriority() {
-  noStore()
-  try {
-    return await db
-      .select({
-        priority: tasks.priority,
-        count: count(),
-      })
-      .from(tasks)
-      .groupBy(tasks.priority)
-      .execute()
-  } catch (err) {
-    return []
-  }
+export async function getTaskCountByPriority(priority: Task["priority"]) {
+  return cache(
+    async () => {
+      try {
+        return await db
+          .selectDistinct({
+            count: count(),
+          })
+          .from(tasks)
+          .where(eq(tasks.priority, priority))
+          .groupBy(tasks.priority)
+          .having(gt(count(tasks.priority), 0))
+          .then((res) => res[0]?.count ?? 0)
+      } catch (err) {
+        return 0
+      }
+    },
+    [`task-priority-${priority}`],
+    {
+      revalidate: 900,
+      tags: ["task-count", `task-priority-${priority}`],
+    }
+  )()
+}
+
+export async function getTaskStatusCounts() {
+  return cache(
+    async () => {
+      try {
+        return await db
+          .select({
+            status: tasks.status,
+            count: count(),
+          })
+          .from(tasks)
+          .groupBy(tasks.status)
+          .having(gt(count(), 0))
+          .then((res) =>
+            res.reduce(
+              (acc, { status, count }) => {
+                acc[status] = count
+                return acc
+              },
+              {} as Record<Task["status"], number>
+            )
+          )
+      } catch (err) {
+        return {} as Record<Task["status"], number>
+      }
+    },
+    ["task-status-counts"],
+    {
+      revalidate: 900,
+      tags: ["task-count", "task-status-counts"],
+    }
+  )()
+}
+
+export async function getTaskPriorityCounts() {
+  return cache(
+    async () => {
+      try {
+        return await db
+          .select({
+            priority: tasks.priority,
+            count: count(),
+          })
+          .from(tasks)
+          .groupBy(tasks.priority)
+          .having(gt(count(), 0))
+          .then((res) =>
+            res.reduce(
+              (acc, { priority, count }) => {
+                acc[priority] = count
+                return acc
+              },
+              {} as Record<Task["priority"], number>
+            )
+          )
+      } catch (err) {
+        return {} as Record<Task["priority"], number>
+      }
+    },
+    ["task-priority-counts"],
+    {
+      revalidate: 900,
+      tags: ["task-count", "task-priority-counts"],
+    }
+  )()
 }

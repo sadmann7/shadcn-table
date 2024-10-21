@@ -2,6 +2,12 @@ import { type SQL } from "drizzle-orm"
 
 import { type DataTableConfig } from "@/config/data-table"
 
+export type Prettify<T> = {
+  [K in keyof T]: T[K]
+} & {}
+
+export type NonUndefined<T> = T extends undefined ? never : T
+
 export interface SearchParams {
   [key: string]: string | string[] | undefined
 }
@@ -10,7 +16,7 @@ export interface Option {
   label: string
   value: string
   icon?: React.ComponentType<{ className?: string }>
-  withCount?: boolean
+  count?: number
 }
 
 export interface DataTableFilterField<TData> {
