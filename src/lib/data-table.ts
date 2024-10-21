@@ -45,43 +45,16 @@ export function getDefaultFilterOperator(columnType: ColumnType): Operator {
   return "eq"
 }
 
-export function getFilterOperators(columnType: ColumnType): {
-  label: string
-  value: Operator
-}[] {
-  const numericOperators: Operator[] = [
-    "eq",
-    "ne",
-    "lt",
-    "lte",
-    "gt",
-    "gte",
-    "isEmpty",
-    "isNotEmpty",
-  ]
-  const selectOperators: Operator[] = ["eq", "ne", "isEmpty", "isNotEmpty"]
-  const textOperators: Operator[] = [
-    "iLike",
-    "notILike",
-    "eq",
-    "ne",
-    "isEmpty",
-    "isNotEmpty",
-  ]
+export function getFilterOperators(columnType: ColumnType) {
+  const operatorMap: Record<ColumnType, { label: string; value: Operator }[]> =
+    {
+      text: dataTableConfig.textOperators,
+      number: dataTableConfig.numericOperators,
+      select: dataTableConfig.selectOperators,
+      "multi-select": dataTableConfig.selectOperators,
+      boolean: dataTableConfig.booleanOperators,
+      date: dataTableConfig.dateOperators,
+    }
 
-  if (columnType === "number" || columnType === "date") {
-    return dataTableConfig.operators.filter((op) =>
-      numericOperators.includes(op.value)
-    )
-  }
-
-  if (columnType === "select" || columnType === "multi-select") {
-    return dataTableConfig.operators.filter((op) =>
-      selectOperators.includes(op.value)
-    )
-  }
-
-  return dataTableConfig.operators.filter((op) =>
-    textOperators.includes(op.value)
-  )
+  return operatorMap[columnType] ?? dataTableConfig.textOperators
 }

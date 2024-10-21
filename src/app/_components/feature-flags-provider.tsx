@@ -39,7 +39,7 @@ interface FeatureFlagsProviderProps {
 
 export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
   const [featureFlags, setFeatureFlags] = useQueryState<FeatureFlagValue[]>(
-    "featureFlags",
+    "flags",
     {
       defaultValue: [],
       parse: (value) => value.split(",") as FeatureFlagValue[],

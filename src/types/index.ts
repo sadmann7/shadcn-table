@@ -30,9 +30,13 @@ export interface DataTableFilterOption<TData> {
   isMulti?: boolean
 }
 
-export type ColumnType = "text" | "number" | "select" | "multi-select" | "date"
-
-export type Operator = DataTableConfig["operators"][number]["value"]
+export type ColumnType =
+  | "text"
+  | "number"
+  | "select"
+  | "multi-select"
+  | "date"
+  | "boolean"
 
 export interface QueryBuilderOpts {
   where?: SQL
@@ -40,3 +44,9 @@ export interface QueryBuilderOpts {
   distinct?: boolean
   nullish?: boolean
 }
+
+export type OperatorType = "text" | "numeric" | "select" | "boolean" | "date"
+
+export type Operator = {
+  [K in OperatorType]: DataTableConfig[`${K}Operators`][number]["value"]
+}[OperatorType]
