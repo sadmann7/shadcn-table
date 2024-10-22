@@ -112,28 +112,78 @@ export function DataTableFilterList<TData>({
           </Select>
         )
       case "multi-select":
-        const selectedValues = new Set(filter.value as string[])
+        const selectedValues = new Set(
+          Array.isArray(filter.value) ? filter.value : []
+        )
 
         return (
           <FacetedFilter>
-            <FacetedFilterTrigger className="w-full rounded text-muted-foreground hover:text-muted-foreground">
-              {filterColumn?.label}
-              <CaretSortIcon className="ml-2 size-4" />
+            <FacetedFilterTrigger asChild>
+              <Button
+                variant="outline"
+                className="h-8 w-full justify-start rounded px-2 text-left text-muted-foreground hover:text-muted-foreground"
+              >
+                <>
+                  {selectedValues.size === 0 && (
+                    <>
+                      Select options...
+                      <CaretSortIcon className="ml-2 size-4" />
+                    </>
+                  )}
+                </>
+                {selectedValues?.size > 0 && (
+                  <div className="flex items-center">
+                    <Badge
+                      variant="secondary"
+                      className="rounded-sm px-1 font-normal lg:hidden"
+                    >
+                      {selectedValues.size}
+                    </Badge>
+                    <div className="hidden min-w-0 gap-1 lg:flex">
+                      {selectedValues.size > 2 ? (
+                        <Badge
+                          variant="secondary"
+                          className="rounded-sm px-1 font-normal"
+                        >
+                          {selectedValues.size} selected
+                        </Badge>
+                      ) : (
+                        filter?.options
+                          ?.filter((option) => selectedValues.has(option.value))
+                          .map((option) => (
+                            <Badge
+                              variant="secondary"
+                              key={option.value}
+                              className="truncate rounded-sm px-1 font-normal"
+                            >
+                              {option.label}
+                            </Badge>
+                          ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </Button>
             </FacetedFilterTrigger>
             <FacetedFilterContent className="w-[200px]">
-              <FacetedFilterInput placeholder="Search options..." />
+              <FacetedFilterInput
+                placeholder={filterColumn?.label ?? "Search options..."}
+              />
               <FacetedFilterList>
                 <FacetedFilterEmpty>No options found.</FacetedFilterEmpty>
                 <FacetedFilterGroup>
                   {filter.options?.map((option) => (
                     <FacetedFilterItem
                       key={option.value}
+                      value={option.value}
                       selected={selectedValues.has(option.value)}
-                      onSelect={() => {
-                        const currentValue = filter.value as string[]
-                        const newValue = currentValue.includes(option.value)
-                          ? currentValue.filter((v) => v !== option.value)
-                          : [...currentValue, option.value]
+                      onSelect={(value) => {
+                        const currentValue = Array.isArray(filter.value)
+                          ? filter.value
+                          : []
+                        const newValue = currentValue.includes(value)
+                          ? currentValue.filter((v) => v !== value)
+                          : [...currentValue, value]
                         updateFilter(index, { value: newValue })
                       }}
                     >
@@ -197,6 +247,8 @@ export function DataTableFilterList<TData>({
         return null
     }
   }
+
+  console.log({ filters })
 
   return (
     <Popover>
@@ -286,7 +338,9 @@ export function DataTableFilterList<TData>({
                     ))}
                   </SelectContent>
                 </Select>
-                <div className="flex-1">{renderFilterInput(filter, index)}</div>
+                <div className="min-w-36 flex-1">
+                  {renderFilterInput(filter, index)}
+                </div>
                 <Button
                   variant="outline"
                   size="icon"
