@@ -63,13 +63,25 @@ export function DataTableFilterList<TData>({
   }
 
   function updateFilter(index: number, field: Partial<FilterCondition<TData>>) {
-    const updatedFilters = [...filters]
-    updatedFilters[index] = {
-      ...updatedFilters[index],
-      ...field,
-    } as FilterCondition<TData>
-    setFilters(updatedFilters)
-    onFilterChange(updatedFilters)
+    setFilters((prevFilters) => {
+      const updatedFilters = prevFilters.map((filter, i) => {
+        if (i !== index) {
+          return "joinOperator" in field && index === 0
+            ? { ...filter, joinOperator: field.joinOperator ?? "and" }
+            : filter
+        }
+
+        const updatedFilter = { ...filter, ...field }
+        if ("type" in field) {
+          updatedFilter.value = ""
+        }
+        return updatedFilter
+      })
+
+      requestAnimationFrame(() => onFilterChange(updatedFilters))
+
+      return updatedFilters
+    })
   }
 
   function removeFilter(index: number) {
@@ -312,7 +324,7 @@ export function DataTableFilterList<TData>({
                   <span className="w-20 text-center text-sm text-muted-foreground">
                     Where
                   </span>
-                ) : (
+                ) : index === 1 ? (
                   <Select
                     value={filter.joinOperator}
                     onValueChange={(value) =>
@@ -330,6 +342,10 @@ export function DataTableFilterList<TData>({
                       ))}
                     </SelectContent>
                   </Select>
+                ) : (
+                  <span className="w-20 text-center text-sm text-muted-foreground">
+                    {filter.joinOperator}
+                  </span>
                 )}
                 <Select
                   value={filter.id as string}
