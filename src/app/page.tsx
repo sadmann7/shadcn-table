@@ -15,7 +15,7 @@ import {
 } from "./_lib/queries"
 import { searchParamsSchema } from "./_lib/validations"
 
-export interface IndexPageProps {
+interface IndexPageProps {
   searchParams: Promise<SearchParams>
 }
 

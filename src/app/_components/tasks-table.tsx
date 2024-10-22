@@ -2,12 +2,11 @@
 
 import * as React from "react"
 import { tasks, type Task } from "@/db/schema"
-import { type DataTableFilterField } from "@/types"
+import type { DataTableFilterField, FilterColumn } from "@/types"
 
 import { useDataTable } from "@/hooks/use-data-table"
-import { DataTableAdvancedToolbar } from "@/components/data-table/advanced/data-table-advanced-toolbar"
+import { AdvancedToolbar } from "@/components/data-table/advanced-toolbar"
 import { DataTable } from "@/components/data-table/data-table"
-import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 
 import type {
   getTaskPriorityCounts,
@@ -95,16 +94,23 @@ export function TasksTable({ promises }: TasksTableProps) {
     clearOnDefault: true,
   })
 
-  const Toolbar = advancedFilter ? DataTableAdvancedToolbar : DataTableToolbar
+  const filterColumns: FilterColumn<Task>[] = [
+    {
+      id: "title",
+      label: "Title",
+      type: "text",
+      placeholder: "Filter titles...",
+    },
+  ]
 
   return (
     <DataTable
       table={table}
       floatingBar={floatingBar ? <TasksTableFloatingBar table={table} /> : null}
     >
-      <Toolbar table={table} filterFields={filterFields}>
+      <AdvancedToolbar table={table} filterColumns={filterColumns}>
         <TasksTableToolbarActions table={table} />
-      </Toolbar>
+      </AdvancedToolbar>
     </DataTable>
   )
 }

@@ -26,6 +26,23 @@ export interface DataTableFilterField<TData> {
   options?: Option[]
 }
 
+export interface FilterColumn<TData> {
+  id: keyof TData
+  label: string
+  placeholder?: string
+  type: ColumnType
+  options?: Option[]
+}
+
+export interface FilterCondition<TData> {
+  id: keyof TData
+  value: string | number | boolean | Date | string[]
+  type: ColumnType
+  operator: string
+  joinOperator: string
+  options?: Option[]
+}
+
 export interface DataTableFilterOption<TData> {
   id: string
   label: string
