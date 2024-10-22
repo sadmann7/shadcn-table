@@ -126,6 +126,11 @@ export function TasksTable({ promises }: TasksTableProps) {
       label: "Created At",
       type: "date",
     },
+    {
+      id: "archived",
+      label: "Archived",
+      type: "boolean",
+    },
   ]
 
   return (

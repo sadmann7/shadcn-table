@@ -11,6 +11,16 @@ import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
+import {
+  FacetedFilter,
+  FacetedFilterContent,
+  FacetedFilterEmpty,
+  FacetedFilterGroup,
+  FacetedFilterInput,
+  FacetedFilterItem,
+  FacetedFilterList,
+  FacetedFilterTrigger,
+} from "@/components/ui/faceted-filter"
 import { Input } from "@/components/ui/input"
 import {
   Popover,
@@ -24,7 +34,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { FacetedFilter } from "@/components/faceted-filter"
 import { Icons } from "@/components/icons"
 
 interface DataTableFilterListProps<TData> {
@@ -103,17 +112,37 @@ export function DataTableFilterList<TData>({
           </Select>
         )
       case "multi-select":
+        const selectedValues = new Set(filter.value as string[])
+
         return (
-          <FacetedFilter
-            options={filter.options ?? []}
-            value={Array.isArray(filter.value) ? filter.value : []}
-            onValueChange={(value) => updateFilter(index, { value })}
-            contentWidth={200}
-            placeholder={filterColumn?.label}
-            className="w-full rounded text-muted-foreground hover:text-muted-foreground"
-          >
-            Select an option
-            <CaretSortIcon className="size-4" />
+          <FacetedFilter>
+            <FacetedFilterTrigger className="w-full rounded text-muted-foreground hover:text-muted-foreground">
+              {filterColumn?.label}
+              <CaretSortIcon className="ml-2 size-4" />
+            </FacetedFilterTrigger>
+            <FacetedFilterContent className="w-[200px]">
+              <FacetedFilterInput placeholder="Search options..." />
+              <FacetedFilterList>
+                <FacetedFilterEmpty>No options found.</FacetedFilterEmpty>
+                <FacetedFilterGroup>
+                  {filter.options?.map((option) => (
+                    <FacetedFilterItem
+                      key={option.value}
+                      selected={selectedValues.has(option.value)}
+                      onSelect={() => {
+                        const currentValue = filter.value as string[]
+                        const newValue = currentValue.includes(option.value)
+                          ? currentValue.filter((v) => v !== option.value)
+                          : [...currentValue, option.value]
+                        updateFilter(index, { value: newValue })
+                      }}
+                    >
+                      {option.label}
+                    </FacetedFilterItem>
+                  ))}
+                </FacetedFilterGroup>
+              </FacetedFilterList>
+            </FacetedFilterContent>
           </FacetedFilter>
         )
       case "date":
@@ -268,9 +297,23 @@ export function DataTableFilterList<TData>({
                 </Button>
               </div>
             ))}
-            <Button size="sm" onClick={addFilter} className="mt-2 rounded">
-              Add Filter
-            </Button>
+            <div className="mt-2 flex w-full items-center gap-2">
+              <Button
+                size="sm"
+                className="h-[1.85rem] rounded"
+                onClick={addFilter}
+              >
+                Add filter
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="rounded"
+                onClick={() => setFilters([])}
+              >
+                Reset filters
+              </Button>
+            </div>
           </div>
         </div>
       </PopoverContent>
