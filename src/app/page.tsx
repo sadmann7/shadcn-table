@@ -15,12 +15,13 @@ import {
 } from "./_lib/queries"
 import { searchParamsSchema } from "./_lib/validations"
 
-export interface IndexPageProps {
-  searchParams: SearchParams
+interface IndexPageProps {
+  searchParams: Promise<SearchParams>
 }
 
-export default async function IndexPage({ searchParams }: IndexPageProps) {
-  const search = searchParamsSchema.parse(await searchParams)
+export default async function IndexPage(props: IndexPageProps) {
+  const searchParams = await props.searchParams
+  const search = searchParamsSchema.parse(searchParams)
 
   const promises = Promise.all([
     getTasks(search),
