@@ -95,21 +95,58 @@ export function DataTableFilterList<TData>({
         )
       case "select":
         return (
-          <Select
-            value={filter.value as string}
-            onValueChange={(value) => updateFilter(index, { value })}
-          >
-            <SelectTrigger className="h-8 w-full rounded bg-transparent">
-              <SelectValue placeholder={filterColumn?.label} />
-            </SelectTrigger>
-            <SelectContent>
-              {filter.options?.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <FacetedFilter>
+            <FacetedFilterTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 w-full justify-start rounded text-left text-muted-foreground hover:text-muted-foreground"
+              >
+                {filter.value && typeof filter.value === "string" ? (
+                  <Badge
+                    variant="secondary"
+                    className="rounded-sm px-1 font-normal"
+                  >
+                    {filter.options?.find(
+                      (option) => option.value === filter.value
+                    )?.label || filter.value}
+                  </Badge>
+                ) : (
+                  <>
+                    Select option...
+                    <CaretSortIcon className="ml-2 size-4" />
+                  </>
+                )}
+              </Button>
+            </FacetedFilterTrigger>
+            <FacetedFilterContent className="w-[12.5rem]">
+              <FacetedFilterInput
+                placeholder={filterColumn?.label ?? "Search options..."}
+              />
+              <FacetedFilterList>
+                <FacetedFilterEmpty>No options found.</FacetedFilterEmpty>
+                <FacetedFilterGroup>
+                  {filter.options?.map((option) => (
+                    <FacetedFilterItem
+                      key={option.value}
+                      value={option.value}
+                      selected={filter.value === option.value}
+                      onSelect={(value) => {
+                        updateFilter(index, { value })
+                        const closeEvent = new Event("keydown")
+                        Object.defineProperty(closeEvent, "key", {
+                          value: "Escape",
+                        })
+                        document.dispatchEvent(closeEvent)
+                      }}
+                    >
+                      {option.label}
+                    </FacetedFilterItem>
+                  ))}
+                </FacetedFilterGroup>
+              </FacetedFilterList>
+            </FacetedFilterContent>
+          </FacetedFilter>
         )
       case "multi-select":
         const selectedValues = new Set(
@@ -121,7 +158,8 @@ export function DataTableFilterList<TData>({
             <FacetedFilterTrigger asChild>
               <Button
                 variant="outline"
-                className="h-8 w-full justify-start rounded px-2 text-left text-muted-foreground hover:text-muted-foreground"
+                size="sm"
+                className="h-8 w-full justify-start rounded text-left text-muted-foreground hover:text-muted-foreground"
               >
                 <>
                   {selectedValues.size === 0 && (
@@ -165,7 +203,7 @@ export function DataTableFilterList<TData>({
                 )}
               </Button>
             </FacetedFilterTrigger>
-            <FacetedFilterContent className="w-[200px]">
+            <FacetedFilterContent className="w-[12.5rem]">
               <FacetedFilterInput
                 placeholder={filterColumn?.label ?? "Search options..."}
               />
@@ -201,8 +239,9 @@ export function DataTableFilterList<TData>({
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
+                size="sm"
                 className={cn(
-                  "w-full justify-start text-left font-normal",
+                  "h-8 w-full justify-start rounded text-left font-normal",
                   !filter.value && "text-muted-foreground"
                 )}
               >

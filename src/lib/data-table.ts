@@ -39,9 +39,10 @@ export function getCommonPinningStyles<TData>({
 }
 
 export function getDefaultFilterOperator(columnType: ColumnType): Operator {
-  if (columnType === "select" || columnType === "multi-select") {
+  if (columnType === "text") {
     return "iLike"
   }
+
   return "eq"
 }
 
