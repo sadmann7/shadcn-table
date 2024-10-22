@@ -80,6 +80,17 @@ export function TasksTable({ promises }: TasksTableProps) {
     },
   ]
 
+  /**
+   * Advanced filter fields for the data table.
+   * These fields provide more complex filtering options compared to the regular filterFields.
+   *
+   * Key differences from regular filterFields:
+   * 1. More field types: Includes 'text', 'multi-select', 'date', and 'boolean'.
+   * 2. Enhanced flexibility: Allows for more precise and varied filtering options.
+   * 3. Used with DataTableAdvancedToolbar: Enables a more sophisticated filtering UI.
+   * 4. No icons: Unlike regular filterFields, these don't include icon properties.
+   * 5. Date and boolean types: Adds support for filtering by date ranges and boolean values.
+   */
   const advancedFilterFields: DataTableAdvancedFilterField<Task>[] = [
     {
       id: "title",

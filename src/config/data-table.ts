@@ -37,7 +37,7 @@ export const dataTableConfig = {
       value: "advancedFilter" as const,
       icon: MixIcon,
       tooltipTitle: "Toggle advanced filter",
-      tooltipDescription: "A notion like query builder to filter rows.",
+      tooltipDescription: "An airtable like query builder to filter rows.",
     },
     {
       label: "Floating bar",

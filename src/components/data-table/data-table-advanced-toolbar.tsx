@@ -32,7 +32,7 @@ export function DataTableAdvancedToolbar<TData>({
   return (
     <div
       className={cn(
-        "flex w-full items-center justify-between space-x-2 overflow-auto p-1",
+        "flex w-full items-center justify-between gap-2 overflow-auto p-1",
         className
       )}
       {...props}
@@ -42,7 +42,7 @@ export function DataTableAdvancedToolbar<TData>({
         filters={filters}
         onFiltersChange={onFiltersChange}
       />
-      <div className="flex flex-1 items-center space-x-2">
+      <div className="flex flex-1 items-center gap-2">
         {isFiltered && (
           <Button
             aria-label="Reset filters"
