@@ -104,10 +104,10 @@ export async function updateTask(input: UpdateTaskSchema & { id: string }) {
       .then(takeFirstOrThrow)
 
     revalidateTag("tasks")
-    if (data.status !== input.status) {
+    if (data.status === input.status) {
       revalidateTag("task-status-counts")
     }
-    if (data.priority !== input.priority) {
+    if (data.priority === input.priority) {
       revalidateTag("task-priority-counts")
     }
 
@@ -146,10 +146,10 @@ export async function updateTasks(input: {
       .then(takeFirstOrThrow)
 
     revalidateTag("tasks")
-    if (data.status !== input.status) {
+    if (data.status === input.status) {
       revalidateTag("task-status-counts")
     }
-    if (data.priority !== input.priority) {
+    if (data.priority === input.priority) {
       revalidateTag("task-priority-counts")
     }
 

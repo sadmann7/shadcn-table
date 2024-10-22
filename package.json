@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rimraf --glob **/node_modules **/dist **/.next pnpm-lock.yaml **/.tsbuildinfo",
     "build": "next build",
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
@@ -17,7 +17,6 @@
     "shadcn:add": "pnpm dlx shadcn@latest add",
     "db:generate": "dotenv drizzle-kit generate",
     "db:introspect": "dotenv drizzle-kit introspect",
-    "db:up": "dotenv drizzle-kit up",
     "db:push": "dotenv drizzle-kit push",
     "db:migrate": "dotenv tsx src/db/migrate.ts",
     "db:drop-migration": "drizzle-kit drop",
@@ -49,14 +48,14 @@
     "export-to-csv": "^1.4.0",
     "geist": "^1.3.1",
     "nanoid": "^5.0.7",
-    "next": "15.0.1-canary.1",
+    "next": "^15.0.0",
     "next-themes": "^0.3.0",
     "nuqs": "^2.0.0",
     "postgres": "^3.4.4",
-    "react": "19.0.0-rc-69d4b800-20241021",
+    "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
-    "react-dom": "19.0.0-rc-69d4b800-20241021",
-    "react-hook-form": "^7.53.0",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.1",
     "server-only": "^0.0.1",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.4",
@@ -69,16 +68,16 @@
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
     "@total-typescript/ts-reset": "^0.6.1",
     "@types/eslint": "^8.56.10",
-    "@types/node": "^22.7.4",
-    "@types/react": "npm:types-react@19.0.0-rc.1",
-    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
-    "@typescript-eslint/eslint-plugin": "^8.8.0",
-    "@typescript-eslint/parser": "^8.8.0",
+    "@types/node": "^22.7.8",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "@typescript-eslint/eslint-plugin": "^8.11.0",
+    "@typescript-eslint/parser": "^8.11.0",
     "autoprefixer": "^10.4.20",
     "dotenv-cli": "^7.4.2",
     "drizzle-kit": "^0.26.2",
     "eslint": "^8.57.0",
-    "eslint-config-next": "15.0.1-canary.1",
+    "eslint-config-next": "^15.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-tailwindcss": "^3.17.5",
     "pg": "^8.13.0",
@@ -93,11 +92,5 @@
   "ct3aMetadata": {
     "initVersion": "7.23.1"
   },
-  "packageManager": "pnpm@9.12.2",
-  "pnpm": {
-    "overrides": {
-      "@types/react": "npm:types-react@19.0.0-rc.1",
-      "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
-    }
-  }
+  "packageManager": "pnpm@9.12.2"
 }

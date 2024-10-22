@@ -10,7 +10,6 @@ export const searchParamsSchema = z.object({
   priority: z.string().optional(),
   from: z.string().optional(),
   to: z.string().optional(),
-  operator: z.enum(["and", "or"]).optional(),
 })
 
 export const getTasksSchema = searchParamsSchema

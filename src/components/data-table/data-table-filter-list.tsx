@@ -1,6 +1,11 @@
 "use client"
 
-import type { DataTableAdvancedFilterField, FilterCondition } from "@/types"
+import type {
+  DataTableAdvancedFilterField,
+  FilterCondition,
+  JoinOperator,
+  Operator,
+} from "@/types"
 import { CalendarIcon, CaretSortIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
 
@@ -329,7 +334,7 @@ export function DataTableFilterList<TData>({
                 ) : index === 1 ? (
                   <Select
                     value={filter.joinOperator}
-                    onValueChange={(value) =>
+                    onValueChange={(value: JoinOperator) =>
                       updateFilter(index, { joinOperator: value })
                     }
                   >
@@ -380,7 +385,7 @@ export function DataTableFilterList<TData>({
                 </Select>
                 <Select
                   value={filter.operator}
-                  onValueChange={(value) =>
+                  onValueChange={(value: Operator) =>
                     updateFilter(index, { operator: value })
                   }
                 >
