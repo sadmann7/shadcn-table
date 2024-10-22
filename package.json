@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rimraf --glob **/node_modules **/dist **/.next pnpm-lock.yaml **/.tsbuildinfo",
     "build": "next build",
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
@@ -48,13 +48,13 @@
     "export-to-csv": "^1.4.0",
     "geist": "^1.3.1",
     "nanoid": "^5.0.7",
-    "next": "^14.2.14",
+    "next": "15.0.1-canary.1",
     "next-themes": "^0.3.0",
     "nuqs": "^1.19.3",
     "postgres": "^3.4.4",
-    "react": "^18.3.1",
+    "react": "19.0.0-rc-69d4b800-20241021",
     "react-day-picker": "^8.10.1",
-    "react-dom": "^18.3.1",
+    "react-dom": "19.0.0-rc-69d4b800-20241021",
     "react-hook-form": "^7.53.0",
     "server-only": "^0.0.1",
     "sonner": "^1.5.0",
@@ -69,15 +69,15 @@
     "@total-typescript/ts-reset": "^0.6.1",
     "@types/eslint": "^8.56.10",
     "@types/node": "^22.7.4",
-    "@types/react": "^18.3.11",
-    "@types/react-dom": "^18.3.0",
+    "@types/react": "npm:types-react@19.0.0-rc.1",
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "@typescript-eslint/eslint-plugin": "^8.8.0",
     "@typescript-eslint/parser": "^8.8.0",
     "autoprefixer": "^10.4.20",
     "dotenv-cli": "^7.4.2",
     "drizzle-kit": "^0.26.0",
     "eslint": "^8.57.0",
-    "eslint-config-next": "^14.2.14",
+    "eslint-config-next": "15.0.1-canary.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-tailwindcss": "^3.17.4",
     "pg": "^8.13.0",
@@ -92,5 +92,11 @@
   "ct3aMetadata": {
     "initVersion": "7.23.1"
   },
-  "packageManager": "pnpm@9.12.2"
+  "packageManager": "pnpm@9.12.2",
+  "pnpm": {
+    "overrides": {
+      "@types/react": "npm:types-react@19.0.0-rc.1",
+      "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
+    }
+  }
 }
