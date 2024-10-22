@@ -20,18 +20,15 @@ export interface Option {
 }
 
 export interface DataTableFilterField<TData> {
+  id: keyof TData
   label: string
-  value: keyof TData
   placeholder?: string
   options?: Option[]
 }
 
-export interface FilterColumn<TData> {
-  id: keyof TData
-  label: string
-  placeholder?: string
+export interface DataTableAdvancedFilterField<TData>
+  extends DataTableFilterField<TData> {
   type: ColumnType
-  options?: Option[]
 }
 
 export interface FilterCondition<TData> {
@@ -41,16 +38,6 @@ export interface FilterCondition<TData> {
   operator: string
   joinOperator: string
   options?: Option[]
-}
-
-export interface DataTableFilterOption<TData> {
-  id: string
-  label: string
-  value: keyof TData
-  options: Option[]
-  filterValues?: string[]
-  filterOperator?: string
-  isMulti?: boolean
 }
 
 export type ColumnType =

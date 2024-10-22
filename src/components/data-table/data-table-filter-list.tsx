@@ -1,13 +1,13 @@
 "use client"
 
-import * as React from "react"
-import type { FilterColumn, FilterCondition } from "@/types"
+import type { DataTableAdvancedFilterField, FilterCondition } from "@/types"
 import { CalendarIcon, CaretSortIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
 
 import { dataTableConfig } from "@/config/data-table"
 import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table"
 import { cn } from "@/lib/utils"
+import { useControllableState } from "@/hooks/use-controllable-state"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -37,18 +37,23 @@ import {
 import { Icons } from "@/components/icons"
 
 interface DataTableFilterListProps<TData> {
-  filterColumns: FilterColumn<TData>[]
-  onFilterChange: (filters: FilterCondition<TData>[]) => void
+  filterFields: DataTableAdvancedFilterField<TData>[]
+  filters?: FilterCondition<TData>[]
+  onFiltersChange?: (filters: FilterCondition<TData>[]) => void
 }
 
 export function DataTableFilterList<TData>({
-  filterColumns,
-  onFilterChange,
+  filterFields,
+  filters: filtersProp,
+  onFiltersChange,
 }: DataTableFilterListProps<TData>) {
-  const [filters, setFilters] = React.useState<FilterCondition<TData>[]>([])
+  const [filters = [], setFilters] = useControllableState({
+    prop: filtersProp,
+    onChange: onFiltersChange,
+  })
 
   function addFilter() {
-    const firstColumn = filterColumns[0]
+    const firstColumn = filterFields[0]
     if (firstColumn) {
       const newFilter: FilterCondition<TData> = {
         id: firstColumn.id,
@@ -64,7 +69,7 @@ export function DataTableFilterList<TData>({
 
   function updateFilter(index: number, field: Partial<FilterCondition<TData>>) {
     setFilters((prevFilters) => {
-      const updatedFilters = prevFilters.map((filter, i) => {
+      const updatedFilters = prevFilters?.map((filter, i) => {
         if (i !== index) {
           return "joinOperator" in field && index === 0
             ? { ...filter, joinOperator: field.joinOperator ?? "and" }
@@ -78,8 +83,6 @@ export function DataTableFilterList<TData>({
         return updatedFilter
       })
 
-      requestAnimationFrame(() => onFilterChange(updatedFilters))
-
       return updatedFilters
     })
   }
@@ -87,11 +90,10 @@ export function DataTableFilterList<TData>({
   function removeFilter(index: number) {
     const updatedFilters = filters.filter((_, i) => i !== index)
     setFilters(updatedFilters)
-    onFilterChange(updatedFilters)
   }
 
   function renderFilterInput(filter: FilterCondition<TData>, index: number) {
-    const filterColumn = filterColumns.find((col) => col.id === filter.id)
+    const filterColumn = filterFields.find((col) => col.id === filter.id)
 
     switch (filter.type) {
       case "text":
@@ -304,8 +306,8 @@ export function DataTableFilterList<TData>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline">
-          <Icons.listFilter className="mr-2 size-4" aria-hidden="true" />
+        <Button variant="outline" size="sm">
+          <Icons.listFilter className="mr-2 size-3.5" aria-hidden="true" />
           Filters
           {filters.length > 0 && (
             <Badge variant="secondary" className="ml-2 rounded-sm">
@@ -350,7 +352,7 @@ export function DataTableFilterList<TData>({
                 <Select
                   value={filter.id as string}
                   onValueChange={(value) => {
-                    const column = filterColumns.find((col) => col.id === value)
+                    const column = filterFields.find((col) => col.id === value)
 
                     if (column) {
                       updateFilter(index, {
@@ -366,7 +368,7 @@ export function DataTableFilterList<TData>({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {filterColumns.map((col) => (
+                    {filterFields.map((col) => (
                       <SelectItem
                         key={col.id as string}
                         value={col.id as string}

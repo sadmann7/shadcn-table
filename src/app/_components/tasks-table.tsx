@@ -2,11 +2,15 @@
 
 import * as React from "react"
 import { tasks, type Task } from "@/db/schema"
-import type { DataTableFilterField, FilterColumn } from "@/types"
+import type {
+  DataTableAdvancedFilterField,
+  DataTableFilterField,
+} from "@/types"
 
 import { useDataTable } from "@/hooks/use-data-table"
-import { AdvancedToolbar } from "@/components/data-table/advanced-toolbar"
 import { DataTable } from "@/components/data-table/data-table"
+import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar"
+import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 
 import type {
   getTaskPriorityCounts,
@@ -50,13 +54,13 @@ export function TasksTable({ promises }: TasksTableProps) {
    */
   const filterFields: DataTableFilterField<Task>[] = [
     {
+      id: "title",
       label: "Title",
-      value: "title",
       placeholder: "Filter titles...",
     },
     {
+      id: "status",
       label: "Status",
-      value: "status",
       options: tasks.status.enumValues.map((status) => ({
         label: status[0]?.toUpperCase() + status.slice(1),
         value: status,
@@ -65,8 +69,8 @@ export function TasksTable({ promises }: TasksTableProps) {
       })),
     },
     {
+      id: "priority",
       label: "Priority",
-      value: "priority",
       options: tasks.priority.enumValues.map((priority) => ({
         label: priority[0]?.toUpperCase() + priority.slice(1),
         value: priority,
@@ -76,25 +80,7 @@ export function TasksTable({ promises }: TasksTableProps) {
     },
   ]
 
-  const advancedFilter = featureFlags.includes("advancedFilter")
-  const floatingBar = featureFlags.includes("floatingBar")
-
-  const { table } = useDataTable({
-    data,
-    columns,
-    pageCount,
-    filterFields,
-    enableAdvancedFilter: advancedFilter,
-    initialState: {
-      sorting: [{ id: "createdAt", desc: true }],
-      columnPinning: { right: ["actions"] },
-    },
-    getRowId: (originalRow, index) => `${originalRow.id}-${index}`,
-    shallow: false,
-    clearOnDefault: true,
-  })
-
-  const filterColumns: FilterColumn<Task>[] = [
+  const advancedFilterFields: DataTableAdvancedFilterField<Task>[] = [
     {
       id: "title",
       label: "Title",
@@ -104,7 +90,7 @@ export function TasksTable({ promises }: TasksTableProps) {
     {
       id: "status",
       label: "Status",
-      type: "select",
+      type: "multi-select",
       options: tasks.status.enumValues.map((status) => ({
         label: status[0]?.toUpperCase() + status.slice(1),
         value: status,
@@ -133,14 +119,41 @@ export function TasksTable({ promises }: TasksTableProps) {
     },
   ]
 
+  const advancedFilter = featureFlags.includes("advancedFilter")
+  const floatingBar = featureFlags.includes("floatingBar")
+
+  const { table } = useDataTable({
+    data,
+    columns,
+    pageCount,
+    filterFields,
+    enableAdvancedFilter: advancedFilter,
+    initialState: {
+      sorting: [{ id: "createdAt", desc: true }],
+      columnPinning: { right: ["actions"] },
+    },
+    getRowId: (originalRow, index) => `${originalRow.id}-${index}`,
+    shallow: false,
+    clearOnDefault: true,
+  })
+
   return (
     <DataTable
       table={table}
       floatingBar={floatingBar ? <TasksTableFloatingBar table={table} /> : null}
     >
-      <AdvancedToolbar table={table} filterColumns={filterColumns}>
-        <TasksTableToolbarActions table={table} />
-      </AdvancedToolbar>
+      {advancedFilter ? (
+        <DataTableAdvancedToolbar
+          table={table}
+          filterFields={advancedFilterFields}
+        >
+          <TasksTableToolbarActions table={table} />
+        </DataTableAdvancedToolbar>
+      ) : (
+        <DataTableToolbar table={table} filterFields={filterFields}>
+          <TasksTableToolbarActions table={table} />
+        </DataTableToolbar>
+      )}
     </DataTable>
   )
 }

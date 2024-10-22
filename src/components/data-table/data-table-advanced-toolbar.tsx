@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import type { FilterColumn } from "@/types"
+import type { DataTableAdvancedFilterField, FilterCondition } from "@/types"
 import { Cross2Icon } from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
 
@@ -10,19 +10,23 @@ import { Button } from "@/components/ui/button"
 import { DataTableFilterList } from "@/components/data-table/data-table-filter-list"
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
 
-interface AdvancedToolbarProps<TData>
+interface DataTableAdvancedToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
   table: Table<TData>
-  filterColumns?: FilterColumn<TData>[]
+  filterFields?: DataTableAdvancedFilterField<TData>[]
+  filters?: FilterCondition<TData>[]
+  onFiltersChange?: (filters: FilterCondition<TData>[]) => void
 }
 
-export function AdvancedToolbar<TData>({
+export function DataTableAdvancedToolbar<TData>({
   table,
-  filterColumns = [],
+  filterFields = [],
+  filters,
+  onFiltersChange,
   children,
   className,
   ...props
-}: AdvancedToolbarProps<TData>) {
+}: DataTableAdvancedToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0
 
   return (
@@ -34,8 +38,9 @@ export function AdvancedToolbar<TData>({
       {...props}
     >
       <DataTableFilterList
-        filterColumns={filterColumns}
-        onFilterChange={() => {}}
+        filterFields={filterFields}
+        filters={filters}
+        onFiltersChange={onFiltersChange}
       />
       <div className="flex flex-1 items-center space-x-2">
         {isFiltered && (

@@ -46,18 +46,18 @@ export function DataTableToolbar<TData>({
         {searchableColumns.length > 0 &&
           searchableColumns.map(
             (column) =>
-              table.getColumn(column.value ? String(column.value) : "") && (
+              table.getColumn(column.id ? String(column.id) : "") && (
                 <Input
-                  key={String(column.value)}
+                  key={String(column.id)}
                   placeholder={column.placeholder}
                   value={
                     (table
-                      .getColumn(String(column.value))
+                      .getColumn(String(column.id))
                       ?.getFilterValue() as string) ?? ""
                   }
                   onChange={(event) =>
                     table
-                      .getColumn(String(column.value))
+                      .getColumn(String(column.id))
                       ?.setFilterValue(event.target.value)
                   }
                   className="h-8 w-40 lg:w-64"
@@ -67,12 +67,10 @@ export function DataTableToolbar<TData>({
         {filterableColumns.length > 0 &&
           filterableColumns.map(
             (column) =>
-              table.getColumn(column.value ? String(column.value) : "") && (
+              table.getColumn(column.id ? String(column.id) : "") && (
                 <DataTableFacetedFilter
-                  key={String(column.value)}
-                  column={table.getColumn(
-                    column.value ? String(column.value) : ""
-                  )}
+                  key={String(column.id)}
+                  column={table.getColumn(column.id ? String(column.id) : "")}
                   title={column.label}
                   options={column.options ?? []}
                 />

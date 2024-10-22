@@ -206,14 +206,13 @@ export function useDataTable<TData>({
     >((acc, field) => {
       if (field.options) {
         // Faceted filter
-        acc[field.value as string] = parseAsArrayOf(
+        acc[field.id as string] = parseAsArrayOf(
           parseAsString,
           ","
         ).withOptions(queryStateOptions)
       } else {
         // Search filter
-        acc[field.value as string] =
-          parseAsString.withOptions(queryStateOptions)
+        acc[field.id as string] = parseAsString.withOptions(queryStateOptions)
       }
       return acc
     }, {})
@@ -300,10 +299,10 @@ export function useDataTable<TData>({
         const filterUpdates = next.reduce<
           Record<string, string | string[] | null>
         >((acc, filter) => {
-          if (searchableColumns.find((col) => col.value === filter.id)) {
+          if (searchableColumns.find((col) => col.id === filter.id)) {
             // For search filters, use the value directly
             acc[filter.id] = filter.value as string
-          } else if (filterableColumns.find((col) => col.value === filter.id)) {
+          } else if (filterableColumns.find((col) => col.id === filter.id)) {
             // For faceted filters, use the array of values
             acc[filter.id] = filter.value as string[]
           }
@@ -316,15 +315,18 @@ export function useDataTable<TData>({
           }
         })
 
+        void setPage(1)
+
         debouncedSetFilterValues(filterUpdates)
         return next
       })
     },
     [
       debouncedSetFilterValues,
+      enableAdvancedFilter,
       filterableColumns,
       searchableColumns,
-      enableAdvancedFilter,
+      setPage,
     ]
   )
 
