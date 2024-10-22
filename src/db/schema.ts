@@ -1,6 +1,6 @@
 import { pgTable } from "@/db/utils"
 import { sql } from "drizzle-orm"
-import { timestamp, varchar } from "drizzle-orm/pg-core"
+import { boolean, timestamp, varchar } from "drizzle-orm/pg-core"
 
 import { generateId } from "@/lib/id"
 
@@ -28,6 +28,7 @@ export const tasks = pgTable("tasks", {
   })
     .notNull()
     .default("low"),
+  archived: boolean("archived").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .default(sql`current_timestamp`)

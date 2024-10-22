@@ -2,12 +2,15 @@
 
 import * as React from "react"
 import type { FilterColumn, FilterCondition } from "@/types"
-import { CaretSortIcon } from "@radix-ui/react-icons"
+import { CalendarIcon, CaretSortIcon } from "@radix-ui/react-icons"
+import { format } from "date-fns"
 
 import { dataTableConfig } from "@/config/data-table"
 import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table"
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input"
 import {
   Popover,
@@ -115,21 +118,51 @@ export function DataTableFilterList<TData>({
         )
       case "date":
         return (
-          <input
-            type="date"
-            value={filter.value as string}
-            onChange={(e) => updateFilter(index, { value: e.target.value })}
-          />
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                className={cn(
+                  "w-full justify-start text-left font-normal",
+                  !filter.value && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 size-4" aria-hidden="true" />
+                {filter.value ? (
+                  format(new Date(filter.value as string), "PPP")
+                ) : (
+                  <span>Pick a date</span>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={
+                  filter.value ? new Date(filter.value as string) : undefined
+                }
+                onSelect={(date) =>
+                  updateFilter(index, { value: date ? date.toISOString() : "" })
+                }
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
         )
       case "boolean":
         return (
-          <select
+          <Select
             value={filter.value as string}
-            onChange={(e) => updateFilter(index, { value: e.target.value })}
+            onValueChange={(value) => updateFilter(index, { value })}
           >
-            <option value="true">True</option>
-            <option value="false">False</option>
-          </select>
+            <SelectTrigger className="h-8 w-full rounded bg-transparent">
+              <SelectValue placeholder="True" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="true">True</SelectItem>
+              <SelectItem value="false">False</SelectItem>
+            </SelectContent>
+          </Select>
         )
       default:
         return null

@@ -17,6 +17,7 @@
     "shadcn:add": "pnpm dlx shadcn@latest add",
     "db:generate": "dotenv drizzle-kit generate",
     "db:introspect": "dotenv drizzle-kit introspect",
+    "db:up": "dotenv drizzle-kit up",
     "db:push": "dotenv drizzle-kit push",
     "db:migrate": "dotenv tsx src/db/migrate.ts",
     "db:drop-migration": "drizzle-kit drop",

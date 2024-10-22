@@ -104,7 +104,7 @@ export function TasksTable({ promises }: TasksTableProps) {
     {
       id: "status",
       label: "Status",
-      type: "multi-select",
+      type: "select",
       options: tasks.status.enumValues.map((status) => ({
         label: status[0]?.toUpperCase() + status.slice(1),
         value: status,
@@ -114,12 +114,17 @@ export function TasksTable({ promises }: TasksTableProps) {
     {
       id: "priority",
       label: "Priority",
-      type: "select",
+      type: "multi-select",
       options: tasks.priority.enumValues.map((priority) => ({
         label: priority[0]?.toUpperCase() + priority.slice(1),
         value: priority,
         count: priorityCounts[priority],
       })),
+    },
+    {
+      id: "createdAt",
+      label: "Created At",
+      type: "date",
     },
   ]
 
