@@ -20,7 +20,7 @@ export interface IndexPageProps {
 }
 
 export default async function IndexPage({ searchParams }: IndexPageProps) {
-  const search = searchParamsSchema.parse(searchParams)
+  const search = searchParamsSchema.parse(await searchParams)
 
   const promises = Promise.all([
     getTasks(search),
