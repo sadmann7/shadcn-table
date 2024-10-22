@@ -96,9 +96,10 @@ export async function getTasks(input: GetTasksSchema) {
         return { data: [], pageCount: 0 }
       }
     },
-    ["tasks"],
+    [JSON.stringify(input)],
     {
       revalidate: 3600,
+      tags: ["tasks"],
     }
   )()
 }
