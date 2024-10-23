@@ -22,26 +22,23 @@ export async function getTasks(input: GetTasksSchema) {
   return await unstable_cache(
     async () => {
       try {
-        const offset = (input.page - 1) * input.per_page
+        const offset = (input.page - 1) * input.perPage
         const [column, order] = (input.sort?.split(".").filter(Boolean) ?? [
           "createdAt",
           "desc",
-        ]) as [keyof Task | undefined, "asc" | "desc" | undefined]
-
-        const statuses = input.status
-          ? (input.status.split(",") as Task["status"][])
-          : undefined
-        const priorities = input.priority
-          ? (input.priority.split(",") as Task["priority"][])
-          : undefined
+        ]) as [keyof Task, "asc" | "desc"]
 
         const fromDate = input.from ? new Date(input.from) : undefined
         const toDate = input.to ? new Date(input.to) : undefined
 
         const where = and(
           input.title ? ilike(tasks.title, `%${input.title}%`) : undefined,
-          statuses ? inArray(tasks.status, statuses) : undefined,
-          priorities ? inArray(tasks.priority, priorities) : undefined,
+          input.status.length > 0
+            ? inArray(tasks.status, input.status)
+            : undefined,
+          input.priority.length > 0
+            ? inArray(tasks.priority, input.priority)
+            : undefined,
           fromDate ? gte(tasks.createdAt, fromDate) : undefined,
           toDate ? lte(tasks.createdAt, toDate) : undefined
         )
@@ -50,7 +47,7 @@ export async function getTasks(input: GetTasksSchema) {
           const data = await tx
             .select()
             .from(tasks)
-            .limit(input.per_page)
+            .limit(input.perPage)
             .offset(offset)
             .where(where)
             .orderBy(
@@ -76,7 +73,7 @@ export async function getTasks(input: GetTasksSchema) {
           }
         })
 
-        const pageCount = Math.ceil(total / input.per_page)
+        const pageCount = Math.ceil(total / input.perPage)
         return { data, pageCount }
       } catch (err) {
         return { data: [], pageCount: 0 }

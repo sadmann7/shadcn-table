@@ -13,7 +13,7 @@ import {
   getTasks,
   getTaskStatusCounts,
 } from "./_lib/queries"
-import { searchParamsSchema } from "./_lib/validations"
+import { searchParamsCache } from "./_lib/validations"
 
 interface IndexPageProps {
   searchParams: Promise<SearchParams>
@@ -21,7 +21,7 @@ interface IndexPageProps {
 
 export default async function IndexPage(props: IndexPageProps) {
   const searchParams = await props.searchParams
-  const search = searchParamsSchema.parse(searchParams)
+  const search = searchParamsCache.parse(searchParams)
 
   const promises = Promise.all([
     getTasks(search),

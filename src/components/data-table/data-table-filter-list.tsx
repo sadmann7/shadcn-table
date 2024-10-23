@@ -8,11 +8,11 @@ import type {
 } from "@/types"
 import { CalendarIcon, CaretSortIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
+import { useQueryState } from "nuqs"
 
 import { dataTableConfig } from "@/config/data-table"
 import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table"
 import { cn } from "@/lib/utils"
-import { useControllableState } from "@/hooks/use-controllable-state"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -43,19 +43,26 @@ import { Icons } from "@/components/icons"
 
 interface DataTableFilterListProps<TData> {
   filterFields: DataTableAdvancedFilterField<TData>[]
-  filters?: FilterCondition<TData>[]
-  onFiltersChange?: (filters: FilterCondition<TData>[]) => void
 }
 
 export function DataTableFilterList<TData>({
   filterFields,
-  filters: filtersProp,
-  onFiltersChange,
 }: DataTableFilterListProps<TData>) {
-  const [filters = [], setFilters] = useControllableState({
-    prop: filtersProp,
-    onChange: onFiltersChange,
-  })
+  const [filters, setFilters] = useQueryState<FilterCondition<TData>[]>(
+    "filters",
+    {
+      defaultValue: [],
+      parse: (value) => JSON.parse(value) as FilterCondition<TData>[],
+      serialize: (value) => JSON.stringify(value),
+      eq: (a, b) =>
+        a.length === b.length &&
+        a.every(
+          (filter, index) =>
+            filter.id === b[index]?.id && filter.value === b[index]?.value
+        ),
+      clearOnDefault: true,
+    }
+  )
 
   function addFilter() {
     const firstColumn = filterFields[0]
@@ -66,14 +73,13 @@ export function DataTableFilterList<TData>({
         type: firstColumn.type,
         operator: getDefaultFilterOperator(firstColumn.type),
         joinOperator: "and",
-        options: firstColumn.options,
       }
-      setFilters([...filters, newFilter])
+      void setFilters([...filters, newFilter])
     }
   }
 
   function updateFilter(index: number, field: Partial<FilterCondition<TData>>) {
-    setFilters((prevFilters) => {
+    void setFilters((prevFilters) => {
       const updatedFilters = prevFilters?.map((filter, i) => {
         if (i !== index) {
           return "joinOperator" in field && index === 0
@@ -94,11 +100,11 @@ export function DataTableFilterList<TData>({
 
   function removeFilter(index: number) {
     const updatedFilters = filters.filter((_, i) => i !== index)
-    setFilters(updatedFilters)
+    void setFilters(updatedFilters)
   }
 
   function renderFilterInput(filter: FilterCondition<TData>, index: number) {
-    const filterColumn = filterFields.find((col) => col.id === filter.id)
+    const filterField = filterFields.find((col) => col.id === filter.id)
 
     switch (filter.type) {
       case "text":
@@ -107,7 +113,7 @@ export function DataTableFilterList<TData>({
           <Input
             type={filter.type}
             value={filter.value as string}
-            placeholder={filterColumn?.placeholder}
+            placeholder={filterField?.placeholder}
             className="h-8 w-full rounded bg-transparent"
             onChange={(e) => updateFilter(index, { value: e.target.value })}
           />
@@ -126,7 +132,7 @@ export function DataTableFilterList<TData>({
                     variant="secondary"
                     className="rounded-sm px-1 font-normal"
                   >
-                    {filter.options?.find(
+                    {filterField?.options?.find(
                       (option) => option.value === filter.value
                     )?.label || filter.value}
                   </Badge>
@@ -140,12 +146,12 @@ export function DataTableFilterList<TData>({
             </FacetedFilterTrigger>
             <FacetedFilterContent className="w-[12.5rem]">
               <FacetedFilterInput
-                placeholder={filterColumn?.label ?? "Search options..."}
+                placeholder={filterField?.label ?? "Search options..."}
               />
               <FacetedFilterList>
                 <FacetedFilterEmpty>No options found.</FacetedFilterEmpty>
                 <FacetedFilterGroup>
-                  {filter.options?.map((option) => (
+                  {filterField?.options?.map((option) => (
                     <FacetedFilterItem
                       key={option.value}
                       value={option.value}
@@ -205,7 +211,7 @@ export function DataTableFilterList<TData>({
                           {selectedValues.size} selected
                         </Badge>
                       ) : (
-                        filter?.options
+                        filterField?.options
                           ?.filter((option) => selectedValues.has(option.value))
                           .map((option) => (
                             <Badge
@@ -224,12 +230,12 @@ export function DataTableFilterList<TData>({
             </FacetedFilterTrigger>
             <FacetedFilterContent className="w-[12.5rem]">
               <FacetedFilterInput
-                placeholder={filterColumn?.label ?? "Search options..."}
+                placeholder={filterField?.label ?? "Search options..."}
               />
               <FacetedFilterList>
                 <FacetedFilterEmpty>No options found.</FacetedFilterEmpty>
                 <FacetedFilterGroup>
-                  {filter.options?.map((option) => (
+                  {filterField?.options?.map((option) => (
                     <FacetedFilterItem
                       key={option.value}
                       value={option.value}
@@ -364,7 +370,6 @@ export function DataTableFilterList<TData>({
                         id: value as keyof TData,
                         type: column.type,
                         operator: getDefaultFilterOperator(column.type),
-                        options: column.options,
                       })
                     }
                   }}

@@ -53,7 +53,6 @@ export interface FilterCondition<TData> {
   type: ColumnType
   operator: Operator
   joinOperator: JoinOperator
-  options?: Option[]
 }
 
 export interface QueryBuilderOpts {
