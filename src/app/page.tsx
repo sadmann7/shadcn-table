@@ -1,6 +1,7 @@
 import * as React from "react"
 import { type SearchParams } from "@/types"
 
+import { getValidFilters } from "@/lib/data-table"
 import { Skeleton } from "@/components/ui/skeleton"
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
@@ -23,16 +24,7 @@ export default async function IndexPage(props: IndexPageProps) {
   const searchParams = await props.searchParams
   const search = searchParamsCache.parse(searchParams)
 
-  const validFilters = search.filters.filter(
-    (filter) =>
-      filter.operator === "isEmpty" ||
-      filter.operator === "isNotEmpty" ||
-      (Array.isArray(filter.value)
-        ? filter.value.length > 0
-        : filter.value !== "" &&
-          filter.value !== null &&
-          filter.value !== undefined)
-  )
+  const validFilters = getValidFilters(search.filters)
 
   const promises = Promise.all([
     getTasks({ ...search, filters: validFilters }),

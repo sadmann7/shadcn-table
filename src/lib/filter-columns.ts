@@ -41,8 +41,6 @@ export function filterColumns<T extends Table>({
           ? notInArray(column, filter.value)
           : ne(column, filter.value)
       case "iLike":
-        console.log({ filter })
-
         return filter.type === "text" && typeof filter.value === "string"
           ? ilike(column, `%${filter.value}%`)
           : undefined
