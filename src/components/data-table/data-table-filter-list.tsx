@@ -73,6 +73,7 @@ export function DataTableFilterList<TData>({
   const [joinOperator, setJoinOperator] = useQueryState<JoinOperator>(
     "joinOperator",
     parseAsStringEnum(["and", "or"]).withDefault("and").withOptions({
+      clearOnDefault: true,
       shallow,
     })
   )
@@ -487,7 +488,10 @@ export function DataTableFilterList<TData>({
           <Icons.listFilter className="mr-2 size-3.5" aria-hidden="true" />
           Filters
           {filters.length > 0 && (
-            <Badge variant="secondary" className="ml-2 rounded-sm">
+            <Badge
+              variant="secondary"
+              className="ml-2 rounded-sm font-mono text-xs"
+            >
               {filters.length}
             </Badge>
           )}
