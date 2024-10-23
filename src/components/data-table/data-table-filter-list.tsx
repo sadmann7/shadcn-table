@@ -8,7 +8,7 @@ import type {
   JoinOperator,
 } from "@/types"
 import { CalendarIcon, CaretSortIcon } from "@radix-ui/react-icons"
-import { useQueryState } from "nuqs"
+import { parseAsStringEnum, useQueryState } from "nuqs"
 
 import { dataTableConfig } from "@/config/data-table"
 import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table"
@@ -70,6 +70,12 @@ export function DataTableFilterList<TData>({
       shallow,
     }
   )
+  const [joinOperator, setJoinOperator] = useQueryState<JoinOperator>(
+    "joinOperator",
+    parseAsStringEnum(["and", "or"]).withDefault("and").withOptions({
+      shallow,
+    })
+  )
 
   const debouncedSetFilters = useDebouncedCallback(setFilters, debouncedMs)
 
@@ -81,7 +87,6 @@ export function DataTableFilterList<TData>({
         value: "",
         type: firstColumn.type,
         operator: getDefaultFilterOperator(firstColumn.type),
-        joinOperator: "and",
       }
       void setFilters([...filters, newFilter])
     }
@@ -98,7 +103,7 @@ export function DataTableFilterList<TData>({
   }) {
     const updateFunction = debounced ? debouncedSetFilters : setFilters
     updateFunction((prevFilters) => {
-      let updatedFilters = prevFilters.map((filter, i) => {
+      const updatedFilters = prevFilters.map((filter, i) => {
         if (i === index) {
           const updatedFilter = { ...filter, ...field }
           if ("type" in field) {
@@ -111,14 +116,6 @@ export function DataTableFilterList<TData>({
         }
         return filter
       })
-
-      if ("joinOperator" in field) {
-        updatedFilters = updatedFilters.map((filter, i) =>
-          i > 0
-            ? { ...filter, joinOperator: field.joinOperator as JoinOperator }
-            : filter
-        )
-      }
 
       return updatedFilters
     })
@@ -530,9 +527,9 @@ export function DataTableFilterList<TData>({
                   </span>
                 ) : index === 1 ? (
                   <Select
-                    value={filter.joinOperator}
+                    value={joinOperator}
                     onValueChange={(value: JoinOperator) =>
-                      updateFilter({ index, field: { joinOperator: value } })
+                      setJoinOperator(value)
                     }
                   >
                     <SelectTrigger
@@ -542,7 +539,7 @@ export function DataTableFilterList<TData>({
                       aria-controls={joinOperatorListboxId}
                       className="h-8 w-20 rounded lowercase"
                     >
-                      <SelectValue placeholder={filter.joinOperator} />
+                      <SelectValue placeholder={joinOperator} />
                     </SelectTrigger>
                     <SelectContent
                       id={joinOperatorListboxId}
@@ -557,7 +554,7 @@ export function DataTableFilterList<TData>({
                   </Select>
                 ) : (
                   <span className="w-20 text-center text-sm text-muted-foreground">
-                    {filter.joinOperator}
+                    {joinOperator}
                   </span>
                 )}
                 <Select

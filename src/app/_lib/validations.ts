@@ -5,6 +5,7 @@ import {
   parseAsArrayOf,
   parseAsInteger,
   parseAsString,
+  parseAsStringEnum,
 } from "nuqs/server"
 import * as z from "zod"
 
@@ -32,7 +33,9 @@ export const searchParamsCache = createSearchParamsCache({
   priority: parseAsArrayOf(z.enum(tasks.priority.enumValues)).withDefault([]),
   from: parseAsString.withDefault(""),
   to: parseAsString.withDefault(""),
+  // for advanced filter
   filters: parseAsFilters(tasks).withDefault([]),
+  joinOperator: parseAsStringEnum(["and", "or"]).withDefault("and"),
 })
 
 export const createTaskSchema = z.object({

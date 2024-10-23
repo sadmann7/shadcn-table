@@ -42,7 +42,6 @@ export interface FilterCondition<TData> {
   value: string | string[]
   type: ColumnType
   operator: FilterOperator
-  joinOperator: JoinOperator
 }
 
 export interface QueryBuilderOpts {

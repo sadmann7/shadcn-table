@@ -33,6 +33,7 @@ export async function getTasks(input: GetTasksSchema) {
         const advancedWhere = filterColumns({
           table: tasks,
           filters: input.filters,
+          joinOperator: input.joinOperator,
         })
 
         const where = advancedFilter
