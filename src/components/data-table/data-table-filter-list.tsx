@@ -211,7 +211,7 @@ export function DataTableFilterList<TData>({
             </FacetedFilterTrigger>
             <FacetedFilterContent
               id={`${inputId}-listbox`}
-              className="w-[12.5rem]"
+              className="w-[12.5rem] origin-[var(--radix-popover-content-transform-origin)]"
             >
               <FacetedFilterInput
                 placeholder={filterField?.label ?? "Search options..."}
@@ -313,7 +313,7 @@ export function DataTableFilterList<TData>({
             </FacetedFilterTrigger>
             <FacetedFilterContent
               id={`${inputId}-listbox`}
-              className="w-[12.5rem]"
+              className="w-[12.5rem] origin-[var(--radix-popover-content-transform-origin)]"
             >
               <FacetedFilterInput
                 aria-label={`Search ${filterField?.label} options`}
@@ -507,7 +507,7 @@ export function DataTableFilterList<TData>({
         id={`${id}-filter-dialog`}
         align="start"
         className={cn(
-          "flex w-[36rem] flex-col p-4",
+          "flex w-[36rem] origin-[var(--radix-popover-content-transform-origin)] flex-col p-4",
           filters.length > 0 ? "gap-3.5" : "gap-2"
         )}
       >
@@ -553,6 +553,7 @@ export function DataTableFilterList<TData>({
                     </SelectTrigger>
                     <SelectContent
                       id={joinOperatorListboxId}
+                      position="popper"
                       className="min-w-[var(--radix-select-trigger-width)] lowercase"
                     >
                       {dataTableConfig.joinOperators.map((op) => (
