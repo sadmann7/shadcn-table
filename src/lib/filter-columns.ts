@@ -13,23 +13,27 @@ import {
   ne,
   notIlike,
   notInArray,
+  or,
   type AnyColumn,
   type SQL,
   type Table,
 } from "drizzle-orm"
 
-export function filterColumns<TData extends Table>({
+export function filterColumns<T extends Table>({
   table,
   filters,
 }: {
-  table: TData
-  filters: FilterCondition<TData>[]
+  table: T
+  filters: FilterCondition<T>[]
 }): SQL | undefined {
   const validFilters = filters.filter((filter) =>
     Array.isArray(filter.value)
       ? filter.value.length > 0
       : filter.value !== null && filter.value !== undefined
   )
+
+  const joinOperator =
+    (validFilters[0]?.joinOperator ?? "and" === "and") ? and : or
 
   const conditions = validFilters.map((filter) => {
     const column = getColumn(table, filter.id)
@@ -123,7 +127,9 @@ export function filterColumns<TData extends Table>({
     (condition) => condition !== undefined
   )
 
-  return validConditions.length > 0 ? and(...validConditions) : undefined
+  return validConditions.length > 0
+    ? joinOperator(...validConditions)
+    : undefined
 }
 
 export function getColumn<T extends Table>(
