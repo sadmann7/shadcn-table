@@ -375,6 +375,7 @@ export function DataTableFilterList<TData>({
             >
               {filter.operator === "isBetween" ? (
                 <Calendar
+                  id={`${inputId}-calendar`}
                   mode="range"
                   aria-label={`Select ${filterField.label} date range`}
                   selected={
@@ -406,6 +407,7 @@ export function DataTableFilterList<TData>({
                 />
               ) : (
                 <Calendar
+                  id={`${inputId}-calendar`}
                   mode="single"
                   aria-label={`Select ${filterField.label} date`}
                   selected={dateValue[0] ? new Date(dateValue[0]) : undefined}
@@ -451,8 +453,6 @@ export function DataTableFilterList<TData>({
         return null
     }
   }
-
-  console.log({ filters })
 
   return (
     <Popover>
