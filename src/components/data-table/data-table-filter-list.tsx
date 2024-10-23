@@ -13,6 +13,7 @@ import { useQueryState } from "nuqs"
 import { dataTableConfig } from "@/config/data-table"
 import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table"
 import { cn } from "@/lib/utils"
+import { useDebouncedCallback } from "@/hooks/use-debounced-callback"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -43,10 +44,12 @@ import { Icons } from "@/components/icons"
 
 interface DataTableFilterListProps<TData> {
   filterFields: DataTableAdvancedFilterField<TData>[]
+  debouncedMs: number
 }
 
 export function DataTableFilterList<TData>({
   filterFields,
+  debouncedMs,
 }: DataTableFilterListProps<TData>) {
   const [filters, setFilters] = useQueryState<FilterCondition<TData>[]>(
     "filters",
@@ -64,6 +67,8 @@ export function DataTableFilterList<TData>({
     }
   )
 
+  const debouncedSetFilters = useDebouncedCallback(setFilters, debouncedMs)
+
   function addFilter() {
     const firstColumn = filterFields[0]
     if (firstColumn) {
@@ -78,8 +83,17 @@ export function DataTableFilterList<TData>({
     }
   }
 
-  function updateFilter(index: number, field: Partial<FilterCondition<TData>>) {
-    void setFilters((prevFilters) => {
+  function updateFilter({
+    index,
+    field,
+    debounced = false,
+  }: {
+    index: number
+    field: Partial<FilterCondition<TData>>
+    debounced?: boolean
+  }) {
+    const updateFunction = debounced ? debouncedSetFilters : setFilters
+    updateFunction((prevFilters) => {
       let updatedFilters = prevFilters.map((filter, i) => {
         if (i === index) {
           const updatedFilter = { ...filter, ...field }
@@ -109,7 +123,7 @@ export function DataTableFilterList<TData>({
   }
 
   function renderFilterInput(filter: FilterCondition<TData>, index: number) {
-    const filterField = filterFields.find((col) => col.id === filter.id)
+    const filterField = filterFields.find((f) => f.id === filter.id)
 
     if (!filterField) return null
 
@@ -119,10 +133,15 @@ export function DataTableFilterList<TData>({
         return (
           <Input
             type={filter.type}
-            value={filter.value as string}
             placeholder={filterField.placeholder}
             className="h-8 w-full rounded bg-transparent"
-            onChange={(e) => updateFilter(index, { value: e.target.value })}
+            onChange={(event) =>
+              updateFilter({
+                index,
+                field: { value: event.target.value },
+                debounced: true,
+              })
+            }
           />
         )
       case "select":
@@ -164,7 +183,7 @@ export function DataTableFilterList<TData>({
                       value={option.value}
                       selected={filter.value === option.value}
                       onSelect={(value) => {
-                        updateFilter(index, { value })
+                        updateFilter({ index, field: { value } })
                         const closeEvent = new Event("keydown")
                         Object.defineProperty(closeEvent, "key", {
                           value: "Escape",
@@ -254,7 +273,7 @@ export function DataTableFilterList<TData>({
                         const newValue = currentValue.includes(value)
                           ? currentValue.filter((v) => v !== value)
                           : [...currentValue, value]
-                        updateFilter(index, { value: newValue })
+                        updateFilter({ index, field: { value: newValue } })
                       }}
                     >
                       {option.label}
@@ -296,7 +315,10 @@ export function DataTableFilterList<TData>({
                   filter.value ? new Date(filter.value as string) : undefined
                 }
                 onSelect={(date) =>
-                  updateFilter(index, { value: date ? date.toISOString() : "" })
+                  updateFilter({
+                    index,
+                    field: { value: date ? date.toISOString() : "" },
+                  })
                 }
                 initialFocus
               />
@@ -307,7 +329,7 @@ export function DataTableFilterList<TData>({
         return (
           <Select
             value={filter.value as string}
-            onValueChange={(value) => updateFilter(index, { value })}
+            onValueChange={(value) => updateFilter({ index, field: { value } })}
           >
             <SelectTrigger className="h-8 w-full rounded bg-transparent">
               <SelectValue placeholder="True" />
@@ -322,8 +344,6 @@ export function DataTableFilterList<TData>({
         return null
     }
   }
-
-  console.log({ filters })
 
   return (
     <Popover>
@@ -352,7 +372,7 @@ export function DataTableFilterList<TData>({
                   <Select
                     value={filter.joinOperator}
                     onValueChange={(value: JoinOperator) =>
-                      updateFilter(index, { joinOperator: value })
+                      updateFilter({ index, field: { joinOperator: value } })
                     }
                   >
                     <SelectTrigger className="h-8 w-20 rounded lowercase">
@@ -377,10 +397,13 @@ export function DataTableFilterList<TData>({
                     const column = filterFields.find((col) => col.id === value)
 
                     if (column) {
-                      updateFilter(index, {
-                        id: value as keyof TData,
-                        type: column.type,
-                        operator: getDefaultFilterOperator(column.type),
+                      updateFilter({
+                        index,
+                        field: {
+                          id: value as keyof TData,
+                          type: column.type,
+                          operator: getDefaultFilterOperator(column.type),
+                        },
                       })
                     }
                   }}
@@ -404,7 +427,7 @@ export function DataTableFilterList<TData>({
                 <Select
                   value={filter.operator}
                   onValueChange={(value: FilterOperator) =>
-                    updateFilter(index, { operator: value })
+                    updateFilter({ index, field: { operator: value } })
                   }
                 >
                   <SelectTrigger className="h-8 w-32 rounded">

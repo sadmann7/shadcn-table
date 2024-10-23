@@ -11,12 +11,41 @@ import { DataTableViewOptions } from "@/components/data-table/data-table-view-op
 interface DataTableAdvancedToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
   table: Table<TData>
-  filterFields?: DataTableAdvancedFilterField<TData>[]
+  /**
+   * An array of filter field configurations for the data table.
+   * @type DataTableAdvancedFilterField<TData>[]
+   * @example
+   * const filterFields = [
+   *   {
+   *     id: 'name',
+   *     label: 'Name',
+   *     type: 'text',
+   *     placeholder: 'Filter by name...'
+   *   },
+   *   {
+   *     id: 'status',
+   *     label: 'Status',
+   *     type: 'select',
+   *     options: [
+   *       { label: 'Active', value: 'active', count: 10 },
+   *       { label: 'Inactive', value: 'inactive', count: 5 }
+   *     ]
+   *   }
+   * ]
+   */
+  filterFields: DataTableAdvancedFilterField<TData>[]
+
+  /**
+   * Debounce time (ms) for filter updates to enhance performance during rapid input.
+   * @default 300
+   */
+  debounceMs?: number
 }
 
 export function DataTableAdvancedToolbar<TData>({
   table,
   filterFields = [],
+  debounceMs = 300,
   children,
   className,
   ...props
@@ -29,7 +58,10 @@ export function DataTableAdvancedToolbar<TData>({
       )}
       {...props}
     >
-      <DataTableFilterList filterFields={filterFields} />
+      <DataTableFilterList
+        filterFields={filterFields}
+        debouncedMs={debounceMs}
+      />
       <div className="flex items-center gap-2">
         {children}
         <DataTableViewOptions table={table} />
