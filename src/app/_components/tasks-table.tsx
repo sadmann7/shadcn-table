@@ -157,6 +157,7 @@ export function TasksTable({ promises }: TasksTableProps) {
         <DataTableAdvancedToolbar
           table={table}
           filterFields={advancedFilterFields}
+          shallow={false}
         >
           <TasksTableToolbarActions table={table} />
         </DataTableAdvancedToolbar>

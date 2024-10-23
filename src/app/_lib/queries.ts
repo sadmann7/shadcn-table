@@ -23,10 +23,7 @@ export async function getTasks(input: GetTasksSchema) {
     async () => {
       try {
         const offset = (input.page - 1) * input.perPage
-        const [column, order] = (input.sort?.split(".").filter(Boolean) ?? [
-          "createdAt",
-          "desc",
-        ]) as [keyof Task, "asc" | "desc"]
+        const { column, order } = input.sort
 
         const fromDate = input.from ? new Date(input.from) : undefined
         const toDate = input.to ? new Date(input.to) : undefined
@@ -50,13 +47,7 @@ export async function getTasks(input: GetTasksSchema) {
             .limit(input.perPage)
             .offset(offset)
             .where(where)
-            .orderBy(
-              column && column in tasks
-                ? order === "asc"
-                  ? asc(tasks[column])
-                  : desc(tasks[column])
-                : desc(tasks.id)
-            )
+            .orderBy(order === "asc" ? asc(tasks[column]) : desc(tasks[column]))
 
           const total = await tx
             .select({

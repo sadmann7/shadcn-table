@@ -45,11 +45,13 @@ import { Icons } from "@/components/icons"
 interface DataTableFilterListProps<TData> {
   filterFields: DataTableAdvancedFilterField<TData>[]
   debouncedMs: number
+  shallow?: boolean
 }
 
 export function DataTableFilterList<TData>({
   filterFields,
   debouncedMs,
+  shallow,
 }: DataTableFilterListProps<TData>) {
   const [filters, setFilters] = useQueryState<FilterCondition<TData>[]>(
     "filters",
@@ -64,6 +66,7 @@ export function DataTableFilterList<TData>({
             filter.id === b[index]?.id && filter.value === b[index]?.value
         ),
       clearOnDefault: true,
+      shallow,
     }
   )
 

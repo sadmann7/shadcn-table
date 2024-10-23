@@ -4,9 +4,12 @@ import {
   createSearchParamsCache,
   parseAsArrayOf,
   parseAsInteger,
+  parseAsJson,
   parseAsString,
 } from "nuqs/server"
 import * as z from "zod"
+
+import { parseAsSort } from "@/lib/custom-parser"
 
 export const filterConditionSchema = z.object({
   id: z.string(),
@@ -18,13 +21,17 @@ export const filterConditionSchema = z.object({
 export const searchParamsCache = createSearchParamsCache({
   page: parseAsInteger.withDefault(1),
   perPage: parseAsInteger.withDefault(10),
-  sort: parseAsString.withDefault("createdAt.desc"),
+  sort: parseAsSort(tasks).withDefault({
+    column: "createdAt",
+    order: "desc",
+  }),
   title: parseAsString.withDefault(""),
   status: parseAsArrayOf(z.enum(tasks.status.enumValues)).withDefault([]),
   priority: parseAsArrayOf(z.enum(tasks.priority.enumValues)).withDefault([]),
   from: parseAsString.withDefault(""),
   to: parseAsString.withDefault(""),
-  filters: parseAsArrayOf(filterConditionSchema).withDefault([]),
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  filters: parseAsJson(z.array(filterConditionSchema).parse).withDefault([]),
 })
 
 export const createTaskSchema = z.object({
