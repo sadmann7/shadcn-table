@@ -14,6 +14,7 @@ import {
   lte,
 } from "drizzle-orm"
 
+import { filterColumns } from "@/lib/filter-columns"
 import { unstable_cache } from "@/lib/unstable-cache"
 
 import { type GetTasksSchema } from "./validations"
@@ -24,21 +25,29 @@ export async function getTasks(input: GetTasksSchema) {
       try {
         const offset = (input.page - 1) * input.perPage
         const { column, order } = input.sort
-
         const fromDate = input.from ? new Date(input.from) : undefined
         const toDate = input.to ? new Date(input.to) : undefined
+        const advancedFilter =
+          input.flags.includes("advancedFilter") && input.filters.length > 0
 
-        const where = and(
-          input.title ? ilike(tasks.title, `%${input.title}%`) : undefined,
-          input.status.length > 0
-            ? inArray(tasks.status, input.status)
-            : undefined,
-          input.priority.length > 0
-            ? inArray(tasks.priority, input.priority)
-            : undefined,
-          fromDate ? gte(tasks.createdAt, fromDate) : undefined,
-          toDate ? lte(tasks.createdAt, toDate) : undefined
-        )
+        const advancedWhere = filterColumns({
+          table: tasks,
+          filters: input.filters,
+        })
+
+        const where = advancedFilter
+          ? advancedWhere
+          : and(
+              input.title ? ilike(tasks.title, `%${input.title}%`) : undefined,
+              input.status.length > 0
+                ? inArray(tasks.status, input.status)
+                : undefined,
+              input.priority.length > 0
+                ? inArray(tasks.priority, input.priority)
+                : undefined,
+              fromDate ? gte(tasks.createdAt, fromDate) : undefined,
+              toDate ? lte(tasks.createdAt, toDate) : undefined
+            )
 
         const { data, total } = await db.transaction(async (tx) => {
           const data = await tx

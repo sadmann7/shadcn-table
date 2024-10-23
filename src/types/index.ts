@@ -19,19 +19,9 @@ export interface Option {
   count?: number
 }
 
-export type ColumnType =
-  | "text"
-  | "number"
-  | "select"
-  | "multi-select"
-  | "date"
-  | "boolean"
+export type ColumnType = DataTableConfig["columnTypes"][number]
 
-export type OperatorType = "text" | "numeric" | "select" | "boolean" | "date"
-
-export type FilterOperator = {
-  [K in OperatorType]: DataTableConfig[`${K}Operators`][number]["value"]
-}[OperatorType]
+export type FilterOperator = DataTableConfig["globalOperators"][number]
 
 export type JoinOperator = DataTableConfig["joinOperators"][number]["value"]
 

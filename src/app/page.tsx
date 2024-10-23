@@ -29,8 +29,6 @@ export default async function IndexPage(props: IndexPageProps) {
     getTaskPriorityCounts(),
   ])
 
-  console.log({ search })
-
   return (
     <Shell className="gap-2">
       <FeatureFlagsProvider>

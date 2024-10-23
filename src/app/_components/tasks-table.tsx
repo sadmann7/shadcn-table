@@ -101,7 +101,7 @@ export function TasksTable({ promises }: TasksTableProps) {
     {
       id: "status",
       label: "Status",
-      type: "multi-select",
+      type: "select",
       options: tasks.status.enumValues.map((status) => ({
         label: status[0]?.toUpperCase() + status.slice(1),
         value: status,
