@@ -2,11 +2,14 @@
 
 import * as React from "react"
 import { tasks, type Task } from "@/db/schema"
-import { type DataTableFilterField } from "@/types"
+import type {
+  DataTableAdvancedFilterField,
+  DataTableFilterField,
+} from "@/types"
 
 import { useDataTable } from "@/hooks/use-data-table"
-import { DataTableAdvancedToolbar } from "@/components/data-table/advanced/data-table-advanced-toolbar"
 import { DataTable } from "@/components/data-table/data-table"
+import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar"
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
 
 import type {
@@ -51,13 +54,13 @@ export function TasksTable({ promises }: TasksTableProps) {
    */
   const filterFields: DataTableFilterField<Task>[] = [
     {
+      id: "title",
       label: "Title",
-      value: "title",
       placeholder: "Filter titles...",
     },
     {
+      id: "status",
       label: "Status",
-      value: "status",
       options: tasks.status.enumValues.map((status) => ({
         label: status[0]?.toUpperCase() + status.slice(1),
         value: status,
@@ -66,14 +69,64 @@ export function TasksTable({ promises }: TasksTableProps) {
       })),
     },
     {
+      id: "priority",
       label: "Priority",
-      value: "priority",
       options: tasks.priority.enumValues.map((priority) => ({
         label: priority[0]?.toUpperCase() + priority.slice(1),
         value: priority,
         icon: getPriorityIcon(priority),
         count: priorityCounts[priority],
       })),
+    },
+  ]
+
+  /**
+   * Advanced filter fields for the data table.
+   * These fields provide more complex filtering options compared to the regular filterFields.
+   *
+   * Key differences from regular filterFields:
+   * 1. More field types: Includes 'text', 'multi-select', 'date', and 'boolean'.
+   * 2. Enhanced flexibility: Allows for more precise and varied filtering options.
+   * 3. Used with DataTableAdvancedToolbar: Enables a more sophisticated filtering UI.
+   * 4. No icons: Unlike regular filterFields, these don't include icon properties.
+   * 5. Date and boolean types: Adds support for filtering by date ranges and boolean values.
+   */
+  const advancedFilterFields: DataTableAdvancedFilterField<Task>[] = [
+    {
+      id: "title",
+      label: "Title",
+      type: "text",
+      placeholder: "Filter titles...",
+    },
+    {
+      id: "status",
+      label: "Status",
+      type: "select",
+      options: tasks.status.enumValues.map((status) => ({
+        label: status[0]?.toUpperCase() + status.slice(1),
+        value: status,
+        count: statusCounts[status],
+      })),
+    },
+    {
+      id: "priority",
+      label: "Priority",
+      type: "multi-select",
+      options: tasks.priority.enumValues.map((priority) => ({
+        label: priority[0]?.toUpperCase() + priority.slice(1),
+        value: priority,
+        count: priorityCounts[priority],
+      })),
+    },
+    {
+      id: "archived",
+      label: "Archived",
+      type: "boolean",
+    },
+    {
+      id: "createdAt",
+      label: "Created At",
+      type: "date",
     },
   ]
 
@@ -95,16 +148,24 @@ export function TasksTable({ promises }: TasksTableProps) {
     clearOnDefault: true,
   })
 
-  const Toolbar = advancedFilter ? DataTableAdvancedToolbar : DataTableToolbar
-
   return (
     <DataTable
       table={table}
       floatingBar={floatingBar ? <TasksTableFloatingBar table={table} /> : null}
     >
-      <Toolbar table={table} filterFields={filterFields}>
-        <TasksTableToolbarActions table={table} />
-      </Toolbar>
+      {advancedFilter ? (
+        <DataTableAdvancedToolbar
+          table={table}
+          filterFields={advancedFilterFields}
+          shallow={false}
+        >
+          <TasksTableToolbarActions table={table} />
+        </DataTableAdvancedToolbar>
+      ) : (
+        <DataTableToolbar table={table} filterFields={filterFields}>
+          <TasksTableToolbarActions table={table} />
+        </DataTableToolbar>
+      )}
     </DataTable>
   )
 }

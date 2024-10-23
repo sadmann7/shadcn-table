@@ -1,21 +1,39 @@
 import { tasks } from "@/db/schema"
+import type { FilterOperator, JoinOperator } from "@/types"
+import {
+  createSearchParamsCache,
+  parseAsArrayOf,
+  parseAsInteger,
+  parseAsString,
+} from "nuqs/server"
 import * as z from "zod"
 
-export const searchParamsSchema = z.object({
-  page: z.coerce.number().default(1),
-  per_page: z.coerce.number().default(10),
-  sort: z.string().optional(),
-  title: z.string().optional(),
-  status: z.string().optional(),
-  priority: z.string().optional(),
-  from: z.string().optional(),
-  to: z.string().optional(),
-  operator: z.enum(["and", "or"]).optional(),
+import { parseAsFilters, parseAsSort } from "@/lib/parsers"
+
+export const filterConditionSchema = z.object({
+  id: z.string(),
+  value: z.string(),
+  operator: z.custom<FilterOperator>(),
+  joinOperator: z.custom<JoinOperator>(),
 })
 
-export const getTasksSchema = searchParamsSchema
-
-export type GetTasksSchema = z.infer<typeof getTasksSchema>
+export const searchParamsCache = createSearchParamsCache({
+  flags: parseAsArrayOf(z.enum(["advancedFilter", "floatingBar"])).withDefault(
+    []
+  ),
+  page: parseAsInteger.withDefault(1),
+  perPage: parseAsInteger.withDefault(10),
+  sort: parseAsSort(tasks).withDefault({
+    column: "createdAt",
+    order: "desc",
+  }),
+  title: parseAsString.withDefault(""),
+  status: parseAsArrayOf(z.enum(tasks.status.enumValues)).withDefault([]),
+  priority: parseAsArrayOf(z.enum(tasks.priority.enumValues)).withDefault([]),
+  from: parseAsString.withDefault(""),
+  to: parseAsString.withDefault(""),
+  filters: parseAsFilters(tasks).withDefault([]),
+})
 
 export const createTaskSchema = z.object({
   title: z.string(),
@@ -24,8 +42,6 @@ export const createTaskSchema = z.object({
   priority: z.enum(tasks.priority.enumValues),
 })
 
-export type CreateTaskSchema = z.infer<typeof createTaskSchema>
-
 export const updateTaskSchema = z.object({
   title: z.string().optional(),
   label: z.enum(tasks.label.enumValues).optional(),
@@ -33,4 +49,6 @@ export const updateTaskSchema = z.object({
   priority: z.enum(tasks.priority.enumValues).optional(),
 })
 
+export type GetTasksSchema = Awaited<ReturnType<typeof searchParamsCache.parse>>
+export type CreateTaskSchema = z.infer<typeof createTaskSchema>
 export type UpdateTaskSchema = z.infer<typeof updateTaskSchema>

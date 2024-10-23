@@ -1,10 +1,10 @@
 "use server"
 
-import { unstable_noStore as noStore, revalidatePath } from "next/cache"
+import { revalidateTag, unstable_noStore } from "next/cache"
 import { db } from "@/db/index"
 import { tasks, type Task } from "@/db/schema"
 import { takeFirstOrThrow } from "@/db/utils"
-import { asc, count, eq, inArray, not } from "drizzle-orm"
+import { asc, eq, inArray, not } from "drizzle-orm"
 import { customAlphabet } from "nanoid"
 
 import { getErrorMessage } from "@/lib/handle-error"
@@ -33,7 +33,7 @@ export async function seedTasks(input: { count: number }) {
 }
 
 export async function createTask(input: CreateTaskSchema) {
-  noStore()
+  unstable_noStore()
   try {
     await db.transaction(async (tx) => {
       const newTask = await tx
@@ -69,7 +69,9 @@ export async function createTask(input: CreateTaskSchema) {
       )
     })
 
-    revalidatePath("/")
+    revalidateTag("tasks")
+    revalidateTag("task-status-counts")
+    revalidateTag("task-priority-counts")
 
     return {
       data: null,
@@ -84,9 +86,9 @@ export async function createTask(input: CreateTaskSchema) {
 }
 
 export async function updateTask(input: UpdateTaskSchema & { id: string }) {
-  noStore()
+  unstable_noStore()
   try {
-    await db
+    const data = await db
       .update(tasks)
       .set({
         title: input.title,
@@ -95,8 +97,19 @@ export async function updateTask(input: UpdateTaskSchema & { id: string }) {
         priority: input.priority,
       })
       .where(eq(tasks.id, input.id))
+      .returning({
+        status: tasks.status,
+        priority: tasks.priority,
+      })
+      .then(takeFirstOrThrow)
 
-    revalidatePath("/")
+    revalidateTag("tasks")
+    if (data.status === input.status) {
+      revalidateTag("task-status-counts")
+    }
+    if (data.priority === input.priority) {
+      revalidateTag("task-priority-counts")
+    }
 
     return {
       data: null,
@@ -116,9 +129,9 @@ export async function updateTasks(input: {
   status?: Task["status"]
   priority?: Task["priority"]
 }) {
-  noStore()
+  unstable_noStore()
   try {
-    await db
+    const data = await db
       .update(tasks)
       .set({
         label: input.label,
@@ -126,8 +139,19 @@ export async function updateTasks(input: {
         priority: input.priority,
       })
       .where(inArray(tasks.id, input.ids))
+      .returning({
+        status: tasks.status,
+        priority: tasks.priority,
+      })
+      .then(takeFirstOrThrow)
 
-    revalidatePath("/")
+    revalidateTag("tasks")
+    if (data.status === input.status) {
+      revalidateTag("task-status-counts")
+    }
+    if (data.priority === input.priority) {
+      revalidateTag("task-priority-counts")
+    }
 
     return {
       data: null,
@@ -142,6 +166,7 @@ export async function updateTasks(input: {
 }
 
 export async function deleteTask(input: { id: string }) {
+  unstable_noStore()
   try {
     await db.transaction(async (tx) => {
       await tx.delete(tasks).where(eq(tasks.id, input.id))
@@ -150,25 +175,9 @@ export async function deleteTask(input: { id: string }) {
       await tx.insert(tasks).values(generateRandomTask())
     })
 
-    revalidatePath("/")
-  } catch (err) {
-    return {
-      data: null,
-      error: getErrorMessage(err),
-    }
-  }
-}
-
-export async function deleteTasks(input: { ids: string[] }) {
-  try {
-    await db.transaction(async (tx) => {
-      await tx.delete(tasks).where(inArray(tasks.id, input.ids))
-
-      // Create new tasks for the deleted ones
-      await tx.insert(tasks).values(input.ids.map(() => generateRandomTask()))
-    })
-
-    revalidatePath("/")
+    revalidateTag("tasks")
+    revalidateTag("task-status-counts")
+    revalidateTag("task-priority-counts")
 
     return {
       data: null,
@@ -182,38 +191,22 @@ export async function deleteTasks(input: { ids: string[] }) {
   }
 }
 
-export async function getChunkedTasks(input: { chunkSize?: number } = {}) {
+export async function deleteTasks(input: { ids: string[] }) {
+  unstable_noStore()
   try {
-    const chunkSize = input.chunkSize ?? 1000
+    await db.transaction(async (tx) => {
+      await tx.delete(tasks).where(inArray(tasks.id, input.ids))
 
-    const totalTasks = await db
-      .select({
-        count: count(),
-      })
-      .from(tasks)
-      .then(takeFirstOrThrow)
+      // Create new tasks for the deleted ones
+      await tx.insert(tasks).values(input.ids.map(() => generateRandomTask()))
+    })
 
-    const totalChunks = Math.ceil(totalTasks.count / chunkSize)
-
-    let chunkedTasks
-
-    for (let i = 0; i < totalChunks; i++) {
-      chunkedTasks = await db
-        .select()
-        .from(tasks)
-        .limit(chunkSize)
-        .offset(i * chunkSize)
-        .then((tasks) =>
-          tasks.map((task) => ({
-            ...task,
-            createdAt: task.createdAt.toString(),
-            updatedAt: task.updatedAt?.toString(),
-          }))
-        )
-    }
+    revalidateTag("tasks")
+    revalidateTag("task-status-counts")
+    revalidateTag("task-priority-counts")
 
     return {
-      data: chunkedTasks,
+      data: null,
       error: null,
     }
   } catch (err) {

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { PlusIcon, ReloadIcon } from "@radix-ui/react-icons"
+import { PlusIcon } from "@radix-ui/react-icons"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
@@ -28,6 +28,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
+import { Icons } from "@/components/icons"
 
 import { createTask } from "../_lib/actions"
 import { createTaskSchema, type CreateTaskSchema } from "../_lib/validations"
@@ -82,7 +83,7 @@ export function CreateTaskDialog() {
               </DialogClose>
               <Button disabled={isCreatePending}>
                 {isCreatePending && (
-                  <ReloadIcon
+                  <Icons.spinner
                     className="mr-2 size-4 animate-spin"
                     aria-hidden="true"
                   />
@@ -117,7 +118,7 @@ export function CreateTaskDialog() {
           </DrawerClose>
           <Button disabled={isCreatePending}>
             {isCreatePending && (
-              <ReloadIcon
+              <Icons.spinner
                 className="mr-2 size-4 animate-spin"
                 aria-hidden="true"
               />

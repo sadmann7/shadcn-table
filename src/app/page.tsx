@@ -1,6 +1,7 @@
 import * as React from "react"
 import { type SearchParams } from "@/types"
 
+import { getValidFilters } from "@/lib/data-table"
 import { Skeleton } from "@/components/ui/skeleton"
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
@@ -13,7 +14,7 @@ import {
   getTasks,
   getTaskStatusCounts,
 } from "./_lib/queries"
-import { searchParamsSchema } from "./_lib/validations"
+import { searchParamsCache } from "./_lib/validations"
 
 interface IndexPageProps {
   searchParams: Promise<SearchParams>
@@ -21,10 +22,19 @@ interface IndexPageProps {
 
 export default async function IndexPage(props: IndexPageProps) {
   const searchParams = await props.searchParams
-  const search = searchParamsSchema.parse(searchParams)
+  const search = searchParamsCache.parse(searchParams)
+
+  const validFilters = getValidFilters(search.filters)
+
+  console.log({
+    validFilters,
+  })
 
   const promises = Promise.all([
-    getTasks(search),
+    getTasks({
+      ...search,
+      filters: validFilters,
+    }),
     getTaskStatusCounts(),
     getTaskPriorityCounts(),
   ])
@@ -43,10 +53,10 @@ export default async function IndexPage(props: IndexPageProps) {
         <React.Suspense
           fallback={
             <DataTableSkeleton
-              columnCount={5}
+              columnCount={6}
               searchableColumnCount={1}
               filterableColumnCount={2}
-              cellWidths={["10rem", "40rem", "12rem", "12rem", "8rem"]}
+              cellWidths={["10rem", "40rem", "12rem", "12rem", "8rem", "8rem"]}
               shrinkZero
             />
           }

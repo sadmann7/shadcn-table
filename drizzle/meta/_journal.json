@@ -1,13 +1,5 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "entries": [
-    {
-      "idx": 0,
-      "version": "6",
-      "when": 1715957734792,
-      "tag": "0000_normal_lorna_dane",
-      "breakpoints": true
-    }
-  ]
+  "entries": []
 }

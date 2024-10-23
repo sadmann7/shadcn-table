@@ -47,6 +47,7 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
       eq: (a, b) =>
         a.length === b.length && a.every((value, index) => value === b[index]),
       clearOnDefault: true,
+      shallow: false,
     }
   )
 

@@ -143,6 +143,15 @@ export function getColumns(): ColumnDef<Task>[] {
       },
     },
     {
+      accessorKey: "archived",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Archived" />
+      ),
+      cell: ({ row }) => (
+        <Badge variant="outline">{row.original.archived ? "Yes" : "No"}</Badge>
+      ),
+    },
+    {
       accessorKey: "createdAt",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Created At" />

@@ -19,30 +19,31 @@ export interface Option {
   count?: number
 }
 
+export type ColumnType = DataTableConfig["columnTypes"][number]
+
+export type FilterOperator = DataTableConfig["globalOperators"][number]
+
+export type JoinOperator = DataTableConfig["joinOperators"][number]["value"]
+
 export interface DataTableFilterField<TData> {
+  id: keyof TData
   label: string
-  value: keyof TData
   placeholder?: string
   options?: Option[]
 }
 
-export interface DataTableFilterOption<TData> {
-  id: string
-  label: string
-  value: keyof TData
-  options: Option[]
-  filterValues?: string[]
-  filterOperator?: string
-  isMulti?: boolean
+export interface DataTableAdvancedFilterField<TData>
+  extends DataTableFilterField<TData> {
+  type: ColumnType
 }
 
-export type ColumnType =
-  | "text"
-  | "number"
-  | "select"
-  | "multi-select"
-  | "date"
-  | "boolean"
+export interface FilterCondition<TData> {
+  id: keyof TData
+  value: string | string[]
+  type: ColumnType
+  operator: FilterOperator
+  joinOperator: JoinOperator
+}
 
 export interface QueryBuilderOpts {
   where?: SQL
@@ -50,9 +51,3 @@ export interface QueryBuilderOpts {
   distinct?: boolean
   nullish?: boolean
 }
-
-export type OperatorType = "text" | "numeric" | "select" | "boolean" | "date"
-
-export type Operator = {
-  [K in OperatorType]: DataTableConfig[`${K}Operators`][number]["value"]
-}[OperatorType]
