@@ -12,6 +12,7 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
+  CommandShortcut,
 } from "@/components/ui/command"
 import {
   Popover,
@@ -22,15 +23,6 @@ import {
 const FacetedFilter = Popover
 
 const FacetedFilterTrigger = PopoverTrigger
-FacetedFilterTrigger.displayName = "FacetedFilterTrigger"
-
-const FacetedFilterValue = React.forwardRef<
-  HTMLSpanElement,
-  React.HTMLAttributes<HTMLSpanElement>
->(({ className, ...props }, ref) => (
-  <span ref={ref} className={cn(className)} {...props} />
-))
-FacetedFilterValue.displayName = "FacetedFilterValue"
 
 const FacetedFilterContent = React.forwardRef<
   React.ComponentRef<typeof PopoverContent>,
@@ -38,7 +30,7 @@ const FacetedFilterContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <PopoverContent
     ref={ref}
-    className={cn("w-[200px] p-0", className)}
+    className={cn("w-[12.5rem] p-0", className)}
     align="start"
     {...props}
   >
@@ -47,40 +39,13 @@ const FacetedFilterContent = React.forwardRef<
 ))
 FacetedFilterContent.displayName = "FacetedFilterContent"
 
-const FacetedFilterList = React.forwardRef<
-  React.ComponentRef<typeof CommandList>,
-  React.ComponentPropsWithoutRef<typeof CommandList>
->(({ className, ...props }, ref) => (
-  <CommandList ref={ref} className={cn(className)} {...props} />
-))
-FacetedFilterList.displayName = "FacetedFilterList"
+const FacetedFilterInput = CommandInput
 
-const FacetedFilterInput = React.forwardRef<
-  React.ComponentRef<typeof CommandInput>,
-  React.ComponentPropsWithoutRef<typeof CommandInput>
->(({ className, ...props }, ref) => (
-  <CommandInput ref={ref} className={cn(className)} {...props} />
-))
-FacetedFilterInput.displayName = "FacetedFilterInput"
+const FacetedFilterList = CommandList
 
-const FacetedFilterEmpty = React.forwardRef<
-  React.ComponentRef<typeof CommandEmpty>,
-  React.ComponentPropsWithoutRef<typeof CommandEmpty>
->(({ className, ...props }, ref) => (
-  <CommandEmpty ref={ref} className={cn(className)} {...props} />
-))
-FacetedFilterEmpty.displayName = "FacetedFilterEmpty"
+const FacetedFilterEmpty = CommandEmpty
 
-const FacetedFilterGroup = React.forwardRef<
-  React.ComponentRef<typeof CommandGroup>,
-  React.ComponentPropsWithoutRef<typeof CommandGroup>
->(({ className, ...props }, ref) => (
-  <CommandGroup ref={ref} className={cn(className)} {...props} />
-))
-FacetedFilterGroup.displayName = "FacetedFilterGroup"
-
-interface FacetedFilterItemProps
-  extends React.ComponentPropsWithoutRef<typeof CommandItem> {}
+const FacetedFilterGroup = CommandGroup
 
 interface FacetedFilterItemProps
   extends React.ComponentPropsWithoutRef<typeof CommandItem> {
@@ -109,23 +74,19 @@ const FacetedFilterItem = React.forwardRef<
 })
 FacetedFilterItem.displayName = "FacetedFilterItem"
 
-const FacetedFilterSeparator = React.forwardRef<
-  React.ComponentRef<typeof CommandSeparator>,
-  React.ComponentPropsWithoutRef<typeof CommandSeparator>
->(({ className, ...props }, ref) => (
-  <CommandSeparator ref={ref} className={cn("", className)} {...props} />
-))
-FacetedFilterSeparator.displayName = "FacetedFilterSeparator"
+const FacetedFilterSeparator = CommandSeparator
+
+const FacetedFilterShortcut = CommandShortcut
 
 export {
   FacetedFilter,
+  FacetedFilterTrigger,
   FacetedFilterContent,
+  FacetedFilterInput,
+  FacetedFilterList,
   FacetedFilterEmpty,
   FacetedFilterGroup,
-  FacetedFilterInput,
   FacetedFilterItem,
-  FacetedFilterList,
   FacetedFilterSeparator,
-  FacetedFilterTrigger,
-  FacetedFilterValue,
+  FacetedFilterShortcut,
 }
