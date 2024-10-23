@@ -82,15 +82,18 @@ export function DataTableFilterList<TData>({
 
   function addFilter() {
     const firstColumn = filterFields[0]
-    if (firstColumn) {
-      const newFilter: FilterCondition<TData> = {
+
+    if (!firstColumn) return
+
+    void setFilters([
+      ...filters,
+      {
         id: firstColumn.id,
         value: "",
         type: firstColumn.type,
         operator: getDefaultFilterOperator(firstColumn.type),
-      }
-      void setFilters([...filters, newFilter])
-    }
+      },
+    ])
   }
 
   function updateFilter({
@@ -143,8 +146,11 @@ export function DataTableFilterList<TData>({
     if (filter.operator === "isEmpty" || filter.operator === "isNotEmpty") {
       return (
         <div
-          aria-hidden="true"
-          className="pointer-events-none h-8 w-full rounded border border-dashed"
+          id={inputId}
+          role="status"
+          aria-live="polite"
+          aria-label={`${filterField.label} filter is ${filter.operator === "isEmpty" ? "empty" : "not empty"}`}
+          className="h-8 w-full rounded border border-dashed"
         />
       )
     }
