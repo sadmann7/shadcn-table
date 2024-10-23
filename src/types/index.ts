@@ -29,7 +29,7 @@ export type ColumnType =
 
 export type OperatorType = "text" | "numeric" | "select" | "boolean" | "date"
 
-export type Operator = {
+export type FilterOperator = {
   [K in OperatorType]: DataTableConfig[`${K}Operators`][number]["value"]
 }[OperatorType]
 
@@ -51,7 +51,7 @@ export interface FilterCondition<TData> {
   id: keyof TData
   value: string | number | boolean | Date | string[]
   type: ColumnType
-  operator: Operator
+  operator: FilterOperator
   joinOperator: JoinOperator
 }
 

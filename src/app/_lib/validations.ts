@@ -1,5 +1,5 @@
 import { tasks } from "@/db/schema"
-import type { JoinOperator, Operator } from "@/types"
+import type { FilterOperator, JoinOperator } from "@/types"
 import {
   createSearchParamsCache,
   parseAsArrayOf,
@@ -11,7 +11,7 @@ import * as z from "zod"
 export const filterConditionSchema = z.object({
   id: z.string(),
   value: z.string(),
-  operator: z.custom<Operator>(),
+  operator: z.custom<FilterOperator>(),
   joinOperator: z.custom<JoinOperator>(),
 })
 

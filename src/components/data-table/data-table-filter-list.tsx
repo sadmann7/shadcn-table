@@ -3,8 +3,8 @@
 import type {
   DataTableAdvancedFilterField,
   FilterCondition,
+  FilterOperator,
   JoinOperator,
-  Operator,
 } from "@/types"
 import { CalendarIcon, CaretSortIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
@@ -80,7 +80,7 @@ export function DataTableFilterList<TData>({
 
   function updateFilter(index: number, field: Partial<FilterCondition<TData>>) {
     void setFilters((prevFilters) => {
-      return prevFilters.map((filter, i) => {
+      let updatedFilters = prevFilters.map((filter, i) => {
         if (i === index) {
           const updatedFilter = { ...filter, ...field }
           if ("type" in field) {
@@ -90,6 +90,16 @@ export function DataTableFilterList<TData>({
         }
         return filter
       })
+
+      if ("joinOperator" in field) {
+        updatedFilters = updatedFilters.map((filter, i) =>
+          i > 0
+            ? { ...filter, joinOperator: field.joinOperator as JoinOperator }
+            : filter
+        )
+      }
+
+      return updatedFilters
     })
   }
 
@@ -393,7 +403,7 @@ export function DataTableFilterList<TData>({
                 </Select>
                 <Select
                   value={filter.operator}
-                  onValueChange={(value: Operator) =>
+                  onValueChange={(value: FilterOperator) =>
                     updateFilter(index, { operator: value })
                   }
                 >
