@@ -80,21 +80,16 @@ export function DataTableFilterList<TData>({
 
   function updateFilter(index: number, field: Partial<FilterCondition<TData>>) {
     void setFilters((prevFilters) => {
-      const updatedFilters = prevFilters?.map((filter, i) => {
-        if (i !== index) {
-          return "joinOperator" in field && index === 0
-            ? { ...filter, joinOperator: field.joinOperator ?? "and" }
-            : filter
+      return prevFilters.map((filter, i) => {
+        if (i === index) {
+          const updatedFilter = { ...filter, ...field }
+          if ("type" in field) {
+            updatedFilter.value = ""
+          }
+          return updatedFilter
         }
-
-        const updatedFilter = { ...filter, ...field }
-        if ("type" in field) {
-          updatedFilter.value = ""
-        }
-        return updatedFilter
+        return filter
       })
-
-      return updatedFilters
     })
   }
 
@@ -106,6 +101,8 @@ export function DataTableFilterList<TData>({
   function renderFilterInput(filter: FilterCondition<TData>, index: number) {
     const filterField = filterFields.find((col) => col.id === filter.id)
 
+    if (!filterField) return null
+
     switch (filter.type) {
       case "text":
       case "number":
@@ -113,7 +110,7 @@ export function DataTableFilterList<TData>({
           <Input
             type={filter.type}
             value={filter.value as string}
-            placeholder={filterField?.placeholder}
+            placeholder={filterField.placeholder}
             className="h-8 w-full rounded bg-transparent"
             onChange={(e) => updateFilter(index, { value: e.target.value })}
           />
@@ -270,12 +267,16 @@ export function DataTableFilterList<TData>({
                   !filter.value && "text-muted-foreground"
                 )}
               >
-                <CalendarIcon className="mr-2 size-4" aria-hidden="true" />
-                {filter.value ? (
-                  format(new Date(filter.value as string), "PPP")
-                ) : (
-                  <span>Pick a date</span>
-                )}
+                <CalendarIcon
+                  className="mr-2 size-3.5 shrink-0"
+                  aria-hidden="true"
+                />
+
+                <span className="truncate">
+                  {filter.value
+                    ? format(new Date(filter.value as string), "PPP")
+                    : "Pick a date"}
+                </span>
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
@@ -375,7 +376,9 @@ export function DataTableFilterList<TData>({
                   }}
                 >
                   <SelectTrigger className="h-8 w-32 rounded">
-                    <SelectValue />
+                    <div className="truncate">
+                      <SelectValue />
+                    </div>
                   </SelectTrigger>
                   <SelectContent>
                     {filterFields.map((col) => (
@@ -395,7 +398,9 @@ export function DataTableFilterList<TData>({
                   }
                 >
                   <SelectTrigger className="h-8 w-32 rounded">
-                    <SelectValue />
+                    <div className="truncate">
+                      <SelectValue placeholder={filter.operator} />
+                    </div>
                   </SelectTrigger>
                   <SelectContent>
                     {getFilterOperators(filter.type).map((op) => (
