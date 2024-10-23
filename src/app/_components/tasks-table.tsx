@@ -119,6 +119,11 @@ export function TasksTable({ promises }: TasksTableProps) {
         count: priorityCounts[priority],
       })),
     },
+    {
+      id: "createdAt",
+      label: "Created At",
+      type: "date",
+    },
   ]
 
   const advancedFilter = featureFlags.includes("advancedFilter")

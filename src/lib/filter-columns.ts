@@ -20,7 +20,7 @@ import {
 } from "drizzle-orm"
 
 /**
- * Constructs SQL conditions based on the provided filters for a specific table.
+ * Construct SQL conditions based on the provided filters for a specific table.
  *
  * This function takes a table and an array of filter conditions, and returns a SQL
  * expression that represents the logical combination of these conditions. The conditions
@@ -77,7 +77,7 @@ export function filterColumns<T extends Table>({
           const date = new Date(filter.value)
           const start = startOfDay(date)
           const end = endOfDay(date)
-          return and(lt(column, start), gt(column, end))
+          return or(lt(column, start), gt(column, end))
         } else {
           return ne(column, filter.value)
         }
@@ -110,18 +110,33 @@ export function filterColumns<T extends Table>({
       case "isNotEmpty":
         return isNotEmpty(column)
       case "isBefore":
-        return filter.type === "date" ? lt(column, filter.value) : undefined
+        return filter.type === "date" && typeof filter.value === "string"
+          ? lt(column, endOfDay(new Date(filter.value)))
+          : undefined
       case "isAfter":
-        return filter.type === "date" ? gt(column, filter.value) : undefined
+        return filter.type === "date" && typeof filter.value === "string"
+          ? gt(column, startOfDay(new Date(filter.value)))
+          : undefined
       case "isOnOrBefore":
-        return filter.type === "date" ? lte(column, filter.value) : undefined
+        return filter.type === "date" && typeof filter.value === "string"
+          ? lte(column, endOfDay(new Date(filter.value)))
+          : undefined
       case "isOnOrAfter":
-        return filter.type === "date" ? gte(column, filter.value) : undefined
+        return filter.type === "date" && typeof filter.value === "string"
+          ? gte(column, startOfDay(new Date(filter.value)))
+          : undefined
       case "isBetween":
         return filter.type === "date" &&
           Array.isArray(filter.value) &&
           filter.value.length === 2
-          ? and(gte(column, filter.value[0]), lte(column, filter.value[1]))
+          ? and(
+              filter.value[0]
+                ? gte(column, startOfDay(new Date(filter.value[0])))
+                : undefined,
+              filter.value[1]
+                ? lte(column, endOfDay(new Date(filter.value[1])))
+                : undefined
+            )
           : undefined
       case "isRelativeToToday":
         if (filter.type === "date" && typeof filter.value === "string") {
