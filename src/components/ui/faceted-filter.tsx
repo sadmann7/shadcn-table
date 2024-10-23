@@ -82,14 +82,6 @@ FacetedFilterGroup.displayName = "FacetedFilterGroup"
 interface FacetedFilterItemProps
   extends React.ComponentPropsWithoutRef<typeof CommandItem> {}
 
-const FacetedFilterItemText = React.forwardRef<
-  HTMLSpanElement,
-  React.HTMLAttributes<HTMLSpanElement>
->(({ className, ...props }, ref) => (
-  <span ref={ref} className={cn(className)} {...props} />
-))
-FacetedFilterItemText.displayName = "FacetedFilterItemText"
-
 interface FacetedFilterItemProps
   extends React.ComponentPropsWithoutRef<typeof CommandItem> {
   selected: boolean
@@ -111,7 +103,7 @@ const FacetedFilterItem = React.forwardRef<
       >
         <CheckIcon className="size-4" />
       </span>
-      <FacetedFilterItemText>{children}</FacetedFilterItemText>
+      {children}
     </CommandItem>
   )
 })

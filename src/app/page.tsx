@@ -26,10 +26,6 @@ export default async function IndexPage(props: IndexPageProps) {
 
   const validFilters = getValidFilters(search.filters)
 
-  console.log({
-    validFilters,
-  })
-
   const promises = Promise.all([
     getTasks({
       ...search,

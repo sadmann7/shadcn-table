@@ -88,8 +88,7 @@ export function TasksTable({ promises }: TasksTableProps) {
    * 1. More field types: Includes 'text', 'multi-select', 'date', and 'boolean'.
    * 2. Enhanced flexibility: Allows for more precise and varied filtering options.
    * 3. Used with DataTableAdvancedToolbar: Enables a more sophisticated filtering UI.
-   * 4. No icons: Unlike regular filterFields, these don't include icon properties.
-   * 5. Date and boolean types: Adds support for filtering by date ranges and boolean values.
+   * 4. Date and boolean types: Adds support for filtering by date ranges and boolean values.
    */
   const advancedFilterFields: DataTableAdvancedFilterField<Task>[] = [
     {
@@ -101,10 +100,11 @@ export function TasksTable({ promises }: TasksTableProps) {
     {
       id: "status",
       label: "Status",
-      type: "select",
+      type: "multi-select",
       options: tasks.status.enumValues.map((status) => ({
         label: status[0]?.toUpperCase() + status.slice(1),
         value: status,
+        icon: getStatusIcon(status),
         count: statusCounts[status],
       })),
     },
@@ -115,18 +115,9 @@ export function TasksTable({ promises }: TasksTableProps) {
       options: tasks.priority.enumValues.map((priority) => ({
         label: priority[0]?.toUpperCase() + priority.slice(1),
         value: priority,
+        icon: getPriorityIcon(priority),
         count: priorityCounts[priority],
       })),
-    },
-    {
-      id: "archived",
-      label: "Archived",
-      type: "boolean",
-    },
-    {
-      id: "createdAt",
-      label: "Created At",
-      type: "date",
     },
   ]
 

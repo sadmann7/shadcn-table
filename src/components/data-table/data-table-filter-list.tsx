@@ -228,7 +228,18 @@ export function DataTableFilterList<TData>({
                         }, 0)
                       }}
                     >
-                      {option.label}
+                      {option.icon && (
+                        <option.icon
+                          className="mr-2 size-4 text-muted-foreground"
+                          aria-hidden="true"
+                        />
+                      )}
+                      <span>{option.label}</span>
+                      {option.count && (
+                        <span className="ml-auto flex size-4 items-center justify-center font-mono text-xs">
+                          {option.count}
+                        </span>
+                      )}
                     </FacetedFilterItem>
                   ))}
                 </FacetedFilterGroup>
@@ -322,7 +333,18 @@ export function DataTableFilterList<TData>({
                         updateFilter({ index, field: { value: newValue } })
                       }}
                     >
-                      {option.label}
+                      {option.icon && (
+                        <option.icon
+                          className="mr-2 size-4 text-muted-foreground"
+                          aria-hidden="true"
+                        />
+                      )}
+                      <span>{option.label}</span>
+                      {option.count && (
+                        <span className="ml-auto flex size-4 items-center justify-center font-mono text-xs">
+                          {option.count}
+                        </span>
+                      )}
                     </FacetedFilterItem>
                   ))}
                 </FacetedFilterGroup>
