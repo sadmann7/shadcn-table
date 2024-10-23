@@ -137,7 +137,10 @@ export function DataTableFilterList<TData>({
           <Input
             type={filter.type}
             placeholder={filterField.placeholder}
-            className="h-8 w-full rounded bg-transparent"
+            className="h-8 w-full rounded"
+            defaultValue={
+              typeof filter.value === "string" ? filter.value : undefined
+            }
             onChange={(event) =>
               updateFilter({
                 index,
