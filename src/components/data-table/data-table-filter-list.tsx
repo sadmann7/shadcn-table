@@ -187,8 +187,6 @@ export function DataTableFilterList<TData>({
                 variant="outline"
                 size="sm"
                 aria-label={`${filterField.label} filter value`}
-                aria-haspopup="listbox"
-                aria-expanded="false"
                 aria-controls={`${inputId}-listbox`}
                 className="h-8 w-full justify-start rounded px-1.5 text-left text-muted-foreground hover:text-muted-foreground"
               >
@@ -264,8 +262,6 @@ export function DataTableFilterList<TData>({
                 variant="outline"
                 size="sm"
                 aria-label={`${filterField.label} filter values`}
-                aria-haspopup="listbox"
-                aria-expanded="false"
                 aria-controls={`${inputId}-listbox`}
                 className="h-8 w-full justify-start rounded px-1.5 text-left text-muted-foreground hover:text-muted-foreground"
               >
@@ -378,8 +374,6 @@ export function DataTableFilterList<TData>({
                 variant="outline"
                 size="sm"
                 aria-label={`${filterField.label} date filter`}
-                aria-haspopup="dialog"
-                aria-expanded="false"
                 aria-controls={`${inputId}-calendar`}
                 className={cn(
                   "h-8 w-full justify-start rounded text-left font-normal",
@@ -462,8 +456,6 @@ export function DataTableFilterList<TData>({
             <SelectTrigger
               id={inputId}
               aria-label={`${filterField.label} boolean filter`}
-              aria-haspopup="listbox"
-              aria-expanded="false"
               aria-controls={`${inputId}-listbox`}
               className="h-8 w-full rounded bg-transparent"
             >
@@ -487,8 +479,6 @@ export function DataTableFilterList<TData>({
           variant="outline"
           size="sm"
           aria-label="Open filters"
-          aria-haspopup="dialog"
-          aria-expanded="false"
           aria-controls={`${id}-filter-dialog`}
         >
           <Icons.listFilter className="mr-2 size-3.5" aria-hidden="true" />
@@ -496,7 +486,7 @@ export function DataTableFilterList<TData>({
           {filters.length > 0 && (
             <Badge
               variant="secondary"
-              className="ml-2 rounded-sm font-mono text-xs"
+              className="ml-2 h-5 rounded px-1.5 font-mono"
             >
               {filters.length}
             </Badge>
@@ -544,8 +534,6 @@ export function DataTableFilterList<TData>({
                   >
                     <SelectTrigger
                       aria-label="Select join operator"
-                      aria-haspopup="listbox"
-                      aria-expanded="false"
                       aria-controls={joinOperatorListboxId}
                       className="h-8 w-20 rounded lowercase"
                     >
@@ -586,8 +574,6 @@ export function DataTableFilterList<TData>({
                 >
                   <SelectTrigger
                     aria-label="Select filter field"
-                    aria-haspopup="listbox"
-                    aria-expanded="false"
                     aria-controls={fieldListboxId}
                     className="h-8 w-32 rounded"
                   >
@@ -614,8 +600,6 @@ export function DataTableFilterList<TData>({
                 >
                   <SelectTrigger
                     aria-label="Select filter operator"
-                    aria-haspopup="listbox"
-                    aria-expanded="false"
                     aria-controls={operatorListboxId}
                     className="h-8 w-32 rounded"
                   >
@@ -660,7 +644,10 @@ export function DataTableFilterList<TData>({
               size="sm"
               variant="outline"
               className="rounded"
-              onClick={() => setFilters([])}
+              onClick={() => {
+                void setFilters([])
+                void setJoinOperator("and")
+              }}
             >
               Reset filters
             </Button>
