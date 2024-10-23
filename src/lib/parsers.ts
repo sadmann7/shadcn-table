@@ -37,13 +37,7 @@ export function parseAsSort<T extends Table>(table: T) {
 
 export const filterConditionSchema = z.object({
   id: z.string(),
-  value: z.union([
-    z.string(),
-    z.number(),
-    z.boolean(),
-    z.date(),
-    z.array(z.string()),
-  ]),
+  value: z.union([z.string(), z.array(z.string())]),
   type: z.enum(dataTableConfig.columnTypes),
   operator: z.enum(dataTableConfig.globalOperators),
   joinOperator: z.enum(["and", "or"]),

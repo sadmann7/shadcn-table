@@ -39,7 +39,7 @@ export interface DataTableAdvancedFilterField<TData>
 
 export interface FilterCondition<TData> {
   id: keyof TData
-  value: string | number | boolean | Date | string[]
+  value: string | string[]
   type: ColumnType
   operator: FilterOperator
   joinOperator: JoinOperator

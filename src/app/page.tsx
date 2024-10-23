@@ -26,8 +26,15 @@ export default async function IndexPage(props: IndexPageProps) {
 
   const validFilters = getValidFilters(search.filters)
 
+  console.log({
+    validFilters,
+  })
+
   const promises = Promise.all([
-    getTasks({ ...search, filters: validFilters }),
+    getTasks({
+      ...search,
+      filters: validFilters,
+    }),
     getTaskStatusCounts(),
     getTaskPriorityCounts(),
   ])
@@ -46,10 +53,10 @@ export default async function IndexPage(props: IndexPageProps) {
         <React.Suspense
           fallback={
             <DataTableSkeleton
-              columnCount={5}
+              columnCount={6}
               searchableColumnCount={1}
               filterableColumnCount={2}
-              cellWidths={["10rem", "40rem", "12rem", "12rem", "8rem"]}
+              cellWidths={["10rem", "40rem", "12rem", "12rem", "8rem", "8rem"]}
               shrinkZero
             />
           }

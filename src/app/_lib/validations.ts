@@ -8,7 +8,7 @@ import {
 } from "nuqs/server"
 import * as z from "zod"
 
-import { parseAsFilters, parseAsSort } from "@/lib/custom-parser"
+import { parseAsFilters, parseAsSort } from "@/lib/parsers"
 
 export const filterConditionSchema = z.object({
   id: z.string(),

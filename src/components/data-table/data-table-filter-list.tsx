@@ -8,12 +8,11 @@ import type {
   JoinOperator,
 } from "@/types"
 import { CalendarIcon, CaretSortIcon } from "@radix-ui/react-icons"
-import { format } from "date-fns"
 import { useQueryState } from "nuqs"
 
 import { dataTableConfig } from "@/config/data-table"
 import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table"
-import { cn } from "@/lib/utils"
+import { cn, formatDate } from "@/lib/utils"
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -332,6 +331,19 @@ export function DataTableFilterList<TData>({
           </FacetedFilter>
         )
       case "date":
+        const dateValue = Array.isArray(filter.value)
+          ? filter.value.filter(Boolean)
+          : [filter.value, filter.value]
+
+        const displayValue =
+          filter.operator === "isBetween" && dateValue.length === 2
+            ? `${formatDate(dateValue[0] ?? new Date())} - ${formatDate(
+                dateValue[1] ?? new Date()
+              )}`
+            : dateValue[0]
+              ? formatDate(dateValue[0])
+              : "Pick a date"
+
         return (
           <Popover>
             <PopoverTrigger asChild>
@@ -353,11 +365,7 @@ export function DataTableFilterList<TData>({
                   aria-hidden="true"
                 />
 
-                <span className="truncate">
-                  {filter.value
-                    ? format(new Date(filter.value as string), "PPP")
-                    : "Pick a date"}
-                </span>
+                <span className="truncate">{displayValue}</span>
               </Button>
             </PopoverTrigger>
             <PopoverContent
@@ -365,20 +373,55 @@ export function DataTableFilterList<TData>({
               align="start"
               className="w-auto p-0"
             >
-              <Calendar
-                mode="single"
-                selected={
-                  filter.value ? new Date(filter.value as string) : undefined
-                }
-                onSelect={(date) =>
-                  updateFilter({
-                    index,
-                    field: { value: date ? date.toISOString() : "" },
-                  })
-                }
-                initialFocus
-                aria-label={`Select ${filterField.label} date`}
-              />
+              {filter.operator === "isBetween" ? (
+                <Calendar
+                  mode="range"
+                  aria-label={`Select ${filterField.label} date range`}
+                  selected={
+                    dateValue.length === 2
+                      ? {
+                          from: new Date(dateValue[0] ?? ""),
+                          to: new Date(dateValue[1] ?? ""),
+                        }
+                      : {
+                          from: new Date(),
+                          to: new Date(),
+                        }
+                  }
+                  onSelect={(date) => {
+                    updateFilter({
+                      index,
+                      field: {
+                        value: date
+                          ? [
+                              date.from?.toISOString() ?? "",
+                              date.to?.toISOString() ?? "",
+                            ]
+                          : [],
+                      },
+                    })
+                  }}
+                  initialFocus
+                  numberOfMonths={1}
+                />
+              ) : (
+                <Calendar
+                  mode="single"
+                  aria-label={`Select ${filterField.label} date`}
+                  selected={dateValue[0] ? new Date(dateValue[0]) : undefined}
+                  onSelect={(date) => {
+                    updateFilter({
+                      index,
+                      field: { value: date?.toISOString() ?? "" },
+                    })
+
+                    setTimeout(() => {
+                      document.getElementById(inputId)?.click()
+                    }, 0)
+                  }}
+                  initialFocus
+                />
+              )}
             </PopoverContent>
           </Popover>
         )
@@ -408,6 +451,8 @@ export function DataTableFilterList<TData>({
         return null
     }
   }
+
+  console.log({ filters })
 
   return (
     <Popover>
