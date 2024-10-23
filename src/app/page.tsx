@@ -23,8 +23,19 @@ export default async function IndexPage(props: IndexPageProps) {
   const searchParams = await props.searchParams
   const search = searchParamsCache.parse(searchParams)
 
+  const validFilters = search.filters.filter(
+    (filter) =>
+      filter.operator === "isEmpty" ||
+      filter.operator === "isNotEmpty" ||
+      (Array.isArray(filter.value)
+        ? filter.value.length > 0
+        : filter.value !== "" &&
+          filter.value !== null &&
+          filter.value !== undefined)
+  )
+
   const promises = Promise.all([
-    getTasks(search),
+    getTasks({ ...search, filters: validFilters }),
     getTaskStatusCounts(),
     getTaskPriorityCounts(),
   ])

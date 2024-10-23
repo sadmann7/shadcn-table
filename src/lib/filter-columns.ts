@@ -26,18 +26,9 @@ export function filterColumns<T extends Table>({
   table: T
   filters: FilterCondition<T>[]
 }): SQL | undefined {
-  const validFilters = filters.filter((filter) =>
-    Array.isArray(filter.value)
-      ? filter.value.length > 0
-      : filter.value !== null && filter.value !== undefined
-  )
+  const joinOperator = (filters[0]?.joinOperator ?? "and" === "and") ? and : or
 
-  console.log({ filters, validFilters })
-
-  const joinOperator =
-    (validFilters[0]?.joinOperator ?? "and" === "and") ? and : or
-
-  const conditions = validFilters.map((filter) => {
+  const conditions = filters.map((filter) => {
     const column = getColumn(table, filter.id)
 
     switch (filter.operator) {
