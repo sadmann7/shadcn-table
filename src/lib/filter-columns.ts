@@ -32,6 +32,8 @@ export function filterColumns<T extends Table>({
       : filter.value !== null && filter.value !== undefined
   )
 
+  console.log({ filters, validFilters })
+
   const joinOperator =
     (validFilters[0]?.joinOperator ?? "and" === "and") ? and : or
 
@@ -48,6 +50,8 @@ export function filterColumns<T extends Table>({
           ? notInArray(column, filter.value)
           : ne(column, filter.value)
       case "iLike":
+        console.log({ filter })
+
         return filter.type === "text" && typeof filter.value === "string"
           ? ilike(column, `%${filter.value}%`)
           : undefined

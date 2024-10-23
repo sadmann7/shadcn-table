@@ -44,6 +44,7 @@ export const filterConditionSchema = z.object({
     z.date(),
     z.array(z.string()),
   ]),
+  type: z.enum(dataTableConfig.columnTypes),
   operator: z.enum(dataTableConfig.globalOperators),
   joinOperator: z.enum(["and", "or"]),
 })
