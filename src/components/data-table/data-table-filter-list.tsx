@@ -511,7 +511,7 @@ export function DataTableFilterList<TData>({
             </p>
           </div>
         )}
-        <div className="flex max-h-40 flex-col gap-2 overflow-y-auto pr-1 py-0.5">
+        <div className="flex max-h-40 flex-col gap-2 overflow-y-auto py-0.5 pr-1">
           {filters.map((filter, index) => {
             const filterId = `${id}-filter-${index}`
             const joinOperatorListboxId = `${filterId}-join-operator-listbox`
