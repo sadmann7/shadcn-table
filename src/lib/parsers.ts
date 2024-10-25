@@ -1,4 +1,4 @@
-import type { FilterCondition } from "@/types"
+import { type FilterCondition } from "@/types"
 import { type Table } from "drizzle-orm"
 import { createParser } from "nuqs/server"
 import { z } from "zod"
@@ -16,7 +16,7 @@ interface SortOption<T extends Table> {
  */
 export function parseAsSort<T extends Table>(table: T) {
   return createParser<SortOption<T>>({
-    parse(queryValue) {
+    parse: (queryValue) => {
       const [column, order] =
         (queryValue.split(".") as [string, "asc" | "desc"]) ?? []
       if (
@@ -27,11 +27,9 @@ export function parseAsSort<T extends Table>(table: T) {
       ) {
         return null
       }
-      return { column: column as keyof T["_"]["columns"], order }
+      return { column, order }
     },
-    serialize({ column, order }) {
-      return `${String(column)}.${order}`
-    },
+    serialize: ({ column, order }) => `${String(column)}.${order}`,
   })
 }
 
@@ -48,7 +46,7 @@ export const filterConditionSchema = z.object({
  */
 export function parseAsFilters<T extends Table>(table: T) {
   return createParser<FilterCondition<T>[]>({
-    parse(queryValue) {
+    parse: (queryValue) => {
       try {
         const parsedValue = JSON.parse(queryValue)
         if (!Array.isArray(parsedValue)) {
