@@ -355,7 +355,7 @@ export function DataTableFilterList<TData>({
       case "date":
         const dateValue = Array.isArray(filter.value)
           ? filter.value.filter(Boolean)
-          : [filter.value, filter.value]
+          : [filter.value, filter.value].filter(Boolean)
 
         const displayValue =
           filter.operator === "isBetween" && dateValue.length === 2
