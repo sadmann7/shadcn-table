@@ -175,9 +175,7 @@ export function TasksTable({ promises }: TasksTableProps) {
       </DataTable>
       <UpdateTaskSheet
         open={rowAction?.action === "update"}
-        onOpenChange={() => {
-          setRowAction(null)
-        }}
+        onOpenChange={() => setRowAction(null)}
         task={rowAction?.row.original ?? null}
       />
       <DeleteTasksDialog

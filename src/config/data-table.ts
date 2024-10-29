@@ -63,6 +63,14 @@ export const dataTableConfig = {
     { label: "And", value: "and" as const },
     { label: "Or", value: "or" as const },
   ],
+  columnTypes: [
+    "text",
+    "number",
+    "date",
+    "boolean",
+    "select",
+    "multi-select",
+  ] as const,
   globalOperators: [
     "iLike",
     "notILike",
@@ -78,13 +86,5 @@ export const dataTableConfig = {
     "isRelativeToToday",
     "and",
     "or",
-  ] as const,
-  columnTypes: [
-    "text",
-    "number",
-    "date",
-    "boolean",
-    "select",
-    "multi-select",
   ] as const,
 }
