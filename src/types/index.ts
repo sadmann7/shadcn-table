@@ -43,14 +43,14 @@ export interface FilterCondition<TData> {
   operator: FilterOperator
 }
 
+export interface DataTableRowAction<TData> {
+  row: Row<TData>
+  type: "update" | "delete"
+}
+
 export interface QueryBuilderOpts {
   where?: SQL
   orderBy?: SQL
   distinct?: boolean
   nullish?: boolean
-}
-
-export interface RowAction<TData> {
-  row: Row<TData>
-  action: "update" | "delete"
 }

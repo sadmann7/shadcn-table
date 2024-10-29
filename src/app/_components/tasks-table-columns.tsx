@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { tasks, type Task } from "@/db/schema"
-import { type RowAction } from "@/types"
+import { type DataTableRowAction } from "@/types"
 import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
 import { toast } from "sonner"
@@ -31,7 +31,9 @@ import { updateTask } from "../_lib/actions"
 import { getPriorityIcon, getStatusIcon } from "../_lib/utils"
 
 interface GetColumnsProps {
-  setRowAction: React.Dispatch<React.SetStateAction<RowAction<Task> | null>>
+  setRowAction: React.Dispatch<
+    React.SetStateAction<DataTableRowAction<Task> | null>
+  >
 }
 
 export function getColumns({
@@ -181,7 +183,7 @@ export function getColumns({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuItem
-                onSelect={() => setRowAction({ row, action: "update" })}
+                onSelect={() => setRowAction({ row, type: "update" })}
               >
                 Edit
               </DropdownMenuItem>
@@ -221,7 +223,7 @@ export function getColumns({
               </DropdownMenuSub>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onSelect={() => setRowAction({ row, action: "delete" })}
+                onSelect={() => setRowAction({ row, type: "delete" })}
               >
                 Delete
                 <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>

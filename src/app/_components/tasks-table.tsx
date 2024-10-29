@@ -5,7 +5,7 @@ import { tasks, type Task } from "@/db/schema"
 import type {
   DataTableAdvancedFilterField,
   DataTableFilterField,
-  RowAction,
+  DataTableRowAction,
 } from "@/types"
 
 import { useDataTable } from "@/hooks/use-data-table"
@@ -42,7 +42,8 @@ export function TasksTable({ promises }: TasksTableProps) {
   const [{ data, pageCount }, statusCounts, priorityCounts] =
     React.use(promises)
 
-  const [rowAction, setRowAction] = React.useState<RowAction<Task> | null>(null)
+  const [rowAction, setRowAction] =
+    React.useState<DataTableRowAction<Task> | null>(null)
 
   const columns = React.useMemo(
     () => getColumns({ setRowAction }),
@@ -174,12 +175,12 @@ export function TasksTable({ promises }: TasksTableProps) {
         )}
       </DataTable>
       <UpdateTaskSheet
-        open={rowAction?.action === "update"}
+        open={rowAction?.type === "update"}
         onOpenChange={() => setRowAction(null)}
         task={rowAction?.row.original ?? null}
       />
       <DeleteTasksDialog
-        open={rowAction?.action === "delete"}
+        open={rowAction?.type === "delete"}
         onOpenChange={() => setRowAction(null)}
         tasks={rowAction?.row.original ? [rowAction?.row.original] : []}
         showTrigger={false}
