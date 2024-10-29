@@ -3,7 +3,7 @@
 import * as React from "react"
 import type {
   DataTableAdvancedFilterField,
-  FilterCondition,
+  Filter,
   FilterOperator,
   JoinOperator,
 } from "@/types"
@@ -54,22 +54,19 @@ export function DataTableFilterList<TData>({
   shallow,
 }: DataTableFilterListProps<TData>) {
   const id = React.useId()
-  const [filters, setFilters] = useQueryState<FilterCondition<TData>[]>(
-    "filters",
-    {
-      defaultValue: [],
-      parse: (value) => JSON.parse(value) as FilterCondition<TData>[],
-      serialize: (value) => JSON.stringify(value),
-      eq: (a, b) =>
-        a.length === b.length &&
-        a.every(
-          (filter, index) =>
-            filter.id === b[index]?.id && filter.value === b[index]?.value
-        ),
-      clearOnDefault: true,
-      shallow,
-    }
-  )
+  const [filters, setFilters] = useQueryState<Filter<TData>[]>("filters", {
+    defaultValue: [],
+    parse: (value) => JSON.parse(value) as Filter<TData>[],
+    serialize: (value) => JSON.stringify(value),
+    eq: (a, b) =>
+      a.length === b.length &&
+      a.every(
+        (filter, index) =>
+          filter.id === b[index]?.id && filter.value === b[index]?.value
+      ),
+    clearOnDefault: true,
+    shallow,
+  })
   const [joinOperator, setJoinOperator] = useQueryState<JoinOperator>(
     "joinOperator",
     parseAsStringEnum(["and", "or"]).withDefault("and").withOptions({
@@ -102,7 +99,7 @@ export function DataTableFilterList<TData>({
     debounced = false,
   }: {
     index: number
-    field: Partial<FilterCondition<TData>>
+    field: Partial<Filter<TData>>
     debounced?: boolean
   }) {
     const updateFunction = debounced ? debouncedSetFilters : setFilters
@@ -135,7 +132,7 @@ export function DataTableFilterList<TData>({
     index,
     inputId,
   }: {
-    filter: FilterCondition<TData>
+    filter: Filter<TData>
     index: number
     inputId: string
   }) {

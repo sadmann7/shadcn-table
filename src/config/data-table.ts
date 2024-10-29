@@ -70,17 +70,9 @@ export const dataTableConfig = {
     { label: "And", value: "and" as const },
     { label: "Or", value: "or" as const },
   ],
-  textSorting: [
-    { label: "A -> Z", value: "asc" as const },
-    { label: "Z -> A", value: "desc" as const },
-  ],
-  numericSorting: [
-    { label: "Low -> High", value: "asc" as const },
-    { label: "High -> Low", value: "desc" as const },
-  ],
-  dateSorting: [
-    { label: "Oldest -> Newest", value: "asc" as const },
-    { label: "Newest -> Oldest", value: "desc" as const },
+  sortOrders: [
+    { label: "Asc", value: "asc" as const },
+    { label: "Desc", value: "desc" as const },
   ],
   columnTypes: [
     "text",

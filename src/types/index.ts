@@ -36,7 +36,7 @@ export interface DataTableAdvancedFilterField<TData>
   type: ColumnType
 }
 
-export interface FilterCondition<TData> {
+export interface Filter<TData> {
   id: keyof TData
   value: string | string[]
   type: ColumnType
