@@ -8,8 +8,6 @@ import { cn } from "@/lib/utils"
 import { DataTableFilterList } from "@/components/data-table/data-table-filter-list"
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
 
-import { DataTableSortList } from "./data-table-sort-list"
-
 interface DataTableAdvancedToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
   table: Table<TData>
@@ -68,14 +66,11 @@ export function DataTableAdvancedToolbar<TData>({
       )}
       {...props}
     >
-      <div className="flex items-center gap-2">
-        <DataTableFilterList
-          filterFields={filterFields}
-          debounceMs={debounceMs}
-          shallow={shallow}
-        />
-        <DataTableSortList table={table} />
-      </div>
+      <DataTableFilterList
+        filterFields={filterFields}
+        debounceMs={debounceMs}
+        shallow={shallow}
+      />
       <div className="flex items-center gap-2">
         {children}
         <DataTableViewOptions table={table} />
