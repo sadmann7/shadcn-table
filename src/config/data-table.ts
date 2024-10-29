@@ -1,4 +1,4 @@
-import { MixIcon, SquareIcon } from "@radix-ui/react-icons"
+import { LayersIcon, MixIcon, SquareIcon } from "@radix-ui/react-icons"
 
 export type DataTableConfig = typeof dataTableConfig
 
@@ -10,6 +10,13 @@ export const dataTableConfig = {
       icon: MixIcon,
       tooltipTitle: "Toggle advanced filter",
       tooltipDescription: "An airtable like query builder to filter rows.",
+    },
+    {
+      label: "Advanced sorting",
+      value: "advancedSorting" as const,
+      icon: LayersIcon,
+      tooltipTitle: "Toggle advanced sorting",
+      tooltipDescription: "A sort builder to sort rows.",
     },
     {
       label: "Floating bar",
@@ -62,6 +69,18 @@ export const dataTableConfig = {
   joinOperators: [
     { label: "And", value: "and" as const },
     { label: "Or", value: "or" as const },
+  ],
+  textSorting: [
+    { label: "A -> Z", value: "asc" as const },
+    { label: "Z -> A", value: "desc" as const },
+  ],
+  numericSorting: [
+    { label: "Low -> High", value: "asc" as const },
+    { label: "High -> Low", value: "desc" as const },
+  ],
+  dateSorting: [
+    { label: "Oldest -> Newest", value: "asc" as const },
+    { label: "Newest -> Oldest", value: "desc" as const },
   ],
   columnTypes: [
     "text",
