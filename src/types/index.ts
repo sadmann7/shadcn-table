@@ -6,8 +6,6 @@ export type Prettify<T> = {
   [K in keyof T]: T[K]
 } & {}
 
-export type NonUndefined<T> = T extends undefined ? never : T
-
 export interface SearchParams {
   [key: string]: string | string[] | undefined
 }

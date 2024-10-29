@@ -90,41 +90,29 @@ export function filterColumns<T extends Table>({
           ? notIlike(column, `%${filter.value}%`)
           : undefined
       case "lt":
-        return filter.type === "number" || filter.type === "date"
+        return filter.type === "number"
           ? lt(column, filter.value)
-          : undefined
+          : filter.type === "date" && typeof filter.value === "string"
+            ? lt(column, endOfDay(new Date(filter.value)))
+            : undefined
       case "lte":
-        return filter.type === "number" || filter.type === "date"
+        return filter.type === "number"
           ? lte(column, filter.value)
-          : undefined
+          : filter.type === "date" && typeof filter.value === "string"
+            ? lte(column, endOfDay(new Date(filter.value)))
+            : undefined
       case "gt":
-        return filter.type === "number" || filter.type === "date"
+        return filter.type === "number"
           ? gt(column, filter.value)
-          : undefined
+          : filter.type === "date" && typeof filter.value === "string"
+            ? gt(column, startOfDay(new Date(filter.value)))
+            : undefined
       case "gte":
-        return filter.type === "number" || filter.type === "date"
+        return filter.type === "number"
           ? gte(column, filter.value)
-          : undefined
-      case "isEmpty":
-        return isEmpty(column)
-      case "isNotEmpty":
-        return isNotEmpty(column)
-      case "isBefore":
-        return filter.type === "date" && typeof filter.value === "string"
-          ? lt(column, endOfDay(new Date(filter.value)))
-          : undefined
-      case "isAfter":
-        return filter.type === "date" && typeof filter.value === "string"
-          ? gt(column, startOfDay(new Date(filter.value)))
-          : undefined
-      case "isOnOrBefore":
-        return filter.type === "date" && typeof filter.value === "string"
-          ? lte(column, endOfDay(new Date(filter.value)))
-          : undefined
-      case "isOnOrAfter":
-        return filter.type === "date" && typeof filter.value === "string"
-          ? gte(column, startOfDay(new Date(filter.value)))
-          : undefined
+          : filter.type === "date" && typeof filter.value === "string"
+            ? gte(column, startOfDay(new Date(filter.value)))
+            : undefined
       case "isBetween":
         return filter.type === "date" &&
           Array.isArray(filter.value) &&
@@ -167,6 +155,11 @@ export function filterColumns<T extends Table>({
           return and(gte(column, startDate), lte(column, endDate))
         }
         return undefined
+      case "isEmpty":
+        return isEmpty(column)
+      case "isNotEmpty":
+        return isNotEmpty(column)
+
       default:
         throw new Error(`Unsupported operator: ${filter.operator}`)
     }

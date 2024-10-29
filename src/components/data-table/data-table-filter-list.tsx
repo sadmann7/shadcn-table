@@ -44,13 +44,13 @@ import { Icons } from "@/components/icons"
 
 interface DataTableFilterListProps<TData> {
   filterFields: DataTableAdvancedFilterField<TData>[]
-  debouncedMs: number
+  debounceMs: number
   shallow?: boolean
 }
 
 export function DataTableFilterList<TData>({
   filterFields,
-  debouncedMs,
+  debounceMs,
   shallow,
 }: DataTableFilterListProps<TData>) {
   const id = React.useId()
@@ -78,7 +78,7 @@ export function DataTableFilterList<TData>({
     })
   )
 
-  const debouncedSetFilters = useDebouncedCallback(setFilters, debouncedMs)
+  const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs)
 
   function addFilter() {
     const firstColumn = filterFields[0]
@@ -164,7 +164,7 @@ export function DataTableFilterList<TData>({
             type={filter.type}
             aria-label={`${filterField.label} filter value`}
             aria-describedby={`${inputId}-description`}
-            placeholder={filterField.placeholder}
+            placeholder={filterField.placeholder ?? "Enter a value..."}
             className="h-8 w-full rounded"
             defaultValue={
               typeof filter.value === "string" ? filter.value : undefined
@@ -201,7 +201,7 @@ export function DataTableFilterList<TData>({
                   </Badge>
                 ) : (
                   <>
-                    Select option...
+                    {filterField.placeholder ?? "Select an option..."}
                     <CaretSortIcon className="ml-2 size-4" />
                   </>
                 )}
@@ -268,7 +268,7 @@ export function DataTableFilterList<TData>({
                 <>
                   {selectedValues.size === 0 && (
                     <>
-                      Select options...
+                      {filterField.placeholder ?? " Select options..."}
                       <CaretSortIcon className="ml-2 size-4" />
                     </>
                   )}
@@ -384,7 +384,6 @@ export function DataTableFilterList<TData>({
                   className="mr-2 size-3.5 shrink-0"
                   aria-hidden="true"
                 />
-
                 <span className="truncate">{displayValue}</span>
               </Button>
             </PopoverTrigger>
@@ -459,7 +458,7 @@ export function DataTableFilterList<TData>({
               aria-controls={`${inputId}-listbox`}
               className="h-8 w-full rounded bg-transparent"
             >
-              <SelectValue placeholder="True" />
+              <SelectValue placeholder={filter.value ? "True" : "False"} />
             </SelectTrigger>
             <SelectContent id={`${inputId}-listbox`}>
               <SelectItem value="true">True</SelectItem>

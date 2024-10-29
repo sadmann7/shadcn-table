@@ -68,7 +68,7 @@ export function DataTableAdvancedToolbar<TData>({
     >
       <DataTableFilterList
         filterFields={filterFields}
-        debouncedMs={debounceMs}
+        debounceMs={debounceMs}
         shallow={shallow}
       />
       <div className="flex items-center gap-2">

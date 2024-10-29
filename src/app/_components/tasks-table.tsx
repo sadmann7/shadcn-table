@@ -95,12 +95,11 @@ export function TasksTable({ promises }: TasksTableProps) {
       id: "title",
       label: "Title",
       type: "text",
-      placeholder: "Filter titles...",
     },
     {
       id: "status",
       label: "Status",
-      type: "multi-select",
+      type: "select",
       options: tasks.status.enumValues.map((status) => ({
         label: status[0]?.toUpperCase() + status.slice(1),
         value: status,
