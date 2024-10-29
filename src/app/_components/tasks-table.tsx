@@ -5,6 +5,7 @@ import { tasks, type Task } from "@/db/schema"
 import type {
   DataTableAdvancedFilterField,
   DataTableFilterField,
+  RowAction,
 } from "@/types"
 
 import { useDataTable } from "@/hooks/use-data-table"
@@ -18,10 +19,12 @@ import type {
   getTaskStatusCounts,
 } from "../_lib/queries"
 import { getPriorityIcon, getStatusIcon } from "../_lib/utils"
+import { DeleteTasksDialog } from "./delete-tasks-dialog"
 import { useFeatureFlags } from "./feature-flags-provider"
 import { getColumns } from "./tasks-table-columns"
 import { TasksTableFloatingBar } from "./tasks-table-floating-bar"
 import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions"
+import { UpdateTaskSheet } from "./update-task-sheet"
 
 interface TasksTableProps {
   promises: Promise<
@@ -39,7 +42,12 @@ export function TasksTable({ promises }: TasksTableProps) {
   const [{ data, pageCount }, statusCounts, priorityCounts] =
     React.use(promises)
 
-  const columns = React.useMemo(() => getColumns(), [])
+  const [rowAction, setRowAction] = React.useState<RowAction<Task> | null>(null)
+
+  const columns = React.useMemo(
+    () => getColumns({ setRowAction }),
+    [setRowAction]
+  )
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -144,23 +152,41 @@ export function TasksTable({ promises }: TasksTableProps) {
   })
 
   return (
-    <DataTable
-      table={table}
-      floatingBar={floatingBar ? <TasksTableFloatingBar table={table} /> : null}
-    >
-      {advancedFilter ? (
-        <DataTableAdvancedToolbar
-          table={table}
-          filterFields={advancedFilterFields}
-          shallow={false}
-        >
-          <TasksTableToolbarActions table={table} />
-        </DataTableAdvancedToolbar>
-      ) : (
-        <DataTableToolbar table={table} filterFields={filterFields}>
-          <TasksTableToolbarActions table={table} />
-        </DataTableToolbar>
-      )}
-    </DataTable>
+    <>
+      <DataTable
+        table={table}
+        floatingBar={
+          floatingBar ? <TasksTableFloatingBar table={table} /> : null
+        }
+      >
+        {advancedFilter ? (
+          <DataTableAdvancedToolbar
+            table={table}
+            filterFields={advancedFilterFields}
+            shallow={false}
+          >
+            <TasksTableToolbarActions table={table} />
+          </DataTableAdvancedToolbar>
+        ) : (
+          <DataTableToolbar table={table} filterFields={filterFields}>
+            <TasksTableToolbarActions table={table} />
+          </DataTableToolbar>
+        )}
+      </DataTable>
+      <UpdateTaskSheet
+        open={rowAction?.action === "update"}
+        onOpenChange={() => {
+          setRowAction(null)
+        }}
+        task={rowAction?.row.original ?? null}
+      />
+      <DeleteTasksDialog
+        open={rowAction?.action === "delete"}
+        onOpenChange={() => setRowAction(null)}
+        tasks={rowAction?.row.original ? [rowAction?.row.original] : []}
+        showTrigger={false}
+        onSuccess={() => rowAction?.row.toggleSelected(false)}
+      />
+    </>
   )
 }

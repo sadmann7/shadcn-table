@@ -40,7 +40,7 @@ import { updateTaskSchema, type UpdateTaskSchema } from "../_lib/validations"
 
 interface UpdateTaskSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
-  task: Task
+  task: Task | null
 }
 
 export function UpdateTaskSheet({ task, ...props }: UpdateTaskSheetProps) {
@@ -49,24 +49,26 @@ export function UpdateTaskSheet({ task, ...props }: UpdateTaskSheetProps) {
   const form = useForm<UpdateTaskSchema>({
     resolver: zodResolver(updateTaskSchema),
     defaultValues: {
-      title: task.title ?? "",
-      label: task.label,
-      status: task.status,
-      priority: task.priority,
+      title: task?.title ?? "",
+      label: task?.label,
+      status: task?.status,
+      priority: task?.priority,
     },
   })
 
   React.useEffect(() => {
     form.reset({
-      title: task.title ?? "",
-      label: task.label,
-      status: task.status,
-      priority: task.priority,
+      title: task?.title ?? "",
+      label: task?.label,
+      status: task?.status,
+      priority: task?.priority,
     })
   }, [task, form])
 
   function onSubmit(input: UpdateTaskSchema) {
     startUpdateTransition(async () => {
+      if (!task) return
+
       const { error } = await updateTask({
         id: task.id,
         ...input,

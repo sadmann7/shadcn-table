@@ -1,3 +1,4 @@
+import { type Row } from "@tanstack/react-table"
 import { type SQL } from "drizzle-orm"
 
 import { type DataTableConfig } from "@/config/data-table"
@@ -47,4 +48,9 @@ export interface QueryBuilderOpts {
   orderBy?: SQL
   distinct?: boolean
   nullish?: boolean
+}
+
+export interface RowAction<TData> {
+  row: Row<TData>
+  action: "update" | "delete"
 }
