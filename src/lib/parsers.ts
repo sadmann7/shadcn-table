@@ -64,6 +64,11 @@ export const parseAsSortingState = createParser<SortingState>({
     ),
 })
 
+/**
+ * Create a parser for TanStack Table multi-sorting state.
+ * @param table The table object to create the multi-sort parser for.
+ * @returns A parser for TanStack Table multi-sorting state.
+ */
 export const getMultiSortParser = <T extends Table>(table: T) =>
   createParser<SortOption<T>[]>({
     parse: (value) => {
