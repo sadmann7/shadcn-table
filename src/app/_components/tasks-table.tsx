@@ -8,6 +8,7 @@ import type {
   DataTableRowAction,
 } from "@/types"
 
+import { toSentenceCase } from "@/lib/utils"
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTable } from "@/components/data-table/data-table"
 import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar"
@@ -71,7 +72,7 @@ export function TasksTable({ promises }: TasksTableProps) {
       id: "status",
       label: "Status",
       options: tasks.status.enumValues.map((status) => ({
-        label: status[0]?.toUpperCase() + status.slice(1),
+        label: toSentenceCase(status),
         value: status,
         icon: getStatusIcon(status),
         count: statusCounts[status],
@@ -81,7 +82,7 @@ export function TasksTable({ promises }: TasksTableProps) {
       id: "priority",
       label: "Priority",
       options: tasks.priority.enumValues.map((priority) => ({
-        label: priority[0]?.toUpperCase() + priority.slice(1),
+        label: toSentenceCase(priority),
         value: priority,
         icon: getPriorityIcon(priority),
         count: priorityCounts[priority],
@@ -110,7 +111,7 @@ export function TasksTable({ promises }: TasksTableProps) {
       label: "Status",
       type: "select",
       options: tasks.status.enumValues.map((status) => ({
-        label: status[0]?.toUpperCase() + status.slice(1),
+        label: toSentenceCase(status),
         value: status,
         icon: getStatusIcon(status),
         count: statusCounts[status],
@@ -121,7 +122,7 @@ export function TasksTable({ promises }: TasksTableProps) {
       label: "Priority",
       type: "multi-select",
       options: tasks.priority.enumValues.map((priority) => ({
-        label: priority[0]?.toUpperCase() + priority.slice(1),
+        label: toSentenceCase(priority),
         value: priority,
         icon: getPriorityIcon(priority),
         count: priorityCounts[priority],

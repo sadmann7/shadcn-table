@@ -135,7 +135,7 @@ export function DataTableSortList<TData>({
       overlay={
         <div className="flex items-center gap-2">
           <div className="h-8 w-[11.25rem] rounded-sm bg-primary/10" />
-          <div className="h-8 w-28 rounded-sm bg-primary/10" />
+          <div className="h-8 w-24 rounded-sm bg-primary/10" />
           <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
           <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
         </div>
@@ -166,7 +166,7 @@ export function DataTableSortList<TData>({
           id={`${id}-sort-dialog`}
           align="start"
           className={cn(
-            "flex w-[26rem] origin-[var(--radix-popover-content-transform-origin)] flex-col p-4",
+            "flex w-[25rem] origin-[var(--radix-popover-content-transform-origin)] flex-col p-4",
             uniqueSorting.length > 0 ? "gap-3.5" : "gap-2"
           )}
         >
