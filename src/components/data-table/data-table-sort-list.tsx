@@ -175,7 +175,7 @@ export function DataTableSortList<TData>({
               </p>
             </div>
           )}
-          <div className="flex max-h-40 flex-col gap-2 overflow-y-auto py-0.5 pr-1">
+          <div className="flex max-h-40 flex-col gap-2 overflow-y-auto p-0.5">
             <div className="flex w-full flex-col gap-2">
               {sorting.map((sort, index) => {
                 const sortId = `${id}-sort-${sort.id}`
