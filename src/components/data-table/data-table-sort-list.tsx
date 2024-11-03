@@ -64,7 +64,7 @@ export function DataTableSortList<TData>({
 
   function addSort() {
     const firstAvailableColumn = sortableColumns.find(
-      (column) => !column.selected
+      (column) => !sorting.some((s) => s.id === column.id)
     )
     if (!firstAvailableColumn) return
 
@@ -80,12 +80,9 @@ export function DataTableSortList<TData>({
     const updateFunction = opts?.debounced ? debouncedSetSorting : setSorting
 
     updateFunction((prevSorting) => {
-      const updatedSorting = prevSorting.map((sort) => {
-        if (sort.id === field.id) {
-          return { ...sort, ...field }
-        }
-        return sort
-      })
+      const updatedSorting = prevSorting.map((sort) =>
+        sort.id === field.id ? { ...sort, ...field } : sort
+      )
       return updatedSorting
     })
   }
@@ -105,8 +102,6 @@ export function DataTableSortList<TData>({
       return newSorting
     })
   }
-
-  console.log({ sorting })
 
   return (
     <Sortable

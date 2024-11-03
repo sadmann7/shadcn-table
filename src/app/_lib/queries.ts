@@ -27,8 +27,10 @@ export async function getTasks(input: GetTasksSchema) {
         const { column, order } = input.sort
         const fromDate = input.from ? new Date(input.from) : undefined
         const toDate = input.to ? new Date(input.to) : undefined
-        const advancedTable =
-          input.flags.includes("advancedTable") && input.filters.length > 0
+        const advancedFilter =
+          input.flags.includes("advancedFilter") && input.filters.length > 0
+        const advancedSort =
+          input.flags.includes("advancedSort") && input.multiSort.length > 0
 
         const advancedWhere = filterColumns({
           table: tasks,
@@ -36,7 +38,7 @@ export async function getTasks(input: GetTasksSchema) {
           joinOperator: input.joinOperator,
         })
 
-        const where = advancedTable
+        const where = advancedFilter
           ? advancedWhere
           : and(
               input.title ? ilike(tasks.title, `%${input.title}%`) : undefined,
@@ -50,6 +52,18 @@ export async function getTasks(input: GetTasksSchema) {
               toDate ? lte(tasks.createdAt, toDate) : undefined
             )
 
+        const orderBy =
+          (advancedSort
+            ? //  and(
+              //     ...input.multiSort.map((sort) =>
+              //       sort.desc ? desc(tasks[sort.id]) : desc(tasks[sort.column])
+              //     )
+              //   )
+              undefined
+            : order === "asc"
+              ? asc(tasks[column])
+              : desc(tasks[column])) ?? desc(tasks.createdAt)
+
         const { data, total } = await db.transaction(async (tx) => {
           const data = await tx
             .select()
@@ -57,7 +71,7 @@ export async function getTasks(input: GetTasksSchema) {
             .limit(input.perPage)
             .offset(offset)
             .where(where)
-            .orderBy(order === "asc" ? asc(tasks[column]) : desc(tasks[column]))
+            .orderBy(orderBy)
 
           const total = await tx
             .select({

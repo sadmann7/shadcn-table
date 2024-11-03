@@ -1,15 +1,22 @@
-import { LayersIcon, SquareIcon } from "@radix-ui/react-icons"
+import { LayersIcon, MixIcon, SquareIcon } from "@radix-ui/react-icons"
 
 export type DataTableConfig = typeof dataTableConfig
 
 export const dataTableConfig = {
   featureFlags: [
     {
-      label: "Advanced table",
-      value: "advancedTable" as const,
+      label: "Advanced filter",
+      value: "advancedFilter" as const,
+      icon: MixIcon,
+      tooltipTitle: "Toggle advanced filter",
+      tooltipDescription: "An airtable like query builder to filter rows.",
+    },
+    {
+      label: "Advanced sort",
+      value: "advancedSort" as const,
       icon: LayersIcon,
-      tooltipTitle: "Toggle advanced table",
-      tooltipDescription: "Airtable like filter, and sort builder.",
+      tooltipTitle: "Toggle advanced sort",
+      tooltipDescription: "A sort builder to sort rows.",
     },
     {
       label: "Floating bar",

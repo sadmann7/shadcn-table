@@ -9,7 +9,11 @@ import {
 } from "nuqs/server"
 import * as z from "zod"
 
-import { getFiltersStateParser, parseAsSort } from "@/lib/parsers"
+import {
+  getFiltersStateParser,
+  getSortParser,
+  parseAsSortingState,
+} from "@/lib/parsers"
 
 export const filterConditionSchema = z.object({
   id: z.string(),
@@ -19,12 +23,12 @@ export const filterConditionSchema = z.object({
 })
 
 export const searchParamsCache = createSearchParamsCache({
-  flags: parseAsArrayOf(z.enum(["advancedTable", "floatingBar"])).withDefault(
-    []
-  ),
+  flags: parseAsArrayOf(
+    z.enum(["advancedFilter", "advancedSort", "floatingBar"])
+  ).withDefault([]),
   page: parseAsInteger.withDefault(1),
   perPage: parseAsInteger.withDefault(10),
-  sort: parseAsSort(tasks).withDefault({
+  sort: getSortParser(tasks).withDefault({
     column: "createdAt",
     order: "desc",
   }),
@@ -33,9 +37,11 @@ export const searchParamsCache = createSearchParamsCache({
   priority: parseAsArrayOf(z.enum(tasks.priority.enumValues)).withDefault([]),
   from: parseAsString.withDefault(""),
   to: parseAsString.withDefault(""),
-  // for advanced filter
+  // advanced filter
   filters: getFiltersStateParser().withDefault([]),
   joinOperator: parseAsStringEnum(["and", "or"]).withDefault("and"),
+  // advanced sort
+  multiSort: parseAsSortingState.withDefault([]),
 })
 
 export const createTaskSchema = z.object({

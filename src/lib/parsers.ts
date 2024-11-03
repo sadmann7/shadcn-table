@@ -16,7 +16,7 @@ interface SortOption<T extends Table> {
  * @param table The table object to create the sort parser for.
  * @returns A parser for sorting options.
  */
-export function parseAsSort<T extends Table>(table: T) {
+export function getSortParser<T extends Table>(table: T) {
   return createParser<SortOption<T>>({
     parse: (value) => {
       const [column, order] =
@@ -63,6 +63,50 @@ export const parseAsSortingState = createParser<SortingState>({
       (item, index) => item.id === b[index]?.id && item.desc === b[index]?.desc
     ),
 })
+
+export const getMultiSortParser = <T extends Table>(table: T) =>
+  createParser<SortOption<T>[]>({
+    parse: (value) => {
+      try {
+        const parsed = JSON.parse(value)
+        if (!Array.isArray(parsed)) {
+          return null
+        }
+
+        const validSortOptions = parsed
+          .map((item) => {
+            const [column, order] = (item as string).split(".") as [
+              string,
+              "asc" | "desc",
+            ]
+            if (
+              !column ||
+              !order ||
+              !(column in table) ||
+              !["asc", "desc"].includes(order)
+            ) {
+              return null
+            }
+            return { column, order } as SortOption<T>
+          })
+          .filter((option): option is SortOption<T> => option !== null)
+
+        return validSortOptions.length > 0 ? validSortOptions : null
+      } catch {
+        return null
+      }
+    },
+    serialize: (value) =>
+      JSON.stringify(
+        value.map(({ column, order }) => `${String(column)}.${order}`)
+      ),
+    eq: (a, b) =>
+      a.length === b.length &&
+      a.every(
+        (item, index) =>
+          item.column === b[index]?.column && item.order === b[index]?.order
+      ),
+  })
 
 export const filterSchema = z.object({
   id: z.string(),
