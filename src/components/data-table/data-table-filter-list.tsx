@@ -143,16 +143,6 @@ export function DataTableFilterList<TData>({
     void setFilters(updatedFilters)
   }
 
-  function moveFilter(activeIndex: number, overIndex: number) {
-    void setFilters((prevFilters) => {
-      const newFilters = [...prevFilters]
-      const [removed] = newFilters.splice(activeIndex, 1)
-      if (!removed) return prevFilters
-      newFilters.splice(overIndex, 0, removed)
-      return newFilters
-    })
-  }
-
   function renderFilterInput({
     filter,
     inputId,
@@ -502,12 +492,13 @@ export function DataTableFilterList<TData>({
 
   return (
     <Sortable
-      value={filters.map((filter) => ({
-        id: filter.rowId,
-      }))}
-      onMove={({ activeIndex, overIndex }) =>
-        moveFilter(activeIndex, overIndex)
-      }
+      value={filters.map((item) => ({ id: item.rowId }))}
+      onValueChange={(items) => {
+        const ids = new Set(items.map((item) => item.id))
+        void setFilters((prevFilters) =>
+          prevFilters.filter((filter) => ids.has(filter.rowId))
+        )
+      }}
       overlay={
         <div className="flex items-center gap-2">
           <div className="h-8 min-w-[4.5rem] rounded-sm bg-primary/10" />

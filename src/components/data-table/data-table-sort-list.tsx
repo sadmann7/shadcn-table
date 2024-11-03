@@ -118,20 +118,10 @@ export function DataTableSortList<TData>({
     )
   }
 
-  function moveSort(activeIndex: number, overIndex: number) {
-    void setSorting((prevSorting) => {
-      const newSorting = [...prevSorting]
-      const [removed] = newSorting.splice(activeIndex, 1)
-      if (!removed) return prevSorting
-      newSorting.splice(overIndex, 0, removed)
-      return newSorting
-    })
-  }
-
   return (
     <Sortable
       value={sorting}
-      onMove={({ activeIndex, overIndex }) => moveSort(activeIndex, overIndex)}
+      onValueChange={setSorting}
       overlay={
         <div className="flex items-center gap-2">
           <div className="h-8 w-[11.25rem] rounded-sm bg-primary/10" />

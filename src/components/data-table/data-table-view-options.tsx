@@ -49,7 +49,7 @@ export function DataTableViewOptions<TData>({
           <CaretSortIcon className="ml-auto size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-48 p-0">
+      <PopoverContent align="end" className="w-44 p-0">
         <Command>
           <CommandInput placeholder="Search columns..." />
           <CommandList>
