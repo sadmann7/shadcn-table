@@ -19,7 +19,7 @@ export const filterConditionSchema = z.object({
 })
 
 export const searchParamsCache = createSearchParamsCache({
-  flags: parseAsArrayOf(z.enum(["advancedFilter", "floatingBar"])).withDefault(
+  flags: parseAsArrayOf(z.enum(["advancedTable", "floatingBar"])).withDefault(
     []
   ),
   page: parseAsInteger.withDefault(1),

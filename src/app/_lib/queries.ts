@@ -27,8 +27,8 @@ export async function getTasks(input: GetTasksSchema) {
         const { column, order } = input.sort
         const fromDate = input.from ? new Date(input.from) : undefined
         const toDate = input.to ? new Date(input.to) : undefined
-        const advancedFilter =
-          input.flags.includes("advancedFilter") && input.filters.length > 0
+        const advancedTable =
+          input.flags.includes("advancedTable") && input.filters.length > 0
 
         const advancedWhere = filterColumns({
           table: tasks,
@@ -36,7 +36,7 @@ export async function getTasks(input: GetTasksSchema) {
           joinOperator: input.joinOperator,
         })
 
-        const where = advancedFilter
+        const where = advancedTable
           ? advancedWhere
           : and(
               input.title ? ilike(tasks.title, `%${input.title}%`) : undefined,
