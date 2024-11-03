@@ -109,7 +109,7 @@ export function TasksTable({ promises }: TasksTableProps) {
     {
       id: "status",
       label: "Status",
-      type: "select",
+      type: "multi-select",
       options: tasks.status.enumValues.map((status) => ({
         label: toSentenceCase(status),
         value: status,
