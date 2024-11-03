@@ -44,7 +44,7 @@ export function DataTableSortList<TData>({
   const id = React.useId()
 
   const [sorting, setSorting] = useQueryState(
-    "multiSort",
+    "sort",
     parseAsSortingState.withDefault([]).withOptions({
       clearOnDefault: true,
       shallow,

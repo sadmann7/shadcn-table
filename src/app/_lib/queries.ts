@@ -50,15 +50,13 @@ export async function getTasks(input: GetTasksSchema) {
             )
 
         const orderBy =
-          and(
-            ...input.sort.map((item) =>
-              item.desc
-                ? desc(tasks[item.id as keyof Task])
-                : asc(tasks[item.id as keyof Task])
-            )
-          ) ?? desc(tasks.createdAt)
-
-        console.log({ sort: input.sort })
+          input.sort.length > 0
+            ? input.sort.map((item) =>
+                item.desc
+                  ? desc(tasks[item.id as keyof Task])
+                  : asc(tasks[item.id as keyof Task])
+              )
+            : [asc(tasks.createdAt)]
 
         const { data, total } = await db.transaction(async (tx) => {
           const data = await tx
@@ -67,7 +65,7 @@ export async function getTasks(input: GetTasksSchema) {
             .limit(input.perPage)
             .offset(offset)
             .where(where)
-            .orderBy(orderBy)
+            .orderBy(...orderBy)
 
           const total = await tx
             .select({

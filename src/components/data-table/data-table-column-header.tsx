@@ -1,4 +1,5 @@
-import * as React from "react"
+"use client"
+
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -31,14 +32,24 @@ export function DataTableColumnHeader<TData, TValue>({
     return <div className={cn(className)}>{title}</div>
   }
 
+  const ascValue = `${column.id}-asc`
+  const descValue = `${column.id}-desc`
+  const hideValue = `${column.id}-hide`
+
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <Select
-        defaultValue={column.getIsSorted() === "desc" ? "desc" : "asc"}
+        defaultValue={
+          column.getIsSorted() === "desc"
+            ? descValue
+            : column.getIsSorted() === "asc"
+              ? ascValue
+              : undefined
+        }
         onValueChange={(value) => {
-          if (value === "asc") column.toggleSorting(false)
-          else if (value === "desc") column.toggleSorting(true)
-          else if (value === "hide") column.toggleVisibility(false)
+          if (value.endsWith(ascValue)) column.toggleSorting(false)
+          else if (value.endsWith(descValue)) column.toggleSorting(true)
+          else if (value.endsWith(hideValue)) column.toggleVisibility(false)
         }}
       >
         <SelectTrigger
@@ -65,7 +76,7 @@ export function DataTableColumnHeader<TData, TValue>({
         <SelectContent align="start">
           {column.getCanSort() && (
             <>
-              <SelectItem value="asc">
+              <SelectItem value={ascValue}>
                 <span className="flex items-center">
                   <ArrowUpIcon
                     className="mr-2 size-3.5 text-muted-foreground/70"
@@ -74,7 +85,7 @@ export function DataTableColumnHeader<TData, TValue>({
                   Asc
                 </span>
               </SelectItem>
-              <SelectItem value="desc">
+              <SelectItem value={descValue}>
                 <span className="flex items-center">
                   <ArrowDownIcon
                     className="mr-2 size-3.5 text-muted-foreground/70"
@@ -86,7 +97,7 @@ export function DataTableColumnHeader<TData, TValue>({
             </>
           )}
           {column.getCanHide() && (
-            <SelectItem value="hide">
+            <SelectItem value={hideValue}>
               <span className="flex items-center">
                 <EyeNoneIcon
                   className="mr-2 size-3.5 text-muted-foreground/70"
