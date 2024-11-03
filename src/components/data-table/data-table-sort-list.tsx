@@ -71,20 +71,17 @@ export function DataTableSortList<TData>({
     void setSorting([...sorting, { id: firstAvailableColumn.id, desc: false }])
   }
 
-  function updateSort({
-    index,
-    field,
-    debounced = false,
-  }: {
-    index: number
-    field: Partial<SortingState[number]>
-    debounced?: boolean
-  }) {
-    const updateFunction = debounced ? debouncedSetSorting : setSorting
+  function updateSort(
+    field: Partial<SortingState[number]>,
+    opts?: {
+      debounced?: boolean
+    }
+  ) {
+    const updateFunction = opts?.debounced ? debouncedSetSorting : setSorting
 
     updateFunction((prevSorting) => {
-      const updatedSorting = prevSorting.map((sort, i) => {
-        if (i === index) {
+      const updatedSorting = prevSorting.map((sort) => {
+        if (sort.id === field.id) {
           return { ...sort, ...field }
         }
         return sort
@@ -93,8 +90,10 @@ export function DataTableSortList<TData>({
     })
   }
 
-  function removeSort(index: number) {
-    void setSorting((prevSorting) => prevSorting.filter((_, i) => i !== index))
+  function removeSort(id: string) {
+    void setSorting((prevSorting) =>
+      prevSorting.filter((item) => item.id !== id)
+    )
   }
 
   function moveSort(activeIndex: number, overIndex: number) {
@@ -162,8 +161,8 @@ export function DataTableSortList<TData>({
           )}
           <div className="flex max-h-40 flex-col gap-2 overflow-y-auto py-0.5 pr-1">
             <div className="flex w-full flex-col gap-2">
-              {sorting.map((sort, index) => {
-                const sortId = `${id}-sort-${index}`
+              {sorting.map((sort) => {
+                const sortId = `${id}-sort-${sort.id}`
                 const fieldListboxId = `${sortId}-field-listbox`
                 const directionListboxId = `${sortId}-direction-listbox`
 
@@ -172,9 +171,7 @@ export function DataTableSortList<TData>({
                     <div className="flex items-center gap-2">
                       <Select
                         value={sort.id}
-                        onValueChange={(value) =>
-                          updateSort({ index, field: { id: value } })
-                        }
+                        onValueChange={(value) => updateSort({ id: value })}
                       >
                         <SelectTrigger
                           aria-label="Select sort field"
@@ -201,10 +198,7 @@ export function DataTableSortList<TData>({
                       <Select
                         value={sort.desc ? "desc" : "asc"}
                         onValueChange={(value: SortDirection) =>
-                          updateSort({
-                            index,
-                            field: { desc: value === "desc" },
-                          })
+                          updateSort({ id: sort.id, desc: value === "desc" })
                         }
                       >
                         <SelectTrigger
@@ -227,9 +221,9 @@ export function DataTableSortList<TData>({
                       <Button
                         variant="outline"
                         size="icon"
-                        aria-label={`Remove sort ${index + 1}`}
+                        aria-label={`Remove sort ${sort.id}`}
                         className="size-8 shrink-0 rounded"
-                        onClick={() => removeSort(index)}
+                        onClick={() => removeSort(sort.id)}
                       >
                         <Icons.trash className="size-3.5" aria-hidden="true" />
                       </Button>
