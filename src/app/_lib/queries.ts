@@ -24,13 +24,10 @@ export async function getTasks(input: GetTasksSchema) {
     async () => {
       try {
         const offset = (input.page - 1) * input.perPage
-        const { column, order } = input.sort
         const fromDate = input.from ? new Date(input.from) : undefined
         const toDate = input.to ? new Date(input.to) : undefined
-        const advancedFilter =
-          input.flags.includes("advancedFilter") && input.filters.length > 0
-        const advancedSort =
-          input.flags.includes("advancedSort") && input.multiSort.length > 0
+        const advancedTable = input.flags.includes("advancedTable")
+        const advancedFilter = advancedTable && input.filters.length > 0
 
         const advancedWhere = filterColumns({
           table: tasks,
@@ -53,16 +50,15 @@ export async function getTasks(input: GetTasksSchema) {
             )
 
         const orderBy =
-          (advancedSort
-            ? //  and(
-              //     ...input.multiSort.map((sort) =>
-              //       sort.desc ? desc(tasks[sort.id]) : desc(tasks[sort.column])
-              //     )
-              //   )
-              undefined
-            : order === "asc"
-              ? asc(tasks[column])
-              : desc(tasks[column])) ?? desc(tasks.createdAt)
+          and(
+            ...input.sort.map((item) =>
+              item.desc
+                ? desc(tasks[item.id as keyof Task])
+                : asc(tasks[item.id as keyof Task])
+            )
+          ) ?? desc(tasks.createdAt)
+
+        console.log({ sort: input.sort })
 
         const { data, total } = await db.transaction(async (tx) => {
           const data = await tx

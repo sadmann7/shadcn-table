@@ -6,9 +6,8 @@ import type { Table } from "@tanstack/react-table"
 
 import { cn } from "@/lib/utils"
 import { DataTableFilterList } from "@/components/data-table/data-table-filter-list"
+import { DataTableSortList } from "@/components/data-table/data-table-sort-list"
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
-
-import { DataTableSortList } from "./data-table-sort-list"
 
 interface DataTableAdvancedToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {

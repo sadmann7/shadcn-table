@@ -1,5 +1,4 @@
 import { tasks } from "@/db/schema"
-import type { FilterOperator, JoinOperator } from "@/types"
 import {
   createSearchParamsCache,
   parseAsArrayOf,
@@ -9,18 +8,7 @@ import {
 } from "nuqs/server"
 import * as z from "zod"
 
-import {
-  getFiltersStateParser,
-  getSortParser,
-  parseAsSortingState,
-} from "@/lib/parsers"
-
-export const filterConditionSchema = z.object({
-  id: z.string(),
-  value: z.string(),
-  operator: z.custom<FilterOperator>(),
-  joinOperator: z.custom<JoinOperator>(),
-})
+import { getFiltersStateParser, parseAsSortingState } from "@/lib/parsers"
 
 export const searchParamsCache = createSearchParamsCache({
   flags: parseAsArrayOf(
@@ -28,10 +16,7 @@ export const searchParamsCache = createSearchParamsCache({
   ).withDefault([]),
   page: parseAsInteger.withDefault(1),
   perPage: parseAsInteger.withDefault(10),
-  sort: getSortParser(tasks).withDefault({
-    column: "createdAt",
-    order: "desc",
-  }),
+  sort: parseAsSortingState.withDefault([{ id: "createdAt", desc: true }]),
   title: parseAsString.withDefault(""),
   status: parseAsArrayOf(z.enum(tasks.status.enumValues)).withDefault([]),
   priority: parseAsArrayOf(z.enum(tasks.priority.enumValues)).withDefault([]),
@@ -40,8 +25,6 @@ export const searchParamsCache = createSearchParamsCache({
   // advanced filter
   filters: getFiltersStateParser().withDefault([]),
   joinOperator: parseAsStringEnum(["and", "or"]).withDefault("and"),
-  // advanced sort
-  multiSort: parseAsSortingState.withDefault([]),
 })
 
 export const createTaskSchema = z.object({

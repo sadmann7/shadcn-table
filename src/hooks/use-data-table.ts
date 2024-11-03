@@ -29,6 +29,7 @@ import {
   type UseQueryStateOptions,
 } from "nuqs"
 
+import { parseAsSortingState } from "@/lib/parsers"
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback"
 
 interface UseDataTableProps<TData>
@@ -189,15 +190,12 @@ export function useDataTable<TData>({
       .withOptions(queryStateOptions)
       .withDefault(initialState?.pagination?.pageSize ?? 10)
   )
-  const [sort, setSort] = useQueryState(
+  const [sorting, setSorting] = useQueryState(
     "sort",
-    parseAsString
+    parseAsSortingState
       .withOptions(queryStateOptions)
-      .withDefault(
-        `${initialState?.sorting?.[0]?.id}.${initialState?.sorting?.[0]?.desc ? "desc" : "asc"}`
-      )
+      .withDefault(initialState?.sorting ?? [])
   )
-  const [column, order] = sort?.split(".") ?? []
 
   // Create parsers for each filter field
   const filterParsers = React.useMemo(() => {
@@ -243,14 +241,10 @@ export function useDataTable<TData>({
   }
 
   // Sort
-  const sorting: SortingState = [{ id: column ?? "", desc: order === "desc" }]
-
   function onSortingChange(updaterOrValue: Updater<SortingState>) {
     if (typeof updaterOrValue === "function") {
       const newSorting = updaterOrValue(sorting)
-      void setSort(
-        `${newSorting[0]?.id}.${newSorting[0]?.desc ? "desc" : "asc"}`
-      )
+      void setSorting(newSorting)
     }
   }
 

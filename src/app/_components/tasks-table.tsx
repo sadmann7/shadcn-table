@@ -134,16 +134,15 @@ export function TasksTable({ promises }: TasksTableProps) {
     },
   ]
 
-  const advancedFilter = featureFlags.includes("advancedFilter")
-  const advancedSort = featureFlags.includes("advancedSort")
-  const floatingBar = featureFlags.includes("floatingBar")
+  const enableAdvancedTable = featureFlags.includes("advancedTable")
+  const enableFloatingBar = featureFlags.includes("floatingBar")
 
   const { table } = useDataTable({
     data,
     columns,
     pageCount,
     filterFields,
-    enableAdvancedFilter: advancedFilter,
+    enableAdvancedFilter: enableAdvancedTable,
     initialState: {
       sorting: [{ id: "createdAt", desc: true }],
       columnPinning: { right: ["actions"] },
@@ -158,10 +157,10 @@ export function TasksTable({ promises }: TasksTableProps) {
       <DataTable
         table={table}
         floatingBar={
-          floatingBar ? <TasksTableFloatingBar table={table} /> : null
+          enableFloatingBar ? <TasksTableFloatingBar table={table} /> : null
         }
       >
-        {advancedFilter || advancedSort ? (
+        {enableAdvancedTable ? (
           <DataTableAdvancedToolbar
             table={table}
             filterFields={advancedFilterFields}
