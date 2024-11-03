@@ -39,7 +39,7 @@ export function DataTableColumnHeader<TData, TValue>({
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <Select
-        defaultValue={
+        value={
           column.getIsSorted() === "desc"
             ? descValue
             : column.getIsSorted() === "asc"
@@ -47,9 +47,9 @@ export function DataTableColumnHeader<TData, TValue>({
               : undefined
         }
         onValueChange={(value) => {
-          if (value.endsWith(ascValue)) column.toggleSorting(false)
-          else if (value.endsWith(descValue)) column.toggleSorting(true)
-          else if (value.endsWith(hideValue)) column.toggleVisibility(false)
+          if (value === ascValue) column.toggleSorting(false)
+          else if (value === descValue) column.toggleSorting(true)
+          else if (value === hideValue) column.toggleVisibility(false)
         }}
       >
         <SelectTrigger

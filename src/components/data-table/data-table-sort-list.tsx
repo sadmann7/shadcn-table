@@ -202,6 +202,15 @@ export function DataTableSortList<TData>({
                           <div className="truncate">
                             <SelectValue />
                           </div>
+                          {initialSorting.length === 1 &&
+                          initialSorting[0]?.id === sort.id ? (
+                            <Badge
+                              variant="secondary"
+                              className="ml-auto h-[1.125rem] rounded px-1 font-mono text-[0.65rem] font-normal"
+                            >
+                              Default
+                            </Badge>
+                          ) : null}
                         </SelectTrigger>
                         <SelectContent id={fieldListboxId}>
                           {sortableColumns
