@@ -524,7 +524,7 @@ export function DataTableFilterList<TData>({
             aria-label="Open filters"
             aria-controls={`${id}-filter-dialog`}
           >
-            <Icons.listFilter className="size-3.5" aria-hidden="true" />
+            <Icons.filter className="size-3" aria-hidden="true" />
             Filters
             {filters.length > 0 && (
               <Badge

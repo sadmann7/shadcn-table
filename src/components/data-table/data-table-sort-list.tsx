@@ -6,13 +6,13 @@ import type {
   ExtendedSortingState,
   StringKeyOf,
 } from "@/types"
-import { CaretSortIcon, DragHandleDots2Icon } from "@radix-ui/react-icons"
+import { DragHandleDots2Icon } from "@radix-ui/react-icons"
 import type { SortDirection, Table } from "@tanstack/react-table"
 import { useQueryState } from "nuqs"
 
 import { dataTableConfig } from "@/config/data-table"
 import { getSortingStateParser } from "@/lib/parsers"
-import { cn } from "@/lib/utils"
+import { cn, toSentenceCase } from "@/lib/utils"
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -72,7 +72,7 @@ export function DataTableSortList<TData>({
     .filter((column) => column.getCanSort())
     .map((column) => ({
       id: column.id,
-      label: `${column.id.charAt(0).toUpperCase()}${column.id.slice(1)}`,
+      label: toSentenceCase(column.id),
       selected: sorting?.some((s) => s.id === column.id),
     }))
 
@@ -150,7 +150,7 @@ export function DataTableSortList<TData>({
             aria-label="Open sorting"
             aria-controls={`${id}-sort-dialog`}
           >
-            <CaretSortIcon className="size-3.5" aria-hidden="true" />
+            <Icons.arrowDownUp className="size-3" aria-hidden="true" />
             Sort
             {uniqueSorting.length > 0 && (
               <Badge
@@ -242,13 +242,16 @@ export function DataTableSortList<TData>({
                         <SelectTrigger
                           aria-label="Select sort direction"
                           aria-controls={directionListboxId}
-                          className="h-8 w-28 rounded"
+                          className="h-8 w-24 rounded"
                         >
                           <div className="truncate">
                             <SelectValue />
                           </div>
                         </SelectTrigger>
-                        <SelectContent id={directionListboxId}>
+                        <SelectContent
+                          id={directionListboxId}
+                          className="min-w-[var(--radix-select-trigger-width)]"
+                        >
                           {dataTableConfig.sortOrders.map((order) => (
                             <SelectItem key={order.value} value={order.value}>
                               {order.label}

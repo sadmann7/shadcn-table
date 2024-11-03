@@ -17,8 +17,17 @@ export function formatDate(
   }).format(new Date(date))
 }
 
+export function toSentenceCase(str: string) {
+  return str
+    .replace(/_/g, " ")
+    .replace(/([A-Z])/g, " $1")
+    .toLowerCase()
+    .replace(/^\w/, (c) => c.toUpperCase())
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
 /**
- * Stole this from the @radix-ui/primitive
  * @see https://github.com/radix-ui/primitives/blob/main/packages/core/primitive/src/primitive.tsx
  */
 export function composeEventHandlers<E>(

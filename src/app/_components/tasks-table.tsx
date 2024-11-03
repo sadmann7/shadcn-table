@@ -129,7 +129,7 @@ export function TasksTable({ promises }: TasksTableProps) {
     },
     {
       id: "createdAt",
-      label: "Created At",
+      label: "Created at",
       type: "date",
     },
   ]
