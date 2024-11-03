@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import type { DataTableAdvancedFilterField } from "@/types"
-import type { Table } from "@tanstack/react-table"
+import { type Table } from "@tanstack/react-table"
 
 import { cn } from "@/lib/utils"
 import { DataTableFilterList } from "@/components/data-table/data-table-filter-list"
@@ -11,7 +11,12 @@ import { DataTableViewOptions } from "@/components/data-table/data-table-view-op
 
 interface DataTableAdvancedToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
+  /**
+   * The table instance returned from useDataTable hook with pagination, sorting, filtering, etc.
+   * @type Table<TData>
+   */
   table: Table<TData>
+
   /**
    * An array of filter field configurations for the data table.
    * @type DataTableAdvancedFilterField<TData>[]
@@ -69,6 +74,7 @@ export function DataTableAdvancedToolbar<TData>({
     >
       <div className="flex items-center gap-2">
         <DataTableFilterList
+          table={table}
           filterFields={filterFields}
           debounceMs={debounceMs}
           shallow={shallow}

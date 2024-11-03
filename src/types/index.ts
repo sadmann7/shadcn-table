@@ -1,4 +1,4 @@
-import { type Row } from "@tanstack/react-table"
+import type { ColumnSort, Row } from "@tanstack/react-table"
 import { type SQL } from "drizzle-orm"
 import { type z } from "zod"
 
@@ -20,6 +20,14 @@ export interface Option {
   count?: number
 }
 
+export type StringKeyOf<TData> = Extract<keyof TData, string>
+
+export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
+  id: StringKeyOf<TData>
+}
+
+export type ExtendedSortingState<TData> = ExtendedColumnSort<TData>[]
+
 export type ColumnType = DataTableConfig["columnTypes"][number]
 
 export type FilterOperator = DataTableConfig["globalOperators"][number]
@@ -27,7 +35,7 @@ export type FilterOperator = DataTableConfig["globalOperators"][number]
 export type JoinOperator = DataTableConfig["joinOperators"][number]["value"]
 
 export interface DataTableFilterField<TData> {
-  id: keyof TData
+  id: StringKeyOf<TData>
   label: string
   placeholder?: string
   options?: Option[]
@@ -39,8 +47,8 @@ export interface DataTableAdvancedFilterField<TData>
 }
 
 export type Filter<TData> = Prettify<
-  Omit<z.output<typeof filterSchema>, "id"> & {
-    id: keyof TData
+  Omit<z.infer<typeof filterSchema>, "id"> & {
+    id: StringKeyOf<TData>
   }
 >
 

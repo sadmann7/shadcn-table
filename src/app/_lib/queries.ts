@@ -52,9 +52,7 @@ export async function getTasks(input: GetTasksSchema) {
         const orderBy =
           input.sort.length > 0
             ? input.sort.map((item) =>
-                item.desc
-                  ? desc(tasks[item.id as keyof Task])
-                  : asc(tasks[item.id as keyof Task])
+                item.desc ? desc(tasks[item.id]) : asc(tasks[item.id])
               )
             : [asc(tasks.createdAt)]
 

@@ -1,4 +1,4 @@
-import { tasks } from "@/db/schema"
+import { tasks, type Task } from "@/db/schema"
 import {
   createSearchParamsCache,
   parseAsArrayOf,
@@ -8,7 +8,7 @@ import {
 } from "nuqs/server"
 import * as z from "zod"
 
-import { getFiltersStateParser, parseAsSortingState } from "@/lib/parsers"
+import { getFiltersStateParser, getSortingStateParser } from "@/lib/parsers"
 
 export const searchParamsCache = createSearchParamsCache({
   flags: parseAsArrayOf(
@@ -16,7 +16,9 @@ export const searchParamsCache = createSearchParamsCache({
   ).withDefault([]),
   page: parseAsInteger.withDefault(1),
   perPage: parseAsInteger.withDefault(10),
-  sort: parseAsSortingState.withDefault([{ id: "createdAt", desc: true }]),
+  sort: getSortingStateParser<Task>().withDefault([
+    { id: "createdAt", desc: true },
+  ]),
   title: parseAsString.withDefault(""),
   status: parseAsArrayOf(z.enum(tasks.status.enumValues)).withDefault([]),
   priority: parseAsArrayOf(z.enum(tasks.priority.enumValues)).withDefault([]),

@@ -1,5 +1,5 @@
-import { type Filter } from "@/types"
-import type { SortingState } from "@tanstack/react-table"
+import type { ExtendedSortingState, Filter } from "@/types"
+import { type Row } from "@tanstack/react-table"
 import { type Table } from "drizzle-orm"
 import { createParser } from "nuqs/server"
 import { z } from "zod"
@@ -43,73 +43,37 @@ const sortingItemSchema = z.object({
 
 /**
  * Create a parser for TanStack Table sorting state.
- * Can be used for multi-sorting.
+ * @param originalRow The original row data to create the sorting parser for.
  * @returns A parser for TanStack Table sorting state.
  */
-export const parseAsSortingState = createParser<SortingState>({
-  parse: (value) => {
-    try {
-      const parsed = JSON.parse(value)
-      const result = z.array(sortingItemSchema).safeParse(parsed)
-      return result.success ? result.data : null
-    } catch {
-      return null
-    }
-  },
-  serialize: (value) => JSON.stringify(value),
-  eq: (a, b) =>
-    a.length === b.length &&
-    a.every(
-      (item, index) => item.id === b[index]?.id && item.desc === b[index]?.desc
-    ),
-})
-
-/**
- * Create a parser for TanStack Table multi-sorting state.
- * @param table The table object to create the multi-sort parser for.
- * @returns A parser for TanStack Table multi-sorting state.
- */
-export const getMultiSortParser = <T extends Table>(table: T) =>
-  createParser<SortOption<T>[]>({
+export const getSortingStateParser = <TData>(
+  originalRow?: Row<TData>["original"]
+) =>
+  createParser<ExtendedSortingState<TData>>({
     parse: (value) => {
       try {
         const parsed = JSON.parse(value)
-        if (!Array.isArray(parsed)) {
+        const result = z.array(sortingItemSchema).safeParse(parsed)
+
+        if (!result.success) {
           return null
         }
 
-        const validSortOptions = parsed
-          .map((item) => {
-            const [column, order] = (item as string).split(".") as [
-              string,
-              "asc" | "desc",
-            ]
-            if (
-              !column ||
-              !order ||
-              !(column in table) ||
-              !["asc", "desc"].includes(order)
-            ) {
-              return null
-            }
-            return { column, order } as SortOption<T>
-          })
-          .filter((option): option is SortOption<T> => option !== null)
+        const keys = Object.keys(originalRow ?? {})
 
-        return validSortOptions.length > 0 ? validSortOptions : null
+        const isValid = result.data.every((item) => keys.includes(item.id))
+
+        return isValid ? (result.data as ExtendedSortingState<TData>) : null
       } catch {
         return null
       }
     },
-    serialize: (value) =>
-      JSON.stringify(
-        value.map(({ column, order }) => `${String(column)}.${order}`)
-      ),
+    serialize: (value) => JSON.stringify(value),
     eq: (a, b) =>
       a.length === b.length &&
       a.every(
         (item, index) =>
-          item.column === b[index]?.column && item.order === b[index]?.order
+          item.id === b[index]?.id && item.desc === b[index]?.desc
       ),
   })
 
@@ -122,10 +86,13 @@ export const filterSchema = z.object({
 
 /**
  * Create a parser for data table filters.
+ * @param originalRow The original row data to create the filter parser for.
  * @returns A parser for data table filters state.
  */
-export const getFiltersStateParser = <T>() =>
-  createParser<Filter<T>[]>({
+export const getFiltersStateParser = <TData>(
+  originalRow?: Row<TData>["original"]
+) =>
+  createParser<Filter<TData>[]>({
     parse: (value) => {
       try {
         const parsed = JSON.parse(value)
@@ -133,12 +100,17 @@ export const getFiltersStateParser = <T>() =>
           return null
         }
 
+        const keys = Object.keys(originalRow ?? {})
+
         const validatedFilters = parsed
           .map((filter) => {
             const result = filterSchema.safeParse(filter)
-            return result.success ? (result.data as Filter<T>) : null
+            if (!result.success || !keys.includes(result.data.id)) {
+              return null
+            }
+            return result.data as Filter<TData>
           })
-          .filter((filter): filter is Filter<T> => filter !== null)
+          .filter((filter): filter is Filter<TData> => filter !== null)
 
         return validatedFilters
       } catch {

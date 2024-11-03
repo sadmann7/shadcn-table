@@ -1,12 +1,13 @@
 "use client"
 
 import * as React from "react"
+import type { ExtendedColumnSort, StringKeyOf } from "@/types"
 import { CaretSortIcon, DragHandleDots2Icon } from "@radix-ui/react-icons"
-import type { SortDirection, SortingState, Table } from "@tanstack/react-table"
+import type { SortDirection, Table } from "@tanstack/react-table"
 import { useQueryState } from "nuqs"
 
 import { dataTableConfig } from "@/config/data-table"
-import { parseAsSortingState } from "@/lib/parsers"
+import { getSortingStateParser } from "@/lib/parsers"
 import { cn } from "@/lib/utils"
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback"
 import { Badge } from "@/components/ui/badge"
@@ -45,10 +46,12 @@ export function DataTableSortList<TData>({
 
   const [sorting, setSorting] = useQueryState(
     "sort",
-    parseAsSortingState.withDefault([]).withOptions({
-      clearOnDefault: true,
-      shallow,
-    })
+    getSortingStateParser(table.getRowModel().rows[0]?.original)
+      .withDefault([])
+      .withOptions({
+        clearOnDefault: true,
+        shallow,
+      })
   )
 
   const debouncedSetSorting = useDebouncedCallback(setSorting, debounceMs)
@@ -68,11 +71,17 @@ export function DataTableSortList<TData>({
     )
     if (!firstAvailableColumn) return
 
-    void setSorting([...sorting, { id: firstAvailableColumn.id, desc: false }])
+    void setSorting([
+      ...sorting,
+      {
+        id: firstAvailableColumn.id as StringKeyOf<TData>,
+        desc: false,
+      },
+    ])
   }
 
   function updateSort(
-    field: Partial<SortingState[number]>,
+    field: Partial<ExtendedColumnSort<TData>>,
     opts?: {
       debounced?: boolean
     }
@@ -166,7 +175,9 @@ export function DataTableSortList<TData>({
                     <div className="flex items-center gap-2">
                       <Select
                         value={sort.id}
-                        onValueChange={(value) => updateSort({ id: value })}
+                        onValueChange={(value: Extract<keyof TData, string>) =>
+                          updateSort({ id: value })
+                        }
                       >
                         <SelectTrigger
                           aria-label="Select sort field"

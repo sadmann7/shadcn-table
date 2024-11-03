@@ -6,8 +6,10 @@ import type {
   Filter,
   FilterOperator,
   JoinOperator,
+  StringKeyOf,
 } from "@/types"
 import { CalendarIcon, CaretSortIcon } from "@radix-ui/react-icons"
+import { type Table } from "@tanstack/react-table"
 import { parseAsStringEnum, useQueryState } from "nuqs"
 
 import { dataTableConfig } from "@/config/data-table"
@@ -44,25 +46,29 @@ import {
 import { Icons } from "@/components/icons"
 
 interface DataTableFilterListProps<TData> {
+  table: Table<TData>
   filterFields: DataTableAdvancedFilterField<TData>[]
   debounceMs: number
   shallow?: boolean
 }
 
 export function DataTableFilterList<TData>({
+  table,
   filterFields,
   debounceMs,
   shallow,
 }: DataTableFilterListProps<TData>) {
   const id = React.useId()
-  const [filters, setFilters] = useQueryState<Filter<TData>[]>(
+  const [filters, setFilters] = useQueryState(
     "filters",
-    getFiltersStateParser<TData>().withDefault([]).withOptions({
-      clearOnDefault: true,
-      shallow,
-    })
+    getFiltersStateParser(table.getRowModel().rows[0]?.original)
+      .withDefault([])
+      .withOptions({
+        clearOnDefault: true,
+        shallow,
+      })
   )
-  const [joinOperator, setJoinOperator] = useQueryState<JoinOperator>(
+  const [joinOperator, setJoinOperator] = useQueryState(
     "joinOperator",
     parseAsStringEnum(["and", "or"]).withDefault("and").withOptions({
       clearOnDefault: true,
@@ -548,14 +554,14 @@ export function DataTableFilterList<TData>({
                   </span>
                 )}
                 <Select
-                  value={filter.id as string}
+                  value={filter.id as StringKeyOf<TData>}
                   onValueChange={(value) => {
                     const column = filterFields.find((col) => col.id === value)
                     if (column) {
                       updateFilter({
                         index,
                         field: {
-                          id: value as keyof TData,
+                          id: value as StringKeyOf<TData>,
                           type: column.type,
                           operator: getDefaultFilterOperator(column.type),
                         },
@@ -575,8 +581,8 @@ export function DataTableFilterList<TData>({
                   <SelectContent id={fieldListboxId}>
                     {filterFields.map((col) => (
                       <SelectItem
-                        key={col.id as string}
-                        value={col.id as string}
+                        key={col.id as StringKeyOf<TData>}
+                        value={col.id as StringKeyOf<TData>}
                       >
                         {col.label}
                       </SelectItem>

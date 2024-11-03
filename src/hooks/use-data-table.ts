@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import type { DataTableFilterField } from "@/types"
+import type { DataTableFilterField, ExtendedSortingState } from "@/types"
 import {
   getCoreRowModel,
   getFacetedRowModel,
@@ -29,7 +29,7 @@ import {
   type UseQueryStateOptions,
 } from "nuqs"
 
-import { parseAsSortingState } from "@/lib/parsers"
+import { getSortingStateParser } from "@/lib/parsers"
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback"
 
 interface UseDataTableProps<TData>
@@ -131,10 +131,7 @@ interface UseDataTableProps<TData>
 
   initialState?: Omit<Partial<TableState>, "sorting"> & {
     // Extend to make the sorting id typesafe
-    sorting?: {
-      id: Extract<keyof TData, string>
-      desc: boolean
-    }[]
+    sorting?: ExtendedSortingState<TData>
   }
 }
 
@@ -192,7 +189,7 @@ export function useDataTable<TData>({
   )
   const [sorting, setSorting] = useQueryState(
     "sort",
-    parseAsSortingState
+    getSortingStateParser<TData>()
       .withOptions(queryStateOptions)
       .withDefault(initialState?.sorting ?? [])
   )
@@ -244,7 +241,7 @@ export function useDataTable<TData>({
   function onSortingChange(updaterOrValue: Updater<SortingState>) {
     if (typeof updaterOrValue === "function") {
       const newSorting = updaterOrValue(sorting)
-      void setSorting(newSorting)
+      void setSorting(newSorting as ExtendedSortingState<TData>)
     }
   }
 
