@@ -444,10 +444,12 @@ export function DataTableFilterList<TData>({
             </PopoverContent>
           </Popover>
         )
-      case "boolean":
+      case "boolean": {
+        if (Array.isArray(filter.value)) return null
+
         return (
           <Select
-            value={filter.value as string}
+            value={filter.value}
             onValueChange={(value) => updateFilter({ index, field: { value } })}
           >
             <SelectTrigger
@@ -464,6 +466,7 @@ export function DataTableFilterList<TData>({
             </SelectContent>
           </Select>
         )
+      }
       default:
         return null
     }
@@ -554,14 +557,14 @@ export function DataTableFilterList<TData>({
                   </span>
                 )}
                 <Select
-                  value={filter.id as StringKeyOf<TData>}
-                  onValueChange={(value) => {
+                  value={filter.id}
+                  onValueChange={(value: StringKeyOf<TData>) => {
                     const column = filterFields.find((col) => col.id === value)
                     if (column) {
                       updateFilter({
                         index,
                         field: {
-                          id: value as StringKeyOf<TData>,
+                          id: value,
                           type: column.type,
                           operator: getDefaultFilterOperator(column.type),
                         },
@@ -580,10 +583,7 @@ export function DataTableFilterList<TData>({
                   </SelectTrigger>
                   <SelectContent id={fieldListboxId}>
                     {filterFields.map((col) => (
-                      <SelectItem
-                        key={col.id as StringKeyOf<TData>}
-                        value={col.id as StringKeyOf<TData>}
-                      >
+                      <SelectItem key={col.id} value={col.id}>
                         {col.label}
                       </SelectItem>
                     ))}
@@ -642,7 +642,7 @@ export function DataTableFilterList<TData>({
               variant="outline"
               className="rounded"
               onClick={() => {
-                void setFilters([])
+                void setFilters(null)
                 void setJoinOperator("and")
               }}
             >

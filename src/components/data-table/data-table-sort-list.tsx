@@ -1,7 +1,11 @@
 "use client"
 
 import * as React from "react"
-import type { ExtendedColumnSort, StringKeyOf } from "@/types"
+import type {
+  ExtendedColumnSort,
+  ExtendedSortingState,
+  StringKeyOf,
+} from "@/types"
 import { CaretSortIcon, DragHandleDots2Icon } from "@radix-ui/react-icons"
 import type { SortDirection, Table } from "@tanstack/react-table"
 import { useQueryState } from "nuqs"
@@ -44,10 +48,13 @@ export function DataTableSortList<TData>({
 }: DataTableSortListProps<TData>) {
   const id = React.useId()
 
+  const initialSorting = (table.initialState.sorting ??
+    []) as ExtendedSortingState<TData>
+
   const [sorting, setSorting] = useQueryState(
     "sort",
     getSortingStateParser(table.getRowModel().rows[0]?.original)
-      .withDefault([])
+      .withDefault(initialSorting)
       .withOptions({
         clearOnDefault: true,
         shallow,
@@ -80,17 +87,22 @@ export function DataTableSortList<TData>({
     ])
   }
 
-  function updateSort(
-    field: Partial<ExtendedColumnSort<TData>>,
-    opts?: {
-      debounced?: boolean
-    }
-  ) {
-    const updateFunction = opts?.debounced ? debouncedSetSorting : setSorting
+  function updateSort({
+    field,
+    index,
+    debounced,
+  }: {
+    field: Partial<ExtendedColumnSort<TData>>
+    index: number
+    debounced?: boolean
+  }) {
+    const updateFunction = debounced ? debouncedSetSorting : setSorting
 
     updateFunction((prevSorting) => {
-      const updatedSorting = prevSorting.map((sort) =>
-        sort.id === field.id ? { ...sort, ...field } : sort
+      if (!prevSorting) return prevSorting
+
+      const updatedSorting = prevSorting.map((sort, i) =>
+        i === index ? { ...sort, ...field } : sort
       )
       return updatedSorting
     })
@@ -165,7 +177,7 @@ export function DataTableSortList<TData>({
           )}
           <div className="flex max-h-40 flex-col gap-2 overflow-y-auto py-0.5 pr-1">
             <div className="flex w-full flex-col gap-2">
-              {sorting.map((sort) => {
+              {sorting.map((sort, index) => {
                 const sortId = `${id}-sort-${sort.id}`
                 const fieldListboxId = `${sortId}-field-listbox`
                 const directionListboxId = `${sortId}-direction-listbox`
@@ -175,8 +187,11 @@ export function DataTableSortList<TData>({
                     <div className="flex items-center gap-2">
                       <Select
                         value={sort.id}
-                        onValueChange={(value: Extract<keyof TData, string>) =>
-                          updateSort({ id: value })
+                        onValueChange={(value: StringKeyOf<TData>) =>
+                          updateSort({
+                            field: { id: value },
+                            index,
+                          })
                         }
                       >
                         <SelectTrigger
@@ -204,7 +219,10 @@ export function DataTableSortList<TData>({
                       <Select
                         value={sort.desc ? "desc" : "asc"}
                         onValueChange={(value: SortDirection) =>
-                          updateSort({ id: sort.id, desc: value === "desc" })
+                          updateSort({
+                            field: { id: sort.id, desc: value === "desc" },
+                            index,
+                          })
                         }
                       >
                         <SelectTrigger
@@ -263,7 +281,7 @@ export function DataTableSortList<TData>({
                 size="sm"
                 variant="outline"
                 className="rounded"
-                onClick={() => setSorting([])}
+                onClick={() => setSorting(null)}
               >
                 Reset sorting
               </Button>

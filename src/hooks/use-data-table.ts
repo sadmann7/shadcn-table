@@ -201,13 +201,12 @@ export function useDataTable<TData>({
     >((acc, field) => {
       if (field.options) {
         // Faceted filter
-        acc[field.id as string] = parseAsArrayOf(
-          parseAsString,
-          ","
-        ).withOptions(queryStateOptions)
+        acc[field.id] = parseAsArrayOf(parseAsString, ",").withOptions(
+          queryStateOptions
+        )
       } else {
         // Search filter
-        acc[field.id as string] = parseAsString.withOptions(queryStateOptions)
+        acc[field.id] = parseAsString.withOptions(queryStateOptions)
       }
       return acc
     }, {})
@@ -240,8 +239,8 @@ export function useDataTable<TData>({
   // Sort
   function onSortingChange(updaterOrValue: Updater<SortingState>) {
     if (typeof updaterOrValue === "function") {
-      const newSorting = updaterOrValue(sorting)
-      void setSorting(newSorting as ExtendedSortingState<TData>)
+      const newSorting = updaterOrValue(sorting) as ExtendedSortingState<TData>
+      void setSorting(newSorting)
     }
   }
 

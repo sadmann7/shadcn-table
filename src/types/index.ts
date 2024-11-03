@@ -9,6 +9,8 @@ export type Prettify<T> = {
   [K in keyof T]: T[K]
 } & {}
 
+export type StringKeyOf<TData> = Extract<keyof TData, string>
+
 export interface SearchParams {
   [key: string]: string | string[] | undefined
 }
@@ -19,8 +21,6 @@ export interface Option {
   icon?: React.ComponentType<{ className?: string }>
   count?: number
 }
-
-export type StringKeyOf<TData> = Extract<keyof TData, string>
 
 export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
   id: StringKeyOf<TData>

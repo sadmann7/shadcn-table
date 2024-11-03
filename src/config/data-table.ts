@@ -8,8 +8,8 @@ export const dataTableConfig = {
       label: "Advanced table",
       value: "advancedTable" as const,
       icon: MixIcon,
-      tooltipTitle: "Toggle advanced filter & sorting",
-      tooltipDescription: "Airtable like filter, and sort builder.",
+      tooltipTitle: "Toggle advanced table",
+      tooltipDescription: "A filter and sort builder to filter and sort rows.",
     },
     {
       label: "Floating bar",
