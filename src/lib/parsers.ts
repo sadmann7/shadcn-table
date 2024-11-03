@@ -14,6 +14,7 @@ interface SortOption<T extends Table> {
 /**
  * Create a parser for sorting options based on a given table.
  * @param table The table object to create the sort parser for.
+ * @returns A parser for sorting options.
  */
 export function parseAsSort<T extends Table>(table: T) {
   return createParser<SortOption<T>>({
@@ -71,10 +72,45 @@ export const filterSchema = z.object({
 })
 
 /**
+ * Create a parser for data table filters.
+ * @returns A parser for data table filters state.
+ */
+export const getFiltersStateParser = <T>() =>
+  createParser<Filter<T>[]>({
+    parse: (value) => {
+      try {
+        const parsed = JSON.parse(value)
+        if (!Array.isArray(parsed)) {
+          return null
+        }
+
+        const validatedFilters = parsed
+          .map((filter) => {
+            const result = filterSchema.safeParse(filter)
+            return result.success ? (result.data as Filter<T>) : null
+          })
+          .filter((filter): filter is Filter<T> => filter !== null)
+
+        return validatedFilters
+      } catch {
+        return null
+      }
+    },
+    serialize: (value) => JSON.stringify(value),
+    eq: (a, b) =>
+      a.length === b.length &&
+      a.every(
+        (filter, index) =>
+          filter.id === b[index]?.id && filter.value === b[index]?.value
+      ),
+  })
+
+/**
  * Create a parser for filters based on a given table.
  * @param table The table object to create the filter parser for.
+ * @returns A parser for filters state.
  */
-export function parseAsFilters<T extends Table>(table: T) {
+export function getValidFiltersStateParser<T extends Table>(table: T) {
   return createParser<Filter<T>[]>({
     parse: (value) => {
       try {
@@ -110,27 +146,3 @@ export function parseAsFilters<T extends Table>(table: T) {
       ),
   })
 }
-
-/**
- * Create a parser for filters.
- * Can be used with the DataTableFilterList component.
- * @returns A parser for filters
- */
-export const parseAsFiltersState = createParser({
-  parse: (value) => {
-    try {
-      const parsed = JSON.parse(value)
-      const result = z.array(filterSchema).safeParse(parsed)
-      return result.success ? result.data : null
-    } catch {
-      return null
-    }
-  },
-  serialize: (value) => JSON.stringify(value),
-  eq: (a, b) =>
-    a.length === b.length &&
-    a.every(
-      (item, index) =>
-        item.id === b[index]?.id && item.value === b[index]?.value
-    ),
-})

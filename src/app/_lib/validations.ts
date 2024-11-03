@@ -9,7 +9,7 @@ import {
 } from "nuqs/server"
 import * as z from "zod"
 
-import { parseAsFilters, parseAsSort } from "@/lib/parsers"
+import { getFiltersStateParser, parseAsSort } from "@/lib/parsers"
 
 export const filterConditionSchema = z.object({
   id: z.string(),
@@ -34,7 +34,7 @@ export const searchParamsCache = createSearchParamsCache({
   from: parseAsString.withDefault(""),
   to: parseAsString.withDefault(""),
   // for advanced filter
-  filters: parseAsFilters(tasks).withDefault([]),
+  filters: getFiltersStateParser().withDefault([]),
   joinOperator: parseAsStringEnum(["and", "or"]).withDefault("and"),
 })
 

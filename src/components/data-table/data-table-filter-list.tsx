@@ -12,6 +12,7 @@ import { parseAsStringEnum, useQueryState } from "nuqs"
 
 import { dataTableConfig } from "@/config/data-table"
 import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table"
+import { getFiltersStateParser } from "@/lib/parsers"
 import { cn, formatDate } from "@/lib/utils"
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback"
 import { Badge } from "@/components/ui/badge"
@@ -54,19 +55,13 @@ export function DataTableFilterList<TData>({
   shallow,
 }: DataTableFilterListProps<TData>) {
   const id = React.useId()
-  const [filters, setFilters] = useQueryState<Filter<TData>[]>("filters", {
-    defaultValue: [],
-    parse: (value) => JSON.parse(value) as Filter<TData>[],
-    serialize: (value) => JSON.stringify(value),
-    eq: (a, b) =>
-      a.length === b.length &&
-      a.every(
-        (filter, index) =>
-          filter.id === b[index]?.id && filter.value === b[index]?.value
-      ),
-    clearOnDefault: true,
-    shallow,
-  })
+  const [filters, setFilters] = useQueryState<Filter<TData>[]>(
+    "filters",
+    getFiltersStateParser<TData>().withDefault([]).withOptions({
+      clearOnDefault: true,
+      shallow,
+    })
+  )
   const [joinOperator, setJoinOperator] = useQueryState<JoinOperator>(
     "joinOperator",
     parseAsStringEnum(["and", "or"]).withDefault("and").withOptions({
