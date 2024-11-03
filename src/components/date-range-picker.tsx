@@ -105,12 +105,12 @@ export function DateRangePicker({
             variant={triggerVariant}
             size={triggerSize}
             className={cn(
-              "w-full justify-start truncate text-left font-normal",
+              "w-full justify-start gap-2 truncate text-left font-normal",
               !date && "text-muted-foreground",
               triggerClassName
             )}
           >
-            <CalendarIcon className="mr-2 size-4" />
+            <CalendarIcon className="size-4" />
             {date?.from ? (
               date.to ? (
                 <>

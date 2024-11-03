@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import type { DataTableFilterField } from "@/types"
+import type { DataTableFilterField, ExtendedSortingState } from "@/types"
 import {
   getCoreRowModel,
   getFacetedRowModel,
@@ -29,6 +29,7 @@ import {
   type UseQueryStateOptions,
 } from "nuqs"
 
+import { getSortingStateParser } from "@/lib/parsers"
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback"
 
 interface UseDataTableProps<TData>
@@ -130,10 +131,7 @@ interface UseDataTableProps<TData>
 
   initialState?: Omit<Partial<TableState>, "sorting"> & {
     // Extend to make the sorting id typesafe
-    sorting?: {
-      id: Extract<keyof TData, string>
-      desc: boolean
-    }[]
+    sorting?: ExtendedSortingState<TData>
   }
 }
 
@@ -189,15 +187,12 @@ export function useDataTable<TData>({
       .withOptions(queryStateOptions)
       .withDefault(initialState?.pagination?.pageSize ?? 10)
   )
-  const [sort, setSort] = useQueryState(
+  const [sorting, setSorting] = useQueryState(
     "sort",
-    parseAsString
+    getSortingStateParser<TData>()
       .withOptions(queryStateOptions)
-      .withDefault(
-        `${initialState?.sorting?.[0]?.id}.${initialState?.sorting?.[0]?.desc ? "desc" : "asc"}`
-      )
+      .withDefault(initialState?.sorting ?? [])
   )
-  const [column, order] = sort?.split(".") ?? []
 
   // Create parsers for each filter field
   const filterParsers = React.useMemo(() => {
@@ -206,13 +201,12 @@ export function useDataTable<TData>({
     >((acc, field) => {
       if (field.options) {
         // Faceted filter
-        acc[field.id as string] = parseAsArrayOf(
-          parseAsString,
-          ","
-        ).withOptions(queryStateOptions)
+        acc[field.id] = parseAsArrayOf(parseAsString, ",").withOptions(
+          queryStateOptions
+        )
       } else {
         // Search filter
-        acc[field.id as string] = parseAsString.withOptions(queryStateOptions)
+        acc[field.id] = parseAsString.withOptions(queryStateOptions)
       }
       return acc
     }, {})
@@ -243,14 +237,10 @@ export function useDataTable<TData>({
   }
 
   // Sort
-  const sorting: SortingState = [{ id: column ?? "", desc: order === "desc" }]
-
   function onSortingChange(updaterOrValue: Updater<SortingState>) {
     if (typeof updaterOrValue === "function") {
-      const newSorting = updaterOrValue(sorting)
-      void setSort(
-        `${newSorting[0]?.id}.${newSorting[0]?.desc ? "desc" : "asc"}`
-      )
+      const newSorting = updaterOrValue(sorting) as ExtendedSortingState<TData>
+      void setSorting(newSorting)
     }
   }
 

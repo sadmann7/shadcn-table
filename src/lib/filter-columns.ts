@@ -1,5 +1,5 @@
 import { isEmpty, isNotEmpty } from "@/db/utils"
-import type { FilterCondition, JoinOperator } from "@/types"
+import type { Filter, JoinOperator } from "@/types"
 import { addDays, endOfDay, startOfDay } from "date-fns"
 import {
   and,
@@ -22,20 +22,20 @@ import {
 /**
  * Construct SQL conditions based on the provided filters for a specific table.
  *
- * This function takes a table and an array of filter conditions, and returns a SQL
+ * This function takes a table and an array of filters, and returns a SQL
  * expression that represents the logical combination of these conditions. The conditions
  * are combined using the specified join operator (either 'AND' or 'OR'), which is determined
  * by the first filter's joinOperator property.
  *
- * Each filter condition can specify various operators (e.g., equality, inequality,
+ * Each filter can specify various operators (e.g., equality, inequality,
  * comparison for numbers and dates, etc.) and the function will generate the appropriate
  * SQL expressions based on the filter's type and value.
  *
  * @param table - The table to apply the filters on.
- * @param filters - An array of filter conditions to be applied to the table.
- * @param joinOperator - The join operator to use for combining the conditions.
- * @returns A SQL expression representing the combined conditions, or undefined if no valid
- * conditions are found.
+ * @param filters - An array of filters to be applied to the table.
+ * @param joinOperator - The join operator to use for combining the filters.
+ * @returns A SQL expression representing the combined filters, or undefined if no valid
+ * filters are found.
  */
 export function filterColumns<T extends Table>({
   table,
@@ -43,7 +43,7 @@ export function filterColumns<T extends Table>({
   joinOperator,
 }: {
   table: T
-  filters: FilterCondition<T>[]
+  filters: Filter<T>[]
   joinOperator: JoinOperator
 }): SQL | undefined {
   const joinFn = joinOperator === "and" ? and : or

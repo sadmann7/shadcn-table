@@ -1,78 +1,94 @@
-import { type FilterCondition } from "@/types"
-import { type Table } from "drizzle-orm"
+import type { ExtendedSortingState, Filter } from "@/types"
+import { type Row } from "@tanstack/react-table"
 import { createParser } from "nuqs/server"
 import { z } from "zod"
 
 import { dataTableConfig } from "@/config/data-table"
 
-interface SortOption<T extends Table> {
-  column: keyof T["_"]["columns"]
-  order: "asc" | "desc"
-}
-
-/**
- * Create a parser for sorting options based on a given table.
- * @param table The table object to create the sort parser for.
- */
-export function parseAsSort<T extends Table>(table: T) {
-  return createParser<SortOption<T>>({
-    parse: (queryValue) => {
-      const [column, order] =
-        (queryValue.split(".") as [string, "asc" | "desc"]) ?? []
-      if (
-        !column ||
-        !order ||
-        !(column in table) ||
-        !["asc", "desc"].includes(order)
-      ) {
-        return null
-      }
-      return { column, order }
-    },
-    serialize: ({ column, order }) => `${String(column)}.${order}`,
-  })
-}
-
-export const filterConditionSchema = z.object({
+export const sortingItemSchema = z.object({
   id: z.string(),
-  value: z.union([z.string(), z.array(z.string())]),
-  type: z.enum(dataTableConfig.columnTypes),
-  operator: z.enum(dataTableConfig.globalOperators),
+  desc: z.boolean(),
 })
 
 /**
- * Create a parser for filter conditions based on a given table.
- * @param table The table object to create the filter parser for.
+ * Creates a parser for TanStack Table sorting state.
+ * @param originalRow The original row data to validate sorting keys against.
+ * @returns A parser for TanStack Table sorting state.
  */
-export function parseAsFilters<T extends Table>(table: T) {
-  return createParser<FilterCondition<T>[]>({
-    parse: (queryValue) => {
+export const getSortingStateParser = <TData>(
+  originalRow?: Row<TData>["original"]
+) => {
+  const validKeys = originalRow ? new Set(Object.keys(originalRow)) : null
+
+  return createParser<ExtendedSortingState<TData>>({
+    parse: (value) => {
       try {
-        const parsedValue = JSON.parse(queryValue)
-        if (!Array.isArray(parsedValue)) {
+        const parsed = JSON.parse(value)
+        const result = z.array(sortingItemSchema).safeParse(parsed)
+
+        if (!result.success) return null
+
+        if (validKeys && result.data.some((item) => !validKeys.has(item.id))) {
           return null
         }
 
-        const validatedFilters = parsedValue
-          .map((filter) => {
-            const result = filterConditionSchema.safeParse(filter)
-            if (!result.success) {
-              return null
-            }
-            if (!(result.data.id in table)) {
-              return null
-            }
-            return result.data as FilterCondition<T>
-          })
-          .filter((filter): filter is FilterCondition<T> => filter !== null)
-
-        return validatedFilters.length > 0 ? validatedFilters : null
+        return result.data as ExtendedSortingState<TData>
       } catch {
         return null
       }
     },
-    serialize(filters) {
-      return JSON.stringify(filters)
+    serialize: (value) => JSON.stringify(value),
+    eq: (a, b) =>
+      a.length === b.length &&
+      a.every(
+        (item, index) =>
+          item.id === b[index]?.id && item.desc === b[index]?.desc
+      ),
+  })
+}
+
+export const filterSchema = z.object({
+  id: z.string(),
+  value: z.union([z.string(), z.array(z.string())]),
+  type: z.enum(dataTableConfig.columnTypes),
+  operator: z.enum(dataTableConfig.globalOperators),
+  rowId: z.string(),
+})
+
+/**
+ * Create a parser for data table filters.
+ * @param originalRow The original row data to create the parser for.
+ * @returns A parser for data table filters state.
+ */
+export const getFiltersStateParser = <T>(originalRow?: Row<T>["original"]) => {
+  const validKeys = originalRow ? new Set(Object.keys(originalRow)) : null
+
+  return createParser<Filter<T>[]>({
+    parse: (value) => {
+      try {
+        const parsed = JSON.parse(value)
+        const result = z.array(filterSchema).safeParse(parsed)
+
+        if (!result.success) return null
+
+        if (validKeys && result.data.some((item) => !validKeys.has(item.id))) {
+          return null
+        }
+
+        return result.data as Filter<T>[]
+      } catch {
+        return null
+      }
     },
+    serialize: (value) => JSON.stringify(value),
+    eq: (a, b) =>
+      a.length === b.length &&
+      a.every(
+        (filter, index) =>
+          filter.id === b[index]?.id &&
+          filter.value === b[index]?.value &&
+          filter.type === b[index]?.type &&
+          filter.operator === b[index]?.operator
+      ),
   })
 }

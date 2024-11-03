@@ -5,11 +5,11 @@ export type DataTableConfig = typeof dataTableConfig
 export const dataTableConfig = {
   featureFlags: [
     {
-      label: "Advanced filter",
-      value: "advancedFilter" as const,
+      label: "Advanced table",
+      value: "advancedTable" as const,
       icon: MixIcon,
-      tooltipTitle: "Toggle advanced filter",
-      tooltipDescription: "An airtable like query builder to filter rows.",
+      tooltipTitle: "Toggle advanced table",
+      tooltipDescription: "A filter and sort builder to filter and sort rows.",
     },
     {
       label: "Floating bar",
@@ -62,6 +62,10 @@ export const dataTableConfig = {
   joinOperators: [
     { label: "And", value: "and" as const },
     { label: "Or", value: "or" as const },
+  ],
+  sortOrders: [
+    { label: "Asc", value: "asc" as const },
+    { label: "Desc", value: "desc" as const },
   ],
   columnTypes: [
     "text",
