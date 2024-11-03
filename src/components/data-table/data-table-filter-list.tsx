@@ -14,11 +14,11 @@ import {
   DragHandleDots2Icon,
 } from "@radix-ui/react-icons"
 import { type Table } from "@tanstack/react-table"
+import { customAlphabet } from "nanoid"
 import { parseAsStringEnum, useQueryState } from "nuqs"
 
 import { dataTableConfig } from "@/config/data-table"
 import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table"
-import { generateId } from "@/lib/id"
 import { getFiltersStateParser } from "@/lib/parsers"
 import { cn, formatDate } from "@/lib/utils"
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback"
@@ -79,11 +79,6 @@ export function DataTableFilterList<TData>({
       })
   )
 
-  const filtersWithRowId = filters.map((filter) => ({
-    ...filter,
-    rowId: generateId(),
-  }))
-
   const [joinOperator, setJoinOperator] = useQueryState(
     "joinOperator",
     parseAsStringEnum(["and", "or"]).withDefault("and").withOptions({
@@ -106,23 +101,27 @@ export function DataTableFilterList<TData>({
         value: "",
         type: filterField.type,
         operator: getDefaultFilterOperator(filterField.type),
+        rowId: customAlphabet(
+          "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+          6
+        )(),
       },
     ])
   }
 
   function updateFilter({
-    index,
+    rowId,
     field,
     debounced = false,
   }: {
-    index: number
+    rowId: string
     field: Partial<Filter<TData>>
     debounced?: boolean
   }) {
     const updateFunction = debounced ? debouncedSetFilters : setFilters
     updateFunction((prevFilters) => {
-      const updatedFilters = prevFilters.map((filter, i) => {
-        if (i === index) {
+      const updatedFilters = prevFilters.map((filter) => {
+        if (filter.rowId === rowId) {
           const updatedFilter = { ...filter, ...field }
           if ("type" in field) {
             updatedFilter.value = ""
@@ -139,8 +138,8 @@ export function DataTableFilterList<TData>({
     })
   }
 
-  function removeFilter(index: number) {
-    const updatedFilters = filters.filter((_, i) => i !== index)
+  function removeFilter(rowId: string) {
+    const updatedFilters = filters.filter((filter) => filter.rowId !== rowId)
     void setFilters(updatedFilters)
   }
 
@@ -156,11 +155,9 @@ export function DataTableFilterList<TData>({
 
   function renderFilterInput({
     filter,
-    index,
     inputId,
   }: {
     filter: Filter<TData>
-    index: number
     inputId: string
   }) {
     const filterField = filterFields.find((f) => f.id === filter.id)
@@ -195,7 +192,7 @@ export function DataTableFilterList<TData>({
             }
             onChange={(event) =>
               updateFilter({
-                index,
+                rowId: filter.rowId,
                 field: { value: event.target.value },
                 debounced: true,
               })
@@ -248,7 +245,7 @@ export function DataTableFilterList<TData>({
                       value={option.value}
                       selected={filter.value === option.value}
                       onSelect={(value) => {
-                        updateFilter({ index, field: { value } })
+                        updateFilter({ rowId: filter.rowId, field: { value } })
                         setTimeout(() => {
                           document.getElementById(inputId)?.click()
                         }, 0)
@@ -354,7 +351,10 @@ export function DataTableFilterList<TData>({
                         const newValue = currentValue.includes(value)
                           ? currentValue.filter((v) => v !== value)
                           : [...currentValue, value]
-                        updateFilter({ index, field: { value: newValue } })
+                        updateFilter({
+                          rowId: filter.rowId,
+                          field: { value: newValue },
+                        })
                       }}
                     >
                       {option.icon && (
@@ -434,7 +434,7 @@ export function DataTableFilterList<TData>({
                   }
                   onSelect={(date) => {
                     updateFilter({
-                      index,
+                      rowId: filter.rowId,
                       field: {
                         value: date
                           ? [
@@ -456,7 +456,7 @@ export function DataTableFilterList<TData>({
                   selected={dateValue[0] ? new Date(dateValue[0]) : undefined}
                   onSelect={(date) => {
                     updateFilter({
-                      index,
+                      rowId: filter.rowId,
                       field: { value: date?.toISOString() ?? "" },
                     })
 
@@ -476,7 +476,9 @@ export function DataTableFilterList<TData>({
         return (
           <Select
             value={filter.value}
-            onValueChange={(value) => updateFilter({ index, field: { value } })}
+            onValueChange={(value) =>
+              updateFilter({ rowId: filter.rowId, field: { value } })
+            }
           >
             <SelectTrigger
               id={inputId}
@@ -500,13 +502,15 @@ export function DataTableFilterList<TData>({
 
   return (
     <Sortable
-      value={filters}
+      value={filters.map((filter) => ({
+        id: filter.rowId,
+      }))}
       onMove={({ activeIndex, overIndex }) =>
         moveFilter(activeIndex, overIndex)
       }
       overlay={
         <div className="flex items-center gap-2">
-          <div className="h-8 w-20 rounded-sm bg-primary/10" />
+          <div className="h-8 min-w-[4.5rem] rounded-sm bg-primary/10" />
           <div className="h-8 w-32 rounded-sm bg-primary/10" />
           <div className="h-8 w-32 rounded-sm bg-primary/10" />
           <div className="h-8 min-w-36 flex-1 rounded-sm bg-primary/10" />
@@ -555,7 +559,7 @@ export function DataTableFilterList<TData>({
             </div>
           )}
           <div className="flex max-h-40 flex-col gap-2 overflow-y-auto py-0.5 pr-1">
-            {filtersWithRowId.map((filter, index) => {
+            {filters.map((filter, index) => {
               const filterId = `${id}-filter-${filter.rowId}`
               const joinOperatorListboxId = `${filterId}-join-operator-listbox`
               const fieldListboxId = `${filterId}-field-listbox`
@@ -565,7 +569,7 @@ export function DataTableFilterList<TData>({
               return (
                 <SortableItem key={filter.rowId} value={filter.rowId} asChild>
                   <div className="flex items-center gap-2">
-                    <div className="w-20 text-center">
+                    <div className="min-w-[4.5rem] text-center">
                       {index === 0 ? (
                         <span className="text-sm text-muted-foreground">
                           Where
@@ -610,7 +614,7 @@ export function DataTableFilterList<TData>({
                         )
                         if (column) {
                           updateFilter({
-                            index,
+                            rowId: filter.rowId,
                             field: {
                               id: value,
                               type: column.type,
@@ -640,7 +644,10 @@ export function DataTableFilterList<TData>({
                     <Select
                       value={filter.operator}
                       onValueChange={(value: FilterOperator) =>
-                        updateFilter({ index, field: { operator: value } })
+                        updateFilter({
+                          rowId: filter.rowId,
+                          field: { operator: value },
+                        })
                       }
                     >
                       <SelectTrigger
@@ -661,18 +668,14 @@ export function DataTableFilterList<TData>({
                       </SelectContent>
                     </Select>
                     <div className="min-w-36 flex-1">
-                      {renderFilterInput({
-                        filter,
-                        index,
-                        inputId,
-                      })}
+                      {renderFilterInput({ filter, inputId })}
                     </div>
                     <Button
                       variant="outline"
                       size="icon"
                       aria-label={`Remove filter ${index + 1}`}
                       className="size-8 shrink-0 rounded"
-                      onClick={() => removeFilter(index)}
+                      onClick={() => removeFilter(filter.rowId)}
                     >
                       <Icons.trash className="size-3.5" aria-hidden="true" />
                     </Button>

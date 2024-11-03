@@ -20,21 +20,26 @@ interface GenerateIdOptions {
 }
 
 /**
- * Generates a unique ID with a given prefix.
- * @param prefix The prefix to use for the generated ID.
- * @param options The options for generating the ID.
- * @example
- * generateId("store") => "str_abc123def456"
- * generateId("store", { length: 8 }) => "str_abc123d"
- * generateId("store", { separator: "-" }) => "str-abc123def456"
+ * Generates a unique ID with optional prefix and configuration.
+ * @param prefixOrOptions The prefix string or options object
+ * @param options The options for generating the ID
  */
 export function generateId(
-  prefix?: keyof typeof prefixes,
-  { length = 12, separator = "_" }: GenerateIdOptions = {}
+  prefixOrOptions?: keyof typeof prefixes | GenerateIdOptions,
+  options: GenerateIdOptions = {}
 ) {
+  if (typeof prefixOrOptions === "object") {
+    options = prefixOrOptions
+    prefixOrOptions = undefined
+  }
+
+  const { length = 12, separator = "_" } = options
   const id = customAlphabet(
     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
     length
   )()
-  return prefix ? `${prefixes[prefix]}${separator}${id}` : id
+
+  return prefixOrOptions
+    ? `${prefixes[prefixOrOptions as keyof typeof prefixes]}${separator}${id}`
+    : id
 }
