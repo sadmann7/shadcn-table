@@ -35,8 +35,9 @@ export function TasksTableToolbarActions({
             excludeColumns: ["select", "actions"],
           })
         }
+        className="gap-2"
       >
-        <DownloadIcon className="mr-2 size-4" aria-hidden="true" />
+        <DownloadIcon className="size-4" aria-hidden="true" />
         Export
       </Button>
       {/**

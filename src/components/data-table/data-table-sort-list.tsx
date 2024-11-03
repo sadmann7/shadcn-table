@@ -61,6 +61,10 @@ export function DataTableSortList<TData>({
       })
   )
 
+  const uniqueSorting = sorting.filter(
+    (sort, index, self) => index === self.findIndex((t) => t.id === sort.id)
+  )
+
   const debouncedSetSorting = useDebouncedCallback(setSorting, debounceMs)
 
   const sortableColumns = table
@@ -90,7 +94,7 @@ export function DataTableSortList<TData>({
   function updateSort({
     field,
     index,
-    debounced,
+    debounced = false,
   }: {
     field: Partial<ExtendedColumnSort<TData>>
     index: number
@@ -142,17 +146,18 @@ export function DataTableSortList<TData>({
           <Button
             variant="outline"
             size="sm"
+            className="gap-2"
             aria-label="Open sorting"
             aria-controls={`${id}-sort-dialog`}
           >
-            <CaretSortIcon className="mr-2 size-3.5" aria-hidden="true" />
+            <CaretSortIcon className="size-3.5" aria-hidden="true" />
             Sort
-            {sorting.length > 0 && (
+            {uniqueSorting.length > 0 && (
               <Badge
                 variant="secondary"
-                className="ml-2 h-5 rounded px-1.5 font-mono"
+                className="h-[1.14rem] rounded-[0.2rem] px-[0.32rem] font-mono text-[0.65rem] font-normal"
               >
-                {sorting.length}
+                {uniqueSorting.length}
               </Badge>
             )}
           </Button>
@@ -162,10 +167,10 @@ export function DataTableSortList<TData>({
           align="start"
           className={cn(
             "flex w-[26rem] origin-[var(--radix-popover-content-transform-origin)] flex-col p-4",
-            sorting.length > 0 ? "gap-3.5" : "gap-2"
+            uniqueSorting.length > 0 ? "gap-3.5" : "gap-2"
           )}
         >
-          {sorting.length > 0 ? (
+          {uniqueSorting.length > 0 ? (
             <h4 className="font-medium leading-none">Sort by</h4>
           ) : (
             <div className="flex flex-col gap-1">
@@ -177,13 +182,13 @@ export function DataTableSortList<TData>({
           )}
           <div className="flex max-h-40 flex-col gap-2 overflow-y-auto p-0.5">
             <div className="flex w-full flex-col gap-2">
-              {sorting.map((sort, index) => {
+              {uniqueSorting.map((sort, index) => {
                 const sortId = `${id}-sort-${sort.id}`
                 const fieldListboxId = `${sortId}-field-listbox`
                 const directionListboxId = `${sortId}-direction-listbox`
 
                 return (
-                  <SortableItem key={sortId} value={sort.id} asChild>
+                  <SortableItem key={sort.id} value={sort.id} asChild>
                     <div className="flex items-center gap-2">
                       <Select
                         value={sort.id}
