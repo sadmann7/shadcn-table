@@ -73,17 +73,17 @@ export function DataTableFilterList<TData>({
   const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs)
 
   function addFilter() {
-    const firstColumn = filterFields[0]
+    const filterField = filterFields[0]
 
-    if (!firstColumn) return
+    if (!filterField) return
 
     void setFilters([
       ...filters,
       {
-        id: firstColumn.id,
+        id: filterField.id,
         value: "",
-        type: firstColumn.type,
-        operator: getDefaultFilterOperator(firstColumn.type),
+        type: filterField.type,
+        operator: getDefaultFilterOperator(filterField.type),
       },
     ])
   }

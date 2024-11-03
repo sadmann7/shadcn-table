@@ -1,7 +1,9 @@
 import { type Row } from "@tanstack/react-table"
 import { type SQL } from "drizzle-orm"
+import { type z } from "zod"
 
 import { type DataTableConfig } from "@/config/data-table"
+import { type filterSchema } from "@/lib/parsers"
 
 export type Prettify<T> = {
   [K in keyof T]: T[K]
@@ -36,12 +38,11 @@ export interface DataTableAdvancedFilterField<TData>
   type: ColumnType
 }
 
-export interface Filter<TData> {
-  id: keyof TData
-  value: string | string[]
-  type: ColumnType
-  operator: FilterOperator
-}
+export type Filter<TData> = Prettify<
+  Omit<z.output<typeof filterSchema>, "id"> & {
+    id: keyof TData
+  }
+>
 
 export interface DataTableRowAction<TData> {
   row: Row<TData>
