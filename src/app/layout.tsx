@@ -7,6 +7,7 @@ import { TailwindIndicator } from "@/components/tailwind-indicator"
 import "@/styles/globals.css"
 
 import type { Metadata, Viewport } from "next"
+import { Analytics } from "@vercel/analytics/react"
 
 import { fontMono, fontSans } from "@/lib/fonts"
 import { Toaster } from "@/components/ui/toaster"
@@ -86,6 +87,7 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
           </div>
           <TailwindIndicator />
         </ThemeProvider>
+        <Analytics />
         <Toaster />
       </body>
     </html>
