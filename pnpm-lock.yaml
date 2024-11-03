@@ -137,7 +137,7 @@ importers:
         version: 8.56.12
       '@types/node':
         specifier: ^22.7.8
-        version: 22.8.6
+        version: 22.8.7
       '@types/react':
         specifier: ^18.3.11
         version: 18.3.12
@@ -1484,8 +1484,8 @@ packages:
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
 
-  '@types/node@22.8.6':
-    resolution: {integrity: sha512-tosuJYKrIqjQIlVCM4PEGxOmyg3FCPa/fViuJChnGeEIhjA46oy8FMVoF9su1/v8PNs2a8Q0iFNyOx0uOF91nw==}
+  '@types/node@22.8.7':
+    resolution: {integrity: sha512-LidcG+2UeYIWcMuMUpBKOnryBWG/rnmOHQR5apjn8myTQcx3rinFRn7DcIFhMnS0PPFSC6OafdIKEad0lj6U0Q==}
 
   '@types/prop-types@15.7.13':
     resolution: {integrity: sha512-hCZTSvwbzWGvhqxp/RqVqwU999pBf2vp7hzIjiYOsl8wqOmUxkQ6ddw1cV3l8811+kdUFus/q4d1Y3E3SyEifA==}
@@ -4488,7 +4488,7 @@ snapshots:
 
   '@types/json5@0.0.29': {}
 
-  '@types/node@22.8.6':
+  '@types/node@22.8.7':
     dependencies:
       undici-types: 6.19.8
 
