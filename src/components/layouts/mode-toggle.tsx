@@ -1,6 +1,6 @@
 "use client"
 
-import { LaptopIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons"
+import { LaptopIcon, MoonIcon, SunIcon } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { Button } from "@/components/ui/button"

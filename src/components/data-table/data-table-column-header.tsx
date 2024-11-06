@@ -1,13 +1,8 @@
 "use client"
 
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  CaretSortIcon,
-  EyeNoneIcon,
-} from "@radix-ui/react-icons"
 import { SelectIcon } from "@radix-ui/react-select"
 import { type Column } from "@tanstack/react-table"
+import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import {
@@ -65,11 +60,11 @@ export function DataTableColumnHeader<TData, TValue>({
           {title}
           <SelectIcon asChild>
             {column.getCanSort() && column.getIsSorted() === "desc" ? (
-              <ArrowDownIcon className="ml-2.5 size-4" aria-hidden="true" />
+              <ArrowDown className="ml-2.5 size-4" aria-hidden="true" />
             ) : column.getIsSorted() === "asc" ? (
-              <ArrowUpIcon className="ml-2.5 size-4" aria-hidden="true" />
+              <ArrowUp className="ml-2.5 size-4" aria-hidden="true" />
             ) : (
-              <CaretSortIcon className="ml-2.5 size-4" aria-hidden="true" />
+              <ChevronsUpDown className="ml-2.5 size-4" aria-hidden="true" />
             )}
           </SelectIcon>
         </SelectTrigger>
@@ -78,7 +73,7 @@ export function DataTableColumnHeader<TData, TValue>({
             <>
               <SelectItem value={ascValue}>
                 <span className="flex items-center">
-                  <ArrowUpIcon
+                  <ArrowUp
                     className="mr-2 size-3.5 text-muted-foreground/70"
                     aria-hidden="true"
                   />
@@ -87,7 +82,7 @@ export function DataTableColumnHeader<TData, TValue>({
               </SelectItem>
               <SelectItem value={descValue}>
                 <span className="flex items-center">
-                  <ArrowDownIcon
+                  <ArrowDown
                     className="mr-2 size-3.5 text-muted-foreground/70"
                     aria-hidden="true"
                   />
@@ -99,7 +94,7 @@ export function DataTableColumnHeader<TData, TValue>({
           {column.getCanHide() && (
             <SelectItem value={hideValue}>
               <span className="flex items-center">
-                <EyeNoneIcon
+                <EyeOff
                   className="mr-2 size-3.5 text-muted-foreground/70"
                   aria-hidden="true"
                 />

@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import type { DataTableFilterField } from "@/types"
-import { Cross2Icon } from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
+import { X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -106,7 +106,7 @@ export function DataTableToolbar<TData>({
             onClick={() => table.resetColumnFilters()}
           >
             Reset
-            <Cross2Icon className="ml-2 size-4" aria-hidden="true" />
+            <X className="ml-2 size-4" aria-hidden="true" />
           </Button>
         )}
       </div>

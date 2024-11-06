@@ -1,8 +1,8 @@
 "use client"
 
 import { type Task } from "@/db/schema"
-import { DownloadIcon } from "@radix-ui/react-icons"
 import { type Table } from "@tanstack/react-table"
+import { Download } from "lucide-react"
 
 import { exportTableToCSV } from "@/lib/export"
 import { Button } from "@/components/ui/button"
@@ -37,7 +37,7 @@ export function TasksTableToolbarActions({
         }
         className="gap-2"
       >
-        <DownloadIcon className="size-4" aria-hidden="true" />
+        <Download className="size-4" aria-hidden="true" />
         Export
       </Button>
       {/**

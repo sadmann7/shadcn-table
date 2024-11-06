@@ -1,12 +1,8 @@
 "use client"
 
 import * as React from "react"
-import {
-  CaretSortIcon,
-  CheckIcon,
-  MixerHorizontalIcon,
-} from "@radix-ui/react-icons"
 import type { Table } from "@tanstack/react-table"
+import { Check, ChevronsUpDown, Settings2 } from "lucide-react"
 
 import { cn, toSentenceCase } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -44,9 +40,9 @@ export function DataTableViewOptions<TData>({
           size="sm"
           className="ml-auto hidden h-8 gap-2 lg:flex"
         >
-          <MixerHorizontalIcon className="size-4" />
+          <Settings2 className="size-4" />
           View
-          <CaretSortIcon className="ml-auto size-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="ml-auto size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-44 p-0">
@@ -73,7 +69,7 @@ export function DataTableViewOptions<TData>({
                       <span className="truncate">
                         {toSentenceCase(column.id)}
                       </span>
-                      <CheckIcon
+                      <Check
                         className={cn(
                           "ml-auto size-4 shrink-0",
                           column.getIsVisible() ? "opacity-100" : "opacity-0"

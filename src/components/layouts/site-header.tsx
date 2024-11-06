@@ -1,8 +1,9 @@
 import Link from "next/link"
-import { GitHubLogoIcon, VercelLogoIcon } from "@radix-ui/react-icons"
+import { TableIcon } from "lucide-react"
 
 import { siteConfig } from "@/config/site"
 import { Button } from "@/components/ui/button"
+import { Icons } from "@/components/icons"
 import { ModeToggle } from "@/components/layouts/mode-toggle"
 
 export function SiteHeader() {
@@ -10,7 +11,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <Link href="/" className="mr-2 flex items-center md:mr-6 md:space-x-2">
-          <VercelLogoIcon className="size-4" aria-hidden="true" />
+          <TableIcon className="size-4" aria-hidden="true" />
           <span className="hidden font-bold md:inline-block">
             {siteConfig.name}
           </span>
@@ -33,7 +34,7 @@ export function SiteHeader() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <GitHubLogoIcon className="size-4" aria-hidden="true" />
+              <Icons.gitHub className="size-4" aria-hidden="true" />
             </Link>
           </Button>
           <ModeToggle />

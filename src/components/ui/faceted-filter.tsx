@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { CheckIcon } from "@radix-ui/react-icons"
+import { Check } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import {
@@ -66,7 +66,7 @@ const FacetedFilterItem = React.forwardRef<
             : "opacity-50 [&_svg]:invisible"
         )}
       >
-        <CheckIcon className="size-4" />
+        <Check className="size-4" />
       </span>
       {children}
     </CommandItem>

@@ -3,8 +3,8 @@
 import * as React from "react"
 import { tasks, type Task } from "@/db/schema"
 import { type DataTableRowAction } from "@/types"
-import { DotsHorizontalIcon } from "@radix-ui/react-icons"
 import { type ColumnDef } from "@tanstack/react-table"
+import { Ellipsis } from "lucide-react"
 import { toast } from "sonner"
 
 import { getErrorMessage } from "@/lib/handle-error"
@@ -178,7 +178,7 @@ export function getColumns({
                 variant="ghost"
                 className="flex size-8 p-0 data-[state=open]:bg-muted"
               >
-                <DotsHorizontalIcon className="size-4" aria-hidden="true" />
+                <Ellipsis className="size-4" aria-hidden="true" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">

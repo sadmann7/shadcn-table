@@ -6,8 +6,8 @@ import type {
   ExtendedSortingState,
   StringKeyOf,
 } from "@/types"
-import { DragHandleDots2Icon } from "@radix-ui/react-icons"
 import type { SortDirection, Table } from "@tanstack/react-table"
+import { ArrowDownUp, GripVertical, Trash2 } from "lucide-react"
 import { useQueryState } from "nuqs"
 
 import { dataTableConfig } from "@/config/data-table"
@@ -33,7 +33,6 @@ import {
   SortableDragHandle,
   SortableItem,
 } from "@/components/ui/sortable"
-import { Icons } from "@/components/icons"
 
 interface DataTableSortListProps<TData> {
   table: Table<TData>
@@ -140,7 +139,7 @@ export function DataTableSortList<TData>({
             aria-label="Open sorting"
             aria-controls={`${id}-sort-dialog`}
           >
-            <Icons.arrowDownUp className="size-3" aria-hidden="true" />
+            <ArrowDownUp className="size-3" aria-hidden="true" />
             Sort
             {uniqueSorting.length > 0 && (
               <Badge
@@ -256,17 +255,14 @@ export function DataTableSortList<TData>({
                         className="size-8 shrink-0 rounded"
                         onClick={() => removeSort(sort.id)}
                       >
-                        <Icons.trash className="size-3.5" aria-hidden="true" />
+                        <Trash2 className="size-3.5" aria-hidden="true" />
                       </Button>
                       <SortableDragHandle
                         variant="outline"
                         size="icon"
                         className="size-8 shrink-0 rounded"
                       >
-                        <DragHandleDots2Icon
-                          className="size-3.5"
-                          aria-hidden="true"
-                        />
+                        <GripVertical className="size-3.5" aria-hidden="true" />
                       </SortableDragHandle>
                     </div>
                   </SortableItem>

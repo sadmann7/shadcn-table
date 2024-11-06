@@ -8,12 +8,14 @@ import type {
   JoinOperator,
   StringKeyOf,
 } from "@/types"
+import { type Table } from "@tanstack/react-table"
 import {
   CalendarIcon,
-  CaretSortIcon,
-  DragHandleDots2Icon,
-} from "@radix-ui/react-icons"
-import { type Table } from "@tanstack/react-table"
+  ChevronsUpDown,
+  GripVertical,
+  ListFilter,
+  Trash2,
+} from "lucide-react"
 import { customAlphabet } from "nanoid"
 import { parseAsStringEnum, useQueryState } from "nuqs"
 
@@ -53,7 +55,6 @@ import {
   SortableDragHandle,
   SortableItem,
 } from "@/components/ui/sortable"
-import { Icons } from "@/components/icons"
 
 interface DataTableFilterListProps<TData> {
   table: Table<TData>
@@ -223,7 +224,7 @@ export function DataTableFilterList<TData>({
                 ) : (
                   <>
                     {filterField.placeholder ?? "Select an option..."}
-                    <CaretSortIcon className="size-4" aria-hidden="true" />
+                    <ChevronsUpDown className="size-4" aria-hidden="true" />
                   </>
                 )}
               </Button>
@@ -290,7 +291,7 @@ export function DataTableFilterList<TData>({
                   {selectedValues.size === 0 && (
                     <>
                       {filterField.placeholder ?? " Select options..."}
-                      <CaretSortIcon className="size-4" aria-hidden="true" />
+                      <ChevronsUpDown className="size-4" aria-hidden="true" />
                     </>
                   )}
                 </>
@@ -526,7 +527,7 @@ export function DataTableFilterList<TData>({
             aria-label="Open filters"
             aria-controls={`${id}-filter-dialog`}
           >
-            <Icons.filter className="size-3" aria-hidden="true" />
+            <ListFilter className="size-3" aria-hidden="true" />
             Filters
             {filters.length > 0 && (
               <Badge
@@ -675,17 +676,14 @@ export function DataTableFilterList<TData>({
                       className="size-8 shrink-0 rounded"
                       onClick={() => removeFilter(filter.rowId)}
                     >
-                      <Icons.trash className="size-3.5" aria-hidden="true" />
+                      <Trash2 className="size-3.5" aria-hidden="true" />
                     </Button>
                     <SortableDragHandle
                       variant="outline"
                       size="icon"
                       className="size-8 shrink-0 rounded"
                     >
-                      <DragHandleDots2Icon
-                        className="size-3.5"
-                        aria-hidden="true"
-                      />
+                      <GripVertical className="size-3.5" aria-hidden="true" />
                     </SortableDragHandle>
                   </div>
                 </SortableItem>

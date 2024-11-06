@@ -4,12 +4,12 @@ import {
   ArrowDownIcon,
   ArrowRightIcon,
   ArrowUpIcon,
-  CheckCircledIcon,
+  CheckCircle2,
+  CircleHelp,
   CircleIcon,
-  CrossCircledIcon,
-  QuestionMarkCircledIcon,
-  StopwatchIcon,
-} from "@radix-ui/react-icons"
+  CircleX,
+  Timer,
+} from "lucide-react"
 import { customAlphabet } from "nanoid"
 
 import { generateId } from "@/lib/id"
@@ -37,10 +37,10 @@ export function generateRandomTask(): Task {
  */
 export function getStatusIcon(status: Task["status"]) {
   const statusIcons = {
-    canceled: CrossCircledIcon,
-    done: CheckCircledIcon,
-    "in-progress": StopwatchIcon,
-    todo: QuestionMarkCircledIcon,
+    canceled: CircleX,
+    done: CheckCircle2,
+    "in-progress": Timer,
+    todo: CircleHelp,
   }
 
   return statusIcons[status] || CircleIcon

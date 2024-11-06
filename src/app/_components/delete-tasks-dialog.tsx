@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import { type Task } from "@/db/schema"
-import { TrashIcon } from "@radix-ui/react-icons"
 import { type Row } from "@tanstack/react-table"
+import { Loader, Trash } from "lucide-react"
 import { toast } from "sonner"
 
 import { useMediaQuery } from "@/hooks/use-media-query"
@@ -28,7 +28,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import { Icons } from "@/components/icons"
 
 import { deleteTasks } from "../_lib/actions"
 
@@ -71,7 +70,7 @@ export function DeleteTasksDialog({
         {showTrigger ? (
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">
-              <TrashIcon className="mr-2 size-4" aria-hidden="true" />
+              <Trash className="mr-2 size-4" aria-hidden="true" />
               Delete ({tasks.length})
             </Button>
           </DialogTrigger>
@@ -96,7 +95,7 @@ export function DeleteTasksDialog({
               disabled={isDeletePending}
             >
               {isDeletePending && (
-                <Icons.spinner
+                <Loader
                   className="mr-2 size-4 animate-spin"
                   aria-hidden="true"
                 />
@@ -114,7 +113,7 @@ export function DeleteTasksDialog({
       {showTrigger ? (
         <DrawerTrigger asChild>
           <Button variant="outline" size="sm">
-            <TrashIcon className="mr-2 size-4" aria-hidden="true" />
+            <Trash className="mr-2 size-4" aria-hidden="true" />
             Delete ({tasks.length})
           </Button>
         </DrawerTrigger>
@@ -139,10 +138,7 @@ export function DeleteTasksDialog({
             disabled={isDeletePending}
           >
             {isDeletePending && (
-              <Icons.spinner
-                className="mr-2 size-4 animate-spin"
-                aria-hidden="true"
-              />
+              <Loader className="mr-2 size-4 animate-spin" aria-hidden="true" />
             )}
             Delete
           </Button>

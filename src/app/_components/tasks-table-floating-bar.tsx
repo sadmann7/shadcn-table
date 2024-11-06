@@ -1,15 +1,15 @@
 import * as React from "react"
 import { tasks, type Task } from "@/db/schema"
-import {
-  ArrowUpIcon,
-  CheckCircledIcon,
-  Cross2Icon,
-  DownloadIcon,
-  ReloadIcon,
-  TrashIcon,
-} from "@radix-ui/react-icons"
 import { SelectTrigger } from "@radix-ui/react-select"
 import { type Table } from "@tanstack/react-table"
+import {
+  ArrowUp,
+  CheckCircle2,
+  Download,
+  Loader,
+  Trash2,
+  X,
+} from "lucide-react"
 import { toast } from "sonner"
 
 import { exportTableToCSV } from "@/lib/export"
@@ -73,10 +73,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                     className="size-5 hover:border"
                     onClick={() => table.toggleAllRowsSelected(false)}
                   >
-                    <Cross2Icon
-                      className="size-3.5 shrink-0"
-                      aria-hidden="true"
-                    />
+                    <X className="size-3.5 shrink-0" aria-hidden="true" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="flex items-center border bg-accent px-2 py-1 font-semibold text-foreground dark:bg-zinc-900">
@@ -118,12 +115,12 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                         disabled={isPending}
                       >
                         {isPending && action === "update-status" ? (
-                          <ReloadIcon
+                          <Loader
                             className="size-3.5 animate-spin"
                             aria-hidden="true"
                           />
                         ) : (
-                          <CheckCircledIcon
+                          <CheckCircle2
                             className="size-3.5"
                             aria-hidden="true"
                           />
@@ -178,15 +175,12 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                         disabled={isPending}
                       >
                         {isPending && action === "update-priority" ? (
-                          <ReloadIcon
+                          <Loader
                             className="size-3.5 animate-spin"
                             aria-hidden="true"
                           />
                         ) : (
-                          <ArrowUpIcon
-                            className="size-3.5"
-                            aria-hidden="true"
-                          />
+                          <ArrowUp className="size-3.5" aria-hidden="true" />
                         )}
                       </Button>
                     </TooltipTrigger>
@@ -228,12 +222,12 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                     disabled={isPending}
                   >
                     {isPending && action === "export" ? (
-                      <ReloadIcon
+                      <Loader
                         className="size-3.5 animate-spin"
                         aria-hidden="true"
                       />
                     ) : (
-                      <DownloadIcon className="size-3.5" aria-hidden="true" />
+                      <Download className="size-3.5" aria-hidden="true" />
                     )}
                   </Button>
                 </TooltipTrigger>
@@ -266,12 +260,12 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                     disabled={isPending}
                   >
                     {isPending && action === "delete" ? (
-                      <ReloadIcon
+                      <Loader
                         className="size-3.5 animate-spin"
                         aria-hidden="true"
                       />
                     ) : (
-                      <TrashIcon className="size-3.5" aria-hidden="true" />
+                      <Trash2 className="size-3.5" aria-hidden="true" />
                     )}
                   </Button>
                 </TooltipTrigger>
