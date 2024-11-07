@@ -4,6 +4,7 @@ import * as React from "react"
 import type { DataTableFilterField } from "@/types"
 import type { Table } from "@tanstack/react-table"
 import { X } from "lucide-react"
+import { parseAsString, useQueryStates } from "nuqs"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -46,8 +47,6 @@ export function DataTableToolbar<TData>({
   className,
   ...props
 }: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0
-
   // Memoize computation of searchableColumns and filterableColumns
   const { searchableColumns, filterableColumns } = React.useMemo(() => {
     return {
@@ -55,6 +54,15 @@ export function DataTableToolbar<TData>({
       filterableColumns: filterFields.filter((field) => field.options),
     }
   }, [filterFields])
+
+  const [params, setParams] = useQueryStates({
+    from: parseAsString,
+    to: parseAsString,
+    sort: parseAsString,
+  })
+
+  const isFiltered =
+    table.getState().columnFilters.length > 0 || params.from || params.to
 
   return (
     <div
@@ -103,7 +111,10 @@ export function DataTableToolbar<TData>({
             aria-label="Reset filters"
             variant="ghost"
             className="h-8 px-2 lg:px-3"
-            onClick={() => table.resetColumnFilters()}
+            onClick={() => {
+              table.resetColumnFilters()
+              void setParams(null)
+            }}
           >
             Reset
             <X className="ml-2 size-4" aria-hidden="true" />
