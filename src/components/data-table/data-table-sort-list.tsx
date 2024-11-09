@@ -186,9 +186,9 @@ export function DataTableSortList<TData>({
           <div className="flex max-h-40 flex-col gap-2 overflow-y-auto p-0.5">
             <div className="flex w-full flex-col gap-2">
               {uniqueSorting.map((sort, index) => {
-                const fieldTriggerId = `${sort.id}-field-trigger`
                 const sortId = `${id}-sort-${sort.id}`
                 const fieldListboxId = `${sortId}-field-listbox`
+                const fieldTriggerId = `${sortId}-field-trigger`
                 const directionListboxId = `${sortId}-direction-listbox`
 
                 return (
@@ -199,29 +199,31 @@ export function DataTableSortList<TData>({
                           <Button
                             id={fieldTriggerId}
                             variant="outline"
+                            size="sm"
                             role="combobox"
-                            className="h-8 w-[11.25rem] justify-between rounded focus:outline-none focus:ring-1 focus:ring-ring"
+                            className="h-8 w-44 justify-between gap-2 rounded focus:outline-none focus:ring-1 focus:ring-ring"
                             aria-controls={fieldListboxId}
                           >
                             <span className="truncate">
                               {toSentenceCase(sort.id)}
                             </span>
-                            {initialSorting.length === 1 &&
-                            initialSorting[0]?.id === sort.id ? (
-                              <Badge
-                                variant="secondary"
-                                className="ml-auto h-[1.125rem] rounded px-1 font-mono text-[0.65rem] font-normal"
-                              >
-                                Default
-                              </Badge>
-                            ) : (
-                              <ChevronsUpDown className="ml-auto size-4 shrink-0 opacity-50" />
-                            )}
+                            <div className="ml-auto flex items-center gap-1">
+                              {initialSorting.length === 1 &&
+                              initialSorting[0]?.id === sort.id ? (
+                                <Badge
+                                  variant="secondary"
+                                  className="h-[1.125rem] rounded px-1 font-mono text-[0.65rem] font-normal"
+                                >
+                                  Default
+                                </Badge>
+                              ) : null}
+                              <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+                            </div>
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent
                           id={fieldListboxId}
-                          className="w-[11.25rem] p-0"
+                          className="w-[var(--radix-popover-trigger-width)] p-0"
                           onCloseAutoFocus={() =>
                             document.getElementById(fieldTriggerId)?.focus()
                           }

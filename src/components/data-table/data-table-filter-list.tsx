@@ -568,10 +568,10 @@ export function DataTableFilterList<TData>({
           )}
           <div className="flex max-h-40 flex-col gap-2 overflow-y-auto py-0.5 pr-1">
             {filters.map((filter, index) => {
-              const fieldTriggerId = `${filter.rowId}-field-trigger`
               const filterId = `${id}-filter-${filter.rowId}`
               const joinOperatorListboxId = `${filterId}-join-operator-listbox`
               const fieldListboxId = `${filterId}-field-listbox`
+              const fieldTriggerId = `${filterId}-field-trigger`
               const operatorListboxId = `${filterId}-operator-listbox`
               const inputId = `${filterId}-input`
 
@@ -624,14 +624,14 @@ export function DataTableFilterList<TData>({
                           role="combobox"
                           aria-label="Select filter field"
                           aria-controls={fieldListboxId}
-                          className="h-8 w-32 justify-between rounded focus:outline-none focus:ring-1 focus:ring-ring"
+                          className="h-8 w-32 justify-between gap-2 rounded focus:outline-none focus:ring-1 focus:ring-ring"
                         >
-                          <div className="truncate">
+                          <span className="truncate">
                             {filterFields.find(
                               (field) => field.id === filter.id
                             )?.label ?? "Select field"}
-                          </div>
-                          <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
+                          </span>
+                          <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent
