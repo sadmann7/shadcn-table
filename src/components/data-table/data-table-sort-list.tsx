@@ -7,7 +7,13 @@ import type {
   StringKeyOf,
 } from "@/types"
 import type { SortDirection, Table } from "@tanstack/react-table"
-import { ArrowDownUp, GripVertical, Trash2 } from "lucide-react"
+import {
+  ArrowDownUp,
+  Check,
+  ChevronsUpDown,
+  GripVertical,
+  Trash2,
+} from "lucide-react"
 import { useQueryState } from "nuqs"
 
 import { dataTableConfig } from "@/config/data-table"
@@ -16,6 +22,14 @@ import { cn, toSentenceCase } from "@/lib/utils"
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
 import {
   Popover,
   PopoverContent,
@@ -172,6 +186,7 @@ export function DataTableSortList<TData>({
           <div className="flex max-h-40 flex-col gap-2 overflow-y-auto p-0.5">
             <div className="flex w-full flex-col gap-2">
               {uniqueSorting.map((sort, index) => {
+                const fieldTriggerId = `${sort.id}-field-trigger`
                 const sortId = `${id}-sort-${sort.id}`
                 const fieldListboxId = `${sortId}-field-listbox`
                 const directionListboxId = `${sortId}-direction-listbox`
@@ -179,46 +194,79 @@ export function DataTableSortList<TData>({
                 return (
                   <SortableItem key={sort.id} value={sort.id} asChild>
                     <div className="flex items-center gap-2">
-                      <Select
-                        value={sort.id}
-                        onValueChange={(value: StringKeyOf<TData>) =>
-                          updateSort({
-                            field: { id: value },
-                            index,
-                          })
-                        }
-                      >
-                        <SelectTrigger
-                          aria-label="Select sort field"
-                          aria-controls={fieldListboxId}
-                          className="h-8 w-[11.25rem] rounded"
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            id={fieldTriggerId}
+                            variant="outline"
+                            role="combobox"
+                            className="h-8 w-[11.25rem] justify-between rounded focus:outline-none focus:ring-1 focus:ring-ring"
+                            aria-controls={fieldListboxId}
+                          >
+                            <span className="truncate">
+                              {toSentenceCase(sort.id)}
+                            </span>
+                            {initialSorting.length === 1 &&
+                            initialSorting[0]?.id === sort.id ? (
+                              <Badge
+                                variant="secondary"
+                                className="ml-auto h-[1.125rem] rounded px-1 font-mono text-[0.65rem] font-normal"
+                              >
+                                Default
+                              </Badge>
+                            ) : (
+                              <ChevronsUpDown className="ml-auto size-4 shrink-0 opacity-50" />
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          id={fieldListboxId}
+                          className="w-[11.25rem] p-0"
+                          onCloseAutoFocus={() =>
+                            document.getElementById(fieldTriggerId)?.focus()
+                          }
                         >
-                          <div className="truncate">
-                            <SelectValue />
-                          </div>
-                          {initialSorting.length === 1 &&
-                          initialSorting[0]?.id === sort.id ? (
-                            <Badge
-                              variant="secondary"
-                              className="ml-auto h-[1.125rem] rounded px-1 font-mono text-[0.65rem] font-normal"
-                            >
-                              Default
-                            </Badge>
-                          ) : null}
-                        </SelectTrigger>
-                        <SelectContent id={fieldListboxId}>
-                          {sortableColumns
-                            .filter(
-                              (column) =>
-                                !column.selected || column.id === sort.id
-                            )
-                            .map((column) => (
-                              <SelectItem key={column.id} value={column.id}>
-                                {column.label}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
+                          <Command>
+                            <CommandInput placeholder="Search fields..." />
+                            <CommandList>
+                              <CommandEmpty>No fields found.</CommandEmpty>
+                              <CommandGroup>
+                                {sortableColumns
+                                  .filter(
+                                    (column) =>
+                                      !column.selected || column.id === sort.id
+                                  )
+                                  .map((column) => (
+                                    <CommandItem
+                                      key={column.id}
+                                      value={column.id}
+                                      onSelect={(value) =>
+                                        updateSort({
+                                          field: {
+                                            id: value as StringKeyOf<TData>,
+                                          },
+                                          index,
+                                        })
+                                      }
+                                    >
+                                      <span className="mr-1.5 truncate">
+                                        {column.label}
+                                      </span>
+                                      <Check
+                                        className={cn(
+                                          "ml-auto size-4 shrink-0",
+                                          column.id === sort.id
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                    </CommandItem>
+                                  ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                       <Select
                         value={sort.desc ? "desc" : "asc"}
                         onValueChange={(value: SortDirection) =>

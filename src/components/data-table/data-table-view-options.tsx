@@ -27,25 +27,31 @@ interface DataTableViewOptionsProps<TData> {
 export function DataTableViewOptions<TData>({
   table,
 }: DataTableViewOptionsProps<TData>) {
+  const triggerRef = React.useRef<HTMLButtonElement>(null)
   const [open, setOpen] = React.useState(false)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
+          ref={triggerRef}
           aria-label="Toggle columns"
           variant="outline"
           role="combobox"
           aria-expanded={open}
           size="sm"
-          className="ml-auto hidden h-8 gap-2 lg:flex"
+          className="ml-auto hidden h-8 gap-2 focus:outline-none focus:ring-1 focus:ring-ring lg:flex"
         >
           <Settings2 className="size-4" />
           View
           <ChevronsUpDown className="ml-auto size-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-44 p-0">
+      <PopoverContent
+        align="end"
+        className="w-44 p-0"
+        onCloseAutoFocus={() => triggerRef.current?.focus()}
+      >
         <Command>
           <CommandInput placeholder="Search columns..." />
           <CommandList>
