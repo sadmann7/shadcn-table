@@ -1,7 +1,9 @@
 "use client"
 
-import { ThemeProvider as NextThemesProvider } from "next-themes"
-import type { ThemeProviderProps } from "next-themes/dist/types"
+import {
+  ThemeProvider as NextThemesProvider,
+  type ThemeProviderProps,
+} from "next-themes"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 
 import { TooltipProvider } from "@/components/ui/tooltip"

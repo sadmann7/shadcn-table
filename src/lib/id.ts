@@ -39,7 +39,5 @@ export function generateId(
     length
   )()
 
-  return prefixOrOptions
-    ? `${prefixes[prefixOrOptions as keyof typeof prefixes]}${separator}${id}`
-    : id
+  return prefixOrOptions ? `${prefixes[prefixOrOptions]}${separator}${id}` : id
 }
