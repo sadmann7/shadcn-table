@@ -168,8 +168,9 @@ export function DataTableSortList<TData>({
         <PopoverContent
           id={`${id}-sort-dialog`}
           align="start"
+          collisionPadding={16}
           className={cn(
-            "flex w-[25rem] origin-[var(--radix-popover-content-transform-origin)] flex-col p-4",
+            "flex w-[calc(100vw-theme(spacing.20))] min-w-72 max-w-[25rem] origin-[var(--radix-popover-content-transform-origin)] flex-col p-4 sm:w-[25rem]",
             uniqueSorting.length > 0 ? "gap-3.5" : "gap-2"
           )}
         >
@@ -194,7 +195,7 @@ export function DataTableSortList<TData>({
                 return (
                   <SortableItem key={sort.id} value={sort.id} asChild>
                     <div className="flex items-center gap-2">
-                      <Popover>
+                      <Popover modal>
                         <PopoverTrigger asChild>
                           <Button
                             id={fieldTriggerId}

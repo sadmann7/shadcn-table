@@ -551,8 +551,9 @@ export function DataTableFilterList<TData>({
         <PopoverContent
           id={`${id}-filter-dialog`}
           align="start"
+          collisionPadding={16}
           className={cn(
-            "flex w-[36rem] origin-[var(--radix-popover-content-transform-origin)] flex-col p-4",
+            "flex w-[calc(100vw-theme(spacing.12))] min-w-60 origin-[var(--radix-popover-content-transform-origin)] flex-col p-4 sm:w-[36rem]",
             filters.length > 0 ? "gap-3.5" : "gap-2"
           )}
         >
@@ -615,7 +616,7 @@ export function DataTableFilterList<TData>({
                         </span>
                       )}
                     </div>
-                    <Popover>
+                    <Popover modal>
                       <PopoverTrigger asChild>
                         <Button
                           id={fieldTriggerId}

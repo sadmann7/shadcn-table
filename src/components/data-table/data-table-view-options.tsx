@@ -30,7 +30,7 @@ export function DataTableViewOptions<TData>({
   const triggerRef = React.useRef<HTMLButtonElement>(null)
 
   return (
-    <Popover>
+    <Popover modal>
       <PopoverTrigger asChild>
         <Button
           ref={triggerRef}
