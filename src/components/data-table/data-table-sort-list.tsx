@@ -74,20 +74,31 @@ export function DataTableSortList<TData>({
       })
   )
 
-  const uniqueSorting = sorting.filter(
-    (sort, index, self) => index === self.findIndex((t) => t.id === sort.id)
+  const uniqueSorting = React.useMemo(
+    () =>
+      sorting.filter(
+        (sort, index, self) => index === self.findIndex((t) => t.id === sort.id)
+      ),
+    [sorting]
   )
 
   const debouncedSetSorting = useDebouncedCallback(setSorting, debounceMs)
 
-  const sortableColumns = table
-    .getAllColumns()
-    .filter((column) => column.getCanSort())
-    .map((column) => ({
-      id: column.id,
-      label: toSentenceCase(column.id),
-      selected: sorting?.some((s) => s.id === column.id),
-    }))
+  const sortableColumns = React.useMemo(
+    () =>
+      table
+        .getAllColumns()
+        .filter(
+          (column) =>
+            column.getCanSort() && !sorting.some((s) => s.id === column.id)
+        )
+        .map((column) => ({
+          id: column.id,
+          label: toSentenceCase(column.id),
+          selected: false,
+        })),
+    [table, sorting]
+  )
 
   function addSort() {
     const firstAvailableColumn = sortableColumns.find(
@@ -171,7 +182,7 @@ export function DataTableSortList<TData>({
           collisionPadding={16}
           className={cn(
             "flex w-[calc(100vw-theme(spacing.20))] min-w-72 max-w-[25rem] origin-[var(--radix-popover-content-transform-origin)] flex-col p-4 sm:w-[25rem]",
-            uniqueSorting.length > 0 ? "gap-3.5" : "gap-2"
+            sorting.length > 0 ? "gap-3.5" : "gap-2"
           )}
         >
           {uniqueSorting.length > 0 ? (
@@ -237,38 +248,41 @@ export function DataTableSortList<TData>({
                             <CommandList>
                               <CommandEmpty>No fields found.</CommandEmpty>
                               <CommandGroup>
-                                {sortableColumns
-                                  .filter(
-                                    (column) =>
-                                      !column.selected || column.id === sort.id
-                                  )
-                                  .map((column) => (
-                                    <CommandItem
-                                      key={column.id}
-                                      value={column.id}
-                                      onSelect={(value) =>
-                                        updateSort({
-                                          field: {
-                                            id: value as StringKeyOf<TData>,
-                                          },
-                                          index,
-                                        })
-                                      }
-                                    >
-                                      <span className="mr-1.5 truncate">
-                                        {column.label}
-                                      </span>
-                                      <Check
-                                        className={cn(
-                                          "ml-auto size-4 shrink-0",
-                                          column.id === sort.id
-                                            ? "opacity-100"
-                                            : "opacity-0"
-                                        )}
-                                        aria-hidden="true"
-                                      />
-                                    </CommandItem>
-                                  ))}
+                                {sortableColumns.map((column) => (
+                                  <CommandItem
+                                    key={column.id}
+                                    value={column.id}
+                                    onSelect={(value) => {
+                                      const newFieldTriggerId = `${id}-sort-${value}-field-trigger`
+
+                                      updateSort({
+                                        field: {
+                                          id: value as StringKeyOf<TData>,
+                                        },
+                                        index,
+                                      })
+
+                                      requestAnimationFrame(() => {
+                                        document
+                                          .getElementById(newFieldTriggerId)
+                                          ?.focus()
+                                      })
+                                    }}
+                                  >
+                                    <span className="mr-1.5 truncate">
+                                      {column.label}
+                                    </span>
+                                    <Check
+                                      className={cn(
+                                        "ml-auto size-4 shrink-0",
+                                        column.id === sort.id
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                      aria-hidden="true"
+                                    />
+                                  </CommandItem>
+                                ))}
                               </CommandGroup>
                             </CommandList>
                           </Command>

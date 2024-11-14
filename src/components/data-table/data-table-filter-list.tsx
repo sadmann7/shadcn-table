@@ -625,7 +625,7 @@ export function DataTableFilterList<TData>({
                           role="combobox"
                           aria-label="Select filter field"
                           aria-controls={fieldListboxId}
-                          className="h-8 w-32 justify-between gap-2 rounded focus:outline-none focus:ring-1 focus:ring-ring"
+                          className="h-8 w-32 justify-between gap-2 rounded focus:outline-none focus:ring-1 focus:ring-ring focus-visible:ring-0"
                         >
                           <span className="truncate">
                             {filterFields.find(
@@ -640,7 +640,9 @@ export function DataTableFilterList<TData>({
                         align="start"
                         className="w-40 p-0"
                         onCloseAutoFocus={() =>
-                          document.getElementById(fieldTriggerId)?.focus()
+                          document.getElementById(fieldTriggerId)?.focus({
+                            preventScroll: true,
+                          })
                         }
                       >
                         <Command>
@@ -656,18 +658,23 @@ export function DataTableFilterList<TData>({
                                     const column = filterFields.find(
                                       (col) => col.id === value
                                     )
-                                    if (column) {
-                                      updateFilter({
-                                        rowId: filter.rowId,
-                                        field: {
-                                          id: value as StringKeyOf<TData>,
-                                          type: column.type,
-                                          operator: getDefaultFilterOperator(
-                                            column.type
-                                          ),
-                                        },
-                                      })
-                                    }
+
+                                    if (!column) return
+
+                                    updateFilter({
+                                      rowId: filter.rowId,
+                                      field: {
+                                        id: value as StringKeyOf<TData>,
+                                        type: column.type,
+                                        operator: getDefaultFilterOperator(
+                                          column.type
+                                        ),
+                                      },
+                                    })
+
+                                    document
+                                      .getElementById(fieldTriggerId)
+                                      ?.click()
                                   }}
                                 >
                                   <span className="mr-1.5 truncate">
