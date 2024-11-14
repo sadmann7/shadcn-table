@@ -22,7 +22,15 @@ import {
 
 const FacetedFilter = Popover
 
-const FacetedFilterTrigger = PopoverTrigger
+const FacetedFilterTrigger = React.forwardRef<
+  React.ComponentRef<typeof PopoverTrigger>,
+  React.ComponentPropsWithoutRef<typeof PopoverTrigger>
+>(({ className, children, ...props }, ref) => (
+  <PopoverTrigger ref={ref} className={cn(className)} {...props}>
+    {children}
+  </PopoverTrigger>
+))
+FacetedFilterTrigger.displayName = "FacetedFilterTrigger"
 
 const FacetedFilterContent = React.forwardRef<
   React.ComponentRef<typeof PopoverContent>,
@@ -57,7 +65,13 @@ const FacetedFilterItem = React.forwardRef<
   FacetedFilterItemProps
 >(({ className, children, selected, ...props }, ref) => {
   return (
-    <CommandItem ref={ref} className={cn(className)} {...props}>
+    <CommandItem
+      ref={ref}
+      aria-selected={selected}
+      data-selected={selected}
+      className={cn(className)}
+      {...props}
+    >
       <span
         className={cn(
           "mr-2 flex size-4 items-center justify-center rounded-sm border border-primary",

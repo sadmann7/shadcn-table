@@ -218,7 +218,10 @@ export function DataTableSortList<TData>({
                                   Default
                                 </Badge>
                               ) : null}
-                              <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+                              <ChevronsUpDown
+                                className="size-4 shrink-0 opacity-50"
+                                aria-hidden="true"
+                              />
                             </div>
                           </Button>
                         </PopoverTrigger>
@@ -262,6 +265,7 @@ export function DataTableSortList<TData>({
                                             ? "opacity-100"
                                             : "opacity-0"
                                         )}
+                                        aria-hidden="true"
                                       />
                                     </CommandItem>
                                   ))}
