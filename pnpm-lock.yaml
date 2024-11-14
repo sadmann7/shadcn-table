@@ -79,7 +79,7 @@ importers:
         version: 4.1.0
       drizzle-orm:
         specifier: ^0.36.0
-        version: 0.36.1(@libsql/client-wasm@0.14.0)(@types/react@18.3.12)(pg@8.13.1)(postgres@3.4.5)(react@18.3.1)
+        version: 0.36.2(@libsql/client-wasm@0.14.0)(@types/react@18.3.12)(pg@8.13.1)(postgres@3.4.5)(react@18.3.1)
       export-to-csv:
         specifier: ^1.4.0
         version: 1.4.0
@@ -1851,8 +1851,8 @@ packages:
     resolution: {integrity: sha512-JimOV+ystXTWMgZkLHYHf2w3oS28hxiH1FR0dkmJLc7GHzdGJoJAQtQS5DRppnabsRZwE2U1F6CuezVBgmsBBQ==}
     hasBin: true
 
-  drizzle-orm@0.36.1:
-    resolution: {integrity: sha512-F4hbimnMEhyWzDowQB4xEuVJJWXLHZYD7FYwvo8RImY+N7pStGqsbfmT95jDbec1s4qKmQbiuxEDZY90LRrfIw==}
+  drizzle-orm@0.36.2:
+    resolution: {integrity: sha512-uVwIdQMo+zwI09hCSNVR29tYn4Vw6F7gga/CsZgDJmTSGDdUdLo+Ur45Qc3gDK7oFTxD/eRANNnPgvPmRY+jSA==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=3'
@@ -1873,7 +1873,7 @@ packages:
       '@xata.io/client': '*'
       better-sqlite3: '>=7'
       bun-types: '*'
-      expo-sqlite: '>=13.2.0'
+      expo-sqlite: '>=14.0.0'
       knex: '*'
       kysely: '*'
       mysql2: '>=2'
@@ -4823,7 +4823,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.36.1(@libsql/client-wasm@0.14.0)(@types/react@18.3.12)(pg@8.13.1)(postgres@3.4.5)(react@18.3.1):
+  drizzle-orm@0.36.2(@libsql/client-wasm@0.14.0)(@types/react@18.3.12)(pg@8.13.1)(postgres@3.4.5)(react@18.3.1):
     optionalDependencies:
       '@libsql/client-wasm': 0.14.0
       '@types/react': 18.3.12
