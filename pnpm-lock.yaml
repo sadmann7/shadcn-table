@@ -100,7 +100,7 @@ importers:
         version: 0.4.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       nuqs:
         specifier: ^2.0.0
-        version: 2.1.2(@remix-run/react@2.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3))(next@15.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-router-dom@6.27.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
+        version: 2.2.0(@remix-run/react@2.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3))(next@15.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-router-dom@6.27.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       postgres:
         specifier: ^3.4.4
         version: 3.4.5
@@ -2625,13 +2625,13 @@ packages:
     resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
     engines: {node: '>=0.10.0'}
 
-  nuqs@2.1.2:
-    resolution: {integrity: sha512-WL9Qb6Pn8JPLCTE04l0CaRjeVrEdybEuLuc7IMS/H6HJnxjO2f63i1sd6HkU3ntEY6rc05M1PL8/ZRvdBC7pgw==}
+  nuqs@2.2.0:
+    resolution: {integrity: sha512-ff0UDkuFfbACr7nONLsLTkBUvqxbaaYAYfS9jHSIr8zjacABHCHOwysYmkXyOmU+BPA68v+Xspr+2HKnNYbpeQ==}
     peerDependencies:
-      '@remix-run/react': '>= 2'
-      next: '>= 14.2.0'
-      react: '>= 18.2.0'
-      react-router-dom: '>= 6'
+      '@remix-run/react': '>=2'
+      next: '>=14.2.0'
+      react: '>=18.2.0 || ^19.0.0-0'
+      react-router-dom: '>=6'
     peerDependenciesMeta:
       '@remix-run/react':
         optional: true
@@ -5707,7 +5707,7 @@ snapshots:
 
   normalize-range@0.1.2: {}
 
-  nuqs@2.1.2(@remix-run/react@2.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3))(next@15.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-router-dom@6.27.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1):
+  nuqs@2.2.0(@remix-run/react@2.13.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.6.3))(next@15.0.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-router-dom@6.27.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1):
     dependencies:
       mitt: 3.0.1
       react: 18.3.1
