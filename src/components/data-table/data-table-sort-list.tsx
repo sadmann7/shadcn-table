@@ -97,7 +97,7 @@ export function DataTableSortList<TData>({
           label: toSentenceCase(column.id),
           selected: false,
         })),
-    [table, sorting]
+    [sorting, table]
   )
 
   function addSort() {

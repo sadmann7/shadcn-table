@@ -132,18 +132,10 @@ export function DataTableFilterList<TData>({
     updateFunction((prevFilters) => {
       const updatedFilters = prevFilters.map((filter) => {
         if (filter.rowId === rowId) {
-          const updatedFilter = { ...filter, ...field }
-          if ("type" in field) {
-            updatedFilter.value = ""
-          }
-          if (field.operator === "isEmpty" || field.operator === "isNotEmpty") {
-            updatedFilter.value = ""
-          }
-          return updatedFilter
+          return { ...filter, ...field }
         }
         return filter
       })
-
       return updatedFilters
     })
   }
@@ -655,20 +647,21 @@ export function DataTableFilterList<TData>({
                                   key={field.id}
                                   value={field.id}
                                   onSelect={(value) => {
-                                    const column = filterFields.find(
+                                    const filterField = filterFields.find(
                                       (col) => col.id === value
                                     )
 
-                                    if (!column) return
+                                    if (!filterField) return
 
                                     updateFilter({
                                       rowId: filter.rowId,
                                       field: {
                                         id: value as StringKeyOf<TData>,
-                                        type: column.type,
+                                        type: filterField.type,
                                         operator: getDefaultFilterOperator(
-                                          column.type
+                                          filterField.type
                                         ),
+                                        value: "",
                                       },
                                     })
 
@@ -700,7 +693,13 @@ export function DataTableFilterList<TData>({
                       onValueChange={(value: FilterOperator) =>
                         updateFilter({
                           rowId: filter.rowId,
-                          field: { operator: value },
+                          field: {
+                            operator: value,
+                            value:
+                              value === "isEmpty" || value === "isNotEmpty"
+                                ? ""
+                                : filter.value,
+                          },
                         })
                       }
                     >
