@@ -116,12 +116,12 @@ export function DataTableSortList<TData>({
   }
 
   function updateSort({
+    id,
     field,
-    index,
     debounced = false,
   }: {
+    id: string
     field: Partial<ExtendedColumnSort<TData>>
-    index: number
     debounced?: boolean
   }) {
     const updateFunction = debounced ? debouncedSetSorting : setSorting
@@ -129,8 +129,8 @@ export function DataTableSortList<TData>({
     updateFunction((prevSorting) => {
       if (!prevSorting) return prevSorting
 
-      const updatedSorting = prevSorting.map((sort, i) =>
-        i === index ? { ...sort, ...field } : sort
+      const updatedSorting = prevSorting.map((sort) =>
+        sort.id === id ? { ...sort, ...field } : sort
       )
       return updatedSorting
     })
@@ -197,7 +197,7 @@ export function DataTableSortList<TData>({
           )}
           <div className="flex max-h-40 flex-col gap-2 overflow-y-auto p-0.5">
             <div className="flex w-full flex-col gap-2">
-              {uniqueSorting.map((sort, index) => {
+              {uniqueSorting.map((sort) => {
                 const sortId = `${id}-sort-${sort.id}`
                 const fieldListboxId = `${sortId}-field-listbox`
                 const fieldTriggerId = `${sortId}-field-trigger`
@@ -256,10 +256,10 @@ export function DataTableSortList<TData>({
                                       const newFieldTriggerId = `${id}-sort-${value}-field-trigger`
 
                                       updateSort({
+                                        id: sort.id,
                                         field: {
                                           id: value as StringKeyOf<TData>,
                                         },
-                                        index,
                                       })
 
                                       requestAnimationFrame(() => {
@@ -292,8 +292,8 @@ export function DataTableSortList<TData>({
                         value={sort.desc ? "desc" : "asc"}
                         onValueChange={(value: SortDirection) =>
                           updateSort({
+                            id: sort.id,
                             field: { id: sort.id, desc: value === "desc" },
-                            index,
                           })
                         }
                       >

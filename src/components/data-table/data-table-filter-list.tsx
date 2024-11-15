@@ -125,7 +125,7 @@ export function DataTableFilterList<TData>({
     debounced = false,
   }: {
     rowId: string
-    field: Partial<Filter<TData>>
+    field: Omit<Partial<Filter<TData>>, "rowId">
     debounced?: boolean
   }) {
     const updateFunction = debounced ? debouncedSetFilters : setFilters
