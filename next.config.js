@@ -1,5 +1,3 @@
-import { withContentCollections } from "@content-collections/next"
-
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
  * for Docker builds.
@@ -13,4 +11,4 @@ const nextConfig = {
   typescript: { ignoreBuildErrors: true },
 }
 
-export default withContentCollections(nextConfig)
+export default nextConfig
