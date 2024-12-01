@@ -529,7 +529,7 @@ export function DataTableFilterList<TData>({
             aria-controls={`${id}-filter-dialog`}
           >
             <ListFilter className="size-3" aria-hidden="true" />
-            Filters
+            Фільтри
             {filters.length > 0 && (
               <Badge
                 variant="secondary"
@@ -553,9 +553,11 @@ export function DataTableFilterList<TData>({
             <h4 className="font-medium leading-none">Filters</h4>
           ) : (
             <div className="flex flex-col gap-1">
-              <h4 className="font-medium leading-none">No filters applied</h4>
+              <h4 className="font-medium leading-none">
+                Фільтри не застосовані
+              </h4>
               <p className="text-sm text-muted-foreground">
-                Add filters to refine your results.
+                Додайте фільтри для покращення результату.
               </p>
             </div>
           )}
@@ -574,7 +576,7 @@ export function DataTableFilterList<TData>({
                     <div className="min-w-[4.5rem] text-center">
                       {index === 0 ? (
                         <span className="text-sm text-muted-foreground">
-                          Where
+                          Де
                         </span>
                       ) : index === 1 ? (
                         <Select
@@ -640,7 +642,7 @@ export function DataTableFilterList<TData>({
                         <Command>
                           <CommandInput placeholder="Search fields..." />
                           <CommandList>
-                            <CommandEmpty>No fields found.</CommandEmpty>
+                            <CommandEmpty>Поля не знайдені.</CommandEmpty>
                             <CommandGroup>
                               {filterFields.map((field) => (
                                 <CommandItem
@@ -750,7 +752,7 @@ export function DataTableFilterList<TData>({
               className="h-[1.85rem] rounded"
               onClick={addFilter}
             >
-              Add filter
+              Додати фільтр
             </Button>
             {filters.length > 0 ? (
               <Button
@@ -762,7 +764,7 @@ export function DataTableFilterList<TData>({
                   void setJoinOperator("and")
                 }}
               >
-                Reset filters
+                Скинути фільтри
               </Button>
             ) : null}
           </div>

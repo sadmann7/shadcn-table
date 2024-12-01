@@ -1,4 +1,5 @@
-import { tasks, type Task } from "@/db/schema"
+import crypto from "crypto"
+import { tasks, type Task, type User } from "@/db/schema"
 import { faker } from "@faker-js/faker"
 import {
   ArrowDownIcon,
@@ -13,6 +14,19 @@ import {
 import { customAlphabet } from "nanoid"
 
 import { generateId } from "@/lib/id"
+
+export function generateRandomUser(): User {
+  return {
+    id: generateId(),
+    username: faker.internet.username(),
+    name: faker.person.fullName(),
+    email: faker.internet.email(),
+    // password: faker.internet.password(),
+    password: crypto.createHash("sha512").update("test123").digest("hex"),
+    emailVerified: faker.date.past(),
+    image: faker.image.avatarGitHub(),
+  }
+}
 
 export function generateRandomTask(): Task {
   return {

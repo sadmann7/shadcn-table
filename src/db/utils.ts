@@ -18,7 +18,7 @@ import {
 import { pgTableCreator, PgTimestampString } from "drizzle-orm/pg-core"
 import { type SelectResultFields } from "drizzle-orm/query-builders/select.types"
 
-import { databasePrefix } from "@/lib/constants"
+// import { databasePrefix } from "@/lib/constants"
 
 /**
  * This lets us use the multi-project schema feature of Drizzle ORM. So the same
@@ -26,7 +26,8 @@ import { databasePrefix } from "@/lib/constants"
  *
  * @see https://orm.drizzle.team/docs/goodies#multi-project-schema
  */
-export const pgTable = pgTableCreator((name) => `${databasePrefix}_${name}`)
+// export const pgTable = pgTableCreator((name) => `${databasePrefix}_${name}`)
+export const pgTable = pgTableCreator((name) => name)
 
 /**
  * Takes the first item from an array.

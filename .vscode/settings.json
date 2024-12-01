@@ -13,5 +13,10 @@
       "url": "https://json.schemastore.org/package",
       "schema": true
     }
-  ]
+  ],
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#2B3019",
+    "titleBar.activeBackground": "#3C4323",
+    "titleBar.activeForeground": "#FAFBF7"
+  }
 }

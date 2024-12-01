@@ -165,7 +165,7 @@ export function DataTableSortList<TData>({
             aria-controls={`${id}-sort-dialog`}
           >
             <ArrowDownUp className="size-3" aria-hidden="true" />
-            Sort
+            Сортування
             {uniqueSorting.length > 0 && (
               <Badge
                 variant="secondary"

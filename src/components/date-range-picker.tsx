@@ -63,7 +63,7 @@ interface DateRangePickerProps
 
 export function DateRangePicker({
   defaultDateRange,
-  placeholder = "Pick a date",
+  placeholder = "Виберіть дату",
   triggerVariant = "outline",
   triggerSize = "default",
   triggerClassName,

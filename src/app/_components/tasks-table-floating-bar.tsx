@@ -232,7 +232,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent className="border bg-accent font-semibold text-foreground dark:bg-zinc-900">
-                  <p>Export tasks</p>
+                  <p>Експортувати завдання</p>
                 </TooltipContent>
               </Tooltip>
               <Tooltip>

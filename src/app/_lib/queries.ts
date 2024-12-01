@@ -27,6 +27,7 @@ export async function getTasks(input: GetTasksSchema) {
         const fromDate = input.from ? new Date(input.from) : undefined
         const toDate = input.to ? new Date(input.to) : undefined
         const advancedTable = input.flags.includes("advancedTable")
+        console.log(2222, input)
 
         const advancedWhere = filterColumns({
           table: tasks,

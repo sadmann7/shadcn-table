@@ -7,14 +7,14 @@ import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
 import { Shell } from "@/components/shell"
 
-import { FeatureFlagsProvider } from "./_components/feature-flags-provider"
-import { TasksTable } from "./_components/tasks-table"
+import { FeatureFlagsProvider } from "../../_components/feature-flags-provider"
+import { TasksTable } from "../../_components/tasks-table"
 import {
   getTaskPriorityCounts,
   getTasks,
   getTaskStatusCounts,
-} from "./_lib/queries"
-import { searchParamsCache } from "./_lib/validations"
+} from "../../_lib/queries"
+import { searchParamsCache } from "../../_lib/validations"
 
 interface IndexPageProps {
   searchParams: Promise<SearchParams>
@@ -34,6 +34,13 @@ export default async function IndexPage(props: IndexPageProps) {
     getTaskStatusCounts(),
     getTaskPriorityCounts(),
   ])
+
+  const tasks = await getTasks({
+    ...search,
+    filters: validFilters,
+  })
+
+  console.log(1111, tasks)
 
   return (
     <Shell className="gap-2">

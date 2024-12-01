@@ -2,7 +2,7 @@
 
 import { type Task } from "@/db/schema"
 import { type Table } from "@tanstack/react-table"
-import { Download } from "lucide-react"
+import { Download, Plus } from "lucide-react"
 
 import { exportTableToCSV } from "@/lib/export"
 import { Button } from "@/components/ui/button"
@@ -18,6 +18,17 @@ export function TasksTableToolbarActions({
 }: TasksTableToolbarActionsProps) {
   return (
     <div className="flex items-center gap-2">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => {
+          // TODO: Implement create task
+        }}
+        className="gap-2"
+      >
+        <Plus className="size-4" aria-hidden="true" />
+        Cтворити
+      </Button>
       {table.getFilteredSelectedRowModel().rows.length > 0 ? (
         <DeleteTasksDialog
           tasks={table
@@ -38,7 +49,7 @@ export function TasksTableToolbarActions({
         className="gap-2"
       >
         <Download className="size-4" aria-hidden="true" />
-        Export
+        Експортувати
       </Button>
       {/**
        * Other actions can be added here.

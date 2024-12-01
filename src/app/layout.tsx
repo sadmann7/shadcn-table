@@ -1,5 +1,7 @@
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/layouts/site-header"
 import { ThemeProvider } from "@/components/providers"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
@@ -81,8 +83,14 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
           disableTransitionOnChange
         >
           <div className="relative flex min-h-screen flex-col">
-            <SiteHeader />
-            <main className="flex-1">{children}</main>
+            {/* <SidebarProvider>
+              <AppSidebar /> */}
+            <main className="flex-1">
+              {/* <SidebarTrigger /> */}
+              {/* <SiteHeader /> */}
+              {children}
+            </main>
+            {/* </SidebarProvider> */}
           </div>
           <TailwindIndicator />
         </ThemeProvider>

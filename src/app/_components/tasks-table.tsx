@@ -65,12 +65,12 @@ export function TasksTable({ promises }: TasksTableProps) {
   const filterFields: DataTableFilterField<Task>[] = [
     {
       id: "title",
-      label: "Title",
-      placeholder: "Filter titles...",
+      label: "Назва",
+      placeholder: "Фільтрувати назви...",
     },
     {
       id: "status",
-      label: "Status",
+      label: "Статус",
       options: tasks.status.enumValues.map((status) => ({
         label: toSentenceCase(status),
         value: status,
@@ -80,7 +80,7 @@ export function TasksTable({ promises }: TasksTableProps) {
     },
     {
       id: "priority",
-      label: "Priority",
+      label: "Пріоритет",
       options: tasks.priority.enumValues.map((priority) => ({
         label: toSentenceCase(priority),
         value: priority,
@@ -103,12 +103,12 @@ export function TasksTable({ promises }: TasksTableProps) {
   const advancedFilterFields: DataTableAdvancedFilterField<Task>[] = [
     {
       id: "title",
-      label: "Title",
+      label: "Назва",
       type: "text",
     },
     {
       id: "status",
-      label: "Status",
+      label: "Статус",
       type: "multi-select",
       options: tasks.status.enumValues.map((status) => ({
         label: toSentenceCase(status),
@@ -119,7 +119,7 @@ export function TasksTable({ promises }: TasksTableProps) {
     },
     {
       id: "priority",
-      label: "Priority",
+      label: "Пріоритет",
       type: "multi-select",
       options: tasks.priority.enumValues.map((priority) => ({
         label: toSentenceCase(priority),
@@ -130,7 +130,7 @@ export function TasksTable({ promises }: TasksTableProps) {
     },
     {
       id: "createdAt",
-      label: "Created at",
+      label: "Дата створення",
       type: "date",
     },
   ]
