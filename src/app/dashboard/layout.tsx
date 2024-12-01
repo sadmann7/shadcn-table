@@ -1,13 +1,15 @@
 import type { Viewport } from "next"
 import { getServerSession } from "next-auth"
 
-import { authOptions } from "@/lib/auth"
+// import { authOptions } from "@/lib/auth";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 
 import "@/styles/globals.css"
 
 import { redirect } from "next/navigation"
+
+import { authOptions } from "@/lib/auth"
 
 export const metadata = {
   title: "Картпак",
@@ -30,6 +32,8 @@ export default async function RootLayout({
 }) {
   // const session = await getServerSession(authOptions)
   // const user = session?.user
+
+  // console.log(88888, user, session)
 
   // if (!user) {
   //   redirect("/login")

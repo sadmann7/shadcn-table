@@ -110,30 +110,45 @@ export const authOptions: NextAuthOptions = {
       //   },
     }),
   ],
-  //   session: {
-  //     strategy: "jwt",
+  // callbacks: {
+  //   jwt({ token, user }) {
+  //     if (user) {
+  //       console.log(22222, user)
+  //       // User is available during sign-in
+  //       token.id = user.id
+  //     }
+  //     return token
   //   },
-  //   pages: {
-  //     signIn: "/login",
+  //   session({ session, token }) {
+  //     // @ts-ignore
+  //     session.user.id = token.id
+  //     return session
   //   },
-  //   callbacks: {
-  //     // TODO remove any
-  //     async session({ token, session }: any) {
-  //       if (token) {
-  //         session.user.id = token.id
-  //         session.user.name = token.name
-  //         session.user.email = token.email
-  //         session.user.image = token.picture
-  //         session.user.role = token.role
-  //         session.user.username = token.username
-  //       }
+  // },
+  // session: {
+  //   strategy: "jwt",
+  // },
+  // pages: {
+  //   signIn: "/login",
+  // },
+  // callbacks: {
+  //   // TODO remove any
+  //   async session({ token, session }: any) {
+  //     if (token) {
+  //       session.user.id = token.id
+  //       session.user.name = token.name
+  //       session.user.email = token.email
+  //       session.user.image = token.picture
+  //       session.user.role = token.role
+  //       session.user.username = token.username
+  //     }
 
-  //       return session
-  //     },
-  //     async jwt({ token, user }) {
-  //       return { ...token, ...user }
-  //     },
+  //     return session
   //   },
+  //   async jwt({ token, user }) {
+  //     return { ...token, ...user }
+  //   },
+  // },
   secret: process.env.NEXTAUTH_SECRET as string,
   debug: process.env.NODE_ENV === "development",
 }

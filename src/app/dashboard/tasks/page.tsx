@@ -35,12 +35,12 @@ export default async function IndexPage(props: IndexPageProps) {
     getTaskPriorityCounts(),
   ])
 
-  const tasks = await getTasks({
-    ...search,
-    filters: validFilters,
-  })
+  // const tasks = await getTasks({
+  //   ...search,
+  //   filters: validFilters,
+  // })
 
-  console.log(1111, tasks)
+  // console.log(1111, tasks)
 
   return (
     <Shell className="gap-2">

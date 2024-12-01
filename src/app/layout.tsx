@@ -13,6 +13,8 @@ import type { Metadata, Viewport } from "next"
 import { fontMono, fontSans } from "@/lib/fonts"
 import { Toaster } from "@/components/ui/toaster"
 
+import { Providers } from "./providers"
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
@@ -76,25 +78,27 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
           fontMono.variable
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="relative flex min-h-screen flex-col">
-            {/* <SidebarProvider>
+        <Providers>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="relative flex min-h-screen flex-col">
+              {/* <SidebarProvider>
               <AppSidebar /> */}
-            <main className="flex-1">
-              {/* <SidebarTrigger /> */}
-              {/* <SiteHeader /> */}
-              {children}
-            </main>
-            {/* </SidebarProvider> */}
-          </div>
-          <TailwindIndicator />
-        </ThemeProvider>
-        <Toaster />
+              <main className="flex-1">
+                {/* <SidebarTrigger /> */}
+                {/* <SiteHeader /> */}
+                {children}
+              </main>
+              {/* </SidebarProvider> */}
+            </div>
+            <TailwindIndicator />
+          </ThemeProvider>
+          <Toaster />
+        </Providers>
       </body>
     </html>
   )

@@ -22,7 +22,7 @@ export function generateRandomUser(): User {
     name: faker.person.fullName(),
     email: faker.internet.email(),
     // password: faker.internet.password(),
-    password: crypto.createHash("sha512").update("test123").digest("hex"),
+    password: crypto.createHash("sha512").update("123").digest("hex"),
     emailVerified: faker.date.past(),
     image: faker.image.avatarGitHub(),
   }

@@ -47,12 +47,12 @@ export function LoginForm() {
     const toastId = toast.loading("Входимо...", {
       duration: 2500,
     })
-    console.log(6666, values)
+    // console.log(6666, values)
     const result = await signIn("credentials", {
       ...values,
       redirect: false,
     })
-    console.log(55555, result)
+    // console.log(55555, result)
 
     if (result?.status === 200) {
       router.push("/dashboard/tasks")
