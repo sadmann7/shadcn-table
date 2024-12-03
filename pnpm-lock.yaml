@@ -78,8 +78,8 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
       drizzle-orm:
-        specifier: ^0.36.0
-        version: 0.36.4(@libsql/client-wasm@0.14.0)(@types/react@18.3.12)(pg@8.13.1)(postgres@3.4.5)(react@18.3.1)
+        specifier: ^0.37.0
+        version: 0.37.0(@libsql/client-wasm@0.14.0)(@types/react@18.3.12)(pg@8.13.1)(postgres@3.4.5)(react@18.3.1)
       export-to-csv:
         specifier: ^1.4.0
         version: 1.4.0
@@ -1856,11 +1856,11 @@ packages:
     resolution: {integrity: sha512-WjH0eC7/WKl8hucZPl/H5Df6WbUs1KJdM/vfX6bCjn1lOePrbeeroc18dzAVXdZpvgYx0ywJcFOypoC5MfYAYg==}
     hasBin: true
 
-  drizzle-orm@0.36.4:
-    resolution: {integrity: sha512-1OZY3PXD7BR00Gl61UUOFihslDldfH4NFRH2MbP54Yxi0G/PKn4HfO65JYZ7c16DeP3SpM3Aw+VXVG9j6CRSXA==}
+  drizzle-orm@0.37.0:
+    resolution: {integrity: sha512-AsCNACQ/T2CyZUkrBRUqFT2ibHJ9ZHz3+lzYJFFn3hnj7ylIeItMz5kacRG89uSE74nXYShqehr6u+6ks4JR1A==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
-      '@cloudflare/workers-types': '>=3'
+      '@cloudflare/workers-types': '>=4'
       '@electric-sql/pglite': '>=0.2.0'
       '@libsql/client': '>=0.10.0'
       '@libsql/client-wasm': '>=0.10.0'
@@ -4837,7 +4837,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.36.4(@libsql/client-wasm@0.14.0)(@types/react@18.3.12)(pg@8.13.1)(postgres@3.4.5)(react@18.3.1):
+  drizzle-orm@0.37.0(@libsql/client-wasm@0.14.0)(@types/react@18.3.12)(pg@8.13.1)(postgres@3.4.5)(react@18.3.1):
     optionalDependencies:
       '@libsql/client-wasm': 0.14.0
       '@types/react': 18.3.12
