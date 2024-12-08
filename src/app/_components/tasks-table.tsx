@@ -148,7 +148,7 @@ export function TasksTable({ promises }: TasksTableProps) {
       sorting: [{ id: "createdAt", desc: true }],
       columnPinning: { right: ["actions"] },
     },
-    getRowId: (originalRow, index) => `${originalRow.id}-${index}`,
+    getRowId: (originalRow) => originalRow.id,
     shallow: false,
     clearOnDefault: true,
   })

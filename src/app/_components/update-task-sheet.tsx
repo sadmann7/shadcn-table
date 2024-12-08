@@ -56,15 +56,6 @@ export function UpdateTaskSheet({ task, ...props }: UpdateTaskSheetProps) {
     },
   })
 
-  React.useEffect(() => {
-    form.reset({
-      title: task?.title ?? "",
-      label: task?.label,
-      status: task?.status,
-      priority: task?.priority,
-    })
-  }, [task, form])
-
   function onSubmit(input: UpdateTaskSchema) {
     startUpdateTransition(async () => {
       if (!task) return
