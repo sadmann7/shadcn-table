@@ -49,7 +49,7 @@ export function getColumns({
             (table.getIsSomePageRowsSelected() && "indeterminate")
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
+          aria-label="Вибрати всі"
           className="translate-y-0.5"
         />
       ),
@@ -57,7 +57,7 @@ export function getColumns({
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
+          aria-label="Вибрати рядок"
           className="translate-y-0.5"
         />
       ),
@@ -67,7 +67,7 @@ export function getColumns({
     {
       accessorKey: "code",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Task" />
+        <DataTableColumnHeader column={column} title="Завдання" />
       ),
       cell: ({ row }) => <div className="w-20">{row.getValue("code")}</div>,
       enableSorting: false,
@@ -76,7 +76,7 @@ export function getColumns({
     {
       accessorKey: "title",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Title" />
+        <DataTableColumnHeader column={column} title="Назва" />
       ),
       cell: ({ row }) => {
         const label = tasks.label.enumValues.find(

@@ -77,7 +77,7 @@ export function DataTableColumnHeader<TData, TValue>({
                     className="mr-2 size-3.5 text-muted-foreground/70"
                     aria-hidden="true"
                   />
-                  Asc
+                  Від меншого до більшого
                 </span>
               </SelectItem>
               <SelectItem value={descValue}>
@@ -86,7 +86,7 @@ export function DataTableColumnHeader<TData, TValue>({
                     className="mr-2 size-3.5 text-muted-foreground/70"
                     aria-hidden="true"
                   />
-                  Desc
+                  Від більшого до меншого
                 </span>
               </SelectItem>
             </>
@@ -98,7 +98,7 @@ export function DataTableColumnHeader<TData, TValue>({
                   className="mr-2 size-3.5 text-muted-foreground/70"
                   aria-hidden="true"
                 />
-                Hide
+                Приховати
               </span>
             </SelectItem>
           )}

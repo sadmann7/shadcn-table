@@ -3,14 +3,30 @@ import { db } from "@/db"
 import { users } from "@/db/schema"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import { eq } from "drizzle-orm"
-// import { PrismaAdapter } from "@next-auth/prisma-adapter"
-// import { render } from "@react-email/render"
-import NextAuth, { NextAuthOptions } from "next-auth"
-import { encode } from "next-auth/jwt"
+import NextAuth, { type DefaultSession } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
-// import FacebookProvider from "next-auth/providers/facebook";
-import EmailProvider from "next-auth/providers/email"
-import GoogleProvider from "next-auth/providers/google"
+
+// declare module "next-auth" {
+//   /**
+//    * Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
+//    */
+//   interface Session {
+//     user: {
+//       /** The user's postal address. */
+//       username: string
+//       /**
+//        * By default, TypeScript merges new interface properties and overwrites existing ones.
+//        * In this case, the default session user properties will be overwritten,
+//        * with the new ones defined above. To keep the default session user properties,
+//        * you need to add them back into the newly declared interface.
+//        */
+//     } & DefaultSession["user"]
+//   }
+// }
+
+// import { render } from "@react-email/render"
+// import { PrismaAdapter } from "@next-auth/prisma-adapter"
+// import { encode } from "next-auth/jwt";
 
 const saltAndHashPassword = (password: string) => {
   return crypto.createHash("sha512").update(password).digest("hex")
@@ -39,14 +55,12 @@ const getUserFromDb = async (username: string, pwHash: string) => {
 
 // TODO https://next-auth.js.org/configuration/nextjs#getserversession
 
-export const authOptions: NextAuthOptions = {
+export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
   providers: [
     Credentials({
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
       credentials: {
-        email: {},
+        username: {},
         password: {},
       },
       authorize: async (credentials: any) => {
@@ -68,48 +82,21 @@ export const authOptions: NextAuthOptions = {
         // return user object with their profile data
         return user
       },
-      //   name: "credentials",
-      //   credentials: {
-      //     username: { label: "Username", type: "text" },
-      //     password: { label: "Password", type: "password" },
-      //   },
-      //   async authorize(credentials) {
-      //     if (!credentials) {
-      //       return null
-      //     }
-
-      //     const user = await db.user.findUnique({
-      //       select: {
-      //         id: true,
-      //         username: true,
-      //         password: true,
-      //         role: true,
-      //         name: true,
-      //         // permissions: true,
-      //       },
-      //       where: {
-      //         username: credentials.username,
-      //       },
-      //     })
-
-      //     if (!user) {
-      //       return null
-      //     }
-
-      //     const { password, ...usr } = user
-      //     const credentialsPassword = crypto
-      //       .createHash("sha512")
-      //       .update(credentials.password)
-      //       .digest("hex")
-      //     if (password !== credentialsPassword) {
-      //       return null
-      //     }
-      //     // console.log(333, usr)
-
-      //     return usr
-      //   },
     }),
   ],
+  callbacks: {
+    session({ session, token, user }) {
+      // `session.user.address` is now a valid property, and will be type-checked
+      // in places like `useSession().data.user` or `auth().user`
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          // address: user.address,
+        },
+      }
+    },
+  },
   // callbacks: {
   //   jwt({ token, user }) {
   //     if (user) {
@@ -149,6 +136,6 @@ export const authOptions: NextAuthOptions = {
   //     return { ...token, ...user }
   //   },
   // },
-  secret: process.env.NEXTAUTH_SECRET as string,
-  debug: process.env.NODE_ENV === "development",
-}
+  // secret: process.env.NEXTAUTH_SECRET as string,
+  // debug: process.env.NODE_ENV === "development",
+})

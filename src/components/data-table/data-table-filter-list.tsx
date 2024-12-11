@@ -550,7 +550,7 @@ export function DataTableFilterList<TData>({
           )}
         >
           {filters.length > 0 ? (
-            <h4 className="font-medium leading-none">Filters</h4>
+            <h4 className="font-medium leading-none">Фільтри</h4>
           ) : (
             <div className="flex flex-col gap-1">
               <h4 className="font-medium leading-none">

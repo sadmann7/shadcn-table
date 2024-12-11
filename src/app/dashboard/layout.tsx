@@ -1,5 +1,6 @@
 import type { Viewport } from "next"
-import { getServerSession } from "next-auth"
+
+// import { getServerSession } from "next-auth"
 
 // import { authOptions } from "@/lib/auth";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
@@ -9,7 +10,7 @@ import "@/styles/globals.css"
 
 import { redirect } from "next/navigation"
 
-import { authOptions } from "@/lib/auth"
+import { auth } from "@/lib/auth"
 
 export const metadata = {
   title: "Картпак",
@@ -30,6 +31,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const session = await auth()
   // const session = await getServerSession(authOptions)
   // const user = session?.user
 

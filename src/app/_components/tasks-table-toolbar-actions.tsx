@@ -27,7 +27,7 @@ export function TasksTableToolbarActions({
         className="gap-2"
       >
         <Plus className="size-4" aria-hidden="true" />
-        Cтворити
+        Додати
       </Button>
       {table.getFilteredSelectedRowModel().rows.length > 0 ? (
         <DeleteTasksDialog
