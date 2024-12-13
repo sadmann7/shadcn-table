@@ -1,6 +1,13 @@
 import { addDays, addHours, endOfDay, startOfDay } from "date-fns"
 
-import { DatePreset } from "@/components/data-table/types"
+// import { DatePreset } from "@/components/data-table/types"
+
+export type DatePreset = {
+  label: string
+  from: Date
+  to: Date
+  shortcut: string
+}
 
 export const presets = [
   {
