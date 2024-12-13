@@ -14,10 +14,7 @@ import {
   SquareTerminal,
 } from "lucide-react"
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { useSession } from "@/lib/auth-client"
 import {
   Sidebar,
   SidebarContent,
@@ -25,6 +22,10 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { NavMain } from "@/components/nav-main"
+import { NavProjects } from "@/components/nav-projects"
+import { NavUser } from "@/components/nav-user"
+import { TeamSwitcher } from "@/components/team-switcher"
 
 // This is sample data.
 const data = {
@@ -157,6 +158,16 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const {
+    data: session,
+    isPending, //loading state
+    error, //error object
+  } = useSession()
+
+  console.log(3333, session)
+
+  if (!session) return null
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -167,7 +178,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        {/* @ts-ignore */}
+        <NavUser user={session?.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

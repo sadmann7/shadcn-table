@@ -8,6 +8,7 @@ import type {
   DataTableRowAction,
 } from "@/types"
 
+import { admin } from "@/lib/auth-client"
 import { toSentenceCase } from "@/lib/utils"
 import { useDataTable } from "@/hooks/use-data-table"
 import { DataTable } from "@/components/data-table/data-table"
@@ -50,6 +51,27 @@ export function TasksTable({ promises }: TasksTableProps) {
     () => getColumns({ setRowAction }),
     [setRowAction]
   )
+
+  async function getUsers() {
+    const users = await admin.listUsers({
+      query: {
+        limit: 10,
+      },
+    })
+    console.log(44444, users)
+    const newUser = await admin.createUser({
+      name: "Test User",
+      email: "test@example.com",
+      password: "password123",
+      role: "user",
+      data: {
+        // any additional on the user table including plugin fields and custom fields
+        customField: "customValue",
+      },
+    })
+  }
+
+  getUsers()
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
