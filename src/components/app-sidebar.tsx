@@ -36,20 +36,20 @@ const data = {
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: "Cartpak",
       logo: GalleryVerticalEnd,
       plan: "Enterprise",
     },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
+    // {
+    //   name: "Acme Corp.",
+    //   logo: AudioWaveform,
+    //   plan: "Startup",
+    // },
+    // {
+    //   name: "Evil Corp.",
+    //   logo: Command,
+    //   plan: "Free",
+    // },
   ],
   navMain: [
     {
@@ -164,9 +164,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     error, //error object
   } = useSession()
 
-  console.log(3333, session)
+  // console.log(3333, session)
 
-  if (!session) return null
+  // if (!session) return null
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -179,7 +179,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         {/* @ts-ignore */}
-        <NavUser user={session?.user} />
+        {/* <NavUser user={session?.user} /> */}
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

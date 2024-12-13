@@ -81,7 +81,7 @@ export function SignUpForm() {
           router.push("/dashboard")
         },
         onError: (ctx) => {
-          console.log(2222, ctx)
+          // console.log(2222, ctx)
           alert(ctx.error.message)
         },
       }

@@ -1,11 +1,9 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import type { Table } from "@tanstack/react-table"
-import { Check, ChevronsUpDown, Settings2 } from "lucide-react"
+import { Check, GripVertical, Settings2 } from "lucide-react";
+import type { Table } from "@tanstack/react-table";
 
-import { cn, toSentenceCase } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -13,79 +11,122 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
+import { useMemo, useState } from "react";
+import { cn } from "@/lib/utils";
+import {
+  Sortable,
+  SortableDragHandle,
+  SortableItem,
+} from "@/components/custom/sortable";
 
 interface DataTableViewOptionsProps<TData> {
-  table: Table<TData>
+  table: Table<TData>;
+  enableOrdering?: boolean;
 }
 
 export function DataTableViewOptions<TData>({
   table,
+  enableOrdering = false,
 }: DataTableViewOptionsProps<TData>) {
-  const triggerRef = React.useRef<HTMLButtonElement>(null)
+  const [open, setOpen] = useState(false);
+  const [drag, setDrag] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const columnOrder = table.getState().columnOrder;
+
+  const columns = useMemo(
+    () =>
+      table
+        .getAllColumns()
+        .filter(
+          (column) =>
+            typeof column.accessorFn !== "undefined" && column.getCanHide()
+        )
+        .sort((a, b) => {
+          return columnOrder.indexOf(a.id) - columnOrder.indexOf(b.id);
+        }),
+    [table, columnOrder]
+  );
 
   return (
-    <Popover modal>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          ref={triggerRef}
-          aria-label="Toggle columns"
           variant="outline"
+          size="icon"
           role="combobox"
-          size="sm"
-          className="ml-auto hidden h-8 gap-2 focus:outline-none focus:ring-1 focus:ring-ring focus-visible:ring-0 lg:flex"
+          aria-expanded={open}
+          className="h-9 w-9"
         >
-          <Settings2 className="size-4" />
-          View
-          <ChevronsUpDown className="ml-auto size-4 shrink-0 opacity-50" />
+          <Settings2 className="h-4 w-4" />
+          <span className="sr-only">View</span>
         </Button>
       </PopoverTrigger>
-      <PopoverContent
-        align="end"
-        className="w-44 p-0"
-        onCloseAutoFocus={() => triggerRef.current?.focus()}
-      >
+      <PopoverContent side="bottom" align="end" className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search columns..." />
+          <CommandInput
+            value={search}
+            onValueChange={setSearch}
+            placeholder="Search options..."
+          />
           <CommandList>
-            <CommandEmpty>No columns found.</CommandEmpty>
+            <CommandEmpty>No option found.</CommandEmpty>
+            {/* TODO: add a "RESET REORDERING ROW" */}
             <CommandGroup>
-              {table
-                .getAllColumns()
-                .filter(
-                  (column) =>
-                    typeof column.accessorFn !== "undefined" &&
-                    column.getCanHide()
-                )
-                .map((column) => {
-                  return (
+              <Sortable
+                value={columns.map((c) => ({ id: c.id }))}
+                onValueChange={(items) =>
+                  table.setColumnOrder(items.map((c) => c.id))
+                }
+                overlay={<div className="w-full h-8 rounded-md bg-muted/60" />}
+                onDragStart={() => setDrag(true)}
+                onDragEnd={() => setDrag(false)}
+                onDragCancel={() => setDrag(false)}
+              >
+                {columns.map((column) => (
+                  <SortableItem key={column.id} value={column.id} asChild>
                     <CommandItem
-                      key={column.id}
+                      value={column.id}
                       onSelect={() =>
                         column.toggleVisibility(!column.getIsVisible())
                       }
+                      className={"capitalize"}
+                      disabled={drag}
                     >
-                      <span className="truncate">
-                        {toSentenceCase(column.id)}
-                      </span>
-                      <Check
+                      <div
                         className={cn(
-                          "ml-auto size-4 shrink-0",
-                          column.getIsVisible() ? "opacity-100" : "opacity-0"
+                          "mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary",
+                          column.getIsVisible()
+                            ? "bg-primary text-primary-foreground"
+                            : "opacity-50 [&_svg]:invisible"
                         )}
-                      />
+                      >
+                        <Check className={cn("h-4 w-4")} />
+                      </div>
+                      <span>{column.columnDef.meta?.label || column.id}</span>
+                      {enableOrdering && !search ? (
+                        <SortableDragHandle
+                          variant="ghost"
+                          size="icon"
+                          className="size-5 ml-auto text-muted-foreground hover:text-foreground focus:bg-muted focus:text-foreground"
+                        >
+                          <GripVertical className="size-4" aria-hidden="true" />
+                        </SortableDragHandle>
+                      ) : null}
                     </CommandItem>
-                  )
-                })}
+                  </SortableItem>
+                ))}
+              </Sortable>
             </CommandGroup>
           </CommandList>
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

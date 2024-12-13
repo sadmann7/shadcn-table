@@ -5,7 +5,7 @@ import { type SearchParams } from "@/types"
 import { auth } from "@/lib/auth"
 import { admin } from "@/lib/auth-client"
 import { getValidFilters } from "@/lib/data-table"
-import { Skeleton } from "@/components/ui/skeleton"
+// import { Skeleton } from "@/components/ui/skeleton"
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { DateRangePicker } from "@/components/date-range-picker"
 import { Shell } from "@/components/shell"
@@ -17,22 +17,31 @@ import {
   getTasks,
   getTaskStatusCounts,
 } from "../../_lib/queries"
-import { searchParamsCache } from "../../_lib/validations"
+// import { searchParamsCache } from "../../_lib/validations"
+
+import { columns } from "./columns"
+import { data, filterFields } from "./constants"
+import { DataTable } from "./data-table"
+import { searchParamsCache } from "./search-params"
+import { Skeleton } from "./skeleton"
 
 interface IndexPageProps {
   searchParams: Promise<SearchParams>
 }
 
-export default async function IndexPage(props: IndexPageProps) {
-  const searchParams = await props.searchParams
-  const search = searchParamsCache.parse(searchParams)
+export default async function IndexPage({ searchParams }: IndexPageProps) {
+  const search = await searchParamsCache.parse(searchParams)
+  // const ttt = await searchParams
+  // console.log(22222, ttt)
+  // const searchParams = await props.searchParams
+  // const search = searchParamsCache.parse(searchParams)
 
-  const validFilters = getValidFilters(search.filters)
+  // const validFilters = getValidFilters(search.filters)
 
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  })
-  console.log(777, session)
+  // const session = await auth.api.getSession({
+  //   headers: await headers(),
+  // })
+  // console.log(777, session)
   // if (!session) {
   //   return <div>Not authenticated</div>
   // }
@@ -88,30 +97,43 @@ export default async function IndexPage(props: IndexPageProps) {
   // console.log(1111, tasks)
 
   return (
-    <Shell className="gap-2">
-      {/* <FeatureFlagsProvider>
-        <React.Suspense fallback={<Skeleton className="h-7 w-52" />}>
-          <DateRangePicker
-            triggerSize="sm"
-            triggerClassName="ml-auto w-56 sm:w-60"
-            align="end"
-            shallow={false}
-          />
-        </React.Suspense>
-        <React.Suspense
-          fallback={
-            <DataTableSkeleton
-              columnCount={6}
-              searchableColumnCount={1}
-              filterableColumnCount={2}
-              cellWidths={["10rem", "40rem", "12rem", "12rem", "8rem", "8rem"]}
-              shrinkZero
-            />
-          }
-        >
-          <TasksTable promises={promises} />
-        </React.Suspense>
-      </FeatureFlagsProvider> */}
-    </Shell>
+    // <Shell className="gap-2">
+    //   <FeatureFlagsProvider>
+    //     <React.Suspense fallback={<Skeleton className="h-7 w-52" />}>
+    //       <DateRangePicker
+    //         triggerSize="sm"
+    //         triggerClassName="ml-auto w-56 sm:w-60"
+    //         align="end"
+    //         shallow={false}
+    //       />
+    //     </React.Suspense>
+    //     <React.Suspense
+    //       fallback={
+    //         <DataTableSkeleton
+    //           columnCount={6}
+    //           searchableColumnCount={1}
+    //           filterableColumnCount={2}
+    //           cellWidths={["10rem", "40rem", "12rem", "12rem", "8rem", "8rem"]}
+    //           shrinkZero
+    //         />
+    //       }
+    //     >
+    //       <TasksTable promises={promises} />
+    //     </React.Suspense>
+    //   </FeatureFlagsProvider>
+    // </Shell>
+    <React.Suspense fallback={<Skeleton />}>
+      <DataTable
+        columns={columns}
+        data={data}
+        filterFields={filterFields}
+        defaultColumnFilters={Object.entries(search)
+          .map(([key, value]) => ({
+            id: key,
+            value,
+          }))
+          .filter(({ value }) => value ?? undefined)}
+      />
+    </React.Suspense>
   )
 }

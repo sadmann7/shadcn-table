@@ -1,119 +1,107 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import type { DataTableFilterField } from "@/types"
-import type { Table } from "@tanstack/react-table"
-import { X } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import type { Table } from "@tanstack/react-table";
+import { LoaderCircle, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
+import { DataTableViewOptions } from "./data-table-view-options";
+import { useEffect } from "react";
+import { Kbd } from "@/components/custom/kbd";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
-import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
-
-interface DataTableToolbarProps<TData>
-  extends React.HTMLAttributes<HTMLDivElement> {
-  table: Table<TData>
-  /**
-   * An array of filter field configurations for the data table.
-   * When options are provided, a faceted filter is rendered.
-   * Otherwise, a search filter is rendered.
-   *
-   * @example
-   * const filterFields = [
-   *   {
-   *     id: 'name',
-   *     label: 'Name',
-   *     placeholder: 'Filter by name...'
-   *   },
-   *   {
-   *     id: 'status',
-   *     label: 'Status',
-   *     options: [
-   *       { label: 'Active', value: 'active', icon: ActiveIcon, count: 10 },
-   *       { label: 'Inactive', value: 'inactive', icon: InactiveIcon, count: 5 }
-   *     ]
-   *   }
-   * ]
-   */
-  filterFields?: DataTableFilterField<TData>[]
+interface DataTableToolbarProps<TData> {
+  table: Table<TData>;
+  controlsOpen: boolean;
+  setControlsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoading?: boolean;
+  enableColumnOrdering?: boolean;
 }
 
 export function DataTableToolbar<TData>({
   table,
-  filterFields = [],
-  children,
-  className,
-  ...props
+  controlsOpen,
+  setControlsOpen,
+  isLoading,
+  enableColumnOrdering,
 }: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0
+  const filters = table.getState().columnFilters;
 
-  // Memoize computation of searchableColumns and filterableColumns
-  const { searchableColumns, filterableColumns } = React.useMemo(() => {
-    return {
-      searchableColumns: filterFields.filter((field) => !field.options),
-      filterableColumns: filterFields.filter((field) => field.options),
-    }
-  }, [filterFields])
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === "b" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setControlsOpen((prev) => !prev);
+      }
+    };
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, [setControlsOpen]);
 
   return (
-    <div
-      className={cn(
-        "flex w-full items-center justify-between gap-2 overflow-auto p-1",
-        className
-      )}
-      {...props}
-    >
-      <div className="flex flex-1 items-center gap-2">
-        {searchableColumns.length > 0 &&
-          searchableColumns.map(
-            (column) =>
-              table.getColumn(column.id ? String(column.id) : "") && (
-                <Input
-                  key={String(column.id)}
-                  placeholder={column.placeholder}
-                  value={
-                    (table
-                      .getColumn(String(column.id))
-                      ?.getFilterValue() as string) ?? ""
-                  }
-                  onChange={(event) =>
-                    table
-                      .getColumn(String(column.id))
-                      ?.setFilterValue(event.target.value)
-                  }
-                  className="h-8 w-40 lg:w-64"
-                />
-              )
-          )}
-        {filterableColumns.length > 0 &&
-          filterableColumns.map(
-            (column) =>
-              table.getColumn(column.id ? String(column.id) : "") && (
-                <DataTableFacetedFilter
-                  key={String(column.id)}
-                  column={table.getColumn(column.id ? String(column.id) : "")}
-                  title={column.label}
-                  options={column.options ?? []}
-                />
-              )
-          )}
-        {isFiltered && (
-          <Button
-            aria-label="Reset filters"
-            variant="ghost"
-            className="h-8 px-2 lg:px-3"
-            onClick={() => table.resetColumnFilters()}
-          >
-            Reset
-            <X className="ml-2 size-4" aria-hidden="true" />
-          </Button>
-        )}
+    <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center gap-2">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => setControlsOpen((prev) => !prev)}
+                className="flex gap-2"
+              >
+                {controlsOpen ? (
+                  <>
+                    <PanelLeftClose className="h-4 w-4" />
+                    <span className="hidden sm:block">Hide Controls</span>
+                  </>
+                ) : (
+                  <>
+                    <PanelLeftOpen className="h-4 w-4" />
+                    <span className="hidden sm:block">Show Controls</span>
+                  </>
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              <p>
+                Toggle controls with{" "}
+                <Kbd className="ml-1 text-muted-foreground group-hover:text-accent-foreground">
+                  <span className="mr-0.5">⌘</span>
+                  <span>B</span>
+                </Kbd>
+              </p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        <p className="text-sm text-muted-foreground">
+          {table.getFilteredRowModel().rows.length} of{" "}
+          {table.getCoreRowModel().rows.length} row(s) filtered
+          {/* TODO: add "(total X rows)" */}
+        </p>
+        {isLoading ? (
+          <LoaderCircle className="ml-2 h-4 w-4 animate-spin text-muted-foreground" />
+        ) : null}
       </div>
       <div className="flex items-center gap-2">
-        {children}
-        <DataTableViewOptions table={table} />
+        {filters.length ? (
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => table.resetColumnFilters()}
+          >
+            <X className="mr-2 h-4 w-4" />
+            Reset
+          </Button>
+        ) : null}
+        <DataTableViewOptions
+          table={table}
+          enableOrdering={enableColumnOrdering}
+        />
       </div>
     </div>
-  )
+  );
 }

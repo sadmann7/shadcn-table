@@ -13,6 +13,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
     <NextThemesProvider {...props}>
       <TooltipProvider>
         <NuqsAdapter>{children}</NuqsAdapter>
+        {/* {children} */}
       </TooltipProvider>
     </NextThemesProvider>
   )

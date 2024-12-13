@@ -1,19 +1,19 @@
+import { ThemeProvider } from "@/providers/providers"
+
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/layouts/site-header"
-import { ThemeProvider } from "@/components/providers"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 
 import "@/styles/globals.css"
 
 import type { Metadata, Viewport } from "next"
+import { ReactQueryProvider } from "@/providers/react-query"
 
 import { fontMono, fontSans } from "@/lib/fonts"
 import { Toaster } from "@/components/ui/toaster"
-
-import { Providers } from "./providers"
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -71,14 +71,14 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body
-        className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable,
-          fontMono.variable
-        )}
-      >
-        <Providers>
+      <ReactQueryProvider>
+        <body
+          className={cn(
+            "min-h-screen bg-background font-sans antialiased",
+            fontSans.variable,
+            fontMono.variable
+          )}
+        >
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -86,20 +86,13 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
             disableTransitionOnChange
           >
             <div className="relative flex min-h-screen flex-col">
-              {/* <SidebarProvider>
-              <AppSidebar /> */}
-              <main className="flex-1">
-                {/* <SidebarTrigger /> */}
-                {/* <SiteHeader /> */}
-                {children}
-              </main>
-              {/* </SidebarProvider> */}
+              <main className="flex-1">{children}</main>
             </div>
             <TailwindIndicator />
+            <Toaster />
           </ThemeProvider>
-          <Toaster />
-        </Providers>
-      </body>
+        </body>
+      </ReactQueryProvider>
     </html>
   )
 }

@@ -44,7 +44,7 @@ export default async function IndexPage(props: IndexPageProps) {
 
   return (
     <Shell className="gap-2">
-      <FeatureFlagsProvider>
+      {/* <FeatureFlagsProvider>
         <React.Suspense fallback={<Skeleton className="h-7 w-52" />}>
           <DateRangePicker
             triggerSize="sm"
@@ -66,7 +66,7 @@ export default async function IndexPage(props: IndexPageProps) {
         >
           <TasksTable promises={promises} />
         </React.Suspense>
-      </FeatureFlagsProvider>
+      </FeatureFlagsProvider> */}
     </Shell>
   )
 }
