@@ -34,10 +34,7 @@ export default async function UsersPage({
     <PageContainer scrollable={false}>
       <div className="flex flex-1 flex-col space-y-4">
         <div className="flex items-start justify-between">
-          <Heading
-            title="Products"
-            description="Manage products (Server side table functionalities.)"
-          />
+          <Heading title="Працівники" description="Управління працівниками" />
           <Link
             href="/dashboard/product/new"
             className={cn(buttonVariants(), "text-xs md:text-sm")}

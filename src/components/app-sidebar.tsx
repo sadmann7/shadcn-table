@@ -64,7 +64,7 @@ const data = {
       items: [
         {
           title: "Замовлення клієнтів",
-          url: "#",
+          url: "/dashboard/orders",
         },
         {
           title: "Завдання на закупівлю",
@@ -166,7 +166,7 @@ const data = {
     },
     {
       name: "Працівники",
-      url: "#",
+      url: "/dashboard/users",
       icon: Map,
     },
     {

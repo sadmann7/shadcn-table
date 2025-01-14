@@ -56,7 +56,8 @@ export function DataTableSearch({
 
   return (
     <Input
-      placeholder={`Пошук за ${searchKey}...`}
+      // placeholder={`Пошук за ${searchKey}...`}
+      placeholder={`Пошук...`}
       value={searchQuery ?? ""}
       onChange={(e) => handleSearch(e.target.value)}
       className={cn("w-full md:max-w-sm", isLoading && "animate-pulse")}

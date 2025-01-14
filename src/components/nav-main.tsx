@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { ChevronRight, type LucideIcon } from "lucide-react"
 
 import {
@@ -52,7 +53,7 @@ export function NavMain({
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
-                        <a
+                        <Link
                           href={subItem.url}
                           className={
                             subItem.disabled ? "pointer-events-none" : ""
@@ -60,7 +61,7 @@ export function NavMain({
                           aria-disabled={subItem.disabled}
                         >
                           <span>{subItem.title}</span>
-                        </a>
+                        </Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}

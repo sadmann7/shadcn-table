@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rimraf --glob **/node_modules **/dist **/.next pnpm-lock.yaml **/.tsbuildinfo",
     "build": "next build",
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",

@@ -86,15 +86,15 @@ export function NavUser({
             </DropdownMenuGroup> */}
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem disabled={true}>
                 <BadgeCheck />
                 Аккаунт
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem disabled={true}>
                 <CreditCard />
                 Налаштування
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem disabled={true}>
                 <Bell />
                 Сповіщення
               </DropdownMenuItem>

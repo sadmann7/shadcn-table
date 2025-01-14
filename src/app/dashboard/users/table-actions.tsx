@@ -21,12 +21,12 @@ export default function ProductTableAction() {
   } = useProductTableFilters()
   return (
     <div className="flex flex-wrap items-center gap-4">
-      <DataTableSearch
+      {/* <DataTableSearch
         searchKey="name"
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         setPage={setPage}
-      />
+      /> */}
       {/* <DataTableFilterBox
         filterKey="categories"
         title="Categories"
@@ -34,7 +34,7 @@ export default function ProductTableAction() {
         setFilterValue={setCategoriesFilter}
         filterValue={categoriesFilter}
       /> */}
-      <div className="flex justify-end">
+      <div className="flex w-full justify-end">
         <DataTableResetFilter
           isFilterActive={isAnyFilterActive}
           onReset={resetFilters}

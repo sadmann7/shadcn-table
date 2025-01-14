@@ -1,7 +1,7 @@
 "use server"
 
 import { db } from "@/db"
-import { tasks } from "@/db/schema"
+import { users } from "@/db/schema"
 import { and, asc, desc, ilike, sql } from "drizzle-orm"
 
 // import { ParsedSearchParams } from "./search-params"
@@ -20,9 +20,9 @@ export async function getUsers({
 
     // Handle column filters
     for (const filter of columnFilters) {
-      if (filter.id in tasks) {
+      if (filter.id in users) {
         conditions.push(
-          ilike(tasks[filter.id as keyof typeof tasks], `%${filter.value}%`)
+          ilike(users[filter.id as keyof typeof users], `%${filter.value}%`)
         )
       }
     }
@@ -30,9 +30,8 @@ export async function getUsers({
     // Handle global search
     if (globalFilter) {
       conditions.push(
-        sql`(${ilike(tasks.title, `%${globalFilter}%`)} OR 
-            ${ilike(tasks.label, `%${globalFilter}%`)} OR 
-            ${ilike(tasks.status, `%${globalFilter}%`)})`
+        sql`(${ilike(users.name, `%${globalFilter}%`)} OR 
+            ${ilike(users.email, `%${globalFilter}%`)})`
       )
     }
 
@@ -41,14 +40,14 @@ export async function getUsers({
 
     // Build orderBy for Drizzle
     const orderBy = sorting.map((sort) => {
-      const column = tasks[sort.id as keyof typeof tasks]
+      const column = users[sort.id as keyof typeof users]
       return sort.desc ? desc(column) : asc(column)
     })
 
     // Get total count for pagination
     const countResult = await db
       .select({ count: sql<number>`count(*)` })
-      .from(tasks)
+      .from(users)
       .where(whereClause)
 
     const total = countResult[0]?.count ?? 0
@@ -56,7 +55,7 @@ export async function getUsers({
     // Get paginated data
     const data = await db
       .select()
-      .from(tasks)
+      .from(users)
       .where(whereClause)
       .orderBy(...orderBy)
       .limit(pageSize)

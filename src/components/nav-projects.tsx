@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import {
   Folder,
   Forward,
@@ -44,14 +45,14 @@ export function NavProjects({
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
-              <a
+              <Link
                 href={item.url}
                 className={item.disabled ? "pointer-events-none" : ""}
                 aria-disabled={item.disabled}
               >
                 <item.icon />
                 <span>{item.name}</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
             {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>

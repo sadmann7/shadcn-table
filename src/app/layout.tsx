@@ -90,11 +90,11 @@ export default async function RootLayout({
           "overflow-hidden"
         )}
       >
-        <NextTopLoader showSpinner={false} />
+        <NextTopLoader showSpinner={false} color="#7F00FF" />
         <NuqsAdapter>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
