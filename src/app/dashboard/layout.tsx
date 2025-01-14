@@ -1,11 +1,17 @@
 import type { Viewport } from "next"
 
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
+import KBar from "@/components/kbar"
+import Header from "@/components/layout/header"
 
 import "@/styles/globals.css"
 
-import { headers } from "next/headers"
+import { cookies, headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 
@@ -30,16 +36,23 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // Persisting the sidebar state in the cookie.
+  const cookieStore = await cookies()
+  const defaultOpen = cookieStore.get("sidebar:state")?.value === "true"
   const session = await auth.api.getSession({
     headers: await headers(),
   })
 
   return (
-    <NuqsAdapter>
-      <SidebarProvider>
-        <AppSidebar user={session?.user} />
-        <div className="relative flex min-h-screen flex-col">{children}</div>
-      </SidebarProvider>
-    </NuqsAdapter>
+    <SidebarProvider defaultOpen={defaultOpen}>
+      <AppSidebar user={session?.user} />
+      {/* <div className="relative flex min-h-screen flex-col">{children}</div> */}
+      <SidebarInset>
+        <Header user={session?.user} />
+        {/* page main content */}
+        {children}
+        {/* page main content ends */}
+      </SidebarInset>
+    </SidebarProvider>
   )
 }

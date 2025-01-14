@@ -1,14 +1,16 @@
-"use client";
+"use client"
 
-import { cn } from "@/lib/utils";
-import { type ColumnSchema } from "./schema";
+import { REGIONS } from "@/constants/region"
+import { TAGS } from "@/constants/tag"
+import { subDays, subHours, subMinutes } from "date-fns"
+
+import { cn } from "@/lib/utils"
 import type {
   DataTableFilterField,
   Option,
-} from "@/components/data-table/types";
-import { subDays, subHours, subMinutes } from "date-fns";
-import { TAGS } from "@/constants/tag";
-import { REGIONS } from "@/constants/region";
+} from "@/components/data-table/types"
+
+import { type ColumnSchema } from "./schema"
 
 export const tagsColor = {
   api: {
@@ -31,7 +33,7 @@ export const tagsColor = {
       "text-[#f97316] bg-[#f97316]/10 border-[#f97316]/20 hover:bg-[#f97316]/10",
     dot: "bg-[#f97316]",
   },
-} as Record<string, Record<"badge" | "dot", string>>;
+} as Record<string, Record<"badge" | "dot", string>>
 
 export const data = [
   {
@@ -244,7 +246,7 @@ export const data = [
     tags: ["api"],
     date: subHours(new Date(), 16),
   },
-] satisfies ColumnSchema[];
+] satisfies ColumnSchema[]
 
 export const filterFields = [
   {
@@ -294,8 +296,8 @@ export const filterFields = [
     defaultOpen: true,
     // REMINDER: "use client" needs to be declared in the file - otherwise getting serialization error from Server Component
     component: (props: Option) => {
-      if (typeof props.value === "boolean") return null;
-      if (typeof props.value === "undefined") return null;
+      if (typeof props.value === "boolean") return null
+      if (typeof props.value === "undefined") return null
       return (
         <div className="flex w-full items-center justify-between gap-2">
           <span className="truncate font-normal">{props.value}</span>
@@ -303,8 +305,8 @@ export const filterFields = [
             className={cn("h-2 w-2 rounded-full", tagsColor[props.value].dot)}
           />
         </div>
-      );
+      )
     },
     options: TAGS.map((tag) => ({ label: tag, value: tag })),
   },
-] satisfies DataTableFilterField<ColumnSchema>[];
+] satisfies DataTableFilterField<ColumnSchema>[]

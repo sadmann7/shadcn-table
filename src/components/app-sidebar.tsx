@@ -8,8 +8,10 @@ import {
   Command,
   Frame,
   GalleryVerticalEnd,
+  LifeBuoy,
   Map,
   PieChart,
+  Send,
   Settings2,
   SquareTerminal,
 } from "lucide-react"
@@ -25,6 +27,7 @@ import {
 import { SocialsFooter } from "@/components/layout/socials-footer"
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
+import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
 
@@ -131,6 +134,18 @@ const data = {
     //   ],
     // },
   ],
+  navSecondary: [
+    {
+      title: "FAQ",
+      url: "#",
+      icon: LifeBuoy,
+    },
+    {
+      title: "Підтримка",
+      url: "#",
+      icon: Send,
+    },
+  ],
   projects: [
     {
       name: "Склади",
@@ -180,6 +195,7 @@ export function AppSidebar({ user, ...props }: any) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
+        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         {/* <SocialsFooter /> */}

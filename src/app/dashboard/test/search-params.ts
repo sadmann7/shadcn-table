@@ -45,7 +45,7 @@ export const searchParamsParsers = {
     shallow: false,
     clearOnDefault: true,
   }),
-  pageSize: pageSizeParser.withDefault(10).withOptions({
+  pageSize: pageSizeParser.withDefault(30).withOptions({
     shallow: false,
     clearOnDefault: true,
   }),
