@@ -12,13 +12,13 @@ export const dataTableConfig = {
       tooltipDescription:
         "Створюйте фільтри та сортування для рядків у таблиці.",
     },
-    {
-      label: "Плаваюча панель",
-      value: "floatingBar" as const,
-      icon: SquareSquare,
-      tooltipTitle: "Переключити плаваючу панель",
-      tooltipDescription: "Плаваюча панель, яка прилипає до верху таблиці.",
-    },
+    // {
+    //   label: "Плаваюча панель",
+    //   value: "floatingBar" as const,
+    //   icon: SquareSquare,
+    //   tooltipTitle: "Переключити плаваючу панель",
+    //   tooltipDescription: "Плаваюча панель, яка прилипає до верху таблиці.",
+    // },
   ],
   textOperators: [
     { label: "Містить", value: "iLike" as const },

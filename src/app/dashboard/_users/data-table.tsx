@@ -1,5 +1,6 @@
-"use client";
+"use client"
 
+import * as React from "react"
 import type {
   ColumnDef,
   ColumnFiltersState,
@@ -7,7 +8,7 @@ import type {
   SortingState,
   Table as TTable,
   VisibilityState,
-} from "@tanstack/react-table";
+} from "@tanstack/react-table"
 import {
   flexRender,
   getCoreRowModel,
@@ -17,9 +18,11 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table";
-import * as React from "react";
+} from "@tanstack/react-table"
+import { useQueryStates } from "nuqs"
 
+import { cn } from "@/lib/utils"
+import { useLocalStorage } from "@/hooks/use-local-storage"
 import {
   Table,
   TableBody,
@@ -27,24 +30,22 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/custom/table";
-import { DataTableFilterControls } from "@/components/data-table/data-table-filter-controls";
-import { DataTablePagination } from "@/components/data-table/data-table-pagination";
-import { DataTableFilterCommand } from "@/components/data-table/data-table-filter-command";
-import { columnFilterSchema } from "./schema";
-import type { DataTableFilterField } from "@/components/data-table/types";
-import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
-import { cn } from "@/lib/utils";
-import { useLocalStorage } from "@/hooks/use-local-storage";
-import { useQueryStates } from "nuqs";
-import { searchParamsParser } from "./search-params";
+} from "@/components/custom/table"
+import { DataTableFilterCommand } from "@/components/data-table/data-table-filter-command"
+import { DataTableFilterControls } from "@/components/data-table/data-table-filter-controls"
+import { DataTablePagination } from "@/components/data-table/data-table-pagination"
+import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
+import type { DataTableFilterField } from "@/components/data-table/types"
+
+import { columnFilterSchema } from "./schema"
+import { searchParamsParser } from "./search-params"
 
 export interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  defaultColumnFilters?: ColumnFiltersState;
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
+  defaultColumnFilters?: ColumnFiltersState
   // TODO: add sortingColumnFilters
-  filterFields?: DataTableFilterField<TData>[];
+  filterFields?: DataTableFilterField<TData>[]
 }
 
 export function DataTable<TData, TValue>({
@@ -54,19 +55,19 @@ export function DataTable<TData, TValue>({
   filterFields = [],
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] =
-    React.useState<ColumnFiltersState>(defaultColumnFilters);
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+    React.useState<ColumnFiltersState>(defaultColumnFilters)
+  const [sorting, setSorting] = React.useState<SortingState>([])
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
-  });
+  })
   const [columnVisibility, setColumnVisibility] =
-    useLocalStorage<VisibilityState>("data-table-visibility", {});
+    useLocalStorage<VisibilityState>("data-table-visibility", {})
   const [controlsOpen, setControlsOpen] = useLocalStorage(
     "data-table-controls",
     true
-  );
-  const [_, setSearch] = useQueryStates(searchParamsParser);
+  )
+  const [_, setSearch] = useQueryStates(searchParamsParser)
 
   const table = useReactTable({
     data,
@@ -82,45 +83,48 @@ export function DataTable<TData, TValue>({
     getFacetedRowModel: getFacetedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFacetedUniqueValues: (table: TTable<TData>, columnId: string) => () => {
-      const map = getFacetedUniqueValues<TData>()(table, columnId)();
+      const map = getFacetedUniqueValues<TData>()(table, columnId)()
       // TODO: it would be great to do it dynamically, if we recognize the row to be Array.isArray
       if (["regions", "tags"].includes(columnId)) {
         const rowValues = table
           .getGlobalFacetedRowModel()
-          .flatRows.map((row) => row.getValue(columnId) as string[]);
+          .flatRows.map((row) => row.getValue(columnId) as string[])
         for (const values of rowValues) {
           for (const value of values) {
-            const prevValue = map.get(value) || 0;
-            map.set(value, prevValue + 1);
+            const prevValue = map.get(value) || 0
+            map.set(value, prevValue + 1)
           }
         }
       }
-      return map;
+      return map
     },
-  });
+  })
 
   React.useEffect(() => {
     const columnFiltersWithNullable = filterFields.map((field) => {
       const filterValue = columnFilters.find(
         (filter) => filter.id === field.value
-      );
-      if (!filterValue) return { id: field.value, value: null };
-      return { id: field.value, value: filterValue.value };
-    });
+      )
+      if (!filterValue) return { id: field.value, value: null }
+      return { id: field.value, value: filterValue.value }
+    })
 
-    const search = columnFiltersWithNullable.reduce((prev, curr) => {
-      prev[curr.id as string] = curr.value;
-      return prev;
-    }, {} as Record<string, unknown>);
+    const search = columnFiltersWithNullable.reduce(
+      (prev, curr) => {
+        prev[curr.id as string] = curr.value
+        return prev
+      },
+      {} as Record<string, unknown>
+    )
 
-    console.log({ search });
+    console.log({ search })
 
-    setSearch(search);
+    setSearch(search)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [columnFilters]);
+  }, [columnFilters])
 
   return (
-    <div className="flex w-full h-full flex-col gap-3 sm:flex-row">
+    <div className="flex h-full w-full flex-col gap-3 sm:flex-row">
       <div
         className={cn(
           "w-full p-1 sm:min-w-52 sm:max-w-52 sm:self-start md:min-w-64 md:max-w-64",
@@ -136,11 +140,11 @@ export function DataTable<TData, TValue>({
         </div>
       </div>
       <div className="flex max-w-full flex-1 flex-col gap-4 overflow-hidden p-1">
-        <DataTableFilterCommand
+        {/* <DataTableFilterCommand
           table={table}
           schema={columnFilterSchema}
           filterFields={filterFields}
-        />
+        /> */}
         <DataTableToolbar
           table={table}
           controlsOpen={controlsOpen}
@@ -161,7 +165,7 @@ export function DataTable<TData, TValue>({
                               header.getContext()
                             )}
                       </TableHead>
-                    );
+                    )
                   })}
                 </TableRow>
               ))}
@@ -199,5 +203,5 @@ export function DataTable<TData, TValue>({
         <DataTablePagination table={table} />
       </div>
     </div>
-  );
+  )
 }

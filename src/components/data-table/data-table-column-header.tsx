@@ -1,54 +1,109 @@
-import type { Column } from "@tanstack/react-table";
-import { ChevronDown, ChevronUp } from "lucide-react";
+"use client"
 
-import { Button, type ButtonProps } from "@/components/ui/button";
+import { SelectIcon } from "@radix-ui/react-select"
+import { type Column } from "@tanstack/react-table"
+import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react"
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select"
 
-interface DataTableColumnHeaderProps<TData, TValue> extends ButtonProps {
-  column: Column<TData, TValue>;
-  title: string;
+interface DataTableColumnHeaderProps<TData, TValue>
+  extends React.HTMLAttributes<HTMLDivElement> {
+  column: Column<TData, TValue>
+  title: string
 }
 
 export function DataTableColumnHeader<TData, TValue>({
   column,
   title,
   className,
-  ...props
 }: DataTableColumnHeaderProps<TData, TValue>) {
-  if (!column.getCanSort()) {
-    return <div className={cn(className)}>{title}</div>;
+  if (!column.getCanSort() && !column.getCanHide()) {
+    return <div className={cn(className)}>{title}</div>
   }
 
+  const ascValue = `${column.id}-asc`
+  const descValue = `${column.id}-desc`
+  const hideValue = `${column.id}-hide`
+
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={() => {
-        column.toggleSorting(undefined);
-      }}
-      className={cn("-ml-3", className)}
-      {...props}
-    >
-      <span>{title}</span>
-      <span className="ml-2 flex flex-col">
-        <ChevronUp
-          className={cn(
-            "-mb-0.5 h-3 w-3",
-            column.getIsSorted() === "asc"
-              ? "text-accent-foreground"
-              : "text-muted-foreground"
-          )}
-        />
-        <ChevronDown
-          className={cn(
-            "-mt-0.5 h-3 w-3",
+    <div className={cn("flex items-center gap-2", className)}>
+      <Select
+        value={
+          column.getIsSorted() === "desc"
+            ? descValue
+            : column.getIsSorted() === "asc"
+              ? ascValue
+              : undefined
+        }
+        onValueChange={(value) => {
+          if (value === ascValue) column.toggleSorting(false)
+          else if (value === descValue) column.toggleSorting(true)
+          else if (value === hideValue) column.toggleVisibility(false)
+        }}
+      >
+        <SelectTrigger
+          aria-label={
             column.getIsSorted() === "desc"
-              ? "text-accent-foreground"
-              : "text-muted-foreground"
+              ? "Sorted descending. Click to sort ascending."
+              : column.getIsSorted() === "asc"
+                ? "Sorted ascending. Click to sort descending."
+                : "Not sorted. Click to sort ascending."
+          }
+          className="-ml-3 h-8 w-fit border-none text-xs hover:bg-accent hover:text-accent-foreground data-[state=open]:bg-accent [&>svg:last-child]:hidden"
+        >
+          {title}
+          <SelectIcon asChild>
+            {column.getCanSort() && column.getIsSorted() === "desc" ? (
+              <ArrowDown className="ml-2.5 size-4" aria-hidden="true" />
+            ) : column.getIsSorted() === "asc" ? (
+              <ArrowUp className="ml-2.5 size-4" aria-hidden="true" />
+            ) : (
+              <ChevronsUpDown className="ml-2.5 size-4" aria-hidden="true" />
+            )}
+          </SelectIcon>
+        </SelectTrigger>
+        <SelectContent align="start">
+          {column.getCanSort() && (
+            <>
+              <SelectItem value={ascValue}>
+                <span className="flex items-center">
+                  <ArrowUp
+                    className="mr-2 size-3.5 text-muted-foreground/70"
+                    aria-hidden="true"
+                  />
+                  Від меншого до більшого
+                </span>
+              </SelectItem>
+              <SelectItem value={descValue}>
+                <span className="flex items-center">
+                  <ArrowDown
+                    className="mr-2 size-3.5 text-muted-foreground/70"
+                    aria-hidden="true"
+                  />
+                  Від більшого до меншого
+                </span>
+              </SelectItem>
+            </>
           )}
-        />
-      </span>
-    </Button>
-  );
+          {column.getCanHide() && (
+            <SelectItem value={hideValue}>
+              <span className="flex items-center">
+                <EyeOff
+                  className="mr-2 size-3.5 text-muted-foreground/70"
+                  aria-hidden="true"
+                />
+                Приховати
+              </span>
+            </SelectItem>
+          )}
+        </SelectContent>
+      </Select>
+    </div>
+  )
 }

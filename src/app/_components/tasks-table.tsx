@@ -24,7 +24,7 @@ import { getPriorityIcon, getStatusIcon } from "../_lib/utils"
 import { DeleteTasksDialog } from "./delete-tasks-dialog"
 import { useFeatureFlags } from "./feature-flags-provider"
 import { getColumns } from "./tasks-table-columns"
-import { TasksTableFloatingBar } from "./tasks-table-floating-bar"
+// import { TasksTableFloatingBar } from "./_tasks-table-floating-bar"
 import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions"
 import { UpdateTaskSheet } from "./update-task-sheet"
 
@@ -52,26 +52,26 @@ export function TasksTable({ promises }: TasksTableProps) {
     [setRowAction]
   )
 
-  async function getUsers() {
-    const users = await admin.listUsers({
-      query: {
-        limit: 10,
-      },
-    })
-    // console.log(44444, users)
-    const newUser = await admin.createUser({
-      name: "Test User",
-      email: "test@example.com",
-      password: "password123",
-      role: "user",
-      data: {
-        // any additional on the user table including plugin fields and custom fields
-        customField: "customValue",
-      },
-    })
-  }
+  // async function getUsers() {
+  //   const users = await admin.listUsers({
+  //     query: {
+  //       limit: 10,
+  //     },
+  //   })
+  //   // console.log(44444, users)
+  //   const newUser = await admin.createUser({
+  //     name: "Test User",
+  //     email: "test@example.com",
+  //     password: "passworD123456",
+  //     role: "user",
+  //     data: {
+  //       // any additional on the user table including plugin fields and custom fields
+  //       customField: "customValue",
+  //     },
+  //   })
+  // }
 
-  getUsers()
+  // getUsers()
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -179,9 +179,9 @@ export function TasksTable({ promises }: TasksTableProps) {
     <>
       <DataTable
         table={table}
-        floatingBar={
-          enableFloatingBar ? <TasksTableFloatingBar table={table} /> : null
-        }
+        // floatingBar={
+        //   enableFloatingBar ? <TasksTableFloatingBar table={table} /> : null
+        // }
       >
         {enableAdvancedTable ? (
           <DataTableAdvancedToolbar

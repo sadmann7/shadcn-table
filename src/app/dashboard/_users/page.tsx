@@ -1,5 +1,7 @@
 import * as React from "react"
 import { headers } from "next/headers"
+import { db } from "@/db/index"
+import { tasks, users } from "@/db/schema"
 import { type SearchParams } from "@/types"
 
 import { auth } from "@/lib/auth"
@@ -31,8 +33,24 @@ interface IndexPageProps {
 
 export default async function IndexPage({ searchParams }: IndexPageProps) {
   const search = await searchParamsCache.parse(searchParams)
+
+  // get all users
+  const userData = await db.select().from(users)
+  console.log(userData)
+
+  // const validFilters = getValidFilters(search.filters)
+
+  // const promises = Promise.all([
+  //   getTasks({
+  //     ...search,
+  //     filters: validFilters,
+  //   }),
+  //   getTaskStatusCounts(),
+  //   getTaskPriorityCounts(),
+  // ])
+
   // const ttt = await searchParams
-  // console.log(22222, ttt)
+  // console.log(22222, search)
   // const searchParams = await props.searchParams
   // const search = searchParamsCache.parse(searchParams)
 
@@ -51,7 +69,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
   //   },
   // })
 
-  // console.log(44444, users)
+  // console.log(44444, admin)
 
   // const updatedUser = await admin.setRole({
   //   userId: "RXff-iYPkJ3R40HiUmm4k",
@@ -68,10 +86,10 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
   // }
 
   // const newUser = await admin.createUser({
-  //   name: "Test User",
-  //   email: "test@example.com",
-  //   password: "password123",
-  //   role: "user",
+  //   name: "Bohdan User",
+  //   email: "test@gmail.com",
+  //   password: "vojnYf-ferme1-cojwys",
+  //   role: "admin",
   //   data: {
   //     // any additional on the user table including plugin fields and custom fields
   //     customField: "customValue",
@@ -123,7 +141,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
     //   </FeatureFlagsProvider>
     // </Shell>
     <React.Suspense fallback={<Skeleton />}>
-      <DataTable
+      {/* <DataTable
         columns={columns}
         data={data}
         filterFields={filterFields}
@@ -133,7 +151,7 @@ export default async function IndexPage({ searchParams }: IndexPageProps) {
             value,
           }))
           .filter(({ value }) => value ?? undefined)}
-      />
+      /> */}
     </React.Suspense>
   )
 }

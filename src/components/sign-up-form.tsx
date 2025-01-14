@@ -39,6 +39,9 @@ const formSchema = z.object({
   name: z.string().min(3, {
     message: "Ім'я повинно містити мінімум 3 символи",
   }),
+  // password: z.string(),
+  // name: z.string(),
+  // role: z.string(),
 })
 
 export function SignUpForm() {
@@ -65,11 +68,13 @@ export function SignUpForm() {
     //   console.log(form.formState.errors)
     //   return
     // }
-    await signUp.email(
+    // console.log(1111, values)
+    const { data, error } = await signUp.email(
       {
         email: values.email,
         password: values.password,
         name: values.name,
+        // image: undefined,
       },
       {
         onRequest: () => {
@@ -81,11 +86,13 @@ export function SignUpForm() {
           router.push("/dashboard")
         },
         onError: (ctx) => {
-          // console.log(2222, ctx)
-          alert(ctx.error.message)
+          console.log(2222, ctx)
+          setIsLoading(false)
+          // alert(ctx.error.message)
         },
       }
     )
+    // console.log(2222, data, error)
   }
 
   return (
@@ -106,7 +113,7 @@ export function SignUpForm() {
                   id="email"
                   type="email"
                   placeholder="m@example.com"
-                  required
+                  // required
                   //  className={
                   //   form.formState.errors.email ? "border-red-500" : ""
                   // }
@@ -118,7 +125,7 @@ export function SignUpForm() {
                 <Input
                   id="password"
                   type="password"
-                  required
+                  // required
                   {...form.register("password")}
                 />
               </div>

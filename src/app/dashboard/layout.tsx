@@ -9,6 +9,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import "@/styles/globals.css"
 
 import { redirect } from "next/navigation"
+import { NuqsAdapter } from "nuqs/adapters/next/app"
 
 // import { auth } from "@/lib/auth"
 
@@ -42,9 +43,11 @@ export default async function RootLayout({
   // }
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      {children}
-    </SidebarProvider>
+    <NuqsAdapter>
+      <SidebarProvider>
+        <AppSidebar />
+        <div className="relative flex min-h-screen flex-col">{children}</div>
+      </SidebarProvider>
+    </NuqsAdapter>
   )
 }

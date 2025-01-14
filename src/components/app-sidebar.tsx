@@ -22,6 +22,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { SocialsFooter } from "@/components/layout/socials-footer"
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
@@ -38,7 +39,7 @@ const data = {
     {
       name: "Cartpak",
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
+      // plan: "Enterprise",
     },
     // {
     //   name: "Acme Corp.",
@@ -158,11 +159,11 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const {
-    data: session,
-    isPending, //loading state
-    error, //error object
-  } = useSession()
+  // const {
+  //   data: session,
+  //   isPending, //loading state
+  //   error, //error object
+  // } = useSession()
 
   // console.log(3333, session)
 
@@ -178,8 +179,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
+        {/* <SocialsFooter /> */}
         {/* @ts-ignore */}
-        {/* <NavUser user={session?.user} /> */}
+        <NavUser user={data?.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

@@ -59,16 +59,17 @@ export function SignInForm() {
         password: values.password,
       },
       {
-        onRequest: () => {
+        onRequest: (ctx) => {
           //show loading
           setIsLoading(true)
         },
-        onSuccess: () => {
+        onSuccess: (ctx) => {
           //redirect to dashboard
           router.push("/dashboard")
         },
         onError: (ctx) => {
           alert(ctx.error.message)
+          setIsLoading(false)
         },
       }
     )
@@ -102,7 +103,7 @@ export function SignInForm() {
                   <Label htmlFor="password">Пароль</Label>
                   <Link
                     href="#"
-                    className="ml-auto inline-block text-sm underline"
+                    className="text-sm ml-auto inline-block underline"
                   >
                     Забули пароль?
                   </Link>
@@ -119,9 +120,9 @@ export function SignInForm() {
                 Авторизуватися
               </Button>
             </div>
-            <div className="mt-4 text-center text-sm">
+            <div className="text-sm mt-4 text-center">
               Не маєте облікового запису?{" "}
-              <Link href="/register" className="underline">
+              <Link href="/sign-up" className="underline">
                 Зареєструватися
               </Link>
             </div>
