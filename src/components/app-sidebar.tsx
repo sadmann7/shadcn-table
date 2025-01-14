@@ -69,10 +69,12 @@ const data = {
         {
           title: "Завдання на закупівлю",
           url: "#",
+          disabled: true,
         },
         {
           title: "Завдання на виробництво",
           url: "#",
+          disabled: true,
         },
       ],
     },
@@ -84,6 +86,7 @@ const data = {
         {
           title: "Збірка/Розбірка",
           url: "#",
+          disabled: true,
         },
         {
           title: "Специфікації",
@@ -99,6 +102,7 @@ const data = {
         {
           title: "Залишки на складі",
           url: "#",
+          disabled: true,
         },
         {
           title: "Номенклатура",
@@ -139,11 +143,13 @@ const data = {
       title: "FAQ",
       url: "#",
       icon: LifeBuoy,
+      disabled: true,
     },
     {
       title: "Підтримка",
       url: "#",
       icon: Send,
+      disabled: true,
     },
   ],
   projects: [
@@ -156,6 +162,7 @@ const data = {
       name: "Проекти",
       url: "#",
       icon: PieChart,
+      disabled: true,
     },
     {
       name: "Працівники",
@@ -171,16 +178,19 @@ const data = {
       name: "Імпорт",
       url: "#",
       icon: Map,
+      disabled: true,
     },
     {
       name: "Статистика",
       url: "#",
       icon: Map,
+      disabled: true,
     },
     {
       name: "Архів",
       url: "#",
       icon: Map,
+      disabled: true,
     },
   ],
 }

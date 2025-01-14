@@ -32,6 +32,7 @@ export function NavProjects({
     name: string
     url: string
     icon: LucideIcon
+    disabled?: boolean
   }[]
 }) {
   const { isMobile } = useSidebar()
@@ -43,12 +44,16 @@ export function NavProjects({
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
-              <a href={item.url}>
+              <a
+                href={item.url}
+                className={item.disabled ? "pointer-events-none" : ""}
+                aria-disabled={item.disabled}
+              >
                 <item.icon />
                 <span>{item.name}</span>
               </a>
             </SidebarMenuButton>
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction showOnHover>
                   <MoreHorizontal />
@@ -74,7 +79,7 @@ export function NavProjects({
                   <span>Delete Project</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
           </SidebarMenuItem>
         ))}
         {/* <SidebarMenuItem>

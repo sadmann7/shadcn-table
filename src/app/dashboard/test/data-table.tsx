@@ -187,7 +187,7 @@ export function DataTable({
                       colSpan={columns.length}
                       className="h-24 text-center"
                     >
-                      No results.
+                      Результати відсутні
                     </TableCell>
                   </TableRow>
                 )}
@@ -282,7 +282,7 @@ export function DataTable({
                         colSpan={columns.length}
                         className="h-24 text-center"
                       >
-                        No results.
+                        Результати відсутні
                       </TableCell>
                     </TableRow>
                   )}

@@ -1,21 +1,22 @@
-'use client';
+"use client"
 
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
-import { Options } from 'nuqs';
-import { useTransition } from 'react';
+import { useTransition } from "react"
+import { Options } from "nuqs"
+
+import { cn } from "@/lib/utils"
+import { Input } from "@/components/ui/input"
 
 interface DataTableSearchProps {
-  searchKey: string;
-  searchQuery: string;
+  searchKey: string
+  searchQuery: string
   setSearchQuery: (
     value: string | ((old: string) => string | null) | null,
     options?: Options | undefined
-  ) => Promise<URLSearchParams>;
+  ) => Promise<URLSearchParams>
   setPage: <Shallow>(
     value: number | ((old: number) => number | null) | null,
     options?: Options | undefined
-  ) => Promise<URLSearchParams>;
+  ) => Promise<URLSearchParams>
 }
 
 /*************  ✨ Command ⭐  *************/
@@ -44,21 +45,21 @@ export function DataTableSearch({
   searchKey,
   searchQuery,
   setSearchQuery,
-  setPage
+  setPage,
 }: DataTableSearchProps) {
-  const [isLoading, startTransition] = useTransition();
+  const [isLoading, startTransition] = useTransition()
 
   const handleSearch = (value: string) => {
-    setSearchQuery(value, { startTransition });
-    setPage(1); // Reset page to 1 when search changes
-  };
+    setSearchQuery(value, { startTransition })
+    setPage(1) // Reset page to 1 when search changes
+  }
 
   return (
     <Input
-      placeholder={`Search ${searchKey}...`}
-      value={searchQuery ?? ''}
+      placeholder={`Пошук за ${searchKey}...`}
+      value={searchQuery ?? ""}
       onChange={(e) => handleSearch(e.target.value)}
-      className={cn('w-full md:max-w-sm', isLoading && 'animate-pulse')}
+      className={cn("w-full md:max-w-sm", isLoading && "animate-pulse")}
     />
-  );
+  )
 }

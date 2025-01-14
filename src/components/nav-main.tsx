@@ -25,9 +25,11 @@ export function NavMain({
     title: string
     url: string
     icon?: LucideIcon
+    disabled?: boolean
     items?: {
       title: string
       url: string
+      disabled?: boolean
     }[]
   }[]
 }) {
@@ -50,7 +52,13 @@ export function NavMain({
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
+                        <a
+                          href={subItem.url}
+                          className={
+                            subItem.disabled ? "pointer-events-none" : ""
+                          }
+                          aria-disabled={subItem.disabled}
+                        >
                           <span>{subItem.title}</span>
                         </a>
                       </SidebarMenuSubButton>

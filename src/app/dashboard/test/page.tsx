@@ -13,6 +13,7 @@ import PageContainer from "@/components/layout/page-container"
 import { getUsers } from "./actions"
 import { DataTable } from "./data-table"
 import { searchParamsCache, serialize } from "./search-params"
+import TableActions from "./table-actions"
 
 export default async function UsersPage({
   searchParams,
@@ -30,7 +31,40 @@ export default async function UsersPage({
 
   return (
     <PageContainer scrollable={false}>
-      {/* <Suspense
+      <div className="flex flex-1 flex-col space-y-4">
+        <div className="flex items-start justify-between">
+          <Heading
+            title="Products"
+            description="Manage products (Server side table functionalities.)"
+          />
+          <Link
+            href="/dashboard/product/new"
+            className={cn(buttonVariants(), "text-xs md:text-sm")}
+          >
+            <Plus className="mr-2 h-4 w-4" /> Додати
+          </Link>
+        </div>
+        <Separator />
+        <TableActions />
+        <Suspense
+          key={key}
+          fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
+        >
+          {/* <ProductListingPage /> */}
+          <DataTable
+            // initialData={data}
+            // pageCount={pageCount}
+            initialState={params}
+            promises={promises}
+          />
+        </Suspense>
+      </div>
+    </PageContainer>
+  )
+}
+
+{
+  /* <Suspense
         fallback={
           <DataTableSkeleton
             columnCount={5}
@@ -47,35 +81,5 @@ export default async function UsersPage({
           initialState={params}
           promises={promises}
         />
-      </Suspense> */}
-      <div className="flex flex-1 flex-col space-y-4">
-        <div className="flex items-start justify-between">
-          <Heading
-            title="Products"
-            description="Manage products (Server side table functionalities.)"
-          />
-          <Link
-            href="/dashboard/product/new"
-            className={cn(buttonVariants(), "text-xs md:text-sm")}
-          >
-            <Plus className="mr-2 h-4 w-4" /> Додати
-          </Link>
-        </div>
-        <Separator />
-        {/* <ProductTableAction /> */}
-        <Suspense
-          key={key}
-          fallback={<DataTableSkeleton columnCount={5} rowCount={10} />}
-        >
-          {/* <ProductListingPage /> */}
-          <DataTable
-            // initialData={data}
-            // pageCount={pageCount}
-            initialState={params}
-            promises={promises}
-          />
-        </Suspense>
-      </div>
-    </PageContainer>
-  )
+      </Suspense> */
 }

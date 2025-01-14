@@ -17,6 +17,7 @@ export function NavSecondary({
     title: string
     url: string
     icon: LucideIcon
+    disabled?: boolean
   }[]
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
@@ -26,7 +27,11 @@ export function NavSecondary({
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild size="sm">
-                <a href={item.url}>
+                <a
+                  href={item.url}
+                  className={item.disabled ? "pointer-events-none" : ""}
+                  aria-disabled={item.disabled}
+                >
                   <item.icon />
                   <span>{item.title}</span>
                 </a>
