@@ -101,14 +101,14 @@
 }
 
 @layer base {
-  html {
-    font-size: 14px;
-  }
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
+  }
+  p {
+    @apply text-base;
   }
 }
 

@@ -54,125 +54,128 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Замовлення",
       url: "#",
       icon: SquareTerminal,
-      isActive: true,
+      disabled: false,
       items: [
         {
-          title: "History",
+          title: "Замовлення клієнтів",
           url: "#",
         },
         {
-          title: "Starred",
+          title: "Завдання на закупівлю",
           url: "#",
         },
         {
-          title: "Settings",
+          title: "Завдання на виробництво",
           url: "#",
         },
       ],
     },
     {
-      title: "Models",
+      title: "Виробництво",
       url: "#",
       icon: Bot,
       items: [
         {
-          title: "Genesis",
+          title: "Збірка/Розбірка",
           url: "#",
         },
         {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
+          title: "Специфікації",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Товари",
       url: "#",
       icon: BookOpen,
       items: [
         {
-          title: "Introduction",
+          title: "Залишки на складі",
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "Номенклатура",
           url: "#",
         },
         {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
+          title: "Категорії",
           url: "#",
         },
       ],
     },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
+    // {
+    //   title: "Проекти",
+    //   url: "#",
+    //   icon: Settings2,
+    //   items: [
+    //     {
+    //       title: "General",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Team",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Billing",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Limits",
+    //       url: "#",
+    //     },
+    //   ],
+    // },
   ],
   projects: [
     {
-      name: "Design Engineering",
+      name: "Склади",
       url: "#",
       icon: Frame,
     },
     {
-      name: "Sales & Marketing",
+      name: "Проекти",
       url: "#",
       icon: PieChart,
     },
     {
-      name: "Travel",
+      name: "Працівники",
+      url: "#",
+      icon: Map,
+    },
+    {
+      name: "Налаштування",
+      url: "#",
+      icon: Map,
+    },
+    {
+      name: "Імпорт",
+      url: "#",
+      icon: Map,
+    },
+    {
+      name: "Статистика",
+      url: "#",
+      icon: Map,
+    },
+    {
+      name: "Архів",
       url: "#",
       icon: Map,
     },
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  // const {
-  //   data: session,
-  //   isPending, //loading state
-  //   error, //error object
-  // } = useSession()
-
-  // console.log(3333, session)
-
-  // if (!session) return null
-
+// export function AppSidebar({ user, ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ user, ...props }: any) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
@@ -181,7 +184,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter>
         {/* <SocialsFooter /> */}
         {/* @ts-ignore */}
-        <NavUser user={data?.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

@@ -1,17 +1,15 @@
 import type { Viewport } from "next"
 
-// import { getServerSession } from "next-auth"
-
-// import { authOptions } from "@/lib/auth";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 
 import "@/styles/globals.css"
 
+import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 
-// import { auth } from "@/lib/auth"
+import { auth } from "@/lib/auth"
 
 export const metadata = {
   title: "Картпак",
@@ -32,20 +30,14 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // const session = await auth()
-  // const session = await getServerSession(authOptions)
-  // const user = session?.user
-
-  // console.log(88888, user, session)
-
-  // if (!user) {
-  //   redirect("/login")
-  // }
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
 
   return (
     <NuqsAdapter>
       <SidebarProvider>
-        <AppSidebar />
+        <AppSidebar user={session?.user} />
         <div className="relative flex min-h-screen flex-col">{children}</div>
       </SidebarProvider>
     </NuqsAdapter>

@@ -17,9 +17,9 @@ export default async function authMiddleware(request: NextRequest) {
 
   // console.log(9999, session)
 
-  // if (!session) {
-  //   return NextResponse.redirect(new URL("/sign-in", request.url))
-  // }
+  if (!session) {
+    return NextResponse.redirect(new URL("/sign-in", request.url))
+  }
 
   // let from = ""
   // if (request.nextUrl.search) {
