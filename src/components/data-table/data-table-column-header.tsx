@@ -2,7 +2,7 @@
 
 import { SelectIcon } from "@radix-ui/react-select"
 import { type Column } from "@tanstack/react-table"
-import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react"
+import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff, X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import {
@@ -27,6 +27,7 @@ export function DataTableColumnHeader<TData, TValue>({
     return <div className={cn(className)}>{title}</div>
   }
 
+  const noneValue = `none`;
   const ascValue = `${column.id}-asc`
   const descValue = `${column.id}-desc`
   const hideValue = `${column.id}-hide`
@@ -45,6 +46,7 @@ export function DataTableColumnHeader<TData, TValue>({
           if (value === ascValue) column.toggleSorting(false)
           else if (value === descValue) column.toggleSorting(true)
           else if (value === hideValue) column.toggleVisibility(false)
+          else if (value === noneValue) column.clearSorting()
         }}
       >
         <SelectTrigger
@@ -87,6 +89,12 @@ export function DataTableColumnHeader<TData, TValue>({
                     aria-hidden="true"
                   />
                   Desc
+                </span>
+              </SelectItem>
+              <SelectItem value={noneValue}>
+                <span className="flex items-center">
+                  <X className="mr-2 size-3.5 text-destructive/70" aria-hidden="true" />
+                  Clear Sort
                 </span>
               </SelectItem>
             </>
