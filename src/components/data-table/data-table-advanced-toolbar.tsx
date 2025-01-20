@@ -67,7 +67,7 @@ export function DataTableAdvancedToolbar<TData>({
   return (
     <div
       className={cn(
-        "flex w-full items-center justify-between gap-2 overflow-auto p-1",
+        "flex w-full items-center justify-between gap-2 overflow-auto",
         className
       )}
       {...props}
