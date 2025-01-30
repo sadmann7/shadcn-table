@@ -66,11 +66,11 @@ const ITEM_HANDLE_NAME = "SortableItemHandle";
 const OVERLAY_NAME = "SortableOverlay";
 
 const SORTABLE_ERROR = {
-  [ROOT_NAME]: `${ROOT_NAME} components must be within ${ROOT_NAME}`,
-  [CONTENT_NAME]: `${CONTENT_NAME} must be within ${ROOT_NAME}`,
-  [ITEM_NAME]: `${ITEM_NAME} must be within ${CONTENT_NAME}`,
-  [ITEM_HANDLE_NAME]: `${ITEM_HANDLE_NAME} must be within ${ITEM_NAME}`,
-  [OVERLAY_NAME]: `${OVERLAY_NAME} must be within ${ROOT_NAME}`,
+  [ROOT_NAME]: `\`${ROOT_NAME}\` components must be within \`${ROOT_NAME}\``,
+  [CONTENT_NAME]: `\`${CONTENT_NAME}\` must be within \`${ROOT_NAME}\``,
+  [ITEM_NAME]: `\`${ITEM_NAME}\` must be within \`${CONTENT_NAME}\``,
+  [ITEM_HANDLE_NAME]: `\`${ITEM_HANDLE_NAME}\` must be within \`${ITEM_NAME}\``,
+  [OVERLAY_NAME]: `\`${OVERLAY_NAME}\` must be within \`${ROOT_NAME}\``,
 } as const;
 
 interface SortableRootContextValue<T> {
