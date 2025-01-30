@@ -1,13 +1,12 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { type Task } from "@/db/schema"
-import { type Row } from "@tanstack/react-table"
-import { Loader, Trash } from "lucide-react"
-import { toast } from "sonner"
+import type { Task } from "@/db/schema";
+import type { Row } from "@tanstack/react-table";
+import { Loader, Trash } from "lucide-react";
+import * as React from "react";
+import { toast } from "sonner";
 
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
@@ -17,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   Drawer,
   DrawerClose,
@@ -27,15 +26,16 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
+} from "@/components/ui/drawer";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
-import { deleteTasks } from "../_lib/actions"
+import { deleteTasks } from "../_lib/actions";
 
 interface DeleteTasksDialogProps
   extends React.ComponentPropsWithoutRef<typeof Dialog> {
-  tasks: Row<Task>["original"][]
-  showTrigger?: boolean
-  onSuccess?: () => void
+  tasks: Row<Task>["original"][];
+  showTrigger?: boolean;
+  onSuccess?: () => void;
 }
 
 export function DeleteTasksDialog({
@@ -44,24 +44,24 @@ export function DeleteTasksDialog({
   onSuccess,
   ...props
 }: DeleteTasksDialogProps) {
-  const [isDeletePending, startDeleteTransition] = React.useTransition()
-  const isDesktop = useMediaQuery("(min-width: 640px)")
+  const [isDeletePending, startDeleteTransition] = React.useTransition();
+  const isDesktop = useMediaQuery("(min-width: 640px)");
 
   function onDelete() {
     startDeleteTransition(async () => {
       const { error } = await deleteTasks({
         ids: tasks.map((task) => task.id),
-      })
+      });
 
       if (error) {
-        toast.error(error)
-        return
+        toast.error(error);
+        return;
       }
 
-      props.onOpenChange?.(false)
-      toast.success("Tasks deleted")
-      onSuccess?.()
-    })
+      props.onOpenChange?.(false);
+      toast.success("Tasks deleted");
+      onSuccess?.();
+    });
   }
 
   if (isDesktop) {
@@ -105,7 +105,7 @@ export function DeleteTasksDialog({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    )
+    );
   }
 
   return (
@@ -145,5 +145,5 @@ export function DeleteTasksDialog({
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  )
+  );
 }

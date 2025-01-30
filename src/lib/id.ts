@@ -1,8 +1,8 @@
-import { customAlphabet } from "nanoid"
+import { customAlphabet } from "nanoid";
 
 const prefixes = {
   task: "tsk",
-}
+};
 
 interface GenerateIdOptions {
   /**
@@ -10,34 +10,35 @@ interface GenerateIdOptions {
    * @default 12
    * @example 12 => "abc123def456"
    * */
-  length?: number
+  length?: number;
   /**
    * The separator to use between the prefix and the generated ID.
    * @default "_"
    * @example "_" => "str_abc123"
    * */
-  separator?: string
+  separator?: string;
 }
 
 /**
  * Generates a unique ID with optional prefix and configuration.
  * @param prefixOrOptions The prefix string or options object
- * @param options The options for generating the ID
+ * @param inputOptions The options for generating the ID
  */
 export function generateId(
   prefixOrOptions?: keyof typeof prefixes | GenerateIdOptions,
-  options: GenerateIdOptions = {}
+  inputOptions: GenerateIdOptions = {},
 ) {
-  if (typeof prefixOrOptions === "object") {
-    options = prefixOrOptions
-    prefixOrOptions = undefined
-  }
+  const finalOptions =
+    typeof prefixOrOptions === "object" ? prefixOrOptions : inputOptions;
 
-  const { length = 12, separator = "_" } = options
+  const prefix =
+    typeof prefixOrOptions === "object" ? undefined : prefixOrOptions;
+
+  const { length = 12, separator = "_" } = finalOptions;
   const id = customAlphabet(
     "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-    length
-  )()
+    length,
+  )();
 
-  return prefixOrOptions ? `${prefixes[prefixOrOptions]}${separator}${id}` : id
+  return prefix ? `${prefixes[prefix]}${separator}${id}` : id;
 }

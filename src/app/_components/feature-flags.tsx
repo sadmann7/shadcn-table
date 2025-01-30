@@ -1,34 +1,34 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useQueryState } from "nuqs"
+import { useQueryState } from "nuqs";
+import * as React from "react";
 
-import { dataTableConfig, type DataTableConfig } from "@/config/data-table"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
+import { type DataTableConfig, dataTableConfig } from "@/config/data-table";
 
-type FeatureFlagValue = DataTableConfig["featureFlags"][number]["value"]
+type FeatureFlagValue = DataTableConfig["featureFlags"][number]["value"];
 
 interface TasksTableContextProps {
-  featureFlags: FeatureFlagValue[]
-  setFeatureFlags: (value: FeatureFlagValue[]) => void
+  featureFlags: FeatureFlagValue[];
+  setFeatureFlags: (value: FeatureFlagValue[]) => void;
 }
 
 const TasksTableContext = React.createContext<TasksTableContextProps>({
   featureFlags: [],
   setFeatureFlags: () => {},
-})
+});
 
 export function useTasksTable() {
-  const context = React.useContext(TasksTableContext)
+  const context = React.useContext(TasksTableContext);
   if (!context) {
-    throw new Error("useTasksTable must be used within a TasksTableProvider")
+    throw new Error("useTasksTable must be used within a TasksTableProvider");
   }
-  return context
+  return context;
 }
 
 export function TasksTableProvider({ children }: React.PropsWithChildren) {
@@ -41,8 +41,8 @@ export function TasksTableProvider({ children }: React.PropsWithChildren) {
       eq: (a, b) =>
         a.length === b.length && a.every((value, index) => value === b[index]),
       clearOnDefault: true,
-    }
-  )
+    },
+  );
 
   return (
     <TasksTableContext.Provider
@@ -82,7 +82,7 @@ export function TasksTableProvider({ children }: React.PropsWithChildren) {
                 className="flex max-w-60 flex-col space-y-1.5 border bg-background py-2 font-semibold text-foreground"
               >
                 <div>{flag.tooltipTitle}</div>
-                <div className="text-xs text-muted-foreground">
+                <div className="text-muted-foreground text-xs">
                   {flag.tooltipDescription}
                 </div>
               </TooltipContent>
@@ -92,5 +92,5 @@ export function TasksTableProvider({ children }: React.PropsWithChildren) {
       </div>
       {children}
     </TasksTableContext.Provider>
-  )
+  );
 }

@@ -2,9 +2,9 @@
  * @see https://github.com/radix-ui/primitives/blob/main/packages/react/compose-refs/src/composeRefs.tsx
  */
 
-import * as React from "react"
+import * as React from "react";
 
-type PossibleRef<T> = React.Ref<T> | undefined
+type PossibleRef<T> = React.Ref<T> | undefined;
 
 /**
  * Set a given ref to a given value
@@ -12,9 +12,9 @@ type PossibleRef<T> = React.Ref<T> | undefined
  */
 function setRef<T>(ref: PossibleRef<T>, value: T) {
   if (typeof ref === "function") {
-    ref(value)
+    ref(value);
   } else if (ref !== null && ref !== undefined) {
-    ;(ref as React.MutableRefObject<T>).current = value
+    (ref as React.MutableRefObject<T>).current = value;
   }
 }
 
@@ -23,7 +23,11 @@ function setRef<T>(ref: PossibleRef<T>, value: T) {
  * Accepts callback refs and RefObject(s)
  */
 function composeRefs<T>(...refs: PossibleRef<T>[]) {
-  return (node: T) => refs.forEach((ref) => setRef(ref, node))
+  return (node: T) => {
+    for (const ref of refs) {
+      setRef(ref, node);
+    }
+  };
 }
 
 /**
@@ -32,7 +36,7 @@ function composeRefs<T>(...refs: PossibleRef<T>[]) {
  */
 function useComposedRefs<T>(...refs: PossibleRef<T>[]) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  return React.useCallback(composeRefs(...refs), refs)
+  return React.useCallback(composeRefs(...refs), refs);
 }
 
-export { composeRefs, useComposedRefs }
+export { composeRefs, useComposedRefs };

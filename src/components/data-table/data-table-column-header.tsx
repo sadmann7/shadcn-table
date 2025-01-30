@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { SelectIcon } from "@radix-ui/react-select"
-import { type Column } from "@tanstack/react-table"
-import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react"
+import { SelectIcon } from "@radix-ui/react-select";
+import type { Column } from "@tanstack/react-table";
+import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react";
 
-import { cn } from "@/lib/utils"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 interface DataTableColumnHeaderProps<TData, TValue>
   extends React.HTMLAttributes<HTMLDivElement> {
-  column: Column<TData, TValue>
-  title: string
+  column: Column<TData, TValue>;
+  title: string;
 }
 
 export function DataTableColumnHeader<TData, TValue>({
@@ -24,12 +24,12 @@ export function DataTableColumnHeader<TData, TValue>({
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
   if (!column.getCanSort() && !column.getCanHide()) {
-    return <div className={cn(className)}>{title}</div>
+    return <div className={cn(className)}>{title}</div>;
   }
 
-  const ascValue = `${column.id}-asc`
-  const descValue = `${column.id}-desc`
-  const hideValue = `${column.id}-hide`
+  const ascValue = `${column.id}-asc`;
+  const descValue = `${column.id}-desc`;
+  const hideValue = `${column.id}-hide`;
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
@@ -42,9 +42,9 @@ export function DataTableColumnHeader<TData, TValue>({
               : undefined
         }
         onValueChange={(value) => {
-          if (value === ascValue) column.toggleSorting(false)
-          else if (value === descValue) column.toggleSorting(true)
-          else if (value === hideValue) column.toggleVisibility(false)
+          if (value === ascValue) column.toggleSorting(false);
+          else if (value === descValue) column.toggleSorting(true);
+          else if (value === hideValue) column.toggleVisibility(false);
         }}
       >
         <SelectTrigger
@@ -105,5 +105,5 @@ export function DataTableColumnHeader<TData, TValue>({
         </SelectContent>
       </Select>
     </div>
-  )
+  );
 }

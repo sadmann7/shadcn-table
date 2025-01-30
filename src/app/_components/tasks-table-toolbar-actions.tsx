@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { type Task } from "@/db/schema"
-import { type Table } from "@tanstack/react-table"
-import { Download } from "lucide-react"
+import type { Task } from "@/db/schema";
+import type { Table } from "@tanstack/react-table";
+import { Download } from "lucide-react";
 
-import { exportTableToCSV } from "@/lib/export"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
+import { exportTableToCSV } from "@/lib/export";
 
-import { DeleteTasksDialog } from "./delete-tasks-dialog"
+import { DeleteTasksDialog } from "./delete-tasks-dialog";
 
 interface TasksTableToolbarActionsProps {
-  table: Table<Task>
+  table: Table<Task>;
 }
 
 export function TasksTableToolbarActions({
@@ -45,5 +45,5 @@ export function TasksTableToolbarActions({
        * For example, import, view, etc.
        */}
     </div>
-  )
+  );
 }

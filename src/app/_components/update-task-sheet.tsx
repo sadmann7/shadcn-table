@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { tasks, type Task } from "@/db/schema"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader } from "lucide-react"
-import { useForm } from "react-hook-form"
-import { toast } from "sonner"
+import { type Task, tasks } from "@/db/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader } from "lucide-react";
+import * as React from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -15,7 +15,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -23,7 +23,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import {
   Sheet,
   SheetClose,
@@ -32,19 +32,19 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet"
-import { Textarea } from "@/components/ui/textarea"
+} from "@/components/ui/sheet";
+import { Textarea } from "@/components/ui/textarea";
 
-import { updateTask } from "../_lib/actions"
-import { updateTaskSchema, type UpdateTaskSchema } from "../_lib/validations"
+import { updateTask } from "../_lib/actions";
+import { type UpdateTaskSchema, updateTaskSchema } from "../_lib/validations";
 
 interface UpdateTaskSheetProps
   extends React.ComponentPropsWithRef<typeof Sheet> {
-  task: Task | null
+  task: Task | null;
 }
 
 export function UpdateTaskSheet({ task, ...props }: UpdateTaskSheetProps) {
-  const [isUpdatePending, startUpdateTransition] = React.useTransition()
+  const [isUpdatePending, startUpdateTransition] = React.useTransition();
 
   const form = useForm<UpdateTaskSchema>({
     resolver: zodResolver(updateTaskSchema),
@@ -54,26 +54,26 @@ export function UpdateTaskSheet({ task, ...props }: UpdateTaskSheetProps) {
       status: task?.status,
       priority: task?.priority,
     },
-  })
+  });
 
   function onSubmit(input: UpdateTaskSchema) {
     startUpdateTransition(async () => {
-      if (!task) return
+      if (!task) return;
 
       const { error } = await updateTask({
         id: task.id,
         ...input,
-      })
+      });
 
       if (error) {
-        toast.error(error)
-        return
+        toast.error(error);
+        return;
       }
 
-      form.reset()
-      props.onOpenChange?.(false)
-      toast.success("Task updated")
-    })
+      form.reset();
+      props.onOpenChange?.(false);
+      toast.success("Task updated");
+    });
   }
 
   return (
@@ -226,5 +226,5 @@ export function UpdateTaskSheet({ task, ...props }: UpdateTaskSheetProps) {
         </Form>
       </SheetContent>
     </Sheet>
-  )
+  );
 }

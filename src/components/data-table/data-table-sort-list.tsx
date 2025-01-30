@@ -1,27 +1,23 @@
-"use client"
+"use client";
 
-import * as React from "react"
 import type {
   ExtendedColumnSort,
   ExtendedSortingState,
   StringKeyOf,
-} from "@/types"
-import type { SortDirection, Table } from "@tanstack/react-table"
+} from "@/types";
+import type { SortDirection, Table } from "@tanstack/react-table";
 import {
   ArrowDownUp,
   Check,
   ChevronsUpDown,
   GripVertical,
   Trash2,
-} from "lucide-react"
-import { useQueryState } from "nuqs"
+} from "lucide-react";
+import { useQueryState } from "nuqs";
+import * as React from "react";
 
-import { dataTableConfig } from "@/config/data-table"
-import { getSortingStateParser } from "@/lib/parsers"
-import { cn, toSentenceCase } from "@/lib/utils"
-import { useDebouncedCallback } from "@/hooks/use-debounced-callback"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -29,29 +25,35 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import {
   Sortable,
-  SortableDragHandle,
+  SortableContent,
   SortableItem,
-} from "@/components/ui/sortable"
+  SortableItemHandle,
+  SortableOverlay,
+} from "@/components/ui/sortable";
+import { dataTableConfig } from "@/config/data-table";
+import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
+import { getSortingStateParser } from "@/lib/parsers";
+import { cn, toSentenceCase } from "@/lib/utils";
 
 interface DataTableSortListProps<TData> {
-  table: Table<TData>
-  debounceMs: number
-  shallow?: boolean
+  table: Table<TData>;
+  debounceMs: number;
+  shallow?: boolean;
 }
 
 export function DataTableSortList<TData>({
@@ -59,10 +61,10 @@ export function DataTableSortList<TData>({
   debounceMs,
   shallow,
 }: DataTableSortListProps<TData>) {
-  const id = React.useId()
+  const id = React.useId();
 
   const initialSorting = (table.initialState.sorting ??
-    []) as ExtendedSortingState<TData>
+    []) as ExtendedSortingState<TData>;
 
   const [sorting, setSorting] = useQueryState(
     "sort",
@@ -71,18 +73,19 @@ export function DataTableSortList<TData>({
       .withOptions({
         clearOnDefault: true,
         shallow,
-      })
-  )
+      }),
+  );
 
   const uniqueSorting = React.useMemo(
     () =>
       sorting.filter(
-        (sort, index, self) => index === self.findIndex((t) => t.id === sort.id)
+        (sort, index, self) =>
+          index === self.findIndex((t) => t.id === sort.id),
       ),
-    [sorting]
-  )
+    [sorting],
+  );
 
-  const debouncedSetSorting = useDebouncedCallback(setSorting, debounceMs)
+  const debouncedSetSorting = useDebouncedCallback(setSorting, debounceMs);
 
   const sortableColumns = React.useMemo(
     () =>
@@ -90,21 +93,21 @@ export function DataTableSortList<TData>({
         .getAllColumns()
         .filter(
           (column) =>
-            column.getCanSort() && !sorting.some((s) => s.id === column.id)
+            column.getCanSort() && !sorting.some((s) => s.id === column.id),
         )
         .map((column) => ({
           id: column.id,
           label: toSentenceCase(column.id),
           selected: false,
         })),
-    [sorting, table]
-  )
+    [sorting, table],
+  );
 
   function addSort() {
     const firstAvailableColumn = sortableColumns.find(
-      (column) => !sorting.some((s) => s.id === column.id)
-    )
-    if (!firstAvailableColumn) return
+      (column) => !sorting.some((s) => s.id === column.id),
+    );
+    if (!firstAvailableColumn) return;
 
     void setSorting([
       ...sorting,
@@ -112,7 +115,7 @@ export function DataTableSortList<TData>({
         id: firstAvailableColumn.id as StringKeyOf<TData>,
         desc: false,
       },
-    ])
+    ]);
   }
 
   function updateSort({
@@ -120,40 +123,33 @@ export function DataTableSortList<TData>({
     field,
     debounced = false,
   }: {
-    id: string
-    field: Partial<ExtendedColumnSort<TData>>
-    debounced?: boolean
+    id: string;
+    field: Partial<ExtendedColumnSort<TData>>;
+    debounced?: boolean;
   }) {
-    const updateFunction = debounced ? debouncedSetSorting : setSorting
+    const updateFunction = debounced ? debouncedSetSorting : setSorting;
 
     updateFunction((prevSorting) => {
-      if (!prevSorting) return prevSorting
+      if (!prevSorting) return prevSorting;
 
       const updatedSorting = prevSorting.map((sort) =>
-        sort.id === id ? { ...sort, ...field } : sort
-      )
-      return updatedSorting
-    })
+        sort.id === id ? { ...sort, ...field } : sort,
+      );
+      return updatedSorting;
+    });
   }
 
   function removeSort(id: string) {
     void setSorting((prevSorting) =>
-      prevSorting.filter((item) => item.id !== id)
-    )
+      prevSorting.filter((item) => item.id !== id),
+    );
   }
 
   return (
     <Sortable
       value={sorting}
       onValueChange={setSorting}
-      overlay={
-        <div className="flex items-center gap-2">
-          <div className="h-8 w-[11.25rem] rounded-sm bg-primary/10" />
-          <div className="h-8 w-24 rounded-sm bg-primary/10" />
-          <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
-          <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
-        </div>
-      }
+      getItemValue={(item) => item.id}
     >
       <Popover>
         <PopoverTrigger asChild>
@@ -169,7 +165,7 @@ export function DataTableSortList<TData>({
             {uniqueSorting.length > 0 && (
               <Badge
                 variant="secondary"
-                className="h-[1.14rem] rounded-[0.2rem] px-[0.32rem] font-mono text-[0.65rem] font-normal"
+                className="h-[1.14rem] rounded-[0.2rem] px-[0.32rem] font-mono font-normal text-[0.65rem]"
               >
                 {uniqueSorting.length}
               </Badge>
@@ -182,7 +178,7 @@ export function DataTableSortList<TData>({
           collisionPadding={16}
           className={cn(
             "flex w-[calc(100vw-theme(spacing.20))] min-w-72 max-w-[25rem] origin-[var(--radix-popover-content-transform-origin)] flex-col p-4 sm:w-[25rem]",
-            sorting.length > 0 ? "gap-3.5" : "gap-2"
+            sorting.length > 0 ? "gap-3.5" : "gap-2",
           )}
         >
           {uniqueSorting.length > 0 ? (
@@ -190,18 +186,18 @@ export function DataTableSortList<TData>({
           ) : (
             <div className="flex flex-col gap-1">
               <h4 className="font-medium leading-none">No sorting applied</h4>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Add sorting to organize your results.
               </p>
             </div>
           )}
-          <div className="flex max-h-40 flex-col gap-2 overflow-y-auto p-0.5">
-            <div className="flex w-full flex-col gap-2">
+          <SortableContent asChild>
+            <div className="flex max-h-40 flex-col gap-2 overflow-y-auto p-0.5">
               {uniqueSorting.map((sort) => {
-                const sortId = `${id}-sort-${sort.id}`
-                const fieldListboxId = `${sortId}-field-listbox`
-                const fieldTriggerId = `${sortId}-field-trigger`
-                const directionListboxId = `${sortId}-direction-listbox`
+                const sortId = `${id}-sort-${sort.id}`;
+                const fieldListboxId = `${sortId}-field-listbox`;
+                const fieldTriggerId = `${sortId}-field-trigger`;
+                const directionListboxId = `${sortId}-direction-listbox`;
 
                 return (
                   <SortableItem key={sort.id} value={sort.id} asChild>
@@ -224,7 +220,7 @@ export function DataTableSortList<TData>({
                               initialSorting[0]?.id === sort.id ? (
                                 <Badge
                                   variant="secondary"
-                                  className="h-[1.125rem] rounded px-1 font-mono text-[0.65rem] font-normal"
+                                  className="h-[1.125rem] rounded px-1 font-mono font-normal text-[0.65rem]"
                                 >
                                   Default
                                 </Badge>
@@ -253,20 +249,20 @@ export function DataTableSortList<TData>({
                                     key={column.id}
                                     value={column.id}
                                     onSelect={(value) => {
-                                      const newFieldTriggerId = `${id}-sort-${value}-field-trigger`
+                                      const newFieldTriggerId = `${id}-sort-${value}-field-trigger`;
 
                                       updateSort({
                                         id: sort.id,
                                         field: {
                                           id: value as StringKeyOf<TData>,
                                         },
-                                      })
+                                      });
 
                                       requestAnimationFrame(() => {
                                         document
                                           .getElementById(newFieldTriggerId)
-                                          ?.focus()
-                                      })
+                                          ?.focus();
+                                      });
                                     }}
                                   >
                                     <span className="mr-1.5 truncate">
@@ -277,7 +273,7 @@ export function DataTableSortList<TData>({
                                         "ml-auto size-4 shrink-0",
                                         column.id === sort.id
                                           ? "opacity-100"
-                                          : "opacity-0"
+                                          : "opacity-0",
                                       )}
                                       aria-hidden="true"
                                     />
@@ -326,19 +322,24 @@ export function DataTableSortList<TData>({
                       >
                         <Trash2 className="size-3.5" aria-hidden="true" />
                       </Button>
-                      <SortableDragHandle
-                        variant="outline"
-                        size="icon"
-                        className="size-8 shrink-0 rounded"
-                      >
-                        <GripVertical className="size-3.5" aria-hidden="true" />
-                      </SortableDragHandle>
+                      <SortableItemHandle asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="size-8 shrink-0 rounded"
+                        >
+                          <GripVertical
+                            className="size-3.5"
+                            aria-hidden="true"
+                          />
+                        </Button>
+                      </SortableItemHandle>
                     </div>
                   </SortableItem>
-                )
+                );
               })}
             </div>
-          </div>
+          </SortableContent>
           <div className="flex w-full items-center gap-2">
             <Button
               size="sm"
@@ -361,6 +362,14 @@ export function DataTableSortList<TData>({
           </div>
         </PopoverContent>
       </Popover>
+      <SortableOverlay>
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-[11.25rem] rounded-sm bg-primary/10" />
+          <div className="h-8 w-24 rounded-sm bg-primary/10" />
+          <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
+          <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
+        </div>
+      </SortableOverlay>
     </Sortable>
-  )
+  );
 }

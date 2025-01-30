@@ -1,7 +1,7 @@
-import "server-only"
+import "server-only";
 
-import { db } from "@/db"
-import { tasks, type Task } from "@/db/schema"
+import { db } from "@/db";
+import { type Task, tasks } from "@/db/schema";
 import {
   and,
   asc,
@@ -12,27 +12,27 @@ import {
   ilike,
   inArray,
   lte,
-} from "drizzle-orm"
+} from "drizzle-orm";
 
-import { filterColumns } from "@/lib/filter-columns"
-import { unstable_cache } from "@/lib/unstable-cache"
+import { filterColumns } from "@/lib/filter-columns";
+import { unstable_cache } from "@/lib/unstable-cache";
 
-import { type GetTasksSchema } from "./validations"
+import type { GetTasksSchema } from "./validations";
 
 export async function getTasks(input: GetTasksSchema) {
   return await unstable_cache(
     async () => {
       try {
-        const offset = (input.page - 1) * input.perPage
-        const fromDate = input.from ? new Date(input.from) : undefined
-        const toDate = input.to ? new Date(input.to) : undefined
-        const advancedTable = input.flags.includes("advancedTable")
+        const offset = (input.page - 1) * input.perPage;
+        const fromDate = input.from ? new Date(input.from) : undefined;
+        const toDate = input.to ? new Date(input.to) : undefined;
+        const advancedTable = input.flags.includes("advancedTable");
 
         const advancedWhere = filterColumns({
           table: tasks,
           filters: input.filters,
           joinOperator: input.joinOperator,
-        })
+        });
 
         const where = advancedTable
           ? advancedWhere
@@ -45,15 +45,15 @@ export async function getTasks(input: GetTasksSchema) {
                 ? inArray(tasks.priority, input.priority)
                 : undefined,
               fromDate ? gte(tasks.createdAt, fromDate) : undefined,
-              toDate ? lte(tasks.createdAt, toDate) : undefined
-            )
+              toDate ? lte(tasks.createdAt, toDate) : undefined,
+            );
 
         const orderBy =
           input.sort.length > 0
             ? input.sort.map((item) =>
-                item.desc ? desc(tasks[item.id]) : asc(tasks[item.id])
+                item.desc ? desc(tasks[item.id]) : asc(tasks[item.id]),
               )
-            : [asc(tasks.createdAt)]
+            : [asc(tasks.createdAt)];
 
         const { data, total } = await db.transaction(async (tx) => {
           const data = await tx
@@ -62,7 +62,7 @@ export async function getTasks(input: GetTasksSchema) {
             .limit(input.perPage)
             .offset(offset)
             .where(where)
-            .orderBy(...orderBy)
+            .orderBy(...orderBy);
 
           const total = await tx
             .select({
@@ -71,26 +71,26 @@ export async function getTasks(input: GetTasksSchema) {
             .from(tasks)
             .where(where)
             .execute()
-            .then((res) => res[0]?.count ?? 0)
+            .then((res) => res[0]?.count ?? 0);
 
           return {
             data,
             total,
-          }
-        })
+          };
+        });
 
-        const pageCount = Math.ceil(total / input.perPage)
-        return { data, pageCount }
-      } catch (err) {
-        return { data: [], pageCount: 0 }
+        const pageCount = Math.ceil(total / input.perPage);
+        return { data, pageCount };
+      } catch (_err) {
+        return { data: [], pageCount: 0 };
       }
     },
     [JSON.stringify(input)],
     {
       revalidate: 3600,
       tags: ["tasks"],
-    }
-  )()
+    },
+  )();
 }
 
 export async function getTaskStatusCounts() {
@@ -108,21 +108,21 @@ export async function getTaskStatusCounts() {
           .then((res) =>
             res.reduce(
               (acc, { status, count }) => {
-                acc[status] = count
-                return acc
+                acc[status] = count;
+                return acc;
               },
-              {} as Record<Task["status"], number>
-            )
-          )
-      } catch (err) {
-        return {} as Record<Task["status"], number>
+              {} as Record<Task["status"], number>,
+            ),
+          );
+      } catch (_err) {
+        return {} as Record<Task["status"], number>;
       }
     },
     ["task-status-counts"],
     {
       revalidate: 3600,
-    }
-  )()
+    },
+  )();
 }
 
 export async function getTaskPriorityCounts() {
@@ -140,19 +140,19 @@ export async function getTaskPriorityCounts() {
           .then((res) =>
             res.reduce(
               (acc, { priority, count }) => {
-                acc[priority] = count
-                return acc
+                acc[priority] = count;
+                return acc;
               },
-              {} as Record<Task["priority"], number>
-            )
-          )
-      } catch (err) {
-        return {} as Record<Task["priority"], number>
+              {} as Record<Task["priority"], number>,
+            ),
+          );
+      } catch (_err) {
+        return {} as Record<Task["priority"], number>;
       }
     },
     ["task-priority-counts"],
     {
       revalidate: 3600,
-    }
-  )()
+    },
+  )();
 }

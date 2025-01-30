@@ -1,17 +1,16 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { tasks, type Task } from "@/db/schema"
-import { type DataTableRowAction } from "@/types"
-import { type ColumnDef } from "@tanstack/react-table"
-import { Ellipsis } from "lucide-react"
-import { toast } from "sonner"
+import { type Task, tasks } from "@/db/schema";
+import type { DataTableRowAction } from "@/types";
+import type { ColumnDef } from "@tanstack/react-table";
+import { Ellipsis } from "lucide-react";
+import * as React from "react";
+import { toast } from "sonner";
 
-import { getErrorMessage } from "@/lib/handle-error"
-import { formatDate } from "@/lib/utils"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,16 +23,17 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
+} from "@/components/ui/dropdown-menu";
+import { getErrorMessage } from "@/lib/handle-error";
+import { formatDate } from "@/lib/utils";
 
-import { updateTask } from "../_lib/actions"
-import { getPriorityIcon, getStatusIcon } from "../_lib/utils"
+import { updateTask } from "../_lib/actions";
+import { getPriorityIcon, getStatusIcon } from "../_lib/utils";
 
 interface GetColumnsProps {
   setRowAction: React.Dispatch<
     React.SetStateAction<DataTableRowAction<Task> | null>
-  >
+  >;
 }
 
 export function getColumns({
@@ -80,8 +80,8 @@ export function getColumns({
       ),
       cell: ({ row }) => {
         const label = tasks.label.enumValues.find(
-          (label) => label === row.original.label
-        )
+          (label) => label === row.original.label,
+        );
 
         return (
           <div className="flex space-x-2">
@@ -90,7 +90,7 @@ export function getColumns({
               {row.getValue("title")}
             </span>
           </div>
-        )
+        );
       },
     },
     {
@@ -100,12 +100,12 @@ export function getColumns({
       ),
       cell: ({ row }) => {
         const status = tasks.status.enumValues.find(
-          (status) => status === row.original.status
-        )
+          (status) => status === row.original.status,
+        );
 
-        if (!status) return null
+        if (!status) return null;
 
-        const Icon = getStatusIcon(status)
+        const Icon = getStatusIcon(status);
 
         return (
           <div className="flex w-[6.25rem] items-center">
@@ -115,10 +115,10 @@ export function getColumns({
             />
             <span className="capitalize">{status}</span>
           </div>
-        )
+        );
       },
       filterFn: (row, id, value) => {
-        return Array.isArray(value) && value.includes(row.getValue(id))
+        return Array.isArray(value) && value.includes(row.getValue(id));
       },
     },
     {
@@ -128,12 +128,12 @@ export function getColumns({
       ),
       cell: ({ row }) => {
         const priority = tasks.priority.enumValues.find(
-          (priority) => priority === row.original.priority
-        )
+          (priority) => priority === row.original.priority,
+        );
 
-        if (!priority) return null
+        if (!priority) return null;
 
-        const Icon = getPriorityIcon(priority)
+        const Icon = getPriorityIcon(priority);
 
         return (
           <div className="flex items-center">
@@ -143,10 +143,10 @@ export function getColumns({
             />
             <span className="capitalize">{priority}</span>
           </div>
-        )
+        );
       },
       filterFn: (row, id, value) => {
-        return Array.isArray(value) && value.includes(row.getValue(id))
+        return Array.isArray(value) && value.includes(row.getValue(id));
       },
     },
     {
@@ -168,7 +168,7 @@ export function getColumns({
     {
       id: "actions",
       cell: function Cell({ row }) {
-        const [isUpdatePending, startUpdateTransition] = React.useTransition()
+        const [isUpdatePending, startUpdateTransition] = React.useTransition();
 
         return (
           <DropdownMenu>
@@ -203,9 +203,9 @@ export function getColumns({
                             loading: "Updating...",
                             success: "Label updated",
                             error: (err) => getErrorMessage(err),
-                          }
-                        )
-                      })
+                          },
+                        );
+                      });
                     }}
                   >
                     {tasks.label.enumValues.map((label) => (
@@ -230,9 +230,9 @@ export function getColumns({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        )
+        );
       },
       size: 40,
     },
-  ]
+  ];
 }

@@ -1,0 +1,87 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "formatter": {
+    "enabled": true,
+    "indentWidth": 2,
+    "indentStyle": "space",
+    "ignore": [
+      "**/node_modules",
+      "**/dist",
+      "**/build",
+      "**/public",
+      "**/.turbo",
+      "**/.next"
+    ]
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "a11y": {
+        "noSvgWithoutTitle": "off",
+        "useButtonType": "off",
+        "useAltText": "off",
+        "useKeyWithClickEvents": "off",
+        "useSemanticElements": "off",
+        "noLabelWithoutControl": "off"
+      },
+      "correctness": {
+        "noUnusedVariables": "warn",
+        "useExhaustiveDependencies": "warn"
+      },
+      "complexity": {
+        "noBannedTypes": "off"
+      },
+      "style": {
+        "useImportType": "warn"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      },
+      "suspicious": {
+        "noAssignInExpressions": "off",
+        "noArrayIndexKey": "off"
+      },
+      "nursery": {
+        "useSortedClasses": {
+          "level": "warn",
+          "options": {
+            "attributes": ["classList"],
+            "functions": ["clsx", "cva", "tw"]
+          }
+        }
+      }
+    },
+    "ignore": [
+      "**/node_modules",
+      "**/dist",
+      "**/build",
+      "**/public",
+      "**/.turbo",
+      "**/.next"
+    ]
+  },
+  "overrides": [
+    {
+      "include": ["**/*.test.ts"]
+    }
+  ],
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignore": [
+      "**/node_modules",
+      "**/dist",
+      "**/build",
+      "**/public",
+      "**/.turbo",
+      "**/.next"
+    ]
+  }
+}

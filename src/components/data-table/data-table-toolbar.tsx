@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import type { DataTableFilterField } from "@/types"
-import type { Table } from "@tanstack/react-table"
-import { X } from "lucide-react"
+import type { DataTableFilterField } from "@/types";
+import type { Table } from "@tanstack/react-table";
+import { X } from "lucide-react";
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
-import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
+import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";
+import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
 interface DataTableToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
-  table: Table<TData>
+  table: Table<TData>;
   /**
    * An array of filter field configurations for the data table.
    * When options are provided, a faceted filter is rendered.
@@ -36,7 +36,7 @@ interface DataTableToolbarProps<TData>
    *   }
    * ]
    */
-  filterFields?: DataTableFilterField<TData>[]
+  filterFields?: DataTableFilterField<TData>[];
 }
 
 export function DataTableToolbar<TData>({
@@ -46,21 +46,21 @@ export function DataTableToolbar<TData>({
   className,
   ...props
 }: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0
+  const isFiltered = table.getState().columnFilters.length > 0;
 
   // Memoize computation of searchableColumns and filterableColumns
   const { searchableColumns, filterableColumns } = React.useMemo(() => {
     return {
       searchableColumns: filterFields.filter((field) => !field.options),
       filterableColumns: filterFields.filter((field) => field.options),
-    }
-  }, [filterFields])
+    };
+  }, [filterFields]);
 
   return (
     <div
       className={cn(
         "flex w-full items-center justify-between gap-2 overflow-auto p-1",
-        className
+        className,
       )}
       {...props}
     >
@@ -84,7 +84,7 @@ export function DataTableToolbar<TData>({
                   }
                   className="h-8 w-40 lg:w-64"
                 />
-              )
+              ),
           )}
         {filterableColumns.length > 0 &&
           filterableColumns.map(
@@ -96,7 +96,7 @@ export function DataTableToolbar<TData>({
                   title={column.label}
                   options={column.options ?? []}
                 />
-              )
+              ),
           )}
         {isFiltered && (
           <Button
@@ -115,5 +115,5 @@ export function DataTableToolbar<TData>({
         <DataTableViewOptions table={table} />
       </div>
     </div>
-  )
+  );
 }

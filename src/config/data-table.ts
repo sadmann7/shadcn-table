@@ -1,6 +1,6 @@
-import { Pickaxe, SquareSquare } from "lucide-react"
+import { Pickaxe, SquareSquare } from "lucide-react";
 
-export type DataTableConfig = typeof dataTableConfig
+export type DataTableConfig = typeof dataTableConfig;
 
 export const dataTableConfig = {
   featureFlags: [
@@ -91,4 +91,4 @@ export const dataTableConfig = {
     "and",
     "or",
   ] as const,
-}
+};

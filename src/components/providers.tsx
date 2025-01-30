@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
 import {
   ThemeProvider as NextThemesProvider,
   type ThemeProviderProps,
-} from "next-themes"
-import { NuqsAdapter } from "nuqs/adapters/next/app"
+} from "next-themes";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
-import { TooltipProvider } from "@/components/ui/tooltip"
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
@@ -15,5 +15,5 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
         <NuqsAdapter>{children}</NuqsAdapter>
       </TooltipProvider>
     </NextThemesProvider>
-  )
+  );
 }

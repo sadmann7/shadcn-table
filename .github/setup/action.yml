@@ -1,0 +1,16 @@
+name: Setup Workflow
+description: Composite action that sets up pnpm and installs dependencies
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9.15.4
+
+    - run: pnpm install
+      shell: bash
