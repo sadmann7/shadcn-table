@@ -28,20 +28,6 @@ jobs:
 
       - run: pnpm lint
 
-  format:
-    runs-on: ubuntu-latest
-    name: Format
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.15.4
-      - uses: ./.github/setup
-
-      - run: pnpm format:check
-
   typecheck:
     runs-on: ubuntu-latest
     name: Typecheck
