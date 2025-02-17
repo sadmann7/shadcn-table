@@ -100,7 +100,7 @@ importers:
         version: 0.4.4(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       nuqs:
         specifier: ^2.3.1
-        version: 2.3.2(@remix-run/react@2.13.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3))(next@15.1.7(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-router-dom@6.27.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-router@6.27.0(react@19.0.0))(react@19.0.0)
+        version: 2.4.0(@remix-run/react@2.13.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3))(next@15.1.7(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-router-dom@6.27.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-router@6.27.0(react@19.0.0))(react@19.0.0)
       postgres:
         specifier: ^3.4.5
         version: 3.4.5
@@ -1928,8 +1928,8 @@ packages:
     resolution: {integrity: sha512-bdok/XvKII3nUpklnV6P2hxtMNrCboOjAcyBuQnWEhO665FwrSNRxU+AqpsyvO6LgGYPspN+lu5CLtw4jPRKNA==}
     engines: {node: '>=0.10.0'}
 
-  nuqs@2.3.2:
-    resolution: {integrity: sha512-WeG78r8e3a30JY3P8npldvNiAZwGIk499lnpeRs3UYA3PpSvs2/PLunKGgjuF/JMw4BOowD3K2xgGEOZ3PeODA==}
+  nuqs@2.4.0:
+    resolution: {integrity: sha512-+yOdX0q/wdYlseSYtWC8StDDt2QFcYX/zV5/E67J1cOJo3PR0mggxMx4acZGC0Hu66xFHENKQkqI2zSpH742xQ==}
     peerDependencies:
       '@remix-run/react': '>=2'
       next: '>=14.2.0'
@@ -3811,7 +3811,7 @@ snapshots:
 
   normalize-range@0.1.2: {}
 
-  nuqs@2.3.2(@remix-run/react@2.13.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3))(next@15.1.7(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-router-dom@6.27.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-router@6.27.0(react@19.0.0))(react@19.0.0):
+  nuqs@2.4.0(@remix-run/react@2.13.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3))(next@15.1.7(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-router-dom@6.27.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-router@6.27.0(react@19.0.0))(react@19.0.0):
     dependencies:
       mitt: 3.0.1
       react: 19.0.0
