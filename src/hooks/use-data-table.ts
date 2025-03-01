@@ -214,10 +214,10 @@ export function useDataTable<TData>({
 
   const [filterValues, setFilterValues] = useQueryStates(filterParsers);
 
-  const debouncedSetFilterValues = useDebouncedCallback(
-    setFilterValues,
-    debounceMs,
-  );
+  const debouncedSetFilterValues = useDebouncedCallback((values: typeof filterValues) => {
+    void setPage(1);
+    void setFilterValues(values);
+  }, debounceMs);
 
   // Paginate
   const pagination: PaginationState = {
@@ -304,8 +304,6 @@ export function useDataTable<TData>({
             filterUpdates[prevFilter.id] = null;
           }
         }
-
-        void setPage(1);
 
         debouncedSetFilterValues(filterUpdates);
         return next;
