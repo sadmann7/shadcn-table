@@ -32,7 +32,7 @@ export function DataTableColumnHeader<TData, TValue>({
   const hideValue = `${column.id}-hide`;
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
+    <div className={cn("flex items-center gap-2 pl-3.5", className)}>
       <Select
         value={
           column.getIsSorted() === "desc"

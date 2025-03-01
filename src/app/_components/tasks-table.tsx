@@ -26,6 +26,7 @@ import { getColumns } from "./tasks-table-columns";
 import { TasksTableFloatingBar } from "./tasks-table-floating-bar";
 import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions";
 import { UpdateTaskSheet } from "./update-task-sheet";
+import DebugPanel from "@/components/debug-panel";
 
 interface TasksTableProps {
   promises: Promise<
@@ -134,16 +135,25 @@ export function TasksTable({ promises }: TasksTableProps) {
 
   const enableAdvancedTable = featureFlags.includes("advancedTable");
   const enableFloatingBar = featureFlags.includes("floatingBar");
+  // Enable resizing if the "resizableColumns" feature flag is set
+  const enableResizing = featureFlags.includes("resizableColumns");
 
-  const { table } = useDataTable({
+  const { table, tableContainerRef } = useDataTable({
     data,
     columns,
     pageCount,
     filterFields,
     enableAdvancedFilter: enableAdvancedTable,
+    // Enable column resizing
+    enableResizing,
+    // Default column sizing constraints
+    defaultColumn: {
+      minSize: 60,
+      maxSize: 800,
+    },
     initialState: {
       sorting: [{ id: "createdAt", desc: true }],
-      columnPinning: { right: ["actions"] },
+      // columnPinning: { left: ["actions"] },
     },
     getRowId: (originalRow) => originalRow.id,
     shallow: false,
@@ -154,6 +164,9 @@ export function TasksTable({ promises }: TasksTableProps) {
     <>
       <DataTable
         table={table}
+        // Pass resizing props to DataTable
+        tableContainerRef={enableResizing ? tableContainerRef : null}
+        enableResizing={enableResizing}
         floatingBar={
           enableFloatingBar ? <TasksTableFloatingBar table={table} /> : null
         }

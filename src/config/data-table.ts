@@ -1,4 +1,4 @@
-import { Pickaxe, SquareSquare } from "lucide-react";
+import { Pickaxe, Expand, SquareSquare } from "lucide-react";
 
 export type DataTableConfig = typeof dataTableConfig;
 
@@ -17,6 +17,14 @@ export const dataTableConfig = {
       icon: SquareSquare,
       tooltipTitle: "Toggle floating bar",
       tooltipDescription: "A floating bar that sticks to the top of the table.",
+    },
+    {
+      label: "Resizable columns",
+      value: "resizableColumns" as const,
+      icon: Expand,
+      tooltipTitle: "Toggle resizable columns",
+      tooltipDescription:
+        "Allows columns to be resized by dragging their edges.",
     },
   ],
   textOperators: [

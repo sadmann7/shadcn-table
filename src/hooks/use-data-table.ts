@@ -10,6 +10,8 @@ import {
   type TableState,
   type Updater,
   type VisibilityState,
+  type ColumnSizingState,
+  type ColumnSizingInfoState,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
@@ -30,6 +32,7 @@ import {
 import * as React from "react";
 
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
+import { useResize } from "@/hooks/use-resize";
 import { getSortingStateParser } from "@/lib/parsers";
 
 interface UseDataTableProps<TData>
@@ -129,6 +132,22 @@ interface UseDataTableProps<TData>
    */
   enableAdvancedFilter?: boolean;
 
+  /**
+   * Enable column resizing feature
+   * @default false
+   * @type boolean
+   */
+  enableResizing?: boolean;
+
+  /**
+   * Default column configuration for resizing
+   * @default { minSize: 40, maxSize: 800 }
+   */
+  defaultColumn?: {
+    minSize?: number;
+    maxSize?: number;
+  };
+
   initialState?: Omit<Partial<TableState>, "sorting"> & {
     // Extend to make the sorting id typesafe
     sorting?: ExtendedSortingState<TData>;
@@ -139,6 +158,8 @@ export function useDataTable<TData>({
   pageCount = -1,
   filterFields = [],
   enableAdvancedFilter = false,
+  enableResizing = false,
+  defaultColumn = { minSize: 40, maxSize: 4800 },
   history = "replace",
   scroll = false,
   shallow = true,
@@ -172,26 +193,37 @@ export function useDataTable<TData>({
   ]);
 
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>(
-    initialState?.rowSelection ?? {},
+    initialState?.rowSelection ?? {}
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>(initialState?.columnVisibility ?? {});
 
+  // Initialize resizing hooks and refs
+  const {
+    columnSizing,
+    setColumnSizing,
+    columnSizingInfo,
+    setColumnSizingInfo,
+    tableContainerRef,
+    updateColumnConstraints,
+    containerWidth,
+  } = useResize();
+
   const [page, setPage] = useQueryState(
     "page",
-    parseAsInteger.withOptions(queryStateOptions).withDefault(1),
+    parseAsInteger.withOptions(queryStateOptions).withDefault(1)
   );
   const [perPage, setPerPage] = useQueryState(
     "perPage",
     parseAsInteger
       .withOptions(queryStateOptions)
-      .withDefault(initialState?.pagination?.pageSize ?? 10),
+      .withDefault(initialState?.pagination?.pageSize ?? 10)
   );
   const [sorting, setSorting] = useQueryState(
     "sort",
     getSortingStateParser<TData>()
       .withOptions(queryStateOptions)
-      .withDefault(initialState?.sorting ?? []),
+      .withDefault(initialState?.sorting ?? [])
   );
 
   // Create parsers for each filter field
@@ -202,7 +234,7 @@ export function useDataTable<TData>({
       if (field.options) {
         // Faceted filter
         acc[field.id] = parseAsArrayOf(parseAsString, ",").withOptions(
-          queryStateOptions,
+          queryStateOptions
         );
       } else {
         // Search filter
@@ -216,7 +248,7 @@ export function useDataTable<TData>({
 
   const debouncedSetFilterValues = useDebouncedCallback(
     setFilterValues,
-    debounceMs,
+    debounceMs
   );
 
   // Paginate
@@ -258,7 +290,7 @@ export function useDataTable<TData>({
             }
             return filters;
           },
-          [],
+          []
         );
   }, [filterValues, enableAdvancedFilter]);
 
@@ -317,11 +349,12 @@ export function useDataTable<TData>({
       filterableColumns,
       searchableColumns,
       setPage,
-    ],
+    ]
   );
 
   const table = useReactTable({
     ...props,
+    defaultColumn: enableResizing ? defaultColumn : undefined,
     initialState,
     pageCount,
     state: {
@@ -330,6 +363,7 @@ export function useDataTable<TData>({
       columnVisibility,
       rowSelection,
       columnFilters: enableAdvancedFilter ? [] : columnFilters,
+      ...(enableResizing ? { columnSizing, columnSizingInfo } : {}),
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
@@ -337,6 +371,13 @@ export function useDataTable<TData>({
     onSortingChange,
     onColumnFiltersChange,
     onColumnVisibilityChange: setColumnVisibility,
+    ...(enableResizing
+      ? {
+          onColumnSizingChange: setColumnSizing,
+          onColumnSizingInfoChange: setColumnSizingInfo,
+          columnResizeMode: "onChange",
+        }
+      : {}),
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: enableAdvancedFilter
       ? undefined
@@ -352,5 +393,15 @@ export function useDataTable<TData>({
     manualFiltering: true,
   });
 
-  return { table };
+  // Initialize column constraints when table mounts or columns change
+  React.useEffect(() => {
+    if (enableResizing) {
+      updateColumnConstraints(table);
+    }
+  }, [enableResizing, updateColumnConstraints, table, props.columns]);
+
+  return {
+    table,
+    tableContainerRef,
+  };
 }

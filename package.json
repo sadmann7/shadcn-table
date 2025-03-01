@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rimraf --glob **/node_modules **/dist **/.next pnpm-lock.yaml **/.tsbuildinfo",
     "build": "next build",
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "start": "next start",
     "lint": "biome check .",
     "lint:fix": "biome check . --write",
@@ -19,7 +19,9 @@
     "db:migrate": "dotenv tsx src/db/migrate.ts",
     "db:drop-migration": "drizzle-kit drop",
     "db:seed": "dotenv tsx src/db/seed.ts",
-    "db:studio": "dotenv drizzle-kit studio"
+    "db:studio": "dotenv drizzle-kit studio",
+    "db:import-csv": "dotenv tsx src/scripts/import-csv.ts",
+    "db:import-csv:clean": "dotenv tsx src/scripts/import-csv.ts --delete-existing"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -44,6 +46,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.4",
+    "csv-parse": "^5.6.0",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.40.0",
     "export-to-csv": "^1.4.0",
@@ -52,6 +55,7 @@
     "nanoid": "^5.0.9",
     "next": "^15.1.6",
     "next-themes": "^0.4.4",
+    "node-fetch": "^3.3.2",
     "nuqs": "^2.3.1",
     "postgres": "^3.4.5",
     "react": "^19.0.0",
@@ -84,6 +88,5 @@
   },
   "ct3aMetadata": {
     "initVersion": "7.23.1"
-  },
-  "packageManager": "pnpm@9.15.4"
+  }
 }

@@ -1,5 +1,5 @@
 import { type Table as TanstackTable, flexRender } from "@tanstack/react-table";
-import type * as React from "react";
+import * as React from "react";
 
 import { DataTablePagination } from "@/components/data-table/data-table-pagination";
 import {
@@ -27,81 +27,181 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
    * @example floatingBar={<TasksTableFloatingBar table={table} />}
    */
   floatingBar?: React.ReactNode | null;
+
+  /**
+   * Reference to the table container div element for column resizing.
+   * @type React.RefObject<HTMLDivElement> | null
+   */
+  tableContainerRef?: React.RefObject<HTMLDivElement | null> | null;
+
+  /**
+   * Function to get column size CSS variables for the table.
+   * @type (table: TanstackTable<TData>) => Record<string, string>
+   */
+  getColumnSizeVars?: (table: TanstackTable<TData>) => Record<string, string>;
+
+  /**
+   * Whether to enable resizing for the table.
+   * @default false
+   * @type boolean
+   */
+  enableResizing?: boolean;
 }
+
+// Generic type for TableBodyContent component
+interface TableBodyContentProps<T> {
+  table: TanstackTable<T>;
+}
+
+function TableBodyContent<T>({ table }: TableBodyContentProps<T>) {
+  return (
+    <>
+      {table.getRowModel().rows?.length ? (
+        table.getRowModel().rows.map((row) => (
+          <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+            {row.getVisibleCells().map((cell) => (
+              <TableCell
+                key={cell.id}
+                style={{
+                  ...getCommonPinningStyles({ column: cell.column }),
+                  // Apply column sizing styles for all columns
+                  width: `var(--col-${cell.column.id}-size, auto)`,
+                  minWidth: `var(--col-${cell.column.id}-size, auto)`,
+                  maxWidth: `var(--col-${cell.column.id}-size, auto)`,
+                }}
+                className="overflow-hidden"
+              >
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </TableCell>
+            ))}
+          </TableRow>
+        ))
+      ) : (
+        <TableRow>
+          <TableCell
+            colSpan={table.getAllColumns().length}
+            className="h-24 text-center"
+          >
+            No results.
+          </TableCell>
+        </TableRow>
+      )}
+    </>
+  );
+}
+
+// Memoized table body for better performance during resizing
+const MemoizedTableBody = React.memo(
+  TableBodyContent,
+  (prev, next) => prev.table.options.data === next.table.options.data
+) as typeof TableBodyContent;
 
 export function DataTable<TData>({
   table,
   floatingBar = null,
+  tableContainerRef = null,
+  getColumnSizeVars = () => ({}),
+  enableResizing = false,
   children,
   className,
   ...props
 }: DataTableProps<TData>) {
+  // Calculate column size variables for CSS
+  const columnSizeVars = React.useMemo(() => {
+    const headers = table.getFlatHeaders();
+    const colSizes: { [key: string]: string } = {};
+
+    for (let i = 0; i < headers.length; i++) {
+      const header = headers[i]!;
+      // Set default sizes even when resizing is not enabled
+      const size = header.getSize();
+      colSizes[`--header-${header.id}-size`] = `${size}px`;
+      colSizes[`--col-${header.column.id}-size`] = `${size}px`;
+    }
+
+    return colSizes;
+  }, [table, table.getState().columnSizingInfo, table.getState().columnSizing]);
+
   return (
     <div
-      className={cn("w-full space-y-2.5 overflow-auto", className)}
+      className={cn("w-full space-y-2.5 overflow-hidden", className)}
       {...props}
     >
       {children}
-      <div className="overflow-hidden rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      style={{
-                        ...getCommonPinningStyles({ column: header.column }),
-                      }}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
+
+      {/* Table container (fixed width) */}
+      <div className="border rounded-md flex flex-col overflow-hidden">
+        <div className="w-full overflow-x-auto" ref={tableContainerRef}>
+          <Table
+            className="w-auto"
+            style={{
+              ...columnSizeVars,
+              width:
+                tableContainerRef?.current?.clientWidth &&
+                table.getTotalSize() >= tableContainerRef?.current?.clientWidth
+                  ? `${table.getTotalSize()}px`
+                  : "100%",
+            }}
+          >
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header, index) => {
+                    return (
+                      <TableHead
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        style={{
+                          ...getCommonPinningStyles({ column: header.column }),
+                          // Apply sizing styles to all headers
+                          width: `var(--header-${header.id}-size, auto)`,
+                          maxWidth: `var(--header-${header.id}-size, auto)`,
+                          position: "relative",
+                        }}
+                        className="overflow-hidden"
+                      >
+                        <div className="flex items-center py-0.5 overflow-hidden">
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                        </div>
+
+                        {/* Add resize handle when resizing is enabled */}
+                        {enableResizing &&
+                          header.column.getCanResize() &&
+                          index < headerGroup.headers.length && (
+                            <div
+                              onDoubleClick={() => header.column.resetSize()}
+                              onMouseDown={header.getResizeHandler()}
+                              onTouchStart={header.getResizeHandler()}
+                              className={cn(
+                                "absolute right-0 top-0 h-full w-4 cursor-col-resize select-none touch-none z-10",
+                                "after:content-[''] after:absolute after:right-[50%] after:top-[15%] after:h-[70%] after:w-[1px] after:transition-colors",
+                                header.column.getIsResizing()
+                                  ? "after:bg-primary"
+                                  : "after:bg-border/60 hover:after:bg-border"
+                              )}
+                            />
                           )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      style={{
-                        ...getCommonPinningStyles({ column: cell.column }),
-                      }}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
+                      </TableHead>
+                    );
+                  })}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={table.getAllColumns().length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {enableResizing &&
+              table.getState().columnSizingInfo?.isResizingColumn ? (
+                <MemoizedTableBody table={table} />
+              ) : (
+                <TableBodyContent table={table} />
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
       <div className="flex flex-col gap-2.5">
         <DataTablePagination table={table} />
