@@ -173,7 +173,7 @@ export function DataTable<TData>({
                         }}
                         className="overflow-hidden"
                       >
-                        <div className="flex items-center px-3 py-1.5 overflow-hidden">
+                        <div className="flex items-center py-0.5 overflow-hidden">
                           {header.isPlaceholder
                             ? null
                             : flexRender(
@@ -191,7 +191,7 @@ export function DataTable<TData>({
                               onMouseDown={header.getResizeHandler()}
                               onTouchStart={header.getResizeHandler()}
                               className={cn(
-                                "absolute right-0 top-0 h-full w-4 cursor-col-resize select-none touch-none z-10 -translate-x-1/2",
+                                "absolute right-0 top-0 h-full w-4 cursor-col-resize select-none touch-none z-10",
                                 "after:content-[''] after:absolute after:right-[50%] after:top-[15%] after:h-[70%] after:w-[1px] after:transition-colors",
                                 header.column.getIsResizing()
                                   ? "after:bg-primary"
