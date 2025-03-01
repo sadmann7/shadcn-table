@@ -69,7 +69,7 @@ export function getColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Task" />
       ),
-      cell: ({ row }) => <div className="w-20">{row.getValue("code")}</div>,
+      cell: ({ row }) => <div className="truncate">{row.getValue("code")}</div>,
       enableSorting: false,
       enableHiding: false,
     },
@@ -80,13 +80,13 @@ export function getColumns({
       ),
       cell: ({ row }) => {
         const label = tasks.label.enumValues.find(
-          (label) => label === row.original.label,
+          (label) => label === row.original.label
         );
 
         return (
           <div className="flex space-x-2">
             {label && <Badge variant="outline">{label}</Badge>}
-            <span className="max-w-[31.25rem] truncate font-medium">
+            <span className="truncate font-medium">
               {row.getValue("title")}
             </span>
           </div>
@@ -100,7 +100,7 @@ export function getColumns({
       ),
       cell: ({ row }) => {
         const status = tasks.status.enumValues.find(
-          (status) => status === row.original.status,
+          (status) => status === row.original.status
         );
 
         if (!status) return null;
@@ -108,12 +108,12 @@ export function getColumns({
         const Icon = getStatusIcon(status);
 
         return (
-          <div className="flex w-[6.25rem] items-center">
+          <div className="flex items-center">
             <Icon
-              className="mr-2 size-4 text-muted-foreground"
+              className="mr-2 size-4 text-muted-foreground flex-shrink-0"
               aria-hidden="true"
             />
-            <span className="capitalize">{status}</span>
+            <span className="truncate capitalize">{status}</span>
           </div>
         );
       },
@@ -128,7 +128,7 @@ export function getColumns({
       ),
       cell: ({ row }) => {
         const priority = tasks.priority.enumValues.find(
-          (priority) => priority === row.original.priority,
+          (priority) => priority === row.original.priority
         );
 
         if (!priority) return null;
@@ -138,10 +138,10 @@ export function getColumns({
         return (
           <div className="flex items-center">
             <Icon
-              className="mr-2 size-4 text-muted-foreground"
+              className="mr-2 size-4 text-muted-foreground flex-shrink-0"
               aria-hidden="true"
             />
-            <span className="capitalize">{priority}</span>
+            <span className="truncate capitalize">{priority}</span>
           </div>
         );
       },
@@ -155,7 +155,9 @@ export function getColumns({
         <DataTableColumnHeader column={column} title="Archived" />
       ),
       cell: ({ row }) => (
-        <Badge variant="outline">{row.original.archived ? "Yes" : "No"}</Badge>
+        <Badge className="truncate" variant="outline">
+          {row.original.archived ? "Yes" : "No"}
+        </Badge>
       ),
     },
     {
@@ -163,7 +165,9 @@ export function getColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Created At" />
       ),
-      cell: ({ cell }) => formatDate(cell.getValue() as Date),
+      cell: ({ cell }) => (
+        <div className="truncate">{formatDate(cell.getValue() as Date)}</div>
+      ),
     },
     {
       id: "actions",
@@ -203,7 +207,7 @@ export function getColumns({
                             loading: "Updating...",
                             success: "Label updated",
                             error: (err) => getErrorMessage(err),
-                          },
+                          }
                         );
                       });
                     }}
