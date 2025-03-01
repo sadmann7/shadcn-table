@@ -1,8 +1,10 @@
-# [Shadcn Table](https://table.sadmn.com)
+# [Resizable Shadcn Table](https://resizable-shadcn-table.vercel.app)
+
+Forked from [Shadcn Table](https://table.sadmn.com)
 
 This is a shadcn table with server-side sorting, filtering, and pagination. It is bootstrapped with `create-t3-app`.
 
-[![Shadcn Table](./public/images/screenshot.png)](https://table.sadmn.com)
+[![Resizable Shadcn Table](./public/images/screenshot.png)](https://table.sadmn.com)
 
 > **Warning**
 > This project is still in development and is not ready for production use.
@@ -51,14 +53,34 @@ This is a shadcn table with server-side sorting, filtering, and pagination. It i
 4. Start the development server
 
    ```bash
-   pnpm run dev
+   pnpm dev
    ```
 
 5. Push the database schema
 
    ```bash
-   pnpm run db:push
+   pnpm db:push
    ```
+
+6. Use drizzle studio to import CSV data
+
+   ```bash
+   pnpm db:studio
+   ```
+
+7. To import CSV data without deleting existing data, use the following command:
+
+   ```bash
+   pnpm db:import-csv
+   ```
+
+8. To import CSV data and delete existing data, use the following command:
+
+   ```bash
+   pnpm db:import-csv:clean
+   ```
+
+Both the above commands will automatically revalidate the next cache. If it fails to do so, restart the development server. By default, the data is imported from tasks.csv file in the root directory. (maybe I'll change it later to accept a file name as an argument)
 
 ## Build your own Table
 
