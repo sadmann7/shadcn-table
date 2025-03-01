@@ -403,6 +403,5 @@ export function useDataTable<TData>({
   return {
     table,
     tableContainerRef,
-    containerWidth,
   };
 }

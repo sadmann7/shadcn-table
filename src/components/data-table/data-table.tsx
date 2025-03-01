@@ -41,12 +41,6 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   getColumnSizeVars?: (table: TanstackTable<TData>) => Record<string, string>;
 
   /**
-   * Width of the container for the table.
-   * @type number
-   */
-  containerWidth?: number;
-
-  /**
    * Whether to enable resizing for the table.
    * @default false
    * @type boolean
@@ -107,7 +101,6 @@ export function DataTable<TData>({
   floatingBar = null,
   tableContainerRef = null,
   getColumnSizeVars = () => ({}),
-  containerWidth = 0,
   enableResizing = false,
   children,
   className,
@@ -129,31 +122,25 @@ export function DataTable<TData>({
     return colSizes;
   }, [table, table.getState().columnSizingInfo, table.getState().columnSizing]);
 
-  // Get table total size safely for resizing
-  const totalSize = React.useMemo(() => {
-    if (
-      enableResizing &&
-      containerWidth &&
-      typeof table.getTotalSize === "function"
-    ) {
-      return table.getTotalSize();
-    }
-    return null;
-  }, [enableResizing, containerWidth, table]);
-
   return (
-    <div className={cn("w-full space-y-2.5", className)} {...props}>
+    <div
+      className={cn("w-full space-y-2.5 overflow-hidden", className)}
+      {...props}
+    >
       {children}
 
+      {/* Table container (fixed width) */}
       <div className="border rounded-md flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-auto" ref={tableContainerRef}>
+        <div className="w-full overflow-x-auto" ref={tableContainerRef}>
           <Table
-            className={cn(enableResizing ? "w-auto table-auto" : "w-full")}
+            className="w-auto"
             style={{
               ...columnSizeVars,
-              width: tableContainerRef?.current?.clientWidth
-                ? `${table.getTotalSize()}px`
-                : "100%",
+              width:
+                tableContainerRef?.current?.clientWidth &&
+                table.getTotalSize() >= tableContainerRef?.current?.clientWidth
+                  ? `${table.getTotalSize()}px`
+                  : "100%",
             }}
           >
             <TableHeader>

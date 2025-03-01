@@ -42,6 +42,9 @@ export function getColumns({
   return [
     {
       id: "select",
+      size: 60,
+      minSize: 40,
+      maxSize: 80,
       header: ({ table }) => (
         <div className="pl-2">
           <Checkbox
@@ -69,9 +72,13 @@ export function getColumns({
       ),
       enableSorting: false,
       enableHiding: false,
+      enableResizing: false,
     },
     {
       accessorKey: "code",
+      size: 100,
+      minSize: 68,
+      maxSize: 1600,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Task" />
       ),
@@ -81,6 +88,9 @@ export function getColumns({
     },
     {
       accessorKey: "title",
+      size: 380,
+      minSize: 240,
+      maxSize: 2400,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Title" />
       ),
@@ -101,6 +111,9 @@ export function getColumns({
     },
     {
       accessorKey: "status",
+      size: 106,
+      minSize: 106,
+      maxSize: 400,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
       ),
@@ -129,6 +142,9 @@ export function getColumns({
     },
     {
       accessorKey: "priority",
+      size: 111,
+      minSize: 111,
+      maxSize: 400,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Priority" />
       ),
@@ -157,6 +173,9 @@ export function getColumns({
     },
     {
       accessorKey: "archived",
+      size: 119,
+      minSize: 119,
+      maxSize: 400,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Archived" />
       ),
@@ -168,6 +187,9 @@ export function getColumns({
     },
     {
       accessorKey: "createdAt",
+      size: 130,
+      minSize: 130,
+      maxSize: 800,
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Created At" />
       ),
@@ -177,6 +199,9 @@ export function getColumns({
     },
     {
       id: "actions",
+      size: 60,
+      minSize: 40,
+      maxSize: 1200,
       cell: function Cell({ row }) {
         const [isUpdatePending, startUpdateTransition] = React.useTransition();
 
@@ -242,7 +267,7 @@ export function getColumns({
           </DropdownMenu>
         );
       },
-      size: 40,
+      enableResizing: false,
     },
   ];
 }

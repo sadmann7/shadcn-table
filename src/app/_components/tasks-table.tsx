@@ -138,7 +138,7 @@ export function TasksTable({ promises }: TasksTableProps) {
   // Enable resizing if the "resizableColumns" feature flag is set
   const enableResizing = featureFlags.includes("resizableColumns");
 
-  const { table, tableContainerRef, containerWidth } = useDataTable({
+  const { table, tableContainerRef } = useDataTable({
     data,
     columns,
     pageCount,
@@ -153,18 +153,7 @@ export function TasksTable({ promises }: TasksTableProps) {
     },
     initialState: {
       sorting: [{ id: "createdAt", desc: true }],
-      columnPinning: { right: ["actions"] },
-      // Define specific column sizes for better layout
-      columnSizing: {
-        select: 50,
-        code: 120,
-        title: 300,
-        status: 150,
-        priority: 150,
-        archived: 100,
-        createdAt: 180,
-        actions: 80,
-      },
+      // columnPinning: { left: ["actions"] },
     },
     getRowId: (originalRow) => originalRow.id,
     shallow: false,
@@ -173,12 +162,10 @@ export function TasksTable({ promises }: TasksTableProps) {
 
   return (
     <>
-      <DebugPanel table={table} />
       <DataTable
         table={table}
         // Pass resizing props to DataTable
         tableContainerRef={enableResizing ? tableContainerRef : null}
-        containerWidth={containerWidth}
         enableResizing={enableResizing}
         floatingBar={
           enableFloatingBar ? <TasksTableFloatingBar table={table} /> : null
