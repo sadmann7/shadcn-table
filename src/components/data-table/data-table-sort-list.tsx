@@ -234,7 +234,7 @@ export function DataTableSortList<TData>({
                         </PopoverTrigger>
                         <PopoverContent
                           id={fieldListboxId}
-                          className="w-[var(--radix-popover-trigger-width)] p-0"
+                          className="w-[var(--radix-popover-trigger-width)] origin-[var(--radix-popover-content-transform-origin)] p-0"
                           onCloseAutoFocus={() =>
                             document.getElementById(fieldTriggerId)?.focus()
                           }
