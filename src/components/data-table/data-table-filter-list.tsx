@@ -101,7 +101,7 @@ export function DataTableFilterList<TData>({
 
   const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
 
-  function addFilter() {
+  const onFilterAdd = React.useCallback(() => {
     const filterField = filterFields[0];
 
     if (!filterField) return;
@@ -119,397 +119,414 @@ export function DataTableFilterList<TData>({
         )(),
       },
     ]);
-  }
+  }, [filterFields, filters, setFilters]);
 
-  function updateFilter({
-    rowId,
-    field,
-    debounced = false,
-  }: {
-    rowId: string;
-    field: Omit<Partial<Filter<TData>>, "rowId">;
-    debounced?: boolean;
-  }) {
-    const updateFunction = debounced ? debouncedSetFilters : setFilters;
-    updateFunction((prevFilters) => {
-      const updatedFilters = prevFilters.map((filter) => {
-        if (filter.rowId === rowId) {
-          return { ...filter, ...field };
-        }
-        return filter;
+  const onFilterUpdate = React.useCallback(
+    ({
+      rowId,
+      field,
+      debounced = false,
+    }: {
+      rowId: string;
+      field: Omit<Partial<Filter<TData>>, "rowId">;
+      debounced?: boolean;
+    }) => {
+      const updateFunction = debounced ? debouncedSetFilters : setFilters;
+      updateFunction((prevFilters) => {
+        const updatedFilters = prevFilters.map((filter) => {
+          if (filter.rowId === rowId) {
+            return { ...filter, ...field };
+          }
+          return filter;
+        });
+        return updatedFilters;
       });
-      return updatedFilters;
-    });
-  }
+    },
+    [debouncedSetFilters, setFilters],
+  );
 
-  function removeFilter(rowId: string) {
-    const updatedFilters = filters.filter((filter) => filter.rowId !== rowId);
-    void setFilters(updatedFilters);
-  }
+  const onFilterRemove = React.useCallback(
+    (rowId: string) => {
+      const updatedFilters = filters.filter((filter) => filter.rowId !== rowId);
+      void setFilters(updatedFilters);
+    },
+    [filters, setFilters],
+  );
 
-  function moveFilter(activeIndex: number, overIndex: number) {
-    void setFilters((prevFilters) => {
-      const newFilters = [...prevFilters];
-      const [removed] = newFilters.splice(activeIndex, 1);
-      if (!removed) return prevFilters;
-      newFilters.splice(overIndex, 0, removed);
-      return newFilters;
-    });
-  }
+  const onFilterMove = React.useCallback(
+    (activeIndex: number, overIndex: number) => {
+      void setFilters((prevFilters) => {
+        const newFilters = [...prevFilters];
+        const [removed] = newFilters.splice(activeIndex, 1);
+        if (!removed) return prevFilters;
+        newFilters.splice(overIndex, 0, removed);
+        return newFilters;
+      });
+    },
+    [setFilters],
+  );
 
-  function renderFilterInput({
-    filter,
-    inputId,
-  }: {
-    filter: Filter<TData>;
-    inputId: string;
-  }) {
-    const filterField = filterFields.find((f) => f.id === filter.id);
+  const renderFilterInput = React.useCallback(
+    ({
+      filter,
+      inputId,
+    }: {
+      filter: Filter<TData>;
+      inputId: string;
+    }) => {
+      const filterField = filterFields.find((f) => f.id === filter.id);
 
-    if (!filterField) return null;
+      if (!filterField) return null;
 
-    if (filter.operator === "isEmpty" || filter.operator === "isNotEmpty") {
-      return (
-        <div
-          id={inputId}
-          role="status"
-          aria-live="polite"
-          aria-label={`${filterField.label} filter is ${filter.operator === "isEmpty" ? "empty" : "not empty"}`}
-          className="h-8 w-full rounded border border-dashed"
-        />
-      );
-    }
-
-    switch (filter.type) {
-      case "text":
-      case "number":
+      if (filter.operator === "isEmpty" || filter.operator === "isNotEmpty") {
         return (
-          <Input
+          <div
             id={inputId}
-            type={filter.type}
-            aria-label={`${filterField.label} filter value`}
-            aria-describedby={`${inputId}-description`}
-            placeholder={filterField.placeholder ?? "Enter a value..."}
-            className="h-8 w-full rounded"
-            defaultValue={
-              typeof filter.value === "string" ? filter.value : undefined
-            }
-            onChange={(event) =>
-              updateFilter({
-                rowId: filter.rowId,
-                field: { value: event.target.value },
-                debounced: true,
-              })
-            }
+            role="status"
+            aria-live="polite"
+            aria-label={`${filterField.label} filter is ${filter.operator === "isEmpty" ? "empty" : "not empty"}`}
+            className="h-8 w-full rounded border border-dashed"
           />
         );
-      case "select":
-        return (
-          <FacetedFilter>
-            <FacetedFilterTrigger asChild>
-              <Button
-                id={inputId}
-                variant="outline"
-                size="sm"
-                aria-label={`${filterField.label} filter value`}
-                aria-controls={`${inputId}-listbox`}
-                className="h-8 w-full justify-between gap-2 rounded px-1.5 text-left text-muted-foreground hover:text-muted-foreground"
-              >
-                {filter.value && typeof filter.value === "string" ? (
-                  <Badge
-                    variant="secondary"
-                    className="rounded-sm px-1 font-normal"
-                  >
-                    {filterField?.options?.find(
-                      (option) => option.value === filter.value,
-                    )?.label || filter.value}
-                  </Badge>
-                ) : (
-                  <>
-                    {filterField.placeholder ?? "Select an option..."}
-                    <ChevronsUpDown />
-                  </>
-                )}
-              </Button>
-            </FacetedFilterTrigger>
-            <FacetedFilterContent
-              id={`${inputId}-listbox`}
-              className="w-[12.5rem] origin-(--radix-popover-content-transform-origin)"
-            >
-              <FacetedFilterInput
-                placeholder={filterField?.label ?? "Search options..."}
-                aria-label={`Search ${filterField?.label} options`}
-              />
-              <FacetedFilterList>
-                <FacetedFilterEmpty>No options found.</FacetedFilterEmpty>
-                <FacetedFilterGroup>
-                  {filterField?.options?.map((option) => (
-                    <FacetedFilterItem
-                      key={option.value}
-                      value={option.value}
-                      selected={filter.value === option.value}
-                      onSelect={(value) => {
-                        updateFilter({ rowId: filter.rowId, field: { value } });
-                        setTimeout(() => {
-                          document.getElementById(inputId)?.click();
-                        }, 0);
-                      }}
-                    >
-                      {option.icon && (
-                        <option.icon
-                          className="mr-2 size-4 text-muted-foreground"
-                          aria-hidden="true"
-                        />
-                      )}
-                      <span>{option.label}</span>
-                      {option.count && (
-                        <span className="ml-auto flex size-4 items-center justify-center font-mono text-xs">
-                          {option.count}
-                        </span>
-                      )}
-                    </FacetedFilterItem>
-                  ))}
-                </FacetedFilterGroup>
-              </FacetedFilterList>
-            </FacetedFilterContent>
-          </FacetedFilter>
-        );
-      case "multi-select": {
-        const selectedValues = new Set(
-          Array.isArray(filter.value) ? filter.value : [],
-        );
+      }
 
-        return (
-          <FacetedFilter>
-            <FacetedFilterTrigger asChild>
-              <Button
-                id={inputId}
-                variant="outline"
-                size="sm"
-                aria-label={`${filterField.label} filter values`}
-                aria-controls={`${inputId}-listbox`}
-                className="h-8 w-full justify-between gap-2 rounded px-1.5 text-left text-muted-foreground hover:text-muted-foreground"
-              >
-                {selectedValues.size === 0 && (
-                  <>
-                    {filterField.placeholder ?? " Select options..."}
-                    <ChevronsUpDown />
-                  </>
-                )}
-                {selectedValues?.size > 0 && (
-                  <div className="flex items-center">
+      switch (filter.type) {
+        case "text":
+        case "number":
+          return (
+            <Input
+              id={inputId}
+              type={filter.type}
+              aria-label={`${filterField.label} filter value`}
+              aria-describedby={`${inputId}-description`}
+              placeholder={filterField.placeholder ?? "Enter a value..."}
+              className="h-8 w-full rounded"
+              defaultValue={
+                typeof filter.value === "string" ? filter.value : undefined
+              }
+              onChange={(event) =>
+                onFilterUpdate({
+                  rowId: filter.rowId,
+                  field: { value: event.target.value },
+                  debounced: true,
+                })
+              }
+            />
+          );
+        case "select":
+          return (
+            <FacetedFilter>
+              <FacetedFilterTrigger asChild>
+                <Button
+                  id={inputId}
+                  aria-controls={`${inputId}-listbox`}
+                  aria-label={`${filterField.label} filter value`}
+                  variant="outline"
+                  size="sm"
+                  className="h-8 w-full justify-between gap-2 rounded px-1.5 text-left text-muted-foreground hover:text-muted-foreground"
+                >
+                  {filter.value && typeof filter.value === "string" ? (
                     <Badge
                       variant="secondary"
-                      className="rounded-sm px-1 font-normal lg:hidden"
+                      className="rounded-sm px-1 font-normal"
                     >
-                      {selectedValues.size}
+                      {filterField?.options?.find(
+                        (option) => option.value === filter.value,
+                      )?.label || filter.value}
                     </Badge>
-                    <div className="hidden min-w-0 gap-1 lg:flex">
-                      {selectedValues.size > 2 ? (
-                        <Badge
-                          variant="secondary"
-                          className="rounded-sm px-1 font-normal"
-                        >
-                          {selectedValues.size} selected
-                        </Badge>
-                      ) : (
-                        filterField?.options
-                          ?.filter((option) => selectedValues.has(option.value))
-                          .map((option) => (
-                            <Badge
-                              variant="secondary"
-                              key={option.value}
-                              className="truncate rounded-sm px-1 font-normal"
-                            >
-                              {option.label}
-                            </Badge>
-                          ))
-                      )}
-                    </div>
-                  </div>
-                )}
-              </Button>
-            </FacetedFilterTrigger>
-            <FacetedFilterContent
-              id={`${inputId}-listbox`}
-              className="w-[12.5rem] origin-(--radix-popover-content-transform-origin)"
-            >
-              <FacetedFilterInput
-                aria-label={`Search ${filterField?.label} options`}
-                placeholder={filterField?.label ?? "Search options..."}
-              />
-              <FacetedFilterList>
-                <FacetedFilterEmpty>No options found.</FacetedFilterEmpty>
-                <FacetedFilterGroup>
-                  {filterField?.options?.map((option) => (
-                    <FacetedFilterItem
-                      key={option.value}
-                      value={option.value}
-                      selected={selectedValues.has(option.value)}
-                      onSelect={(value) => {
-                        const currentValue = Array.isArray(filter.value)
-                          ? filter.value
-                          : [];
-                        const newValue = currentValue.includes(value)
-                          ? currentValue.filter((v) => v !== value)
-                          : [...currentValue, value];
-                        updateFilter({
-                          rowId: filter.rowId,
-                          field: { value: newValue },
-                        });
-                      }}
-                    >
-                      {option.icon && (
-                        <option.icon
-                          className="mr-2 size-4 text-muted-foreground"
-                          aria-hidden="true"
-                        />
-                      )}
-                      <span>{option.label}</span>
-                      {option.count && (
-                        <span className="ml-auto flex size-4 items-center justify-center font-mono text-xs">
-                          {option.count}
-                        </span>
-                      )}
-                    </FacetedFilterItem>
-                  ))}
-                </FacetedFilterGroup>
-              </FacetedFilterList>
-            </FacetedFilterContent>
-          </FacetedFilter>
-        );
-      }
-      case "date": {
-        const dateValue = Array.isArray(filter.value)
-          ? filter.value.filter(Boolean)
-          : [filter.value, filter.value].filter(Boolean);
-
-        const displayValue =
-          filter.operator === "isBetween" && dateValue.length === 2
-            ? `${formatDate(dateValue[0] ?? new Date())} - ${formatDate(
-                dateValue[1] ?? new Date(),
-              )}`
-            : dateValue[0]
-              ? formatDate(dateValue[0])
-              : "Pick a date";
-
-        return (
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                id={inputId}
-                variant="outline"
-                size="sm"
-                aria-label={`${filterField.label} date filter`}
-                aria-controls={`${inputId}-calendar`}
-                className={cn(
-                  "h-8 w-full justify-start gap-2 rounded text-left font-normal",
-                  !filter.value && "text-muted-foreground",
-                )}
+                  ) : (
+                    <>
+                      {filterField.placeholder ?? "Select an option..."}
+                      <ChevronsUpDown />
+                    </>
+                  )}
+                </Button>
+              </FacetedFilterTrigger>
+              <FacetedFilterContent
+                id={`${inputId}-listbox`}
+                className="w-[12.5rem] origin-(--radix-popover-content-transform-origin)"
               >
-                <CalendarIcon
-                  className="size-3.5 shrink-0"
-                  aria-hidden="true"
+                <FacetedFilterInput
+                  placeholder={filterField?.label ?? "Search options..."}
+                  aria-label={`Search ${filterField?.label} options`}
                 />
-                <span className="truncate">{displayValue}</span>
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              id={`${inputId}-calendar`}
-              align="start"
-              className="w-auto p-0"
-            >
-              {filter.operator === "isBetween" ? (
-                <Calendar
-                  id={`${inputId}-calendar`}
-                  mode="range"
-                  aria-label={`Select ${filterField.label} date range`}
-                  selected={
-                    dateValue.length === 2
-                      ? {
-                          from: new Date(dateValue[0] ?? ""),
-                          to: new Date(dateValue[1] ?? ""),
-                        }
-                      : {
-                          from: new Date(),
-                          to: new Date(),
-                        }
-                  }
-                  onSelect={(date) => {
-                    updateFilter({
-                      rowId: filter.rowId,
-                      field: {
-                        value: date
-                          ? [
-                              date.from?.toISOString() ?? "",
-                              date.to?.toISOString() ?? "",
-                            ]
-                          : [],
-                      },
-                    });
-                  }}
-                  initialFocus
-                  numberOfMonths={1}
-                />
-              ) : (
-                <Calendar
-                  id={`${inputId}-calendar`}
-                  mode="single"
-                  aria-label={`Select ${filterField.label} date`}
-                  selected={dateValue[0] ? new Date(dateValue[0]) : undefined}
-                  onSelect={(date) => {
-                    updateFilter({
-                      rowId: filter.rowId,
-                      field: { value: date?.toISOString() ?? "" },
-                    });
+                <FacetedFilterList>
+                  <FacetedFilterEmpty>No options found.</FacetedFilterEmpty>
+                  <FacetedFilterGroup>
+                    {filterField?.options?.map((option) => (
+                      <FacetedFilterItem
+                        key={option.value}
+                        value={option.value}
+                        selected={filter.value === option.value}
+                        onSelect={(value) => {
+                          onFilterUpdate({
+                            rowId: filter.rowId,
+                            field: { value },
+                          });
+                          setTimeout(() => {
+                            document.getElementById(inputId)?.click();
+                          }, 0);
+                        }}
+                      >
+                        {option.icon && (
+                          <option.icon
+                            className="mr-2 size-4 text-muted-foreground"
+                            aria-hidden="true"
+                          />
+                        )}
+                        <span>{option.label}</span>
+                        {option.count && (
+                          <span className="ml-auto flex size-4 items-center justify-center font-mono text-xs">
+                            {option.count}
+                          </span>
+                        )}
+                      </FacetedFilterItem>
+                    ))}
+                  </FacetedFilterGroup>
+                </FacetedFilterList>
+              </FacetedFilterContent>
+            </FacetedFilter>
+          );
+        case "multi-select": {
+          const selectedValues = new Set(
+            Array.isArray(filter.value) ? filter.value : [],
+          );
 
-                    setTimeout(() => {
-                      document.getElementById(inputId)?.click();
-                    }, 0);
-                  }}
-                  initialFocus
+          return (
+            <FacetedFilter>
+              <FacetedFilterTrigger asChild>
+                <Button
+                  id={inputId}
+                  aria-controls={`${inputId}-listbox`}
+                  aria-label={`${filterField.label} filter values`}
+                  variant="outline"
+                  size="sm"
+                  className="h-8 w-full justify-between gap-2 rounded px-1.5 text-left text-muted-foreground hover:text-muted-foreground"
+                >
+                  {selectedValues.size === 0 && (
+                    <>
+                      {filterField.placeholder ?? " Select options..."}
+                      <ChevronsUpDown />
+                    </>
+                  )}
+                  {selectedValues?.size > 0 && (
+                    <div className="flex items-center">
+                      <Badge
+                        variant="secondary"
+                        className="rounded-sm px-1 font-normal lg:hidden"
+                      >
+                        {selectedValues.size}
+                      </Badge>
+                      <div className="hidden min-w-0 gap-1 lg:flex">
+                        {selectedValues.size > 2 ? (
+                          <Badge
+                            variant="secondary"
+                            className="rounded-sm px-1 font-normal"
+                          >
+                            {selectedValues.size} selected
+                          </Badge>
+                        ) : (
+                          filterField?.options
+                            ?.filter((option) =>
+                              selectedValues.has(option.value),
+                            )
+                            .map((option) => (
+                              <Badge
+                                variant="secondary"
+                                key={option.value}
+                                className="truncate rounded-sm px-1 font-normal"
+                              >
+                                {option.label}
+                              </Badge>
+                            ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </Button>
+              </FacetedFilterTrigger>
+              <FacetedFilterContent
+                id={`${inputId}-listbox`}
+                className="w-[12.5rem] origin-(--radix-popover-content-transform-origin)"
+              >
+                <FacetedFilterInput
+                  aria-label={`Search ${filterField?.label} options`}
+                  placeholder={filterField?.label ?? "Search options..."}
                 />
-              )}
-            </PopoverContent>
-          </Popover>
-        );
-      }
-      case "boolean": {
-        if (Array.isArray(filter.value)) return null;
+                <FacetedFilterList>
+                  <FacetedFilterEmpty>No options found.</FacetedFilterEmpty>
+                  <FacetedFilterGroup>
+                    {filterField?.options?.map((option) => (
+                      <FacetedFilterItem
+                        key={option.value}
+                        value={option.value}
+                        selected={selectedValues.has(option.value)}
+                        onSelect={(value) => {
+                          const currentValue = Array.isArray(filter.value)
+                            ? filter.value
+                            : [];
+                          const newValue = currentValue.includes(value)
+                            ? currentValue.filter((v) => v !== value)
+                            : [...currentValue, value];
+                          onFilterUpdate({
+                            rowId: filter.rowId,
+                            field: { value: newValue },
+                          });
+                        }}
+                      >
+                        {option.icon && (
+                          <option.icon
+                            className="mr-2 size-4 text-muted-foreground"
+                            aria-hidden="true"
+                          />
+                        )}
+                        <span>{option.label}</span>
+                        {option.count && (
+                          <span className="ml-auto flex size-4 items-center justify-center font-mono text-xs">
+                            {option.count}
+                          </span>
+                        )}
+                      </FacetedFilterItem>
+                    ))}
+                  </FacetedFilterGroup>
+                </FacetedFilterList>
+              </FacetedFilterContent>
+            </FacetedFilter>
+          );
+        }
+        case "date": {
+          const dateValue = Array.isArray(filter.value)
+            ? filter.value.filter(Boolean)
+            : [filter.value, filter.value].filter(Boolean);
 
-        return (
-          <Select
-            value={filter.value}
-            onValueChange={(value) =>
-              updateFilter({ rowId: filter.rowId, field: { value } })
-            }
-          >
-            <SelectTrigger
-              id={inputId}
-              aria-label={`${filterField.label} boolean filter`}
-              aria-controls={`${inputId}-listbox`}
-              className="h-8 w-full rounded bg-transparent"
+          const displayValue =
+            filter.operator === "isBetween" && dateValue.length === 2
+              ? `${formatDate(dateValue[0] ?? new Date())} - ${formatDate(
+                  dateValue[1] ?? new Date(),
+                )}`
+              : dateValue[0]
+                ? formatDate(dateValue[0])
+                : "Pick a date";
+
+          return (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id={inputId}
+                  aria-controls={`${inputId}-calendar`}
+                  aria-label={`${filterField.label} date filter`}
+                  variant="outline"
+                  size="sm"
+                  className={cn(
+                    "h-8 w-full justify-start gap-2 rounded text-left font-normal",
+                    !filter.value && "text-muted-foreground",
+                  )}
+                >
+                  <CalendarIcon
+                    className="size-3.5 shrink-0"
+                    aria-hidden="true"
+                  />
+                  <span className="truncate">{displayValue}</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                id={`${inputId}-calendar`}
+                align="start"
+                className="w-auto p-0"
+              >
+                {filter.operator === "isBetween" ? (
+                  <Calendar
+                    id={`${inputId}-calendar`}
+                    mode="range"
+                    aria-label={`Select ${filterField.label} date range`}
+                    selected={
+                      dateValue.length === 2
+                        ? {
+                            from: new Date(dateValue[0] ?? ""),
+                            to: new Date(dateValue[1] ?? ""),
+                          }
+                        : {
+                            from: new Date(),
+                            to: new Date(),
+                          }
+                    }
+                    onSelect={(date) => {
+                      onFilterUpdate({
+                        rowId: filter.rowId,
+                        field: {
+                          value: date
+                            ? [
+                                date.from?.toISOString() ?? "",
+                                date.to?.toISOString() ?? "",
+                              ]
+                            : [],
+                        },
+                      });
+                    }}
+                    initialFocus
+                    numberOfMonths={1}
+                  />
+                ) : (
+                  <Calendar
+                    id={`${inputId}-calendar`}
+                    mode="single"
+                    aria-label={`Select ${filterField.label} date`}
+                    selected={dateValue[0] ? new Date(dateValue[0]) : undefined}
+                    onSelect={(date) => {
+                      onFilterUpdate({
+                        rowId: filter.rowId,
+                        field: { value: date?.toISOString() ?? "" },
+                      });
+
+                      setTimeout(() => {
+                        document.getElementById(inputId)?.click();
+                      }, 0);
+                    }}
+                    initialFocus
+                  />
+                )}
+              </PopoverContent>
+            </Popover>
+          );
+        }
+        case "boolean": {
+          if (Array.isArray(filter.value)) return null;
+
+          return (
+            <Select
+              value={filter.value}
+              onValueChange={(value) =>
+                onFilterUpdate({ rowId: filter.rowId, field: { value } })
+              }
             >
-              <SelectValue placeholder={filter.value ? "True" : "False"} />
-            </SelectTrigger>
-            <SelectContent id={`${inputId}-listbox`}>
-              <SelectItem value="true">True</SelectItem>
-              <SelectItem value="false">False</SelectItem>
-            </SelectContent>
-          </Select>
-        );
+              <SelectTrigger
+                id={inputId}
+                aria-controls={`${inputId}-listbox`}
+                aria-label={`${filterField.label} boolean filter`}
+                className="h-8 w-full rounded bg-transparent"
+              >
+                <SelectValue placeholder={filter.value ? "True" : "False"} />
+              </SelectTrigger>
+              <SelectContent id={`${inputId}-listbox`}>
+                <SelectItem value="true">True</SelectItem>
+                <SelectItem value="false">False</SelectItem>
+              </SelectContent>
+            </Select>
+          );
+        }
+        default:
+          return null;
       }
-      default:
-        return null;
-    }
-  }
+    },
+    [filterFields, onFilterUpdate],
+  );
 
   return (
     <Sortable
       value={filters}
       getItemValue={(item) => item.rowId}
       onMove={({ activeIndex, overIndex }) =>
-        moveFilter(activeIndex, overIndex)
+        onFilterMove(activeIndex, overIndex)
       }
     >
       <Popover>
@@ -517,11 +534,11 @@ export function DataTableFilterList<TData>({
           <Button
             variant="outline"
             size="sm"
-            className="gap-2"
+            className="gap-2 [&>svg]:size-3"
             aria-label="Open filters"
             aria-controls={`${id}-filter-dialog`}
           >
-            <ListFilter className="size-3" aria-hidden="true" />
+            <ListFilter aria-hidden="true" />
             Filters
             {filters.length > 0 && (
               <Badge
@@ -618,7 +635,7 @@ export function DataTableFilterList<TData>({
                                 (field) => field.id === filter.id,
                               )?.label ?? "Select field"}
                             </span>
-                            <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+                            <ChevronsUpDown className="opacity-50" />
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent
@@ -647,7 +664,7 @@ export function DataTableFilterList<TData>({
 
                                       if (!filterField) return;
 
-                                      updateFilter({
+                                      onFilterUpdate({
                                         rowId: filter.rowId,
                                         field: {
                                           id: value as StringKeyOf<TData>,
@@ -685,7 +702,7 @@ export function DataTableFilterList<TData>({
                       <Select
                         value={filter.operator}
                         onValueChange={(value: FilterOperator) =>
-                          updateFilter({
+                          onFilterUpdate({
                             rowId: filter.rowId,
                             field: {
                               operator: value,
@@ -718,23 +735,21 @@ export function DataTableFilterList<TData>({
                         {renderFilterInput({ filter, inputId })}
                       </div>
                       <Button
+                        aria-label={`Remove filter ${index + 1}`}
                         variant="outline"
                         size="icon"
-                        aria-label={`Remove filter ${index + 1}`}
-                        className="size-8 shrink-0 rounded"
-                        onClick={() => removeFilter(filter.rowId)}
+                        className="size-8 shrink-0 rounded [&>svg]:size-3.5"
+                        onClick={() => onFilterRemove(filter.rowId)}
                       >
-                        <Trash2 className="size-3.5" aria-hidden="true" />
+                        <Trash2 />
                       </Button>
-                      <SortableItemHandle
-                        className="size-8 shrink-0 rounded"
-                        asChild
-                      >
-                        <Button variant="outline" size="icon">
-                          <GripVertical
-                            className="size-3.5"
-                            aria-hidden="true"
-                          />
+                      <SortableItemHandle asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="size-8 shrink-0 rounded [&>svg]:size-3.5"
+                        >
+                          <GripVertical />
                         </Button>
                       </SortableItemHandle>
                     </div>
@@ -747,7 +762,7 @@ export function DataTableFilterList<TData>({
             <Button
               size="sm"
               className="h-[1.85rem] rounded"
-              onClick={addFilter}
+              onClick={onFilterAdd}
             >
               Add filter
             </Button>
