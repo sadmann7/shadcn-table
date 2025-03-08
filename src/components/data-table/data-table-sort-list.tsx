@@ -63,50 +63,48 @@ export function DataTableSortList<TData>({
 }: DataTableSortListProps<TData>) {
   const id = React.useId();
 
-  const initialSorting = (table.initialState.sorting ??
-    []) as ExtendedSortingState<TData>;
-
-  const [sorting, setSorting] = useQueryState(
-    "sort",
-    getSortingStateParser(table.getRowModel().rows[0]?.original)
-      .withDefault(initialSorting)
-      .withOptions({
-        clearOnDefault: true,
-        shallow,
-      }),
+  const initialSorting = React.useMemo(
+    () => (table.initialState.sorting ?? []) as ExtendedSortingState<TData>,
+    [table.initialState.sorting],
   );
 
-  const uniqueSorting = React.useMemo(
+  const sortingParser = React.useMemo(
     () =>
-      sorting.filter(
-        (sort, index, self) =>
-          index === self.findIndex((t) => t.id === sort.id),
-      ),
-    [sorting],
+      getSortingStateParser(table.getRowModel().rows[0]?.original)
+        .withDefault(initialSorting)
+        .withOptions({
+          clearOnDefault: true,
+          shallow,
+        }),
+    [initialSorting, shallow, table],
   );
 
+  const [sorting, setSorting] = useQueryState("sort", sortingParser);
   const debouncedSetSorting = useDebouncedCallback(setSorting, debounceMs);
 
-  const sortableColumns = React.useMemo(
-    () =>
-      table
-        .getAllColumns()
-        .filter(
-          (column) =>
-            column.getCanSort() && !sorting.some((s) => s.id === column.id),
-        )
-        .map((column) => ({
-          id: column.id,
-          label: toSentenceCase(column.id),
-          selected: false,
-        })),
-    [sorting, table],
-  );
+  const uniqueSorting = React.useMemo(() => {
+    const uniqueIds = new Set();
+    return sorting.filter((sort) => {
+      if (uniqueIds.has(sort.id)) return false;
+      uniqueIds.add(sort.id);
+      return true;
+    });
+  }, [sorting]);
 
-  function addSort() {
-    const firstAvailableColumn = sortableColumns.find(
-      (column) => !sorting.some((s) => s.id === column.id),
-    );
+  const sortableColumns = React.useMemo(() => {
+    const sortingIds = new Set<string>(sorting.map((s) => s.id));
+    return table
+      .getAllColumns()
+      .filter((column) => column.getCanSort() && !sortingIds.has(column.id))
+      .map((column) => ({
+        id: column.id,
+        label: toSentenceCase(column.id),
+        selected: false,
+      }));
+  }, [sorting, table]);
+
+  const onAddSort = React.useCallback(() => {
+    const firstAvailableColumn = sortableColumns[0];
     if (!firstAvailableColumn) return;
 
     void setSorting([
@@ -116,34 +114,44 @@ export function DataTableSortList<TData>({
         desc: false,
       },
     ]);
-  }
+  }, [sortableColumns, sorting, setSorting]);
 
-  function updateSort({
-    id,
-    field,
-    debounced = false,
-  }: {
-    id: string;
-    field: Partial<ExtendedColumnSort<TData>>;
-    debounced?: boolean;
-  }) {
-    const updateFunction = debounced ? debouncedSetSorting : setSorting;
+  const onUpdateSort = React.useCallback(
+    ({
+      id,
+      field,
+      debounced = false,
+    }: {
+      id: string;
+      field: Partial<ExtendedColumnSort<TData>>;
+      debounced?: boolean;
+    }) => {
+      const updateFunction = debounced ? debouncedSetSorting : setSorting;
 
-    updateFunction((prevSorting) => {
-      if (!prevSorting) return prevSorting;
+      updateFunction((prevSorting) => {
+        if (!prevSorting) return prevSorting;
 
-      const updatedSorting = prevSorting.map((sort) =>
-        sort.id === id ? { ...sort, ...field } : sort,
+        return prevSorting.map((sort) =>
+          sort.id === id ? { ...sort, ...field } : sort,
+        );
+      });
+    },
+    [debouncedSetSorting, setSorting],
+  );
+
+  const onRemoveSort = React.useCallback(
+    (id: string) => {
+      void setSorting((prevSorting) =>
+        prevSorting.filter((item) => item.id !== id),
       );
-      return updatedSorting;
-    });
-  }
+    },
+    [setSorting],
+  );
 
-  function removeSort(id: string) {
-    void setSorting((prevSorting) =>
-      prevSorting.filter((item) => item.id !== id),
-    );
-  }
+  const onSortingReset = React.useCallback(
+    () => setSorting(null),
+    [setSorting],
+  );
 
   return (
     <Sortable
@@ -155,12 +163,11 @@ export function DataTableSortList<TData>({
         <PopoverTrigger asChild>
           <Button
             variant="outline"
-            size="sm"
-            className="gap-2"
             aria-label="Open sorting"
-            aria-controls={`${id}-sort-dialog`}
+            size="sm"
+            className="gap-2 [&>svg]:size-3"
           >
-            <ArrowDownUp className="size-3" aria-hidden="true" />
+            <ArrowDownUp />
             Sort
             {uniqueSorting.length > 0 && (
               <Badge
@@ -173,7 +180,6 @@ export function DataTableSortList<TData>({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          id={`${id}-sort-dialog`}
           align="start"
           collisionPadding={16}
           className={cn(
@@ -206,18 +212,17 @@ export function DataTableSortList<TData>({
                         <PopoverTrigger asChild>
                           <Button
                             id={fieldTriggerId}
+                            role="combobox"
+                            aria-controls={fieldListboxId}
                             variant="outline"
                             size="sm"
-                            role="combobox"
                             className="h-8 w-44 justify-between gap-2 rounded focus:outline-hidden focus:ring-1 focus:ring-ring"
-                            aria-controls={fieldListboxId}
                           >
                             <span className="truncate">
                               {toSentenceCase(sort.id)}
                             </span>
                             <div className="ml-auto flex items-center gap-1">
-                              {initialSorting.length === 1 &&
-                              initialSorting[0]?.id === sort.id ? (
+                              {initialSorting[0]?.id === sort.id ? (
                                 <Badge
                                   variant="secondary"
                                   className="h-[1.125rem] rounded px-1 font-mono font-normal text-[0.65rem]"
@@ -225,10 +230,7 @@ export function DataTableSortList<TData>({
                                   Default
                                 </Badge>
                               ) : null}
-                              <ChevronsUpDown
-                                className="size-4 shrink-0 opacity-50"
-                                aria-hidden="true"
-                              />
+                              <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
                             </div>
                           </Button>
                         </PopoverTrigger>
@@ -251,7 +253,7 @@ export function DataTableSortList<TData>({
                                     onSelect={(value) => {
                                       const newFieldTriggerId = `${id}-sort-${value}-field-trigger`;
 
-                                      updateSort({
+                                      onUpdateSort({
                                         id: sort.id,
                                         field: {
                                           id: value as StringKeyOf<TData>,
@@ -287,7 +289,7 @@ export function DataTableSortList<TData>({
                       <Select
                         value={sort.desc ? "desc" : "asc"}
                         onValueChange={(value: SortDirection) =>
-                          updateSort({
+                          onUpdateSort({
                             id: sort.id,
                             field: { id: sort.id, desc: value === "desc" },
                           })
@@ -314,24 +316,21 @@ export function DataTableSortList<TData>({
                         </SelectContent>
                       </Select>
                       <Button
+                        aria-label={`Remove sort ${sort.id}`}
                         variant="outline"
                         size="icon"
-                        aria-label={`Remove sort ${sort.id}`}
-                        className="size-8 shrink-0 rounded"
-                        onClick={() => removeSort(sort.id)}
+                        className="size-8 shrink-0 rounded [&>svg]:size-3.5"
+                        onClick={() => onRemoveSort(sort.id)}
                       >
-                        <Trash2 className="size-3.5" aria-hidden="true" />
+                        <Trash2 />
                       </Button>
                       <SortableItemHandle asChild>
                         <Button
                           variant="outline"
                           size="icon"
-                          className="size-8 shrink-0 rounded"
+                          className="size-8 shrink-0 rounded [&>svg]:size-3.5"
                         >
-                          <GripVertical
-                            className="size-3.5"
-                            aria-hidden="true"
-                          />
+                          <GripVertical />
                         </Button>
                       </SortableItemHandle>
                     </div>
@@ -344,7 +343,7 @@ export function DataTableSortList<TData>({
             <Button
               size="sm"
               className="h-[1.85rem] rounded"
-              onClick={addSort}
+              onClick={onAddSort}
               disabled={sorting.length >= sortableColumns.length}
             >
               Add sort
@@ -354,7 +353,7 @@ export function DataTableSortList<TData>({
                 size="sm"
                 variant="outline"
                 className="rounded"
-                onClick={() => setSorting(null)}
+                onClick={onSortingReset}
               >
                 Reset sorting
               </Button>

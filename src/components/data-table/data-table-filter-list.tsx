@@ -213,7 +213,7 @@ export function DataTableFilterList<TData>({
                 size="sm"
                 aria-label={`${filterField.label} filter value`}
                 aria-controls={`${inputId}-listbox`}
-                className="h-8 w-full justify-start gap-2 rounded px-1.5 text-left text-muted-foreground hover:text-muted-foreground"
+                className="h-8 w-full justify-between gap-2 rounded px-1.5 text-left text-muted-foreground hover:text-muted-foreground"
               >
                 {filter.value && typeof filter.value === "string" ? (
                   <Badge
@@ -227,7 +227,7 @@ export function DataTableFilterList<TData>({
                 ) : (
                   <>
                     {filterField.placeholder ?? "Select an option..."}
-                    <ChevronsUpDown className="size-4" aria-hidden="true" />
+                    <ChevronsUpDown />
                   </>
                 )}
               </Button>
@@ -288,12 +288,12 @@ export function DataTableFilterList<TData>({
                 size="sm"
                 aria-label={`${filterField.label} filter values`}
                 aria-controls={`${inputId}-listbox`}
-                className="h-8 w-full justify-start gap-2 rounded px-1.5 text-left text-muted-foreground hover:text-muted-foreground"
+                className="h-8 w-full justify-between gap-2 rounded px-1.5 text-left text-muted-foreground hover:text-muted-foreground"
               >
                 {selectedValues.size === 0 && (
                   <>
                     {filterField.placeholder ?? " Select options..."}
-                    <ChevronsUpDown className="size-4" aria-hidden="true" />
+                    <ChevronsUpDown />
                   </>
                 )}
                 {selectedValues?.size > 0 && (

@@ -40,9 +40,9 @@ export function DataTableViewOptions<TData>({
           size="sm"
           className="ml-auto hidden h-8 gap-2 focus:outline-hidden focus:ring-1 focus:ring-ring focus-visible:ring-0 lg:flex"
         >
-          <Settings2 className="size-4" />
+          <Settings2 />
           View
-          <ChevronsUpDown className="ml-auto size-4 shrink-0 opacity-50" />
+          <ChevronsUpDown className="ml-auto opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
