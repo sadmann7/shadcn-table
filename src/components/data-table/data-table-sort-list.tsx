@@ -208,7 +208,7 @@ export function DataTableSortList<TData>({
                 return (
                   <SortableItem key={sort.id} value={sort.id} asChild>
                     <div className="flex items-center gap-2">
-                      <Popover modal>
+                      <Popover>
                         <PopoverTrigger asChild>
                           <Button
                             id={fieldTriggerId}

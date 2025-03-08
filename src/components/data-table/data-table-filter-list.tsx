@@ -215,7 +215,7 @@ export function DataTableFilterList<TData>({
               }
             />
           );
-        case "select": {
+        case "select":
           return (
             <Faceted
               value={
@@ -271,7 +271,6 @@ export function DataTableFilterList<TData>({
               </FacetedContent>
             </Faceted>
           );
-        }
         case "multi-select": {
           const selectedValues = Array.isArray(filter.value)
             ? filter.value
@@ -578,7 +577,7 @@ export function DataTableFilterList<TData>({
                           </span>
                         )}
                       </div>
-                      <Popover modal>
+                      <Popover>
                         <PopoverTrigger asChild>
                           <Button
                             id={fieldTriggerId}

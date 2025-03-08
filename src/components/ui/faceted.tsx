@@ -105,9 +105,9 @@ function Faceted<Multiple extends boolean = false>(
           onValueChange(selectedValue as FacetedValue<Multiple>);
         }
 
-        // requestAnimationFrame(() => {
-        //   setOpen(false);
-        // });
+        requestAnimationFrame(() => {
+          setOpen(false);
+        });
       }
     },
     [multiple, onValueChange, value],
