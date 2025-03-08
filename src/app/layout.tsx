@@ -10,6 +10,7 @@ import type { Metadata, Viewport } from "next";
 
 import { Toaster } from "@/components/ui/toaster";
 import { fontMono, fontSans } from "@/lib/fonts";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -74,6 +75,11 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
           fontMono.variable,
         )}
       >
+        <Script
+          defer
+          data-site-id={siteConfig.url}
+          src="https://assets.onedollarstats.com/stonks.js"
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
