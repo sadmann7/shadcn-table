@@ -66,6 +66,8 @@ export function DataTableAdvancedToolbar<TData>({
 }: DataTableAdvancedToolbarProps<TData>) {
   return (
     <div
+      role="toolbar"
+      aria-orientation="horizontal"
       className={cn(
         "flex w-full items-center justify-between gap-2 overflow-auto p-1",
         className,

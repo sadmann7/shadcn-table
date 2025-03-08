@@ -1,11 +1,13 @@
+import type { NextConfig } from "next";
+
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
  * for Docker builds.
  */
-await import("./src/env.js");
+// Import environment validation synchronously
+import "./src/env.js";
 
-/** @type {import("next").NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
   // Already doing linting and typechecking as separate tasks in CI
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
