@@ -59,7 +59,7 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
     <Portal>
       <div className="fixed inset-x-0 bottom-6 z-50 mx-auto w-fit px-2.5">
         <div className="w-full overflow-x-auto">
-          <div className="mx-auto flex w-fit items-center gap-2 rounded-md border bg-background p-2 text-foreground shadow">
+          <div className="mx-auto flex w-fit items-center gap-2 rounded-md border bg-background p-2 text-foreground shadow-sm">
             <div className="flex h-7 items-center rounded-md border border-dashed pr-1 pl-2.5">
               <span className="whitespace-nowrap text-xs">
                 {rows.length} selected
