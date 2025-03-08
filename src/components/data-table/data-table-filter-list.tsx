@@ -32,15 +32,16 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import {
-  FacetedFilter,
-  FacetedFilterContent,
-  FacetedFilterEmpty,
-  FacetedFilterGroup,
-  FacetedFilterInput,
-  FacetedFilterItem,
-  FacetedFilterList,
-  FacetedFilterTrigger,
-} from "@/components/ui/faceted-filter";
+  Faceted,
+  FacetedBadgeList,
+  FacetedContent,
+  FacetedEmpty,
+  FacetedGroup,
+  FacetedInput,
+  FacetedItem,
+  FacetedList,
+  FacetedTrigger,
+} from "@/components/ui/faceted";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -90,6 +91,7 @@ export function DataTableFilterList<TData>({
         shallow,
       }),
   );
+  const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
 
   const [joinOperator, setJoinOperator] = useQueryState(
     "joinOperator",
@@ -98,8 +100,6 @@ export function DataTableFilterList<TData>({
       shallow,
     }),
   );
-
-  const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
 
   const onFilterAdd = React.useCallback(() => {
     const filterField = filterFields[0];
@@ -113,7 +113,7 @@ export function DataTableFilterList<TData>({
         value: "",
         type: filterField.type,
         operator: getDefaultFilterOperator(filterField.type),
-        rowId: customAlphabet(
+        filterId: customAlphabet(
           "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
           6,
         )(),
@@ -123,18 +123,18 @@ export function DataTableFilterList<TData>({
 
   const onFilterUpdate = React.useCallback(
     ({
-      rowId,
+      filterId,
       field,
       debounced = false,
     }: {
-      rowId: string;
-      field: Omit<Partial<Filter<TData>>, "rowId">;
+      filterId: string;
+      field: Omit<Partial<Filter<TData>>, "filterId">;
       debounced?: boolean;
     }) => {
       const updateFunction = debounced ? debouncedSetFilters : setFilters;
       updateFunction((prevFilters) => {
         const updatedFilters = prevFilters.map((filter) => {
-          if (filter.rowId === rowId) {
+          if (filter.filterId === filterId) {
             return { ...filter, ...field };
           }
           return filter;
@@ -146,8 +146,10 @@ export function DataTableFilterList<TData>({
   );
 
   const onFilterRemove = React.useCallback(
-    (rowId: string) => {
-      const updatedFilters = filters.filter((filter) => filter.rowId !== rowId);
+    (filterId: string) => {
+      const updatedFilters = filters.filter(
+        (filter) => filter.filterId !== filterId,
+      );
       void setFilters(updatedFilters);
     },
     [filters, setFilters],
@@ -166,7 +168,7 @@ export function DataTableFilterList<TData>({
     [setFilters],
   );
 
-  const renderFilterInput = React.useCallback(
+  const onFilterInputRender = React.useCallback(
     ({
       filter,
       inputId,
@@ -206,73 +208,55 @@ export function DataTableFilterList<TData>({
               }
               onChange={(event) =>
                 onFilterUpdate({
-                  rowId: filter.rowId,
+                  filterId: filter.filterId,
                   field: { value: event.target.value },
                   debounced: true,
                 })
               }
             />
           );
-        case "select":
+        case "select": {
           return (
-            <FacetedFilter>
-              <FacetedFilterTrigger asChild>
+            <Faceted
+              value={
+                typeof filter.value === "string" ? filter.value : undefined
+              }
+              onValueChange={(value) => {
+                onFilterUpdate({ filterId: filter.filterId, field: { value } });
+              }}
+            >
+              <FacetedTrigger asChild>
                 <Button
                   id={inputId}
                   aria-controls={`${inputId}-listbox`}
                   aria-label={`${filterField.label} filter value`}
                   variant="outline"
                   size="sm"
-                  className="h-8 w-full justify-between gap-2 rounded px-1.5 text-left text-muted-foreground hover:text-muted-foreground"
+                  className="w-full rounded px-1.5"
                 >
-                  {filter.value && typeof filter.value === "string" ? (
-                    <Badge
-                      variant="secondary"
-                      className="rounded-sm px-1 font-normal"
-                    >
-                      {filterField?.options?.find(
-                        (option) => option.value === filter.value,
-                      )?.label || filter.value}
-                    </Badge>
-                  ) : (
-                    <>
-                      {filterField.placeholder ?? "Select an option..."}
-                      <ChevronsUpDown />
-                    </>
-                  )}
+                  <FacetedBadgeList
+                    options={filterField.options}
+                    placeholder={
+                      filterField.placeholder ?? "Select an option..."
+                    }
+                  />
                 </Button>
-              </FacetedFilterTrigger>
-              <FacetedFilterContent
+              </FacetedTrigger>
+              <FacetedContent
                 id={`${inputId}-listbox`}
                 className="w-[12.5rem] origin-(--radix-popover-content-transform-origin)"
               >
-                <FacetedFilterInput
-                  placeholder={filterField?.label ?? "Search options..."}
+                <FacetedInput
                   aria-label={`Search ${filterField?.label} options`}
+                  placeholder={filterField?.label ?? "Search options..."}
                 />
-                <FacetedFilterList>
-                  <FacetedFilterEmpty>No options found.</FacetedFilterEmpty>
-                  <FacetedFilterGroup>
+                <FacetedList>
+                  <FacetedEmpty>No options found.</FacetedEmpty>
+                  <FacetedGroup>
                     {filterField?.options?.map((option) => (
-                      <FacetedFilterItem
-                        key={option.value}
-                        value={option.value}
-                        selected={filter.value === option.value}
-                        onSelect={(value) => {
-                          onFilterUpdate({
-                            rowId: filter.rowId,
-                            field: { value },
-                          });
-                          setTimeout(() => {
-                            document.getElementById(inputId)?.click();
-                          }, 0);
-                        }}
-                      >
+                      <FacetedItem key={option.value} value={option.value}>
                         {option.icon && (
-                          <option.icon
-                            className="mr-2 size-4 text-muted-foreground"
-                            aria-hidden="true"
-                          />
+                          <option.icon className="size-4 text-muted-foreground" />
                         )}
                         <span>{option.label}</span>
                         {option.count && (
@@ -280,105 +264,56 @@ export function DataTableFilterList<TData>({
                             {option.count}
                           </span>
                         )}
-                      </FacetedFilterItem>
+                      </FacetedItem>
                     ))}
-                  </FacetedFilterGroup>
-                </FacetedFilterList>
-              </FacetedFilterContent>
-            </FacetedFilter>
+                  </FacetedGroup>
+                </FacetedList>
+              </FacetedContent>
+            </Faceted>
           );
+        }
         case "multi-select": {
-          const selectedValues = new Set(
-            Array.isArray(filter.value) ? filter.value : [],
-          );
+          const selectedValues = Array.isArray(filter.value)
+            ? filter.value
+            : [];
 
           return (
-            <FacetedFilter>
-              <FacetedFilterTrigger asChild>
+            <Faceted
+              multiple
+              value={selectedValues}
+              onValueChange={(value) => {
+                onFilterUpdate({ filterId: filter.filterId, field: { value } });
+              }}
+            >
+              <FacetedTrigger asChild>
                 <Button
                   id={inputId}
                   aria-controls={`${inputId}-listbox`}
                   aria-label={`${filterField.label} filter values`}
                   variant="outline"
                   size="sm"
-                  className="h-8 w-full justify-between gap-2 rounded px-1.5 text-left text-muted-foreground hover:text-muted-foreground"
+                  className="w-full rounded px-1.5"
                 >
-                  {selectedValues.size === 0 && (
-                    <>
-                      {filterField.placeholder ?? " Select options..."}
-                      <ChevronsUpDown />
-                    </>
-                  )}
-                  {selectedValues?.size > 0 && (
-                    <div className="flex items-center">
-                      <Badge
-                        variant="secondary"
-                        className="rounded-sm px-1 font-normal lg:hidden"
-                      >
-                        {selectedValues.size}
-                      </Badge>
-                      <div className="hidden min-w-0 gap-1 lg:flex">
-                        {selectedValues.size > 2 ? (
-                          <Badge
-                            variant="secondary"
-                            className="rounded-sm px-1 font-normal"
-                          >
-                            {selectedValues.size} selected
-                          </Badge>
-                        ) : (
-                          filterField?.options
-                            ?.filter((option) =>
-                              selectedValues.has(option.value),
-                            )
-                            .map((option) => (
-                              <Badge
-                                variant="secondary"
-                                key={option.value}
-                                className="truncate rounded-sm px-1 font-normal"
-                              >
-                                {option.label}
-                              </Badge>
-                            ))
-                        )}
-                      </div>
-                    </div>
-                  )}
+                  <FacetedBadgeList
+                    options={filterField.options}
+                    placeholder={
+                      filterField.placeholder ?? " Select options..."
+                    }
+                  />
                 </Button>
-              </FacetedFilterTrigger>
-              <FacetedFilterContent
-                id={`${inputId}-listbox`}
-                className="w-[12.5rem] origin-(--radix-popover-content-transform-origin)"
-              >
-                <FacetedFilterInput
+              </FacetedTrigger>
+              <FacetedContent id={`${inputId}-listbox`}>
+                <FacetedInput
                   aria-label={`Search ${filterField?.label} options`}
                   placeholder={filterField?.label ?? "Search options..."}
                 />
-                <FacetedFilterList>
-                  <FacetedFilterEmpty>No options found.</FacetedFilterEmpty>
-                  <FacetedFilterGroup>
+                <FacetedList>
+                  <FacetedEmpty>No options found.</FacetedEmpty>
+                  <FacetedGroup>
                     {filterField?.options?.map((option) => (
-                      <FacetedFilterItem
-                        key={option.value}
-                        value={option.value}
-                        selected={selectedValues.has(option.value)}
-                        onSelect={(value) => {
-                          const currentValue = Array.isArray(filter.value)
-                            ? filter.value
-                            : [];
-                          const newValue = currentValue.includes(value)
-                            ? currentValue.filter((v) => v !== value)
-                            : [...currentValue, value];
-                          onFilterUpdate({
-                            rowId: filter.rowId,
-                            field: { value: newValue },
-                          });
-                        }}
-                      >
+                      <FacetedItem key={option.value} value={option.value}>
                         {option.icon && (
-                          <option.icon
-                            className="mr-2 size-4 text-muted-foreground"
-                            aria-hidden="true"
-                          />
+                          <option.icon className="size-4 text-muted-foreground" />
                         )}
                         <span>{option.label}</span>
                         {option.count && (
@@ -386,12 +321,12 @@ export function DataTableFilterList<TData>({
                             {option.count}
                           </span>
                         )}
-                      </FacetedFilterItem>
+                      </FacetedItem>
                     ))}
-                  </FacetedFilterGroup>
-                </FacetedFilterList>
-              </FacetedFilterContent>
-            </FacetedFilter>
+                  </FacetedGroup>
+                </FacetedList>
+              </FacetedContent>
+            </Faceted>
           );
         }
         case "date": {
@@ -421,6 +356,23 @@ export function DataTableFilterList<TData>({
                     "h-8 w-full justify-start gap-2 rounded text-left font-normal",
                     !filter.value && "text-muted-foreground",
                   )}
+                  onPointerDown={(event) => {
+                    // prevent implicit pointer capture
+                    const target = event.target;
+                    if (!(target instanceof Element)) return;
+                    if (target.hasPointerCapture(event.pointerId)) {
+                      target.releasePointerCapture(event.pointerId);
+                    }
+
+                    if (
+                      event.button === 0 &&
+                      event.ctrlKey === false &&
+                      event.pointerType === "mouse"
+                    ) {
+                      // prevent trigger from stealing focus from the active item
+                      event.preventDefault();
+                    }
+                  }}
                 >
                   <CalendarIcon
                     className="size-3.5 shrink-0"
@@ -432,7 +384,7 @@ export function DataTableFilterList<TData>({
               <PopoverContent
                 id={`${inputId}-calendar`}
                 align="start"
-                className="w-auto p-0"
+                className="w-auto origin-(--radix-popover-content-transform-origin) p-0"
               >
                 {filter.operator === "isBetween" ? (
                   <Calendar
@@ -452,7 +404,7 @@ export function DataTableFilterList<TData>({
                     }
                     onSelect={(date) => {
                       onFilterUpdate({
-                        rowId: filter.rowId,
+                        filterId: filter.filterId,
                         field: {
                           value: date
                             ? [
@@ -474,7 +426,7 @@ export function DataTableFilterList<TData>({
                     selected={dateValue[0] ? new Date(dateValue[0]) : undefined}
                     onSelect={(date) => {
                       onFilterUpdate({
-                        rowId: filter.rowId,
+                        filterId: filter.filterId,
                         field: { value: date?.toISOString() ?? "" },
                       });
 
@@ -496,7 +448,7 @@ export function DataTableFilterList<TData>({
             <Select
               value={filter.value}
               onValueChange={(value) =>
-                onFilterUpdate({ rowId: filter.rowId, field: { value } })
+                onFilterUpdate({ filterId: filter.filterId, field: { value } })
               }
             >
               <SelectTrigger
@@ -524,7 +476,7 @@ export function DataTableFilterList<TData>({
   return (
     <Sortable
       value={filters}
-      getItemValue={(item) => item.rowId}
+      getItemValue={(item) => item.filterId}
       onMove={({ activeIndex, overIndex }) =>
         onFilterMove(activeIndex, overIndex)
       }
@@ -532,11 +484,10 @@ export function DataTableFilterList<TData>({
       <Popover>
         <PopoverTrigger asChild>
           <Button
+            aria-label="Open filters"
             variant="outline"
             size="sm"
             className="gap-2 [&>svg]:size-3"
-            aria-label="Open filters"
-            aria-controls={`${id}-filter-dialog`}
           >
             <ListFilter aria-hidden="true" />
             Filters
@@ -551,7 +502,6 @@ export function DataTableFilterList<TData>({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          id={`${id}-filter-dialog`}
           align="start"
           collisionPadding={16}
           className={cn(
@@ -572,7 +522,7 @@ export function DataTableFilterList<TData>({
           <SortableContent asChild>
             <div className="flex max-h-40 flex-col gap-2 overflow-y-auto py-0.5 pr-1">
               {filters.map((filter, index) => {
-                const filterId = `${id}-filter-${filter.rowId}`;
+                const filterId = `${id}-filter-${filter.filterId}`;
                 const joinOperatorListboxId = `${filterId}-join-operator-listbox`;
                 const fieldListboxId = `${filterId}-field-listbox`;
                 const fieldTriggerId = `${filterId}-field-trigger`;
@@ -580,7 +530,11 @@ export function DataTableFilterList<TData>({
                 const inputId = `${filterId}-input`;
 
                 return (
-                  <SortableItem key={filter.rowId} value={filter.rowId} asChild>
+                  <SortableItem
+                    key={filter.filterId}
+                    value={filter.filterId}
+                    asChild
+                  >
                     <div className="flex items-center gap-2">
                       <div className="min-w-[4.5rem] text-center">
                         {index === 0 ? (
@@ -606,11 +560,16 @@ export function DataTableFilterList<TData>({
                               position="popper"
                               className="min-w-(--radix-select-trigger-width) lowercase"
                             >
-                              {dataTableConfig.joinOperators.map((op) => (
-                                <SelectItem key={op.value} value={op.value}>
-                                  {op.label}
-                                </SelectItem>
-                              ))}
+                              {dataTableConfig.joinOperators.map(
+                                (joinOperator) => (
+                                  <SelectItem
+                                    key={joinOperator.value}
+                                    value={joinOperator.value}
+                                  >
+                                    {joinOperator.label}
+                                  </SelectItem>
+                                ),
+                              )}
                             </SelectContent>
                           </Select>
                         ) : (
@@ -628,7 +587,24 @@ export function DataTableFilterList<TData>({
                             role="combobox"
                             aria-label="Select filter field"
                             aria-controls={fieldListboxId}
-                            className="h-8 w-32 justify-between gap-2 rounded focus:outline-hidden focus:ring-1 focus:ring-ring focus-visible:ring-0"
+                            className="h-8 w-32 justify-between gap-2 rounded focus:outline-hidden focus:ring-1 focus:ring-ring"
+                            onPointerDown={(event) => {
+                              // prevent implicit pointer capture
+                              const target = event.target;
+                              if (!(target instanceof Element)) return;
+                              if (target.hasPointerCapture(event.pointerId)) {
+                                target.releasePointerCapture(event.pointerId);
+                              }
+
+                              if (
+                                event.button === 0 &&
+                                event.ctrlKey === false &&
+                                event.pointerType === "mouse"
+                              ) {
+                                // prevent trigger from stealing focus from the active item
+                                event.preventDefault();
+                              }
+                            }}
                           >
                             <span className="truncate">
                               {filterFields.find(
@@ -641,7 +617,7 @@ export function DataTableFilterList<TData>({
                         <PopoverContent
                           id={fieldListboxId}
                           align="start"
-                          className="w-40 p-0"
+                          className="w-40 origin-(--radix-popover-content-transform-origin) p-0"
                           onCloseAutoFocus={() =>
                             document.getElementById(fieldTriggerId)?.focus({
                               preventScroll: true,
@@ -665,7 +641,7 @@ export function DataTableFilterList<TData>({
                                       if (!filterField) return;
 
                                       onFilterUpdate({
-                                        rowId: filter.rowId,
+                                        filterId: filter.filterId,
                                         field: {
                                           id: value as StringKeyOf<TData>,
                                           type: filterField.type,
@@ -703,7 +679,7 @@ export function DataTableFilterList<TData>({
                         value={filter.operator}
                         onValueChange={(value: FilterOperator) =>
                           onFilterUpdate({
-                            rowId: filter.rowId,
+                            filterId: filter.filterId,
                             field: {
                               operator: value,
                               value:
@@ -723,7 +699,10 @@ export function DataTableFilterList<TData>({
                             <SelectValue placeholder={filter.operator} />
                           </div>
                         </SelectTrigger>
-                        <SelectContent id={operatorListboxId}>
+                        <SelectContent
+                          id={operatorListboxId}
+                          className="origin-(--radix-select-content-transform-origin)"
+                        >
                           {getFilterOperators(filter.type).map((op) => (
                             <SelectItem key={op.value} value={op.value}>
                               {op.label}
@@ -732,14 +711,14 @@ export function DataTableFilterList<TData>({
                         </SelectContent>
                       </Select>
                       <div className="min-w-36 flex-1">
-                        {renderFilterInput({ filter, inputId })}
+                        {onFilterInputRender({ filter, inputId })}
                       </div>
                       <Button
                         aria-label={`Remove filter ${index + 1}`}
                         variant="outline"
                         size="icon"
                         className="size-8 shrink-0 rounded [&>svg]:size-3.5"
-                        onClick={() => onFilterRemove(filter.rowId)}
+                        onClick={() => onFilterRemove(filter.filterId)}
                       >
                         <Trash2 />
                       </Button>

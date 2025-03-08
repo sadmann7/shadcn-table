@@ -217,6 +217,23 @@ export function DataTableSortList<TData>({
                             variant="outline"
                             size="sm"
                             className="h-8 w-44 justify-between gap-2 rounded focus:outline-hidden focus:ring-1 focus:ring-ring"
+                            onPointerDown={(event) => {
+                              // prevent implicit pointer capture
+                              const target = event.target;
+                              if (!(target instanceof Element)) return;
+                              if (target.hasPointerCapture(event.pointerId)) {
+                                target.releasePointerCapture(event.pointerId);
+                              }
+
+                              if (
+                                event.button === 0 &&
+                                event.ctrlKey === false &&
+                                event.pointerType === "mouse"
+                              ) {
+                                // prevent trigger from stealing focus from the active item
+                                event.preventDefault();
+                              }
+                            }}
                           >
                             <span className="truncate">
                               {toSentenceCase(sort.id)}
@@ -238,7 +255,9 @@ export function DataTableSortList<TData>({
                           id={fieldListboxId}
                           className="w-(--radix-popover-trigger-width) origin-(--radix-popover-content-transform-origin) p-0"
                           onCloseAutoFocus={() =>
-                            document.getElementById(fieldTriggerId)?.focus()
+                            document
+                              .getElementById(fieldTriggerId)
+                              ?.focus({ preventScroll: true })
                           }
                         >
                           <Command>
@@ -306,7 +325,7 @@ export function DataTableSortList<TData>({
                         </SelectTrigger>
                         <SelectContent
                           id={directionListboxId}
-                          className="min-w-(--radix-select-trigger-width)"
+                          className="min-w-(--radix-select-trigger-width) origin-(--radix-select-content-transform-origin)"
                         >
                           {dataTableConfig.sortOrders.map((order) => (
                             <SelectItem key={order.value} value={order.value}>

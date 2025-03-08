@@ -52,7 +52,7 @@ export const filterSchema = z.object({
   value: z.union([z.string(), z.array(z.string())]),
   type: z.enum(dataTableConfig.columnTypes),
   operator: z.enum(dataTableConfig.globalOperators),
-  rowId: z.string(),
+  filterId: z.string(),
 });
 
 /**

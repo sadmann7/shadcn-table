@@ -38,7 +38,24 @@ export function DataTableViewOptions<TData>({
           variant="outline"
           role="combobox"
           size="sm"
-          className="ml-auto hidden h-8 gap-2 focus:outline-hidden focus:ring-1 focus:ring-ring focus-visible:ring-0 lg:flex"
+          className="ml-auto hidden h-8 gap-2 focus:outline-hidden focus:ring-1 focus:ring-ring lg:flex"
+          onPointerDown={(event) => {
+            // prevent implicit pointer capture
+            const target = event.target;
+            if (!(target instanceof Element)) return;
+            if (target.hasPointerCapture(event.pointerId)) {
+              target.releasePointerCapture(event.pointerId);
+            }
+
+            if (
+              event.button === 0 &&
+              event.ctrlKey === false &&
+              event.pointerType === "mouse"
+            ) {
+              // prevent trigger from stealing focus from the active item
+              event.preventDefault();
+            }
+          }}
         >
           <Settings2 />
           View
@@ -48,7 +65,9 @@ export function DataTableViewOptions<TData>({
       <PopoverContent
         align="end"
         className="w-44 p-0"
-        onCloseAutoFocus={() => triggerRef.current?.focus()}
+        onCloseAutoFocus={() =>
+          triggerRef.current?.focus({ preventScroll: true })
+        }
       >
         <Command>
           <CommandInput placeholder="Search columns..." />
