@@ -82,6 +82,8 @@ export function DataTableFilterList<TData>({
   shallow,
 }: DataTableFilterListProps<TData>) {
   const id = React.useId();
+  const labelId = React.useId();
+  const descriptionId = React.useId();
   const [filters, setFilters] = useQueryState(
     "filters",
     getFiltersStateParser(table.getRowModel().rows[0]?.original)
@@ -169,13 +171,7 @@ export function DataTableFilterList<TData>({
   );
 
   const onFilterInputRender = React.useCallback(
-    ({
-      filter,
-      inputId,
-    }: {
-      filter: Filter<TData>;
-      inputId: string;
-    }) => {
+    ({ filter, inputId }: { filter: Filter<TData>; inputId: string }) => {
       const filterField = filterFields.find((f) => f.id === filter.id);
 
       if (!filterField) return null;
@@ -186,7 +182,9 @@ export function DataTableFilterList<TData>({
             id={inputId}
             role="status"
             aria-live="polite"
-            aria-label={`${filterField.label} filter is ${filter.operator === "isEmpty" ? "empty" : "not empty"}`}
+            aria-label={`${filterField.label} filter is ${
+              filter.operator === "isEmpty" ? "empty" : "not empty"
+            }`}
             className="h-8 w-full rounded border border-dashed"
           />
         );
@@ -352,11 +350,10 @@ export function DataTableFilterList<TData>({
                   variant="outline"
                   size="sm"
                   className={cn(
-                    "h-8 w-full justify-start gap-2 rounded text-left font-normal",
+                    "h-8 w-full justify-start rounded text-left font-normal focus:outline-none focus:ring-1 focus:ring-ring",
                     !filter.value && "text-muted-foreground",
                   )}
                   onPointerDown={(event) => {
-                    // prevent implicit pointer capture
                     const target = event.target;
                     if (!(target instanceof Element)) return;
                     if (target.hasPointerCapture(event.pointerId)) {
@@ -368,7 +365,6 @@ export function DataTableFilterList<TData>({
                       event.ctrlKey === false &&
                       event.pointerType === "mouse"
                     ) {
-                      // prevent trigger from stealing focus from the active item
                       event.preventDefault();
                     }
                   }}
@@ -384,6 +380,11 @@ export function DataTableFilterList<TData>({
                 id={`${inputId}-calendar`}
                 align="start"
                 className="w-auto origin-(--radix-popover-content-transform-origin) p-0"
+                onCloseAutoFocus={() => {
+                  document.getElementById(inputId)?.focus({
+                    preventScroll: true,
+                  });
+                }}
               >
                 {filter.operator === "isBetween" ? (
                   <Calendar
@@ -486,7 +487,7 @@ export function DataTableFilterList<TData>({
             aria-label="Open filters"
             variant="outline"
             size="sm"
-            className="gap-2 [&>svg]:size-3"
+            className="[&>svg]:size-3"
           >
             <ListFilter aria-hidden="true" />
             Filters
@@ -501,241 +502,254 @@ export function DataTableFilterList<TData>({
           </Button>
         </PopoverTrigger>
         <PopoverContent
+          aria-describedby={descriptionId}
+          aria-labelledby={labelId}
           align="start"
           collisionPadding={16}
-          className={cn(
-            "flex w-[calc(100vw-(--spacing(12)))] min-w-60 origin-(--radix-popover-content-transform-origin) flex-col p-4 sm:w-[36rem]",
-            filters.length > 0 ? "gap-3.5" : "gap-2",
-          )}
+          className="flex w-[calc(100vw-(--spacing(12)))] min-w-60 origin-(--radix-popover-content-transform-origin) flex-col gap-3.5 p-4 sm:w-[36rem]"
         >
+          <div className="flex flex-col gap-1">
+            <h4 id={labelId} className="font-medium leading-none">
+              {filters.length > 0 ? "Filters" : "No filters applied"}
+            </h4>
+            <p
+              id={descriptionId}
+              className={cn(
+                "text-muted-foreground text-sm",
+                filters.length > 0 && "sr-only",
+              )}
+            >
+              {filters.length > 0
+                ? "Modify filters to refine your results."
+                : "Add filters to refine your results."}
+            </p>
+          </div>
           {filters.length > 0 ? (
-            <h4 className="font-medium leading-none">Filters</h4>
-          ) : (
-            <div className="flex flex-col gap-1">
-              <h4 className="font-medium leading-none">No filters applied</h4>
-              <p className="text-muted-foreground text-sm">
-                Add filters to refine your results.
-              </p>
-            </div>
-          )}
-          <SortableContent asChild>
-            <div className="flex max-h-40 flex-col gap-2 overflow-y-auto py-0.5 pr-1">
-              {filters.map((filter, index) => {
-                const filterId = `${id}-filter-${filter.filterId}`;
-                const joinOperatorListboxId = `${filterId}-join-operator-listbox`;
-                const fieldListboxId = `${filterId}-field-listbox`;
-                const fieldTriggerId = `${filterId}-field-trigger`;
-                const operatorListboxId = `${filterId}-operator-listbox`;
-                const inputId = `${filterId}-input`;
+            <SortableContent asChild>
+              <div
+                role="list"
+                className="flex max-h-[300px] flex-col gap-2 overflow-y-auto py-0.5 pr-1"
+              >
+                {filters.map((filter, index) => {
+                  const filterItemId = `${id}-filter-${filter.filterId}`;
+                  const joinOperatorListboxId = `${filterItemId}-join-operator-listbox`;
+                  const fieldListboxId = `${filterItemId}-field-listbox`;
+                  const fieldTriggerId = `${filterItemId}-field-trigger`;
+                  const operatorListboxId = `${filterItemId}-operator-listbox`;
+                  const inputId = `${filterItemId}-input`;
 
-                return (
-                  <SortableItem
-                    key={filter.filterId}
-                    value={filter.filterId}
-                    asChild
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="min-w-[4.5rem] text-center">
-                        {index === 0 ? (
-                          <span className="text-muted-foreground text-sm">
-                            Where
-                          </span>
-                        ) : index === 1 ? (
-                          <Select
-                            value={joinOperator}
-                            onValueChange={(value: JoinOperator) =>
-                              setJoinOperator(value)
+                  return (
+                    <SortableItem
+                      key={filter.filterId}
+                      value={filter.filterId}
+                      asChild
+                    >
+                      <div
+                        role="listitem"
+                        id={filterItemId}
+                        tabIndex={-1}
+                        className="flex items-center gap-2"
+                      >
+                        <div className="min-w-[4.5rem] text-center">
+                          {index === 0 ? (
+                            <span className="text-muted-foreground text-sm">
+                              Where
+                            </span>
+                          ) : index === 1 ? (
+                            <Select
+                              value={joinOperator}
+                              onValueChange={(value: JoinOperator) =>
+                                setJoinOperator(value)
+                              }
+                            >
+                              <SelectTrigger
+                                aria-label="Select join operator"
+                                aria-controls={joinOperatorListboxId}
+                                className="h-8 rounded lowercase"
+                              >
+                                <SelectValue placeholder={joinOperator} />
+                              </SelectTrigger>
+                              <SelectContent
+                                id={joinOperatorListboxId}
+                                position="popper"
+                                className="min-w-(--radix-select-trigger-width) lowercase"
+                              >
+                                {dataTableConfig.joinOperators.map(
+                                  (joinOperator) => (
+                                    <SelectItem
+                                      key={joinOperator.value}
+                                      value={joinOperator.value}
+                                    >
+                                      {joinOperator.label}
+                                    </SelectItem>
+                                  ),
+                                )}
+                              </SelectContent>
+                            </Select>
+                          ) : (
+                            <span className="text-muted-foreground text-sm">
+                              {joinOperator}
+                            </span>
+                          )}
+                        </div>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              id={fieldTriggerId}
+                              variant="outline"
+                              size="sm"
+                              role="combobox"
+                              aria-label="Select filter field"
+                              aria-controls={fieldListboxId}
+                              className="h-8 w-32 justify-between rounded focus:outline-hidden focus:ring-1 focus:ring-ring"
+                              onPointerDown={(event) => {
+                                const target = event.target;
+                                if (!(target instanceof Element)) return;
+                                if (target.hasPointerCapture(event.pointerId)) {
+                                  target.releasePointerCapture(event.pointerId);
+                                }
+
+                                if (
+                                  event.button === 0 &&
+                                  event.ctrlKey === false &&
+                                  event.pointerType === "mouse"
+                                ) {
+                                  event.preventDefault();
+                                }
+                              }}
+                            >
+                              <span className="truncate">
+                                {filterFields.find(
+                                  (field) => field.id === filter.id,
+                                )?.label ?? "Select field"}
+                              </span>
+                              <ChevronsUpDown className="opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            id={fieldListboxId}
+                            align="start"
+                            className="w-40 origin-(--radix-popover-content-transform-origin) p-0"
+                            onCloseAutoFocus={() =>
+                              document.getElementById(fieldTriggerId)?.focus({
+                                preventScroll: true,
+                              })
                             }
                           >
-                            <SelectTrigger
-                              aria-label="Select join operator"
-                              aria-controls={joinOperatorListboxId}
-                              className="h-8 rounded lowercase"
-                            >
-                              <SelectValue placeholder={joinOperator} />
-                            </SelectTrigger>
-                            <SelectContent
-                              id={joinOperatorListboxId}
-                              position="popper"
-                              className="min-w-(--radix-select-trigger-width) lowercase"
-                            >
-                              {dataTableConfig.joinOperators.map(
-                                (joinOperator) => (
-                                  <SelectItem
-                                    key={joinOperator.value}
-                                    value={joinOperator.value}
-                                  >
-                                    {joinOperator.label}
-                                  </SelectItem>
-                                ),
-                              )}
-                            </SelectContent>
-                          </Select>
-                        ) : (
-                          <span className="text-muted-foreground text-sm">
-                            {joinOperator}
-                          </span>
-                        )}
-                      </div>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            id={fieldTriggerId}
-                            variant="outline"
-                            size="sm"
-                            role="combobox"
-                            aria-label="Select filter field"
-                            aria-controls={fieldListboxId}
-                            className="h-8 w-32 justify-between gap-2 rounded focus:outline-hidden focus:ring-1 focus:ring-ring"
-                            onPointerDown={(event) => {
-                              // prevent implicit pointer capture
-                              const target = event.target;
-                              if (!(target instanceof Element)) return;
-                              if (target.hasPointerCapture(event.pointerId)) {
-                                target.releasePointerCapture(event.pointerId);
-                              }
+                            <Command>
+                              <CommandInput placeholder="Search fields..." />
+                              <CommandList>
+                                <CommandEmpty>No fields found.</CommandEmpty>
+                                <CommandGroup>
+                                  {filterFields.map((field) => (
+                                    <CommandItem
+                                      key={field.id}
+                                      value={field.id}
+                                      onSelect={(value) => {
+                                        const filterField = filterFields.find(
+                                          (col) => col.id === value,
+                                        );
 
-                              if (
-                                event.button === 0 &&
-                                event.ctrlKey === false &&
-                                event.pointerType === "mouse"
-                              ) {
-                                // prevent trigger from stealing focus from the active item
-                                event.preventDefault();
-                              }
-                            }}
-                          >
-                            <span className="truncate">
-                              {filterFields.find(
-                                (field) => field.id === filter.id,
-                              )?.label ?? "Select field"}
-                            </span>
-                            <ChevronsUpDown className="opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          id={fieldListboxId}
-                          align="start"
-                          className="w-40 origin-(--radix-popover-content-transform-origin) p-0"
-                          onCloseAutoFocus={() =>
-                            document.getElementById(fieldTriggerId)?.focus({
-                              preventScroll: true,
+                                        if (!filterField) return;
+
+                                        onFilterUpdate({
+                                          filterId: filter.filterId,
+                                          field: {
+                                            id: value as StringKeyOf<TData>,
+                                            type: filterField.type,
+                                            operator: getDefaultFilterOperator(
+                                              filterField.type,
+                                            ),
+                                            value: "",
+                                          },
+                                        });
+
+                                        document
+                                          .getElementById(fieldTriggerId)
+                                          ?.click();
+                                      }}
+                                    >
+                                      <span className="truncate">
+                                        {field.label}
+                                      </span>
+                                      <Check
+                                        className={cn(
+                                          "ml-auto size-4 shrink-0",
+                                          field.id === filter.id
+                                            ? "opacity-100"
+                                            : "opacity-0",
+                                        )}
+                                      />
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                        <Select
+                          value={filter.operator}
+                          onValueChange={(value: FilterOperator) =>
+                            onFilterUpdate({
+                              filterId: filter.filterId,
+                              field: {
+                                operator: value,
+                                value:
+                                  value === "isEmpty" || value === "isNotEmpty"
+                                    ? ""
+                                    : filter.value,
+                              },
                             })
                           }
                         >
-                          <Command>
-                            <CommandInput placeholder="Search fields..." />
-                            <CommandList>
-                              <CommandEmpty>No fields found.</CommandEmpty>
-                              <CommandGroup>
-                                {filterFields.map((field) => (
-                                  <CommandItem
-                                    key={field.id}
-                                    value={field.id}
-                                    onSelect={(value) => {
-                                      const filterField = filterFields.find(
-                                        (col) => col.id === value,
-                                      );
-
-                                      if (!filterField) return;
-
-                                      onFilterUpdate({
-                                        filterId: filter.filterId,
-                                        field: {
-                                          id: value as StringKeyOf<TData>,
-                                          type: filterField.type,
-                                          operator: getDefaultFilterOperator(
-                                            filterField.type,
-                                          ),
-                                          value: "",
-                                        },
-                                      });
-
-                                      document
-                                        .getElementById(fieldTriggerId)
-                                        ?.click();
-                                    }}
-                                  >
-                                    <span className="mr-1.5 truncate">
-                                      {field.label}
-                                    </span>
-                                    <Check
-                                      className={cn(
-                                        "ml-auto size-4 shrink-0",
-                                        field.id === filter.id
-                                          ? "opacity-100"
-                                          : "opacity-0",
-                                      )}
-                                    />
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                      <Select
-                        value={filter.operator}
-                        onValueChange={(value: FilterOperator) =>
-                          onFilterUpdate({
-                            filterId: filter.filterId,
-                            field: {
-                              operator: value,
-                              value:
-                                value === "isEmpty" || value === "isNotEmpty"
-                                  ? ""
-                                  : filter.value,
-                            },
-                          })
-                        }
-                      >
-                        <SelectTrigger
-                          aria-label="Select filter operator"
-                          aria-controls={operatorListboxId}
-                          className="h-8 w-32 rounded"
-                        >
-                          <div className="truncate">
-                            <SelectValue placeholder={filter.operator} />
-                          </div>
-                        </SelectTrigger>
-                        <SelectContent
-                          id={operatorListboxId}
-                          className="origin-(--radix-select-content-transform-origin)"
-                        >
-                          {getFilterOperators(filter.type).map((op) => (
-                            <SelectItem key={op.value} value={op.value}>
-                              {op.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <div className="min-w-36 flex-1">
-                        {onFilterInputRender({ filter, inputId })}
-                      </div>
-                      <Button
-                        aria-label={`Remove filter ${index + 1}`}
-                        variant="outline"
-                        size="icon"
-                        className="size-8 shrink-0 rounded [&>svg]:size-3.5"
-                        onClick={() => onFilterRemove(filter.filterId)}
-                      >
-                        <Trash2 />
-                      </Button>
-                      <SortableItemHandle asChild>
+                          <SelectTrigger
+                            aria-label="Select filter operator"
+                            aria-controls={operatorListboxId}
+                            className="h-8 w-32 rounded"
+                          >
+                            <div className="truncate">
+                              <SelectValue placeholder={filter.operator} />
+                            </div>
+                          </SelectTrigger>
+                          <SelectContent
+                            id={operatorListboxId}
+                            className="origin-(--radix-select-content-transform-origin)"
+                          >
+                            {getFilterOperators(filter.type).map((op) => (
+                              <SelectItem key={op.value} value={op.value}>
+                                {op.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <div className="min-w-36 flex-1">
+                          {onFilterInputRender({ filter, inputId })}
+                        </div>
                         <Button
+                          aria-label={`Remove filter ${index + 1}`}
                           variant="outline"
                           size="icon"
                           className="size-8 shrink-0 rounded [&>svg]:size-3.5"
+                          onClick={() => onFilterRemove(filter.filterId)}
                         >
-                          <GripVertical />
+                          <Trash2 />
                         </Button>
-                      </SortableItemHandle>
-                    </div>
-                  </SortableItem>
-                );
-              })}
-            </div>
-          </SortableContent>
+                        <SortableItemHandle asChild>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="size-8 shrink-0 rounded [&>svg]:size-3.5"
+                          >
+                            <GripVertical />
+                          </Button>
+                        </SortableItemHandle>
+                      </div>
+                    </SortableItem>
+                  );
+                })}
+              </div>
+            </SortableContent>
+          ) : null}
           <div className="flex w-full items-center gap-2">
             <Button
               size="sm"

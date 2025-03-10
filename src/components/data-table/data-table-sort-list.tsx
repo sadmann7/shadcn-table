@@ -62,6 +62,8 @@ export function DataTableSortList<TData>({
   shallow,
 }: DataTableSortListProps<TData>) {
   const id = React.useId();
+  const labelId = React.useId();
+  const descriptionId = React.useId();
 
   const initialSorting = React.useMemo(
     () => (table.initialState.sorting ?? []) as ExtendedSortingState<TData>,
@@ -162,10 +164,10 @@ export function DataTableSortList<TData>({
       <Popover>
         <PopoverTrigger asChild>
           <Button
-            variant="outline"
             aria-label="Open sorting"
+            variant="outline"
             size="sm"
-            className="gap-2 [&>svg]:size-3"
+            className="[&>svg]:size-3"
           >
             <ArrowDownUp />
             Sort
@@ -180,194 +182,207 @@ export function DataTableSortList<TData>({
           </Button>
         </PopoverTrigger>
         <PopoverContent
+          aria-describedby={descriptionId}
+          aria-labelledby={labelId}
           align="start"
           collisionPadding={16}
-          className={cn(
-            "flex w-[calc(100vw-(--spacing(20)))] min-w-72 max-w-[25rem] origin-(--radix-popover-content-transform-origin) flex-col p-4 sm:w-[25rem]",
-            sorting.length > 0 ? "gap-3.5" : "gap-2",
-          )}
+          className="flex w-[calc(100vw-(--spacing(20)))] min-w-72 max-w-[25rem] origin-(--radix-popover-content-transform-origin) flex-col gap-3.5 p-4 sm:w-[25rem]"
         >
+          <div className="flex flex-col gap-1">
+            <h4 id={labelId} className="font-medium leading-none">
+              {uniqueSorting.length > 0 ? "Sort by" : "No sorting applied"}
+            </h4>
+            <p
+              id={descriptionId}
+              className={cn(
+                "text-muted-foreground text-sm",
+                uniqueSorting.length > 0 && "sr-only",
+              )}
+            >
+              {uniqueSorting.length > 0
+                ? "Modify sorting to organize your results."
+                : "Add sorting to organize your results."}
+            </p>
+          </div>
           {uniqueSorting.length > 0 ? (
-            <h4 className="font-medium leading-none">Sort by</h4>
-          ) : (
-            <div className="flex flex-col gap-1">
-              <h4 className="font-medium leading-none">No sorting applied</h4>
-              <p className="text-muted-foreground text-sm">
-                Add sorting to organize your results.
-              </p>
-            </div>
-          )}
-          <SortableContent asChild>
-            <div className="flex max-h-40 flex-col gap-2 overflow-y-auto p-0.5">
-              {uniqueSorting.map((sort) => {
-                const sortId = `${id}-sort-${sort.id}`;
-                const fieldListboxId = `${sortId}-field-listbox`;
-                const fieldTriggerId = `${sortId}-field-trigger`;
-                const directionListboxId = `${sortId}-direction-listbox`;
+            <SortableContent asChild>
+              <div
+                role="list"
+                className="flex max-h-[300px] flex-col gap-2 overflow-y-auto p-0.5"
+              >
+                {uniqueSorting.map((sort) => {
+                  const sortItemId = `${id}-sort-${sort.id}`;
+                  const fieldListboxId = `${sortItemId}-field-listbox`;
+                  const fieldTriggerId = `${sortItemId}-field-trigger`;
+                  const directionListboxId = `${sortItemId}-direction-listbox`;
 
-                return (
-                  <SortableItem key={sort.id} value={sort.id} asChild>
-                    <div className="flex items-center gap-2">
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            id={fieldTriggerId}
-                            role="combobox"
-                            aria-controls={fieldListboxId}
-                            variant="outline"
-                            size="sm"
-                            className="h-8 w-44 justify-between gap-2 rounded focus:outline-hidden focus:ring-1 focus:ring-ring"
-                            onPointerDown={(event) => {
-                              // prevent implicit pointer capture
-                              const target = event.target;
-                              if (!(target instanceof Element)) return;
-                              if (target.hasPointerCapture(event.pointerId)) {
-                                target.releasePointerCapture(event.pointerId);
-                              }
+                  return (
+                    <SortableItem key={sort.id} value={sort.id} asChild>
+                      <div
+                        role="listitem"
+                        id={sortItemId}
+                        tabIndex={-1}
+                        className="flex items-center gap-2"
+                      >
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              id={fieldTriggerId}
+                              role="combobox"
+                              aria-controls={fieldListboxId}
+                              variant="outline"
+                              size="sm"
+                              className="h-8 w-44 justify-between rounded focus:outline-hidden focus:ring-1 focus:ring-ring"
+                              onPointerDown={(event) => {
+                                const target = event.target;
+                                if (!(target instanceof Element)) return;
+                                if (target.hasPointerCapture(event.pointerId)) {
+                                  target.releasePointerCapture(event.pointerId);
+                                }
 
-                              if (
-                                event.button === 0 &&
-                                event.ctrlKey === false &&
-                                event.pointerType === "mouse"
-                              ) {
-                                // prevent trigger from stealing focus from the active item
-                                event.preventDefault();
-                              }
-                            }}
+                                if (
+                                  event.button === 0 &&
+                                  event.ctrlKey === false &&
+                                  event.pointerType === "mouse"
+                                ) {
+                                  event.preventDefault();
+                                }
+                              }}
+                            >
+                              <span className="truncate">
+                                {toSentenceCase(sort.id)}
+                              </span>
+                              <div className="ml-auto flex items-center gap-1">
+                                {initialSorting[0]?.id === sort.id ? (
+                                  <Badge
+                                    variant="secondary"
+                                    className="h-[1.125rem] rounded px-1 font-mono font-normal text-[0.65rem]"
+                                  >
+                                    Default
+                                  </Badge>
+                                ) : null}
+                                <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
+                              </div>
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            id={fieldListboxId}
+                            className="w-(--radix-popover-trigger-width) origin-(--radix-popover-content-transform-origin) p-0"
+                            onCloseAutoFocus={() =>
+                              document
+                                .getElementById(fieldTriggerId)
+                                ?.focus({ preventScroll: true })
+                            }
                           >
-                            <span className="truncate">
-                              {toSentenceCase(sort.id)}
-                            </span>
-                            <div className="ml-auto flex items-center gap-1">
-                              {initialSorting[0]?.id === sort.id ? (
-                                <Badge
-                                  variant="secondary"
-                                  className="h-[1.125rem] rounded px-1 font-mono font-normal text-[0.65rem]"
-                                >
-                                  Default
-                                </Badge>
-                              ) : null}
-                              <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
-                            </div>
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          id={fieldListboxId}
-                          className="w-(--radix-popover-trigger-width) origin-(--radix-popover-content-transform-origin) p-0"
-                          onCloseAutoFocus={() =>
-                            document
-                              .getElementById(fieldTriggerId)
-                              ?.focus({ preventScroll: true })
+                            <Command>
+                              <CommandInput placeholder="Search fields..." />
+                              <CommandList>
+                                <CommandEmpty>No fields found.</CommandEmpty>
+                                <CommandGroup>
+                                  {sortableColumns.map((column) => (
+                                    <CommandItem
+                                      key={column.id}
+                                      value={column.id}
+                                      onSelect={(value) => {
+                                        const newFieldTriggerId = `${id}-sort-${value}-field-trigger`;
+
+                                        onUpdateSort({
+                                          id: sort.id,
+                                          field: {
+                                            id: value as StringKeyOf<TData>,
+                                          },
+                                        });
+
+                                        requestAnimationFrame(() => {
+                                          document
+                                            .getElementById(newFieldTriggerId)
+                                            ?.focus();
+                                        });
+                                      }}
+                                    >
+                                      <span className="truncate">
+                                        {column.label}
+                                      </span>
+                                      <Check
+                                        className={cn(
+                                          "ml-auto size-4 shrink-0",
+                                          column.id === sort.id
+                                            ? "opacity-100"
+                                            : "opacity-0",
+                                        )}
+                                        aria-hidden="true"
+                                      />
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                        <Select
+                          value={sort.desc ? "desc" : "asc"}
+                          onValueChange={(value: SortDirection) =>
+                            onUpdateSort({
+                              id: sort.id,
+                              field: { id: sort.id, desc: value === "desc" },
+                            })
                           }
                         >
-                          <Command>
-                            <CommandInput placeholder="Search fields..." />
-                            <CommandList>
-                              <CommandEmpty>No fields found.</CommandEmpty>
-                              <CommandGroup>
-                                {sortableColumns.map((column) => (
-                                  <CommandItem
-                                    key={column.id}
-                                    value={column.id}
-                                    onSelect={(value) => {
-                                      const newFieldTriggerId = `${id}-sort-${value}-field-trigger`;
-
-                                      onUpdateSort({
-                                        id: sort.id,
-                                        field: {
-                                          id: value as StringKeyOf<TData>,
-                                        },
-                                      });
-
-                                      requestAnimationFrame(() => {
-                                        document
-                                          .getElementById(newFieldTriggerId)
-                                          ?.focus();
-                                      });
-                                    }}
-                                  >
-                                    <span className="mr-1.5 truncate">
-                                      {column.label}
-                                    </span>
-                                    <Check
-                                      className={cn(
-                                        "ml-auto size-4 shrink-0",
-                                        column.id === sort.id
-                                          ? "opacity-100"
-                                          : "opacity-0",
-                                      )}
-                                      aria-hidden="true"
-                                    />
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                      <Select
-                        value={sort.desc ? "desc" : "asc"}
-                        onValueChange={(value: SortDirection) =>
-                          onUpdateSort({
-                            id: sort.id,
-                            field: { id: sort.id, desc: value === "desc" },
-                          })
-                        }
-                      >
-                        <SelectTrigger
-                          aria-label="Select sort direction"
-                          aria-controls={directionListboxId}
-                          className="h-8 w-24 rounded"
-                        >
-                          <div className="truncate">
-                            <SelectValue />
-                          </div>
-                        </SelectTrigger>
-                        <SelectContent
-                          id={directionListboxId}
-                          className="min-w-(--radix-select-trigger-width) origin-(--radix-select-content-transform-origin)"
-                        >
-                          {dataTableConfig.sortOrders.map((order) => (
-                            <SelectItem key={order.value} value={order.value}>
-                              {order.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Button
-                        aria-label={`Remove sort ${sort.id}`}
-                        variant="outline"
-                        size="icon"
-                        className="size-8 shrink-0 rounded [&>svg]:size-3.5"
-                        onClick={() => onRemoveSort(sort.id)}
-                      >
-                        <Trash2 />
-                      </Button>
-                      <SortableItemHandle asChild>
+                          <SelectTrigger
+                            aria-label="Select sort direction"
+                            aria-controls={directionListboxId}
+                            className="h-8 w-24 rounded"
+                          >
+                            <div className="truncate">
+                              <SelectValue />
+                            </div>
+                          </SelectTrigger>
+                          <SelectContent
+                            id={directionListboxId}
+                            className="min-w-(--radix-select-trigger-width) origin-(--radix-select-content-transform-origin)"
+                          >
+                            {dataTableConfig.sortOrders.map((order) => (
+                              <SelectItem key={order.value} value={order.value}>
+                                {order.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                         <Button
+                          aria-label={`Remove sort ${sort.id}`}
                           variant="outline"
                           size="icon"
                           className="size-8 shrink-0 rounded [&>svg]:size-3.5"
+                          onClick={() => onRemoveSort(sort.id)}
                         >
-                          <GripVertical />
+                          <Trash2 />
                         </Button>
-                      </SortableItemHandle>
-                    </div>
-                  </SortableItem>
-                );
-              })}
-            </div>
-          </SortableContent>
+                        <SortableItemHandle asChild>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            className="size-8 shrink-0 rounded [&>svg]:size-3.5"
+                          >
+                            <GripVertical />
+                          </Button>
+                        </SortableItemHandle>
+                      </div>
+                    </SortableItem>
+                  );
+                })}
+              </div>
+            </SortableContent>
+          ) : null}
           <div className="flex w-full items-center gap-2">
             <Button
               size="sm"
               className="h-[1.85rem] rounded"
               onClick={onAddSort}
-              disabled={sorting.length >= sortableColumns.length}
+              disabled={uniqueSorting.length >= sortableColumns.length}
             >
               Add sort
             </Button>
-            {sorting.length > 0 ? (
+            {uniqueSorting.length > 0 ? (
               <Button
                 size="sm"
                 variant="outline"

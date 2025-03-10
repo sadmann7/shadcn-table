@@ -41,7 +41,7 @@ export function DataTableFacetedFilter<TData, TValue>({
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-8 border-dashed">
-          <PlusCircle className="size-4" />
+          <PlusCircle />
           {title}
           {selectedValues?.size > 0 && (
             <>
@@ -104,19 +104,16 @@ export function DataTableFacetedFilter<TData, TValue>({
                   >
                     <div
                       className={cn(
-                        "mr-2 flex size-4 items-center justify-center rounded-sm border border-primary",
+                        "flex size-4 items-center justify-center rounded-sm border border-primary",
                         isSelected
                           ? "bg-primary text-primary-foreground"
                           : "opacity-50 [&_svg]:invisible",
                       )}
                     >
-                      <Check className="size-4" aria-hidden="true" />
+                      <Check className="size-4" />
                     </div>
                     {option.icon && (
-                      <option.icon
-                        className="mr-2 size-4 text-muted-foreground"
-                        aria-hidden="true"
-                      />
+                      <option.icon className="size-4 text-muted-foreground" />
                     )}
                     <span>{option.label}</span>
                     {option.count && (

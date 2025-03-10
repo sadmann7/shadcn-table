@@ -38,8 +38,12 @@ export function DataTableViewOptions<TData>({
           variant="outline"
           role="combobox"
           size="sm"
-          className="ml-auto hidden h-8 gap-2 focus:outline-hidden focus:ring-1 focus:ring-ring lg:flex"
+          className="ml-auto hidden h-8 focus:outline-hidden focus:ring-1 focus:ring-ring lg:flex"
           onPointerDown={(event) => {
+            /**
+             * @see https://github.com/radix-ui/primitives/blob/main/packages/react/select/src/select.tsx#L281-L299
+             */
+
             // prevent implicit pointer capture
             const target = event.target;
             if (!(target instanceof Element)) return;
