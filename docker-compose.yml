@@ -1,6 +1,6 @@
 services:
   shadcn-table:
-    image: postgres:16.8
+    image: postgres:17.4
     restart: always
     container_name: shadcn-table
     ports:
