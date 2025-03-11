@@ -2,8 +2,8 @@
  * @see https://github.com/ethanniser/NextMaster/blob/main/src/lib/unstable-cache.ts
  */
 
-import { cache } from "react"
-import { unstable_cache as next_unstable_cache } from "next/cache"
+import { unstable_cache as next_unstable_cache } from "next/cache";
+import { cache } from "react";
 
 // next_unstable_cache doesn't handle deduplication, so we wrap it in React's cache
 export const unstable_cache = <Inputs extends unknown[], Output>(
@@ -13,7 +13,7 @@ export const unstable_cache = <Inputs extends unknown[], Output>(
     /**
      * The revalidation interval in seconds.
      */
-    revalidate?: number | false
-    tags?: string[]
-  }
-) => cache(next_unstable_cache(cb, keyParts, options))
+    revalidate?: number | false;
+    tags?: string[];
+  },
+) => cache(next_unstable_cache(cb, keyParts, options));

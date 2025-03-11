@@ -1,31 +1,31 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { tasks, type Task } from "@/db/schema"
+import { type Task, tasks } from "@/db/schema";
 import type {
   DataTableAdvancedFilterField,
   DataTableFilterField,
   DataTableRowAction,
-} from "@/types"
+} from "@/types";
+import * as React from "react";
 
-import { toSentenceCase } from "@/lib/utils"
-import { useDataTable } from "@/hooks/use-data-table"
-import { DataTable } from "@/components/data-table/data-table"
-import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar"
-import { DataTableToolbar } from "@/components/data-table/data-table-toolbar"
+import { DataTable } from "@/components/data-table/data-table";
+import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar";
+import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
+import { useDataTable } from "@/hooks/use-data-table";
+import { toSentenceCase } from "@/lib/utils";
 
 import type {
   getTaskPriorityCounts,
-  getTasks,
   getTaskStatusCounts,
-} from "../_lib/queries"
-import { getPriorityIcon, getStatusIcon } from "../_lib/utils"
-import { DeleteTasksDialog } from "./delete-tasks-dialog"
-import { useFeatureFlags } from "./feature-flags-provider"
-import { getColumns } from "./tasks-table-columns"
-import { TasksTableFloatingBar } from "./tasks-table-floating-bar"
-import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions"
-import { UpdateTaskSheet } from "./update-task-sheet"
+  getTasks,
+} from "../_lib/queries";
+import { getPriorityIcon, getStatusIcon } from "../_lib/utils";
+import { DeleteTasksDialog } from "./delete-tasks-dialog";
+import { useFeatureFlags } from "./feature-flags-provider";
+import { getColumns } from "./tasks-table-columns";
+import { TasksTableFloatingBar } from "./tasks-table-floating-bar";
+import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions";
+import { UpdateTaskSheet } from "./update-task-sheet";
 
 interface TasksTableProps {
   promises: Promise<
@@ -34,22 +34,19 @@ interface TasksTableProps {
       Awaited<ReturnType<typeof getTaskStatusCounts>>,
       Awaited<ReturnType<typeof getTaskPriorityCounts>>,
     ]
-  >
+  >;
 }
 
 export function TasksTable({ promises }: TasksTableProps) {
-  const { featureFlags } = useFeatureFlags()
+  const { featureFlags } = useFeatureFlags();
 
   const [{ data, pageCount }, statusCounts, priorityCounts] =
-    React.use(promises)
+    React.use(promises);
 
   const [rowAction, setRowAction] =
-    React.useState<DataTableRowAction<Task> | null>(null)
+    React.useState<DataTableRowAction<Task> | null>(null);
 
-  const columns = React.useMemo(
-    () => getColumns({ setRowAction }),
-    [setRowAction]
-  )
+  const columns = React.useMemo(() => getColumns({ setRowAction }), []);
 
   /**
    * This component can render either a faceted filter or a search filter based on the `options` prop.
@@ -88,7 +85,7 @@ export function TasksTable({ promises }: TasksTableProps) {
         count: priorityCounts[priority],
       })),
     },
-  ]
+  ];
 
   /**
    * Advanced filter fields for the data table.
@@ -109,7 +106,7 @@ export function TasksTable({ promises }: TasksTableProps) {
     {
       id: "status",
       label: "Status",
-      type: "multi-select",
+      type: "select",
       options: tasks.status.enumValues.map((status) => ({
         label: toSentenceCase(status),
         value: status,
@@ -133,10 +130,10 @@ export function TasksTable({ promises }: TasksTableProps) {
       label: "Created at",
       type: "date",
     },
-  ]
+  ];
 
-  const enableAdvancedTable = featureFlags.includes("advancedTable")
-  const enableFloatingBar = featureFlags.includes("floatingBar")
+  const enableAdvancedTable = featureFlags.includes("advancedTable");
+  const enableFloatingBar = featureFlags.includes("floatingBar");
 
   const { table } = useDataTable({
     data,
@@ -151,7 +148,7 @@ export function TasksTable({ promises }: TasksTableProps) {
     getRowId: (originalRow) => originalRow.id,
     shallow: false,
     clearOnDefault: true,
-  })
+  });
 
   return (
     <>
@@ -188,5 +185,5 @@ export function TasksTable({ promises }: TasksTableProps) {
         onSuccess={() => rowAction?.row.toggleSelected(false)}
       />
     </>
-  )
+  );
 }

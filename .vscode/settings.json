@@ -1,17 +1,13 @@
 {
-  "tailwindCSS.includeLanguages": {
-    "plaintext": "html"
+  "editor.codeActionsOnSave": {
+    "quickfix.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
   },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "biomejs.biome",
   "tailwindCSS.experimental.classRegex": [
-    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-    ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
-    ["tw=\"([^\"]*)\""]
-  ],
-  "json.schemas": [
-    {
-      "fileMatch": ["/package.json"],
-      "url": "https://json.schemastore.org/package",
-      "schema": true
-    }
+    ["clsx\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
+    ["cn\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ]
 }

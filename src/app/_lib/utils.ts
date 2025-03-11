@@ -1,5 +1,5 @@
-import { tasks, type Task } from "@/db/schema"
-import { faker } from "@faker-js/faker"
+import { type Task, tasks } from "@/db/schema";
+import { faker } from "@faker-js/faker";
 import {
   ArrowDownIcon,
   ArrowRightIcon,
@@ -9,10 +9,10 @@ import {
   CircleIcon,
   CircleX,
   Timer,
-} from "lucide-react"
-import { customAlphabet } from "nanoid"
+} from "lucide-react";
+import { customAlphabet } from "nanoid";
 
-import { generateId } from "@/lib/id"
+import { generateId } from "@/lib/id";
 
 export function generateRandomTask(): Task {
   return {
@@ -27,7 +27,7 @@ export function generateRandomTask(): Task {
     archived: faker.datatype.boolean({ probability: 0.2 }),
     createdAt: new Date(),
     updatedAt: new Date(),
-  }
+  };
 }
 
 /**
@@ -41,9 +41,9 @@ export function getStatusIcon(status: Task["status"]) {
     done: CheckCircle2,
     "in-progress": Timer,
     todo: CircleHelp,
-  }
+  };
 
-  return statusIcons[status] || CircleIcon
+  return statusIcons[status] || CircleIcon;
 }
 
 /**
@@ -56,7 +56,7 @@ export function getPriorityIcon(priority: Task["priority"]) {
     high: ArrowUpIcon,
     low: ArrowDownIcon,
     medium: ArrowRightIcon,
-  }
+  };
 
-  return priorityIcons[priority] || CircleIcon
+  return priorityIcons[priority] || CircleIcon;
 }

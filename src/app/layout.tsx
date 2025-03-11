@@ -1,15 +1,16 @@
-import { siteConfig } from "@/config/site"
-import { cn } from "@/lib/utils"
-import { SiteHeader } from "@/components/layouts/site-header"
-import { ThemeProvider } from "@/components/providers"
-import { TailwindIndicator } from "@/components/tailwind-indicator"
+import { SiteHeader } from "@/components/layouts/site-header";
+import { ThemeProvider } from "@/components/providers";
+import { TailwindIndicator } from "@/components/tailwind-indicator";
+import { siteConfig } from "@/config/site";
+import { cn } from "@/lib/utils";
 
-import "@/styles/globals.css"
+import "@/styles/globals.css";
 
-import type { Metadata, Viewport } from "next"
+import type { Metadata, Viewport } from "next";
 
-import { fontMono, fontSans } from "@/lib/fonts"
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
+import { fontMono, fontSans } from "@/lib/fonts";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -53,7 +54,7 @@ export const metadata: Metadata = {
     icon: "/icon.png",
   },
   manifest: `${siteConfig.url}/site.webmanifest`,
-}
+};
 
 export const viewport: Viewport = {
   colorScheme: "dark light",
@@ -61,7 +62,7 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
-}
+};
 
 export default function RootLayout({ children }: React.PropsWithChildren) {
   return (
@@ -71,9 +72,14 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
           fontSans.variable,
-          fontMono.variable
+          fontMono.variable,
         )}
       >
+        <Script
+          defer
+          data-site-id={siteConfig.url}
+          src="https://assets.onedollarstats.com/stonks.js"
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -89,5 +95,5 @@ export default function RootLayout({ children }: React.PropsWithChildren) {
         <Toaster />
       </body>
     </html>
-  )
+  );
 }

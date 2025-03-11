@@ -1,10 +1,10 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
+import { type VariantProps, cva } from "class-variance-authority";
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const kbdVariants = cva(
-  "select-none rounded border px-1.5 py-px font-mono text-[0.7rem] font-normal shadow-sm disabled:opacity-50",
+  "select-none rounded border px-1.5 py-px font-mono font-normal text-[0.7rem] shadow-xs disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -15,8 +15,8 @@ const kbdVariants = cva(
     defaultVariants: {
       variant: "default",
     },
-  }
-)
+  },
+);
 
 export interface KbdProps
   extends React.ComponentPropsWithoutRef<"kbd">,
@@ -27,7 +27,7 @@ export interface KbdProps
    * @type string | undefined
    * @example title="Command"
    */
-  abbrTitle?: string
+  abbrTitle?: string;
 }
 
 const Kbd = React.forwardRef<HTMLUnknownElement, KbdProps>(
@@ -46,9 +46,9 @@ const Kbd = React.forwardRef<HTMLUnknownElement, KbdProps>(
           children
         )}
       </kbd>
-    )
-  }
-)
-Kbd.displayName = "Kbd"
+    );
+  },
+);
+Kbd.displayName = "Kbd";
 
-export { Kbd }
+export { Kbd };

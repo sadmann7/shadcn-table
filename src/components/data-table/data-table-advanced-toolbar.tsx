@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import type { DataTableAdvancedFilterField } from "@/types"
-import { type Table } from "@tanstack/react-table"
+import type { DataTableAdvancedFilterField } from "@/types";
+import type { Table } from "@tanstack/react-table";
+import type * as React from "react";
 
-import { cn } from "@/lib/utils"
-import { DataTableFilterList } from "@/components/data-table/data-table-filter-list"
-import { DataTableSortList } from "@/components/data-table/data-table-sort-list"
-import { DataTableViewOptions } from "@/components/data-table/data-table-view-options"
+import { DataTableFilterList } from "@/components/data-table/data-table-filter-list";
+import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
+import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
+import { cn } from "@/lib/utils";
 
 interface DataTableAdvancedToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -15,7 +15,7 @@ interface DataTableAdvancedToolbarProps<TData>
    * The table instance returned from useDataTable hook with pagination, sorting, filtering, etc.
    * @type Table<TData>
    */
-  table: Table<TData>
+  table: Table<TData>;
 
   /**
    * An array of filter field configurations for the data table.
@@ -39,20 +39,20 @@ interface DataTableAdvancedToolbarProps<TData>
    *   }
    * ]
    */
-  filterFields: DataTableAdvancedFilterField<TData>[]
+  filterFields: DataTableAdvancedFilterField<TData>[];
 
   /**
    * Debounce time (ms) for filter updates to enhance performance during rapid input.
    * @default 300
    */
-  debounceMs?: number
+  debounceMs?: number;
 
   /**
    * Shallow mode keeps query states client-side, avoiding server calls.
    * Setting to `false` triggers a network request with the updated querystring.
    * @default true
    */
-  shallow?: boolean
+  shallow?: boolean;
 }
 
 export function DataTableAdvancedToolbar<TData>({
@@ -66,6 +66,8 @@ export function DataTableAdvancedToolbar<TData>({
 }: DataTableAdvancedToolbarProps<TData>) {
   return (
     <div
+      role="toolbar"
+      aria-orientation="horizontal"
       className={cn(
         "flex w-full items-center justify-between gap-2 overflow-auto",
         className
@@ -90,5 +92,5 @@ export function DataTableAdvancedToolbar<TData>({
         <DataTableViewOptions table={table} />
       </div>
     </div>
-  )
+  );
 }

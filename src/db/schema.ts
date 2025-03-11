@@ -1,8 +1,8 @@
-import { pgTable } from "@/db/utils"
-import { sql } from "drizzle-orm"
-import { boolean, timestamp, varchar } from "drizzle-orm/pg-core"
+import { pgTable } from "@/db/utils";
+import { sql } from "drizzle-orm";
+import { boolean, timestamp, varchar } from "drizzle-orm/pg-core";
 
-import { generateId } from "@/lib/id"
+import { generateId } from "@/lib/id";
 
 export const tasks = pgTable("tasks", {
   id: varchar("id", { length: 30 })
@@ -33,7 +33,7 @@ export const tasks = pgTable("tasks", {
   updatedAt: timestamp("updated_at")
     .default(sql`current_timestamp`)
     .$onUpdate(() => new Date()),
-})
+});
 
-export type Task = typeof tasks.$inferSelect
-export type NewTask = typeof tasks.$inferInsert
+export type Task = typeof tasks.$inferSelect;
+export type NewTask = typeof tasks.$inferInsert;

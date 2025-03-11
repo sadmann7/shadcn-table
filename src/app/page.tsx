@@ -1,30 +1,30 @@
-import * as React from "react"
-import { type SearchParams } from "@/types"
+import type { SearchParams } from "@/types";
+import * as React from "react";
 
-import { getValidFilters } from "@/lib/data-table"
-import { Skeleton } from "@/components/ui/skeleton"
-import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
-import { DateRangePicker } from "@/components/date-range-picker"
-import { Shell } from "@/components/shell"
+import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
+import { DateRangePicker } from "@/components/date-range-picker";
+import { Shell } from "@/components/shell";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getValidFilters } from "@/lib/data-table";
 
-import { FeatureFlagsProvider } from "./_components/feature-flags-provider"
-import { TasksTable } from "./_components/tasks-table"
+import { FeatureFlagsProvider } from "./_components/feature-flags-provider";
+import { TasksTable } from "./_components/tasks-table";
 import {
   getTaskPriorityCounts,
-  getTasks,
   getTaskStatusCounts,
-} from "./_lib/queries"
-import { searchParamsCache } from "./_lib/validations"
+  getTasks,
+} from "./_lib/queries";
+import { searchParamsCache } from "./_lib/validations";
 
 interface IndexPageProps {
-  searchParams: Promise<SearchParams>
+  searchParams: Promise<SearchParams>;
 }
 
 export default async function IndexPage(props: IndexPageProps) {
-  const searchParams = await props.searchParams
-  const search = searchParamsCache.parse(searchParams)
+  const searchParams = await props.searchParams;
+  const search = searchParamsCache.parse(searchParams);
 
-  const validFilters = getValidFilters(search.filters)
+  const validFilters = getValidFilters(search.filters);
 
   const promises = Promise.all([
     getTasks({
@@ -33,7 +33,7 @@ export default async function IndexPage(props: IndexPageProps) {
     }),
     getTaskStatusCounts(),
     getTaskPriorityCounts(),
-  ])
+  ]);
 
   return (
     <Shell className="gap-2">
@@ -61,5 +61,5 @@ export default async function IndexPage(props: IndexPageProps) {
         </React.Suspense>
       </FeatureFlagsProvider>
     </Shell>
-  )
+  );
 }
