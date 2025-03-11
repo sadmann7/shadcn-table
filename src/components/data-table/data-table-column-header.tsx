@@ -1,8 +1,8 @@
 "use client";
 
-import { SelectIcon } from "@radix-ui/react-select"
-import { type Column } from "@tanstack/react-table"
-import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff, X } from "lucide-react"
+import { SelectIcon } from "@radix-ui/react-select";
+import type { Column } from "@tanstack/react-table";
+import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff, X } from "lucide-react";
 
 import {
   Select,
@@ -27,10 +27,10 @@ export function DataTableColumnHeader<TData, TValue>({
     return <div className={cn(className)}>{title}</div>;
   }
 
-  const noneValue = `none`;
-  const ascValue = `${column.id}-asc`
-  const descValue = `${column.id}-desc`
-  const hideValue = `${column.id}-hide`
+  const noneValue = `${column.id}-none`;
+  const ascValue = `${column.id}-asc`;
+  const descValue = `${column.id}-desc`;
+  const hideValue = `${column.id}-hide`;
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
@@ -40,13 +40,13 @@ export function DataTableColumnHeader<TData, TValue>({
             ? descValue
             : column.getIsSorted() === "asc"
               ? ascValue
-              : undefined
+              : noneValue
         }
         onValueChange={(value) => {
-          if (value === ascValue) column.toggleSorting(false)
-          else if (value === descValue) column.toggleSorting(true)
-          else if (value === hideValue) column.toggleVisibility(false)
-          else if (value === noneValue) column.clearSorting()
+          if (value === ascValue) column.toggleSorting(false);
+          else if (value === descValue) column.toggleSorting(true);
+          else if (value === hideValue) column.toggleVisibility(false);
+          else if (value === noneValue) column.clearSorting();
         }}
       >
         <SelectTrigger
@@ -92,9 +92,12 @@ export function DataTableColumnHeader<TData, TValue>({
                 </span>
               </SelectItem>
               <SelectItem value={noneValue}>
-                <span className="flex items-center">
-                  <X className="mr-2 size-3.5 text-destructive/70" aria-hidden="true" />
-                  Clear Sort
+                <span className="flex items-center gap-2">
+                  <X
+                    className="size-3.5 text-muted-foreground/70"
+                    aria-hidden="true"
+                  />
+                  Reset
                 </span>
               </SelectItem>
             </>

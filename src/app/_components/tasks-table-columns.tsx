@@ -98,9 +98,9 @@ export function getColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
       ),
-      cell: ({ row }) => {
+      cell: ({ cell }) => {
         const status = tasks.status.enumValues.find(
-          (status) => status === row.original.status,
+          (status) => status === cell.getValue<Task["status"]>(),
         );
 
         if (!status) return null;
@@ -126,9 +126,9 @@ export function getColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Priority" />
       ),
-      cell: ({ row }) => {
+      cell: ({ cell }) => {
         const priority = tasks.priority.enumValues.find(
-          (priority) => priority === row.original.priority,
+          (priority) => priority === cell.getValue<Task["priority"]>(),
         );
 
         if (!priority) return null;
@@ -163,9 +163,7 @@ export function getColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Created At" />
       ),
-      cell: ({ row }) => (
-        <div className="whitespace-nowrap">{formatDate(row.original.createdAt)}</div>
-      ),
+      cell: ({ cell }) => formatDate(cell.getValue<Date>()),
     },
     {
       id: "actions",

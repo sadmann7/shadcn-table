@@ -7,8 +7,8 @@ import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { exportTableToCSV } from "@/lib/export";
 
-import { DeleteTasksDialog } from "./delete-tasks-dialog"
-import { CreateTaskSheet } from "./create-task-sheet"
+import { CreateTaskSheet } from "./create-task-sheet";
+import { DeleteTasksDialog } from "./delete-tasks-dialog";
 
 interface TasksTableToolbarActionsProps {
   table: Table<Task>;
@@ -37,9 +37,8 @@ export function TasksTableToolbarActions({
             excludeColumns: ["select", "actions"],
           })
         }
-        className="gap-2"
       >
-        <Download className="size-4" aria-hidden="true" />
+        <Download />
         Export
       </Button>
       {/**

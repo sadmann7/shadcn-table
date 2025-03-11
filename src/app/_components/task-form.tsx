@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { tasks } from "@/db/schema"
-import type { UseFormReturn, FieldValues, FieldPath } from "react-hook-form"
+import { tasks } from "@/db/schema";
+import type * as React from "react";
+import type { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
 
 import {
   Form,
@@ -11,7 +11,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -19,10 +19,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
-interface TaskFormProps<T extends FieldValues> extends Omit<React.ComponentPropsWithRef<"form">, "onSubmit"> {
+interface TaskFormProps<T extends FieldValues>
+  extends Omit<React.ComponentPropsWithRef<"form">, "onSubmit"> {
   children: React.ReactNode;
   form: UseFormReturn<T>;
   onSubmit: (data: T) => void;
@@ -149,5 +150,5 @@ export function TaskForm<T extends FieldValues>({
         {children}
       </form>
     </Form>
-  )
+  );
 }

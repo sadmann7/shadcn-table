@@ -70,7 +70,7 @@ export function DataTableAdvancedToolbar<TData>({
       aria-orientation="horizontal"
       className={cn(
         "flex w-full items-center justify-between gap-2 overflow-auto",
-        className
+        className,
       )}
       {...props}
     >
