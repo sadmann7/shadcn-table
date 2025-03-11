@@ -163,7 +163,9 @@ export function getColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Created At" />
       ),
-      cell: ({ cell }) => formatDate(cell.getValue() as Date),
+      cell: ({ row }) => (
+        <div className="whitespace-nowrap">{formatDate(row.original.createdAt)}</div>
+      ),
     },
     {
       id: "actions",

@@ -7,7 +7,8 @@ import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { exportTableToCSV } from "@/lib/export";
 
-import { DeleteTasksDialog } from "./delete-tasks-dialog";
+import { DeleteTasksDialog } from "./delete-tasks-dialog"
+import { CreateTaskSheet } from "./create-task-sheet"
 
 interface TasksTableToolbarActionsProps {
   table: Table<Task>;
@@ -26,6 +27,7 @@ export function TasksTableToolbarActions({
           onSuccess={() => table.toggleAllRowsSelected(false)}
         />
       ) : null}
+      <CreateTaskSheet />
       <Button
         variant="outline"
         size="sm"
