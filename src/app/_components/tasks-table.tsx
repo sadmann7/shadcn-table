@@ -7,6 +7,7 @@ import * as React from "react";
 import { DataTable } from "@/components/data-table/data-table";
 import { useDataTable } from "@/hooks/use-data-table";
 
+import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import type {
   getTaskPriorityCounts,
   getTaskStatusCounts,
@@ -50,6 +51,9 @@ export function TasksTable({ promises }: TasksTableProps) {
     columns,
     pageCount,
     enableAdvancedFilter: enableAdvancedTable,
+    defaultColumn: {
+      enableColumnFilter: false,
+    },
     initialState: {
       sorting: [{ id: "createdAt", desc: true }],
       columnPinning: { right: ["actions"] },
@@ -66,7 +70,9 @@ export function TasksTable({ promises }: TasksTableProps) {
 
   return (
     <>
-      <DataTable table={table} floatingBar={floatingBar} />
+      <DataTable table={table} floatingBar={floatingBar}>
+        <DataTableToolbar table={table} />
+      </DataTable>
       <UpdateTaskSheet
         open={rowAction?.type === "update"}
         onOpenChange={() => setRowAction(null)}

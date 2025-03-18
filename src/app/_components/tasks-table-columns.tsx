@@ -67,22 +67,19 @@ export function getTasksTableColumns({
       ),
       enableSorting: false,
       enableHiding: false,
-      enableColumnFilter: false,
     },
     {
+      id: "code",
       accessorKey: "code",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Task" />
       ),
       cell: ({ row }) => <div className="w-20">{row.getValue("code")}</div>,
-      meta: {
-        label: "Task",
-      },
       enableSorting: false,
       enableHiding: false,
-      enableColumnFilter: false,
     },
     {
+      id: "title",
       accessorKey: "title",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Title" />
@@ -93,7 +90,7 @@ export function getTasksTableColumns({
         );
 
         return (
-          <div className="flex space-x-2">
+          <div className="flex items-center gap-2">
             {label && <Badge variant="outline">{label}</Badge>}
             <span className="max-w-[31.25rem] truncate font-medium">
               {row.getValue("title")}
@@ -108,6 +105,7 @@ export function getTasksTableColumns({
       enableColumnFilter: true,
     },
     {
+      id: "status",
       accessorKey: "status",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
@@ -122,19 +120,17 @@ export function getTasksTableColumns({
         const Icon = getStatusIcon(status);
 
         return (
-          <div className="flex w-[6.25rem] items-center">
-            <Icon
-              className="mr-2 size-4 text-muted-foreground"
-              aria-hidden="true"
-            />
+          <Badge variant="outline" className="py-1 [&>svg]:size-3.5">
+            <Icon />
             <span className="capitalize">{status}</span>
-          </div>
+          </Badge>
         );
       },
       meta: {
+        label: "Status",
         variant: "select",
         options: tasks.status.enumValues.map((status) => ({
-          label: status,
+          label: status.charAt(0).toUpperCase() + status.slice(1),
           value: status,
           count: statusCounts[status],
         })),
@@ -142,6 +138,7 @@ export function getTasksTableColumns({
       enableColumnFilter: true,
     },
     {
+      id: "priority",
       accessorKey: "priority",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Priority" />
@@ -156,19 +153,17 @@ export function getTasksTableColumns({
         const Icon = getPriorityIcon(priority);
 
         return (
-          <div className="flex items-center">
-            <Icon
-              className="mr-2 size-4 text-muted-foreground"
-              aria-hidden="true"
-            />
+          <Badge variant="outline" className="py-1 [&>svg]:size-3.5">
+            <Icon />
             <span className="capitalize">{priority}</span>
-          </div>
+          </Badge>
         );
       },
       meta: {
+        label: "Priority",
         variant: "multi-select",
         options: tasks.priority.enumValues.map((priority) => ({
-          label: priority,
+          label: priority.charAt(0).toUpperCase() + priority.slice(1),
           value: priority,
           count: priorityCounts[priority],
         })),
@@ -176,12 +171,15 @@ export function getTasksTableColumns({
       enableColumnFilter: true,
     },
     {
+      id: "archived",
       accessorKey: "archived",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Archived" />
       ),
       cell: ({ row }) => (
-        <Badge variant="outline">{row.original.archived ? "Yes" : "No"}</Badge>
+        <Badge variant="outline" className="py-1">
+          {row.original.archived ? "Yes" : "No"}
+        </Badge>
       ),
       meta: {
         label: "Archived",
@@ -189,12 +187,14 @@ export function getTasksTableColumns({
       enableColumnFilter: false,
     },
     {
+      id: "createdAt",
       accessorKey: "createdAt",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Created At" />
       ),
       cell: ({ cell }) => formatDate(cell.getValue<Date>()),
       meta: {
+        label: "Created At",
         variant: "date",
       },
       enableColumnFilter: true,

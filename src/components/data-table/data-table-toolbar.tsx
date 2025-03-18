@@ -26,8 +26,12 @@ export function DataTableToolbar<TData>({
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
-  // Memoize computation of searchableColumns and filterableColumns
-  const { searchableColumns, filterableColumns } = React.useMemo(() => {
+  const columns = React.useMemo(
+    () => table.getAllColumns().filter((column) => column.getCanFilter()),
+    [table],
+  );
+
+  const { searchableColumns } = React.useMemo(() => {
     return {
       searchableColumns: filterFields.filter((field) => !field.options),
       filterableColumns: filterFields.filter((field) => field.options),
@@ -66,18 +70,14 @@ export function DataTableToolbar<TData>({
                 />
               ),
           )}
-        {filterableColumns.length > 0 &&
-          filterableColumns.map(
-            (column) =>
-              table.getColumn(column.id ? String(column.id) : "") && (
-                <DataTableFacetedFilter
-                  key={String(column.id)}
-                  column={table.getColumn(column.id ? String(column.id) : "")}
-                  title={column.label}
-                  options={column.options ?? []}
-                />
-              ),
-          )}
+        {columns.map((column) => (
+          <DataTableFacetedFilter
+            key={column.id}
+            column={column}
+            title={column.columnDef.meta?.label ?? column.id}
+            options={column.columnDef.meta?.options ?? []}
+          />
+        ))}
         {isFiltered && (
           <Button
             aria-label="Reset filters"
