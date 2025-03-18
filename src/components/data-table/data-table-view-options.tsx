@@ -27,52 +27,22 @@ interface DataTableViewOptionsProps<TData> {
 export function DataTableViewOptions<TData>({
   table,
 }: DataTableViewOptionsProps<TData>) {
-  const triggerRef = React.useRef<HTMLButtonElement>(null);
-
   return (
-    <Popover modal>
+    <Popover>
       <PopoverTrigger asChild>
         <Button
-          ref={triggerRef}
           aria-label="Toggle columns"
           variant="outline"
           role="combobox"
           size="sm"
-          className="ml-auto hidden h-8 focus:outline-hidden focus:ring-1 focus:ring-ring lg:flex"
-          onPointerDown={(event) => {
-            /**
-             * @see https://github.com/radix-ui/primitives/blob/main/packages/react/select/src/select.tsx#L281-L299
-             */
-
-            // prevent implicit pointer capture
-            const target = event.target;
-            if (!(target instanceof Element)) return;
-            if (target.hasPointerCapture(event.pointerId)) {
-              target.releasePointerCapture(event.pointerId);
-            }
-
-            if (
-              event.button === 0 &&
-              event.ctrlKey === false &&
-              event.pointerType === "mouse"
-            ) {
-              // prevent trigger from stealing focus from the active item
-              event.preventDefault();
-            }
-          }}
+          className="ml-auto hidden h-8 lg:flex"
         >
           <Settings2 />
           View
           <ChevronsUpDown className="ml-auto opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent
-        align="end"
-        className="w-44 p-0"
-        onCloseAutoFocus={() =>
-          triggerRef.current?.focus({ preventScroll: true })
-        }
-      >
+      <PopoverContent align="end" className="w-44 p-0">
         <Command>
           <CommandInput placeholder="Search columns..." />
           <CommandList>
@@ -94,7 +64,8 @@ export function DataTableViewOptions<TData>({
                       }
                     >
                       <span className="truncate">
-                        {toSentenceCase(column.id)}
+                        {column.columnDef.meta?.label ??
+                          toSentenceCase(column.id)}
                       </span>
                       <Check
                         className={cn(

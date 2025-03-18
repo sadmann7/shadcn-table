@@ -30,15 +30,19 @@ import { formatDate } from "@/lib/utils";
 import { updateTask } from "../_lib/actions";
 import { getPriorityIcon, getStatusIcon } from "../_lib/utils";
 
-interface GetColumnsProps {
+interface GetTasksTableColumnsProps {
+  statusCounts: Record<Task["status"], number>;
+  priorityCounts: Record<Task["priority"], number>;
   setRowAction: React.Dispatch<
     React.SetStateAction<DataTableRowAction<Task> | null>
   >;
 }
 
-export function getColumns({
+export function getTasksTableColumns({
+  statusCounts,
+  priorityCounts,
   setRowAction,
-}: GetColumnsProps): ColumnDef<Task>[] {
+}: GetTasksTableColumnsProps): ColumnDef<Task>[] {
   return [
     {
       id: "select",
@@ -63,6 +67,7 @@ export function getColumns({
       ),
       enableSorting: false,
       enableHiding: false,
+      enableColumnFilter: false,
     },
     {
       accessorKey: "code",
@@ -70,8 +75,12 @@ export function getColumns({
         <DataTableColumnHeader column={column} title="Task" />
       ),
       cell: ({ row }) => <div className="w-20">{row.getValue("code")}</div>,
+      meta: {
+        label: "Task",
+      },
       enableSorting: false,
       enableHiding: false,
+      enableColumnFilter: false,
     },
     {
       accessorKey: "title",
@@ -92,6 +101,11 @@ export function getColumns({
           </div>
         );
       },
+      meta: {
+        label: "Title",
+        variant: "text",
+      },
+      enableColumnFilter: true,
     },
     {
       accessorKey: "status",
@@ -117,9 +131,15 @@ export function getColumns({
           </div>
         );
       },
-      filterFn: (row, id, value) => {
-        return Array.isArray(value) && value.includes(row.getValue(id));
+      meta: {
+        variant: "select",
+        options: tasks.status.enumValues.map((status) => ({
+          label: status,
+          value: status,
+          count: statusCounts[status],
+        })),
       },
+      enableColumnFilter: true,
     },
     {
       accessorKey: "priority",
@@ -145,9 +165,15 @@ export function getColumns({
           </div>
         );
       },
-      filterFn: (row, id, value) => {
-        return Array.isArray(value) && value.includes(row.getValue(id));
+      meta: {
+        variant: "multi-select",
+        options: tasks.priority.enumValues.map((priority) => ({
+          label: priority,
+          value: priority,
+          count: priorityCounts[priority],
+        })),
       },
+      enableColumnFilter: true,
     },
     {
       accessorKey: "archived",
@@ -157,6 +183,10 @@ export function getColumns({
       cell: ({ row }) => (
         <Badge variant="outline">{row.original.archived ? "Yes" : "No"}</Badge>
       ),
+      meta: {
+        label: "Archived",
+      },
+      enableColumnFilter: false,
     },
     {
       accessorKey: "createdAt",
@@ -164,6 +194,10 @@ export function getColumns({
         <DataTableColumnHeader column={column} title="Created At" />
       ),
       cell: ({ cell }) => formatDate(cell.getValue<Date>()),
+      meta: {
+        variant: "date",
+      },
+      enableColumnFilter: true,
     },
     {
       id: "actions",
