@@ -119,6 +119,7 @@ export function getTasksTableColumns({
         label: "Est. Hours",
         variant: "range",
         range: [0, 24],
+        unit: "hr",
       },
       enableColumnFilter: true,
     },

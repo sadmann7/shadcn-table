@@ -2,7 +2,7 @@
 
 import type { Option } from "@/types";
 import type { Column } from "@tanstack/react-table";
-import { Check, PlusCircle } from "lucide-react";
+import { Check, PlusCircle, XCircle } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,9 +38,10 @@ export function DataTableFacetedFilter<TData, TValue>({
   multiple,
 }: DataTableFacetedFilterProps<TData, TValue>) {
   const [open, setOpen] = React.useState(false);
-  const unknownValue = column?.getFilterValue();
+
+  const columnFilterValue = column?.getFilterValue();
   const selectedValues = new Set(
-    Array.isArray(unknownValue) ? unknownValue : [],
+    Array.isArray(columnFilterValue) ? columnFilterValue : [],
   );
 
   const onItemSelect = React.useCallback(
@@ -64,19 +65,41 @@ export function DataTableFacetedFilter<TData, TValue>({
     [column, multiple, selectedValues],
   );
 
-  const onReset = React.useCallback(() => {
-    column?.setFilterValue(undefined);
-  }, [column]);
+  const onReset = React.useCallback(
+    (event?: React.MouseEvent) => {
+      event?.stopPropagation();
+      column?.setFilterValue(undefined);
+    },
+    [column],
+  );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="border-dashed">
-          <PlusCircle />
+        <Button
+          variant="outline"
+          size="sm"
+          className="border-dashed hover:bg-accent/50"
+        >
+          <div className="flex items-center gap-2">
+            {selectedValues?.size > 0 ? (
+              <div
+                aria-label="Clear filter"
+                role="button"
+                tabIndex={0}
+                onClick={onReset}
+                className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none data-[state=open]:bg-accent"
+              >
+                <XCircle className="size-4" />
+              </div>
+            ) : (
+              <PlusCircle className="size-4" />
+            )}
+          </div>
           {title}
           {selectedValues?.size > 0 && (
             <>
-              <Separator orientation="vertical" className="mx-2 h-4" />
+              <Separator orientation="vertical" className="mx-0.5 h-4" />
               <Badge
                 variant="secondary"
                 className="rounded-sm px-1 font-normal lg:hidden"
@@ -151,7 +174,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem
-                    onSelect={onReset}
+                    onSelect={() => onReset()}
                     className="justify-center text-center"
                   >
                     Clear filters

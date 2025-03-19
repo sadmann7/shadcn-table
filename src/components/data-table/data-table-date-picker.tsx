@@ -2,7 +2,7 @@
 
 import type { Column } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, X, XCircle } from "lucide-react";
 import * as React from "react";
 import type { DateRange } from "react-day-picker";
 
@@ -13,6 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Separator } from "@/components/ui/separator";
 
 type DateSelection = Date[] | DateRange;
 
@@ -52,7 +53,7 @@ interface DataTableDatePickerProps<TData> {
 
 export function DataTableDatePicker<TData>({
   column,
-  multiple = false,
+  multiple,
 }: DataTableDatePickerProps<TData>) {
   const columnFilterValue = column.getFilterValue();
 
@@ -92,6 +93,23 @@ export function DataTableDatePicker<TData>({
     [column, multiple],
   );
 
+  const onReset = React.useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+      column.setFilterValue(undefined);
+    },
+    [column],
+  );
+
+  const hasValue = React.useMemo(() => {
+    if (multiple) {
+      if (!isDateRange(selectedDates)) return false;
+      return selectedDates.from || selectedDates.to;
+    }
+    if (!Array.isArray(selectedDates)) return false;
+    return selectedDates.length > 0;
+  }, [multiple, selectedDates]);
+
   const formatSelectedDate = React.useCallback((date: Date | undefined) => {
     if (!date) return "";
     try {
@@ -113,24 +131,46 @@ export function DataTableDatePicker<TData>({
   );
 
   const label = React.useMemo(() => {
+    const columnName = column.columnDef.meta?.label ?? column.id;
+
     if (multiple) {
       if (!isDateRange(selectedDates)) return null;
-      return selectedDates.from || selectedDates.to ? (
-        <span className="hidden lg:inline">
-          {formatDateRange(selectedDates)}
+
+      const hasSelectedDates = selectedDates.from || selectedDates.to;
+      const dateText = hasSelectedDates
+        ? formatDateRange(selectedDates)
+        : "Select date range";
+
+      return (
+        <span className="flex items-center gap-2">
+          <span>{columnName}</span>
+          {hasSelectedDates && (
+            <>
+              <Separator orientation="vertical" className="mx-0.5 h-4" />
+              <span>{dateText}</span>
+            </>
+          )}
         </span>
-      ) : (
-        <span>{column.columnDef.meta?.label ?? "Pick a date range"}</span>
       );
     }
 
     if (isDateRange(selectedDates)) return null;
-    return selectedDates.length > 0 ? (
-      <span className="hidden lg:inline">
-        {formatSelectedDate(selectedDates[0])}
+
+    const hasSelectedDate = selectedDates.length > 0;
+    const dateText = hasSelectedDate
+      ? formatSelectedDate(selectedDates[0])
+      : "Select date";
+
+    return (
+      <span className="flex items-center gap-2">
+        <span>{columnName}</span>
+        {hasSelectedDate && (
+          <>
+            <Separator orientation="vertical" className="mx-0.5 h-4" />
+            <span>{dateText}</span>
+          </>
+        )}
       </span>
-    ) : (
-      <span>{column.columnDef.meta?.label ?? "Pick a date"}</span>
     );
   }, [
     selectedDates,
@@ -138,13 +178,32 @@ export function DataTableDatePicker<TData>({
     formatDateRange,
     formatSelectedDate,
     column.columnDef.meta?.label,
+    column.id,
   ]);
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="border-dashed">
-          <CalendarIcon />
+        <Button
+          variant="outline"
+          size="sm"
+          className="border-dashed hover:bg-accent/50"
+        >
+          <div className="flex items-center gap-2">
+            {hasValue ? (
+              <div
+                aria-label="Clear filter"
+                role="button"
+                tabIndex={0}
+                onClick={onReset}
+                className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none data-[state=open]:bg-accent"
+              >
+                <XCircle />
+              </div>
+            ) : (
+              <CalendarIcon />
+            )}
+          </div>
           {label}
         </Button>
       </PopoverTrigger>
