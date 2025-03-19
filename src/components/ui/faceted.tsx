@@ -18,8 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { useComposedRefs } from "@/lib/composition";
-import { cn, composeEventHandlers } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 const FACETED_NAME = "Faceted";
 const TRIGGER_NAME = "FacetedTrigger";
@@ -50,7 +49,6 @@ type FacetedValue<Multiple extends boolean> = Multiple extends true
   : string;
 
 interface FacetedContextValue<Multiple extends boolean = boolean> {
-  triggerRef: React.RefObject<HTMLButtonElement | null>;
   value?: FacetedValue<Multiple>;
   onItemSelect?: (value: string) => void;
   multiple?: Multiple;
@@ -83,11 +81,11 @@ function Faceted<Multiple extends boolean = false>(
     value,
     onValueChange,
     children,
-    multiple = false as Multiple,
+    multiple = false,
     ...facetedProps
   } = props;
   const [open, setOpen] = React.useState(false);
-  const triggerRef = React.useRef<HTMLButtonElement>(null);
+
   const onItemSelect = React.useCallback(
     (selectedValue: string) => {
       if (!onValueChange) return;
@@ -105,16 +103,14 @@ function Faceted<Multiple extends boolean = false>(
           onValueChange(selectedValue as FacetedValue<Multiple>);
         }
 
-        requestAnimationFrame(() => {
-          setOpen(false);
-        });
+        requestAnimationFrame(() => setOpen(false));
       }
     },
     [multiple, onValueChange, value],
   );
 
-  const contextValue = React.useMemo<FacetedContextValue<Multiple>>(
-    () => ({ value, onItemSelect, multiple, triggerRef }),
+  const contextValue = React.useMemo<FacetedContextValue<typeof multiple>>(
+    () => ({ value, onItemSelect, multiple }),
     [value, onItemSelect, multiple],
   );
 
@@ -134,39 +130,11 @@ const FacetedTrigger = React.forwardRef<
 >((props, forwardedRef) => {
   const { className, children, ...triggerProps } = props;
 
-  const context = useFacetedContext(TRIGGER_NAME);
-  const composedRef = useComposedRefs(forwardedRef, context.triggerRef);
-
   return (
     <PopoverTrigger
       {...triggerProps}
-      ref={composedRef}
-      className={cn(
-        "justify-between text-left focus:outline-none focus:ring-1 focus:ring-ring",
-        className,
-      )}
-      onPointerDown={composeEventHandlers(
-        triggerProps.onPointerDown,
-        (event) => {
-          // prevent implicit pointer capture
-          const target = event.target;
-          if (!(target instanceof Element)) return;
-          if (target.hasPointerCapture(event.pointerId)) {
-            target.releasePointerCapture(event.pointerId);
-          }
-
-          // Only prevent default if we're not clicking on the input
-          // This allows text selection in the input while still preventing focus stealing elsewhere
-          if (
-            event.button === 0 &&
-            event.ctrlKey === false &&
-            event.pointerType === "mouse" &&
-            !(event.target instanceof HTMLInputElement)
-          ) {
-            event.preventDefault();
-          }
-        },
-      )}
+      ref={forwardedRef}
+      className={cn("justify-between text-left", className)}
     >
       {children}
     </PopoverTrigger>
@@ -255,8 +223,6 @@ const FacetedContent = React.forwardRef<
 >((props, forwardedRef) => {
   const { className, children, ...contentProps } = props;
 
-  const context = useFacetedContext(CONTENT_NAME);
-
   return (
     <PopoverContent
       {...contentProps}
@@ -265,10 +231,6 @@ const FacetedContent = React.forwardRef<
       className={cn(
         "w-[200px] origin-(--radix-popover-content-transform-origin) p-0",
         className,
-      )}
-      onCloseAutoFocus={composeEventHandlers(
-        contentProps.onCloseAutoFocus,
-        () => context.triggerRef.current?.focus({ preventScroll: true }),
       )}
     >
       <Command>{children}</Command>

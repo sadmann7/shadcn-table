@@ -31,12 +31,9 @@ export function DataTableToolbar<TData>({
     [table],
   );
 
-  const { searchableColumns } = React.useMemo(() => {
-    return {
-      searchableColumns: filterFields.filter((field) => !field.options),
-      filterableColumns: filterFields.filter((field) => field.options),
-    };
-  }, [filterFields]);
+  const onReset = React.useCallback(() => {
+    table.resetColumnFilters();
+  }, [table]);
 
   return (
     <div
@@ -48,42 +45,42 @@ export function DataTableToolbar<TData>({
       )}
       {...props}
     >
-      <div className="flex flex-1 items-center gap-2">
-        {searchableColumns.length > 0 &&
-          searchableColumns.map(
-            (column) =>
-              table.getColumn(column.id ? String(column.id) : "") && (
-                <Input
-                  key={String(column.id)}
-                  placeholder={column.placeholder}
-                  value={
-                    (table
-                      .getColumn(String(column.id))
-                      ?.getFilterValue() as string) ?? ""
-                  }
-                  onChange={(event) =>
-                    table
-                      .getColumn(String(column.id))
-                      ?.setFilterValue(event.target.value)
-                  }
-                  className="h-8 w-40 lg:w-64"
-                />
-              ),
-          )}
-        {columns.map((column) => (
-          <DataTableFacetedFilter
-            key={column.id}
-            column={column}
-            title={column.columnDef.meta?.label ?? column.id}
-            options={column.columnDef.meta?.options ?? []}
-          />
-        ))}
+      <div className="flex flex-1 items-center gap-2 p-0.5">
+        {columns.map((column) =>
+          column.columnDef.meta?.variant === "text" ? (
+            <Input
+              key={column.id}
+              placeholder={column.columnDef.meta.label}
+              value={
+                (table
+                  .getColumn(String(column.id))
+                  ?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) =>
+                table
+                  .getColumn(String(column.id))
+                  ?.setFilterValue(event.target.value)
+              }
+              className="h-8 w-40 lg:w-64"
+            />
+          ) : (
+            column.columnDef.meta?.options && (
+              <DataTableFacetedFilter
+                key={column.id}
+                column={column}
+                title={column.columnDef.meta?.label ?? column.id}
+                options={column.columnDef.meta.options}
+                multiple={column.columnDef.meta?.variant === "multi-select"}
+              />
+            )
+          ),
+        )}
         {isFiltered && (
           <Button
             aria-label="Reset filters"
             variant="ghost"
             className="h-8 px-2 lg:px-3"
-            onClick={() => table.resetColumnFilters()}
+            onClick={onReset}
           >
             Reset
             <X />
