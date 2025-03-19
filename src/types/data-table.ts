@@ -8,6 +8,8 @@ declare module "@tanstack/react-table" {
       | "text"
       | "number"
       | "date"
+      | "date-range"
+      | "slider"
       | "boolean"
       | "select"
       | "multi-select";

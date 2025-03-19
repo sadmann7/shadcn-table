@@ -1,10 +1,10 @@
 "use client";
 
-import type { DataTableFilterField } from "@/types";
 import type { Table } from "@tanstack/react-table";
 import { X } from "lucide-react";
 import * as React from "react";
 
+import { DataTableDatePicker } from "@/components/data-table/data-table-date-picker";
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
 import { Button } from "@/components/ui/button";
@@ -14,12 +14,10 @@ import { cn } from "@/lib/utils";
 interface DataTableToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
   table: Table<TData>;
-  filterFields?: DataTableFilterField<TData>[];
 }
 
 export function DataTableToolbar<TData>({
   table,
-  filterFields = [],
   children,
   className,
   ...props
@@ -51,25 +49,25 @@ export function DataTableToolbar<TData>({
             <Input
               key={column.id}
               placeholder={column.columnDef.meta.label}
-              value={
-                (table
-                  .getColumn(String(column.id))
-                  ?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) =>
-                table
-                  .getColumn(String(column.id))
-                  ?.setFilterValue(event.target.value)
-              }
+              value={column.getFilterValue() as string}
+              onChange={(event) => column.setFilterValue(event.target.value)}
               className="h-8 w-40 lg:w-64"
             />
+          ) : column.columnDef.meta?.variant === "date" ||
+            column.columnDef.meta?.variant === "date-range" ? (
+            <DataTableDatePicker
+              key={column.id}
+              column={column}
+              multiple={column.columnDef.meta?.variant === "date-range"}
+            />
           ) : (
-            column.columnDef.meta?.options && (
+            (column.columnDef.meta?.variant === "select" ||
+              column.columnDef.meta?.variant === "multi-select") && (
               <DataTableFacetedFilter
                 key={column.id}
                 column={column}
                 title={column.columnDef.meta?.label ?? column.id}
-                options={column.columnDef.meta.options}
+                options={column.columnDef.meta?.options ?? []}
                 multiple={column.columnDef.meta?.variant === "multi-select"}
               />
             )
