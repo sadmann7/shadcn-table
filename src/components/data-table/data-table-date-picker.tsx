@@ -56,8 +56,6 @@ export function DataTableDatePicker<TData>({
 }: DataTableDatePickerProps<TData>) {
   const columnFilterValue = column.getFilterValue();
 
-  console.log({ columnFilterValue });
-
   const selectedDates = React.useMemo<DateSelection>(() => {
     if (!columnFilterValue) {
       return multiple ? { from: undefined, to: undefined } : [];

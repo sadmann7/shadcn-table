@@ -4,6 +4,7 @@ declare module "@tanstack/react-table" {
   // biome-ignore lint/correctness/noUnusedVariables: <explanation>
   interface ColumnMeta<TData extends RowData, TValue> {
     label?: string;
+    placeholder?: string;
     variant?:
       | "text"
       | "number"

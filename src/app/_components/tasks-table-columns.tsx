@@ -100,6 +100,7 @@ export function getTasksTableColumns({
       },
       meta: {
         label: "Title",
+        placeholder: "Search titles...",
         variant: "text",
       },
       enableColumnFilter: true,

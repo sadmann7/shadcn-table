@@ -44,35 +44,39 @@ export function DataTableToolbar<TData>({
       {...props}
     >
       <div className="flex flex-1 items-center gap-2 p-0.5">
-        {columns.map((column) =>
-          column.columnDef.meta?.variant === "text" ? (
+        {columns.map((column) => {
+          const columnMeta = column.columnDef.meta;
+
+          return columnMeta?.variant === "text" ||
+            columnMeta?.variant === "number" ? (
             <Input
               key={column.id}
-              placeholder={column.columnDef.meta.label}
+              type={columnMeta?.variant}
+              placeholder={columnMeta?.placeholder ?? columnMeta?.label}
               value={column.getFilterValue() as string}
               onChange={(event) => column.setFilterValue(event.target.value)}
-              className="h-8 w-40 lg:w-64"
+              className="h-8 w-40 lg:w-56"
             />
-          ) : column.columnDef.meta?.variant === "date" ||
-            column.columnDef.meta?.variant === "date-range" ? (
+          ) : columnMeta?.variant === "date" ||
+            columnMeta?.variant === "date-range" ? (
             <DataTableDatePicker
               key={column.id}
               column={column}
-              multiple={column.columnDef.meta?.variant === "date-range"}
+              multiple={columnMeta?.variant === "date-range"}
             />
           ) : (
-            (column.columnDef.meta?.variant === "select" ||
-              column.columnDef.meta?.variant === "multi-select") && (
+            (columnMeta?.variant === "select" ||
+              columnMeta?.variant === "multi-select") && (
               <DataTableFacetedFilter
                 key={column.id}
                 column={column}
-                title={column.columnDef.meta?.label ?? column.id}
-                options={column.columnDef.meta?.options ?? []}
-                multiple={column.columnDef.meta?.variant === "multi-select"}
+                title={columnMeta?.label ?? column.id}
+                options={columnMeta?.options ?? []}
+                multiple={columnMeta?.variant === "multi-select"}
               />
             )
-          ),
-        )}
+          );
+        })}
         {isFiltered && (
           <Button
             aria-label="Reset filters"
