@@ -350,24 +350,9 @@ export function DataTableFilterList<TData>({
                   variant="outline"
                   size="sm"
                   className={cn(
-                    "h-8 w-full justify-start rounded text-left font-normal focus:outline-none focus:ring-1 focus:ring-ring",
+                    "w-full justify-start rounded text-left font-normal",
                     !filter.value && "text-muted-foreground",
                   )}
-                  onPointerDown={(event) => {
-                    const target = event.target;
-                    if (!(target instanceof Element)) return;
-                    if (target.hasPointerCapture(event.pointerId)) {
-                      target.releasePointerCapture(event.pointerId);
-                    }
-
-                    if (
-                      event.button === 0 &&
-                      event.ctrlKey === false &&
-                      event.pointerType === "mouse"
-                    ) {
-                      event.preventDefault();
-                    }
-                  }}
                 >
                   <CalendarIcon
                     className="size-3.5 shrink-0"
@@ -601,22 +586,7 @@ export function DataTableFilterList<TData>({
                               role="combobox"
                               aria-label="Select filter field"
                               aria-controls={fieldListboxId}
-                              className="h-8 w-32 justify-between rounded focus:outline-hidden focus:ring-1 focus:ring-ring"
-                              onPointerDown={(event) => {
-                                const target = event.target;
-                                if (!(target instanceof Element)) return;
-                                if (target.hasPointerCapture(event.pointerId)) {
-                                  target.releasePointerCapture(event.pointerId);
-                                }
-
-                                if (
-                                  event.button === 0 &&
-                                  event.ctrlKey === false &&
-                                  event.pointerType === "mouse"
-                                ) {
-                                  event.preventDefault();
-                                }
-                              }}
+                              className="w-32 justify-between rounded"
                             >
                               <span className="truncate">
                                 {filterFields.find(

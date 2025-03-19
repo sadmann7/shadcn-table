@@ -12,7 +12,7 @@ import { getFiltersStateParser, getSortingStateParser } from "@/lib/parsers";
 
 export const searchParamsCache = createSearchParamsCache({
   flags: parseAsArrayOf(z.enum(["advancedTable", "floatingBar"])).withDefault(
-    []
+    [],
   ),
   page: parseAsInteger.withDefault(1),
   perPage: parseAsInteger.withDefault(10),

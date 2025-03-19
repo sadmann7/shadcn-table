@@ -232,22 +232,7 @@ export function DataTableSortList<TData>({
                               aria-controls={fieldListboxId}
                               variant="outline"
                               size="sm"
-                              className="h-8 w-44 justify-between rounded focus:outline-hidden focus:ring-1 focus:ring-ring"
-                              onPointerDown={(event) => {
-                                const target = event.target;
-                                if (!(target instanceof Element)) return;
-                                if (target.hasPointerCapture(event.pointerId)) {
-                                  target.releasePointerCapture(event.pointerId);
-                                }
-
-                                if (
-                                  event.button === 0 &&
-                                  event.ctrlKey === false &&
-                                  event.pointerType === "mouse"
-                                ) {
-                                  event.preventDefault();
-                                }
-                              }}
+                              className="w-44 justify-between rounded"
                             >
                               <span className="truncate">
                                 {toSentenceCase(sort.id)}

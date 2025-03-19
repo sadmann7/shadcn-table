@@ -30,11 +30,6 @@ export function DataTableToolbar<TData>({
     [table],
   );
 
-  console.log({
-    columnIds: columns.map((column) => column.id),
-    columnDefs: columns.map((column) => column.columnDef),
-  });
-
   const onReset = React.useCallback(() => {
     table.resetColumnFilters();
   }, [table]);
