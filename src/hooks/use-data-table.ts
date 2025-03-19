@@ -33,6 +33,11 @@ import * as React from "react";
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { getSortingStateParser } from "@/lib/parsers";
 
+const PAGE_KEY = "page";
+const PER_PAGE_KEY = "perPage";
+const SORT_KEY = "sort";
+const ARRAY_SEPARATOR = ",";
+
 interface UseDataTableProps<TData>
   extends Omit<
       TableOptions<TData>,
@@ -102,17 +107,17 @@ export function useDataTable<TData>({
     React.useState<VisibilityState>(initialState?.columnVisibility ?? {});
 
   const [page, setPage] = useQueryState(
-    "page",
+    PAGE_KEY,
     parseAsInteger.withOptions(queryStateOptions).withDefault(1),
   );
   const [perPage, setPerPage] = useQueryState(
-    "perPage",
+    PER_PAGE_KEY,
     parseAsInteger
       .withOptions(queryStateOptions)
       .withDefault(initialState?.pagination?.pageSize ?? 10),
   );
   const [sorting, setSorting] = useQueryState(
-    "sort",
+    SORT_KEY,
     getSortingStateParser<TData>()
       .withOptions(queryStateOptions)
       .withDefault(initialState?.sorting ?? []),
@@ -127,9 +132,10 @@ export function useDataTable<TData>({
       Record<string, Parser<string> | Parser<string[]>>
     >((acc, column) => {
       if (column.meta?.options) {
-        acc[column.id ?? ""] = parseAsArrayOf(parseAsString, ",").withOptions(
-          queryStateOptions,
-        );
+        acc[column.id ?? ""] = parseAsArrayOf(
+          parseAsString,
+          ARRAY_SEPARATOR,
+        ).withOptions(queryStateOptions);
       } else {
         acc[column.id ?? ""] = parseAsString.withOptions(queryStateOptions);
       }
@@ -186,9 +192,15 @@ export function useDataTable<TData>({
       : Object.entries(filterValues).reduce<ColumnFiltersState>(
           (filters, [key, value]) => {
             if (value !== null) {
+              const processedValue = Array.isArray(value)
+                ? value
+                : typeof value === "string" && /[^a-zA-Z0-9]/.test(value)
+                  ? value.split(/[^a-zA-Z0-9]+/).filter(Boolean)
+                  : [value];
+
               filters.push({
                 id: key,
-                value: Array.isArray(value) ? value : [value],
+                value: processedValue,
               });
             }
             return filters;

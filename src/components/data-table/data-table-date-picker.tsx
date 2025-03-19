@@ -35,13 +35,10 @@ function parseColumnFilterValue(
   value: unknown,
 ): (number | string | undefined)[] {
   if (Array.isArray(value)) {
-    if (typeof value[0] === "string" && /[^a-zA-Z0-9]/.test(value[0])) {
-      return value[0].split(/[^a-zA-Z0-9]+/);
-    }
     return value as (number | string)[];
   }
   if (typeof value === "string") {
-    return value.split(/[^a-zA-Z0-9]+/);
+    return [value];
   }
   return [value as number | string | undefined];
 }
