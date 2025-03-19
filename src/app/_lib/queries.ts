@@ -7,13 +7,11 @@ import {
   asc,
   count,
   desc,
-  eq,
   gt,
   gte,
   ilike,
   inArray,
   lte,
-  sql,
 } from "drizzle-orm";
 
 import { filterColumns } from "@/lib/filter-columns";
@@ -44,6 +42,16 @@ export async function getTasks(input: GetTasksSchema) {
               input.priority.length > 0
                 ? inArray(tasks.priority, input.priority)
                 : undefined,
+              input.estimatedHours.length > 0
+                ? and(
+                    input.estimatedHours[0]
+                      ? gte(tasks.estimatedHours, input.estimatedHours[0])
+                      : undefined,
+                    input.estimatedHours[1]
+                      ? lte(tasks.estimatedHours, input.estimatedHours[1])
+                      : undefined
+                  )
+                : undefined,
               input.createdAt.length > 0
                 ? and(
                     input.createdAt[0]
@@ -53,7 +61,7 @@ export async function getTasks(input: GetTasksSchema) {
                             const date = new Date(input.createdAt[0]);
                             date.setHours(0, 0, 0, 0);
                             return date;
-                          })(),
+                          })()
                         )
                       : undefined,
                     input.createdAt[1]
@@ -63,17 +71,17 @@ export async function getTasks(input: GetTasksSchema) {
                             const date = new Date(input.createdAt[1]);
                             date.setHours(23, 59, 59, 999);
                             return date;
-                          })(),
+                          })()
                         )
-                      : undefined,
+                      : undefined
                   )
-                : undefined,
+                : undefined
             );
 
         const orderBy =
           input.sort.length > 0
             ? input.sort.map((item) =>
-                item.desc ? desc(tasks[item.id]) : asc(tasks[item.id]),
+                item.desc ? desc(tasks[item.id]) : asc(tasks[item.id])
               )
             : [asc(tasks.createdAt)];
 
@@ -111,7 +119,7 @@ export async function getTasks(input: GetTasksSchema) {
     {
       revalidate: 1,
       tags: ["tasks"],
-    },
+    }
   )();
 }
 
@@ -128,13 +136,10 @@ export async function getTaskStatusCounts() {
           .groupBy(tasks.status)
           .having(gt(count(), 0))
           .then((res) =>
-            res.reduce(
-              (acc, { status, count }) => {
-                acc[status] = count;
-                return acc;
-              },
-              {} as Record<Task["status"], number>,
-            ),
+            res.reduce((acc, { status, count }) => {
+              acc[status] = count;
+              return acc;
+            }, {} as Record<Task["status"], number>)
           );
       } catch (_err) {
         return {} as Record<Task["status"], number>;
@@ -143,7 +148,7 @@ export async function getTaskStatusCounts() {
     ["task-status-counts"],
     {
       revalidate: 3600,
-    },
+    }
   )();
 }
 
@@ -160,13 +165,10 @@ export async function getTaskPriorityCounts() {
           .groupBy(tasks.priority)
           .having(gt(count(), 0))
           .then((res) =>
-            res.reduce(
-              (acc, { priority, count }) => {
-                acc[priority] = count;
-                return acc;
-              },
-              {} as Record<Task["priority"], number>,
-            ),
+            res.reduce((acc, { priority, count }) => {
+              acc[priority] = count;
+              return acc;
+            }, {} as Record<Task["priority"], number>)
           );
       } catch (_err) {
         return {} as Record<Task["priority"], number>;
@@ -175,6 +177,6 @@ export async function getTaskPriorityCounts() {
     ["task-priority-counts"],
     {
       revalidate: 3600,
-    },
+    }
   )();
 }

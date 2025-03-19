@@ -10,7 +10,6 @@ export const tasks = pgTable("tasks", {
     .primaryKey(),
   code: varchar("code", { length: 128 }).notNull().unique(),
   title: varchar("title", { length: 128 }),
-  estimatedHours: real("estimated_hours").notNull().default(0),
   status: varchar("status", {
     length: 30,
     enum: ["todo", "in-progress", "done", "canceled"],
@@ -29,6 +28,7 @@ export const tasks = pgTable("tasks", {
   })
     .notNull()
     .default("low"),
+  estimatedHours: real("estimated_hours").notNull().default(0),
   archived: boolean("archived").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")

@@ -12,7 +12,7 @@ import { getFiltersStateParser, getSortingStateParser } from "@/lib/parsers";
 
 export const searchParamsCache = createSearchParamsCache({
   flags: parseAsArrayOf(z.enum(["advancedTable", "floatingBar"])).withDefault(
-    [],
+    []
   ),
   page: parseAsInteger.withDefault(1),
   perPage: parseAsInteger.withDefault(10),
@@ -22,6 +22,7 @@ export const searchParamsCache = createSearchParamsCache({
   title: parseAsString.withDefault(""),
   status: parseAsArrayOf(z.enum(tasks.status.enumValues)).withDefault([]),
   priority: parseAsArrayOf(z.enum(tasks.priority.enumValues)).withDefault([]),
+  estimatedHours: parseAsArrayOf(z.coerce.number()).withDefault([]),
   createdAt: parseAsArrayOf(z.coerce.number()).withDefault([]),
   // advanced filter
   filters: getFiltersStateParser().withDefault([]),

@@ -106,24 +106,6 @@ export function getTasksTableColumns({
       enableColumnFilter: true,
     },
     {
-      id: "estimatedHours",
-      accessorKey: "estimatedHours",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Est. Hours" />
-      ),
-      cell: ({ cell }) => {
-        const estimatedHours = cell.getValue<number>();
-        return <div className="w-20 text-right">{estimatedHours}</div>;
-      },
-      meta: {
-        label: "Est. Hours",
-        variant: "range",
-        range: [0, 24],
-        unit: "hr",
-      },
-      enableColumnFilter: true,
-    },
-    {
       id: "status",
       accessorKey: "status",
       header: ({ column }) => (
@@ -186,6 +168,24 @@ export function getTasksTableColumns({
           value: priority,
           count: priorityCounts[priority],
         })),
+      },
+      enableColumnFilter: true,
+    },
+    {
+      id: "estimatedHours",
+      accessorKey: "estimatedHours",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Est. Hours" />
+      ),
+      cell: ({ cell }) => {
+        const estimatedHours = cell.getValue<number>();
+        return <div className="w-20 text-right">{estimatedHours}</div>;
+      },
+      meta: {
+        label: "Est. Hours",
+        variant: "range",
+        range: [0, 24],
+        unit: "hr",
       },
       enableColumnFilter: true,
     },
