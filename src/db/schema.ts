@@ -1,6 +1,6 @@
 import { pgTable } from "@/db/utils";
 import { sql } from "drizzle-orm";
-import { boolean, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, real, timestamp, varchar } from "drizzle-orm/pg-core";
 
 import { generateId } from "@/lib/id";
 
@@ -10,6 +10,7 @@ export const tasks = pgTable("tasks", {
     .primaryKey(),
   code: varchar("code", { length: 128 }).notNull().unique(),
   title: varchar("title", { length: 128 }),
+  estimatedHours: real("estimated_hours").notNull().default(0),
   status: varchar("status", {
     length: 30,
     enum: ["todo", "in-progress", "done", "canceled"],

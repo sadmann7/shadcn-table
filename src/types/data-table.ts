@@ -14,6 +14,7 @@ declare module "@tanstack/react-table" {
       | "select"
       | "multi-select";
     options?: { label: string; value: string; count?: number }[];
+    range?: [number, number];
   }
 }
 

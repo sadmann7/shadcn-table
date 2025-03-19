@@ -4,7 +4,7 @@ import { type Task, tasks } from "@/db/schema";
 import { generateRandomTask } from "./utils";
 
 export async function seedTasks(input: { count: number }) {
-  const count = input.count ?? 100;
+  const count = input.count ?? 20;
 
   try {
     const allTasks: Task[] = [];

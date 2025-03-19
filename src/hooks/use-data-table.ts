@@ -11,6 +11,7 @@ import {
   type Updater,
   type VisibilityState,
   getCoreRowModel,
+  getFacetedMinMaxValues,
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
@@ -259,6 +260,9 @@ export function useDataTable<TData>({
     getFacetedUniqueValues: enableAdvancedFilter
       ? undefined
       : getFacetedUniqueValues(),
+    getFacetedMinMaxValues: enableAdvancedFilter
+      ? undefined
+      : getFacetedMinMaxValues(),
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,

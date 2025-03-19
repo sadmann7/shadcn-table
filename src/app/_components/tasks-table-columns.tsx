@@ -106,6 +106,23 @@ export function getTasksTableColumns({
       enableColumnFilter: true,
     },
     {
+      id: "hours",
+      accessorKey: "hours",
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Est. Hours" />
+      ),
+      cell: ({ cell }) => {
+        const estimatedHours = cell.getValue<number>();
+        return <div className="w-20 text-right">{estimatedHours}</div>;
+      },
+      meta: {
+        label: "Hours",
+        variant: "range",
+        range: [0, 24],
+      },
+      enableColumnFilter: true,
+    },
+    {
       id: "status",
       accessorKey: "status",
       header: ({ column }) => (
@@ -170,22 +187,6 @@ export function getTasksTableColumns({
         })),
       },
       enableColumnFilter: true,
-    },
-    {
-      id: "archived",
-      accessorKey: "archived",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Archived" />
-      ),
-      cell: ({ row }) => (
-        <Badge variant="outline" className="py-1">
-          {row.original.archived ? "Yes" : "No"}
-        </Badge>
-      ),
-      meta: {
-        label: "Archived",
-      },
-      enableColumnFilter: false,
     },
     {
       id: "createdAt",

@@ -6,6 +6,7 @@ import * as React from "react";
 
 import { DataTableDatePicker } from "@/components/data-table/data-table-date-picker";
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";
+import { DataTableRangeFilter } from "@/components/data-table/data-table-range-filter";
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,11 @@ export function DataTableToolbar<TData>({
     () => table.getAllColumns().filter((column) => column.getCanFilter()),
     [table],
   );
+
+  console.log({
+    columnIds: columns.map((column) => column.id),
+    columnDefs: columns.map((column) => column.columnDef),
+  });
 
   const onReset = React.useCallback(() => {
     table.resetColumnFilters();
@@ -63,6 +69,12 @@ export function DataTableToolbar<TData>({
               key={column.id}
               column={column}
               multiple={columnMeta?.variant === "date-range"}
+            />
+          ) : columnMeta?.variant === "range" ? (
+            <DataTableRangeFilter
+              key={column.id}
+              column={column}
+              title={columnMeta?.label ?? column.id}
             />
           ) : (
             (columnMeta?.variant === "select" ||
