@@ -189,21 +189,19 @@ export function DataTableDatePicker<TData>({
           size="sm"
           className="border-dashed hover:bg-accent/50"
         >
-          <div className="flex items-center gap-2">
-            {hasValue ? (
-              <div
-                aria-label="Clear filter"
-                role="button"
-                tabIndex={0}
-                onClick={onReset}
-                className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none data-[state=open]:bg-accent"
-              >
-                <XCircle />
-              </div>
-            ) : (
-              <CalendarIcon />
-            )}
-          </div>
+          {hasValue ? (
+            <div
+              aria-label="Clear filter"
+              role="button"
+              tabIndex={0}
+              onClick={onReset}
+              className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            >
+              <XCircle />
+            </div>
+          ) : (
+            <CalendarIcon />
+          )}
           {label}
         </Button>
       </PopoverTrigger>

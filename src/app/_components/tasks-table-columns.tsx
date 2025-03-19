@@ -67,6 +67,7 @@ export function getTasksTableColumns({
       ),
       enableSorting: false,
       enableHiding: false,
+      size: 40,
     },
     {
       id: "code",

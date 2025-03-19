@@ -76,21 +76,19 @@ export function DataTableRangeFilter<TData>({
           size="sm"
           className="border-dashed hover:bg-accent/50"
         >
-          <div className="flex items-center gap-2">
-            {columnFilterValue ? (
-              <div
-                aria-label="Clear filter"
-                role="button"
-                tabIndex={0}
-                onClick={onReset}
-                className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none data-[state=open]:bg-accent"
-              >
-                <XCircle className="size-4" />
-              </div>
-            ) : (
-              <PlusCircle className="size-4" />
-            )}
-          </div>
+          {columnFilterValue ? (
+            <div
+              aria-label="Clear filter"
+              role="button"
+              tabIndex={0}
+              onClick={onReset}
+              className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            >
+              <XCircle />
+            </div>
+          ) : (
+            <PlusCircle />
+          )}
           <span>{title}</span>
           {columnFilterValue ? (
             <>
@@ -114,14 +112,21 @@ export function DataTableRangeFilter<TData>({
             <div className="relative">
               <Input
                 id={`${id}-from`}
-                type="number"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 min={min}
                 max={max}
-                value={range[0]}
+                value={range[0].toString()}
                 onChange={(event) => {
-                  const value = Number(event.target.value);
-                  if (value > range[1]) return;
-                  onRangeChange([value, range[1]]);
+                  const numValue = Number(event.target.value);
+                  if (
+                    !Number.isNaN(numValue) &&
+                    numValue >= min &&
+                    numValue <= range[1]
+                  ) {
+                    onRangeChange([numValue, range[1]]);
+                  }
                 }}
                 className="h-8 w-24 pr-8"
               />
@@ -137,14 +142,21 @@ export function DataTableRangeFilter<TData>({
             <div className="relative">
               <Input
                 id={`${id}-to`}
-                type="number"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 min={min}
                 max={max}
-                value={range[1]}
+                value={range[1].toString()}
                 onChange={(event) => {
-                  const value = Number(event.target.value);
-                  if (value < range[0]) return;
-                  onRangeChange([range[0], value]);
+                  const numValue = Number(event.target.value);
+                  if (
+                    !Number.isNaN(numValue) &&
+                    numValue <= max &&
+                    numValue >= range[0]
+                  ) {
+                    onRangeChange([range[0], numValue]);
+                  }
                 }}
                 className="h-8 w-24 pr-8"
               />
