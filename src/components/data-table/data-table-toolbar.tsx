@@ -54,7 +54,7 @@ export function DataTableToolbar<TData>({
               key={column.id}
               type={columnMeta?.variant}
               placeholder={columnMeta?.placeholder ?? columnMeta?.label}
-              value={column.getFilterValue() as string}
+              value={(column.getFilterValue() as string) ?? ""}
               onChange={(event) => column.setFilterValue(event.target.value)}
               className="h-8 w-40 lg:w-56"
             />
