@@ -14,6 +14,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+type DateSelection = Date[] | DateRange;
+
+function isDateRange(value: DateSelection): value is DateRange {
+  return "from" in value && "to" in value;
+}
+
 interface DataTableDatePickerProps<TData> {
   column: Column<TData, unknown>;
   multiple?: boolean;
@@ -25,14 +31,14 @@ export function DataTableDatePicker<TData>({
 }: DataTableDatePickerProps<TData>) {
   const columnFilterValue = column.getFilterValue();
 
-  const selectedDates = React.useMemo(() => {
+  const selectedDates = React.useMemo<DateSelection>(() => {
     if (!columnFilterValue)
       return multiple ? { from: undefined, to: undefined } : [];
 
-    const validateDate = (timestamp: number) => {
+    function validateDate(timestamp: number) {
       const date = new Date(timestamp);
       return !Number.isNaN(date.getTime()) ? date : null;
-    };
+    }
 
     if (multiple) {
       const timestamps = Array.isArray(columnFilterValue)
@@ -45,7 +51,7 @@ export function DataTableDatePicker<TData>({
         to: timestamps[1]
           ? (validateDate(timestamps[1]) ?? undefined)
           : undefined,
-      } as DateRange;
+      };
     }
 
     const date = validateDate(columnFilterValue as number);
@@ -106,10 +112,10 @@ export function DataTableDatePicker<TData>({
           <CalendarIcon />
           {multiple
             ? (() => {
-                const range = selectedDates as DateRange;
-                return range.from || range.to ? (
+                if (!isDateRange(selectedDates)) return null;
+                return selectedDates.from || selectedDates.to ? (
                   <span className="hidden lg:inline">
-                    {formatDateRange(range)}
+                    {formatDateRange(selectedDates)}
                   </span>
                 ) : (
                   <span>
@@ -118,10 +124,10 @@ export function DataTableDatePicker<TData>({
                 );
               })()
             : (() => {
-                const dates = selectedDates as Date[];
-                return dates.length > 0 ? (
+                if (isDateRange(selectedDates)) return null;
+                return selectedDates.length > 0 ? (
                   <span className="hidden lg:inline">
-                    {formatSelectedDate(dates[0])}
+                    {formatSelectedDate(selectedDates[0])}
                   </span>
                 ) : (
                   <span>{column.columnDef.meta?.label ?? "Pick a date"}</span>
@@ -134,7 +140,11 @@ export function DataTableDatePicker<TData>({
           <Calendar
             initialFocus
             mode="range"
-            selected={selectedDates as DateRange}
+            selected={
+              isDateRange(selectedDates)
+                ? selectedDates
+                : { from: undefined, to: undefined }
+            }
             onSelect={(dates) => onSelect(dates)}
             numberOfMonths={1}
           />
@@ -142,7 +152,9 @@ export function DataTableDatePicker<TData>({
           <Calendar
             initialFocus
             mode="single"
-            selected={(selectedDates as Date[])[0] || undefined}
+            selected={
+              !isDateRange(selectedDates) ? selectedDates[0] : undefined
+            }
             onSelect={(date) => onSelect(date)}
             numberOfMonths={1}
           />

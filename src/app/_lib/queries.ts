@@ -7,11 +7,13 @@ import {
   asc,
   count,
   desc,
+  eq,
   gt,
   gte,
   ilike,
   inArray,
   lte,
+  sql,
 } from "drizzle-orm";
 
 import { filterColumns } from "@/lib/filter-columns";
@@ -24,8 +26,6 @@ export async function getTasks(input: GetTasksSchema) {
     async () => {
       try {
         const offset = (input.page - 1) * input.perPage;
-        const fromDate = input.from ? new Date(input.from) : undefined;
-        const toDate = input.to ? new Date(input.to) : undefined;
         const advancedTable = input.flags.includes("advancedTable");
 
         const advancedWhere = filterColumns({
@@ -44,8 +44,16 @@ export async function getTasks(input: GetTasksSchema) {
               input.priority.length > 0
                 ? inArray(tasks.priority, input.priority)
                 : undefined,
-              fromDate ? gte(tasks.createdAt, fromDate) : undefined,
-              toDate ? lte(tasks.createdAt, toDate) : undefined,
+              input.createdAt
+                ? eq(
+                    sql`date_trunc('day', ${tasks.createdAt})`,
+                    sql`date_trunc('day', ${sql.raw(
+                      `TIMESTAMP '${new Date(
+                        Number(input.createdAt),
+                      ).toISOString()}'`,
+                    )})`,
+                  )
+                : undefined,
             );
 
         const orderBy =
