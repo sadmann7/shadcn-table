@@ -196,6 +196,8 @@ export function useDataTable<TData>({
         );
   }, [filterValues, enableAdvancedFilter]);
 
+  console.log({ initialColumnFilters });
+
   const [columnFilters, setColumnFilters] =
     React.useState<ColumnFiltersState>(initialColumnFilters);
 

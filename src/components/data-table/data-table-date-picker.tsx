@@ -32,29 +32,55 @@ export function DataTableDatePicker<TData>({
   const columnFilterValue = column.getFilterValue();
 
   const selectedDates = React.useMemo<DateSelection>(() => {
-    if (!columnFilterValue)
+    if (!columnFilterValue) {
       return multiple ? { from: undefined, to: undefined } : [];
+    }
 
-    function validateDate(timestamp: number) {
-      const date = new Date(timestamp);
-      return !Number.isNaN(date.getTime()) ? date : null;
+    function validateDate(timestamp: number | string | undefined) {
+      if (!timestamp) return undefined;
+      const numericTimestamp =
+        typeof timestamp === "string" ? Number(timestamp) : timestamp;
+      const date = new Date(numericTimestamp);
+      return !Number.isNaN(date.getTime()) ? date : undefined;
     }
 
     if (multiple) {
-      const timestamps = Array.isArray(columnFilterValue)
-        ? (columnFilterValue as [number | undefined, number | undefined])
-        : [undefined, undefined];
+      let timestamps: (number | string | undefined)[] = [];
+
+      if (Array.isArray(columnFilterValue)) {
+        // Handle array of strings case ["timestamp1,timestamp2"]
+        if (
+          typeof columnFilterValue[0] === "string" &&
+          columnFilterValue[0].includes(",")
+        ) {
+          timestamps = columnFilterValue[0].split(",");
+        } else {
+          timestamps = columnFilterValue as (number | string)[];
+        }
+      } else if (typeof columnFilterValue === "string") {
+        timestamps = columnFilterValue.split(",");
+      }
+
       return {
-        from: timestamps[0]
-          ? (validateDate(timestamps[0]) ?? undefined)
-          : undefined,
-        to: timestamps[1]
-          ? (validateDate(timestamps[1]) ?? undefined)
-          : undefined,
+        from: validateDate(timestamps[0]),
+        to: validateDate(timestamps[1]),
       };
     }
 
-    const date = validateDate(columnFilterValue as number);
+    let timestamp: number | string | undefined;
+
+    if (Array.isArray(columnFilterValue) && columnFilterValue.length > 0) {
+      const firstValue = columnFilterValue[0];
+      if (typeof firstValue === "string" || typeof firstValue === "number") {
+        timestamp = firstValue;
+      }
+    } else if (typeof columnFilterValue === "string") {
+      timestamp = columnFilterValue;
+    } else if (typeof columnFilterValue === "number") {
+      timestamp = columnFilterValue;
+    }
+
+    const date = validateDate(timestamp);
     return date ? [date] : [];
   }, [columnFilterValue, multiple]);
 

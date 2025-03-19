@@ -195,7 +195,7 @@ export function getTasksTableColumns({
       cell: ({ cell }) => formatDate(cell.getValue<Date>()),
       meta: {
         label: "Created At",
-        variant: "date",
+        variant: "date-range",
       },
       enableColumnFilter: true,
     },

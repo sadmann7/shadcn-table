@@ -9,8 +9,7 @@ declare module "@tanstack/react-table" {
       | "number"
       | "date"
       | "date-range"
-      | "slider"
-      | "boolean"
+      | "range"
       | "select"
       | "multi-select";
     options?: { label: string; value: string; count?: number }[];

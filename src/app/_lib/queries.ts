@@ -44,14 +44,28 @@ export async function getTasks(input: GetTasksSchema) {
               input.priority.length > 0
                 ? inArray(tasks.priority, input.priority)
                 : undefined,
-              input.createdAt
-                ? eq(
-                    sql`date_trunc('day', ${tasks.createdAt})`,
-                    sql`date_trunc('day', ${sql.raw(
-                      `TIMESTAMP '${new Date(
-                        Number(input.createdAt),
-                      ).toISOString()}'`,
-                    )})`,
+              input.createdAt.length > 0
+                ? and(
+                    input.createdAt[0]
+                      ? gte(
+                          sql`date_trunc('day', ${tasks.createdAt})`,
+                          sql`date_trunc('day', ${sql.raw(
+                            `timestamp '${new Date(
+                              input.createdAt[0],
+                            ).toISOString()}'`,
+                          )})`,
+                        )
+                      : undefined,
+                    input.createdAt[1]
+                      ? lte(
+                          sql`date_trunc('day', ${tasks.createdAt})`,
+                          sql`date_trunc('day', ${sql.raw(
+                            `timestamp '${new Date(
+                              input.createdAt[1],
+                            ).toISOString()}'`,
+                          )})`,
+                        )
+                      : undefined,
                   )
                 : undefined,
             );
@@ -95,7 +109,7 @@ export async function getTasks(input: GetTasksSchema) {
     },
     [JSON.stringify(input)],
     {
-      revalidate: 3600,
+      revalidate: 1,
       tags: ["tasks"],
     },
   )();
