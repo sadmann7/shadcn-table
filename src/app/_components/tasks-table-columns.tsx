@@ -106,8 +106,8 @@ export function getTasksTableColumns({
       enableColumnFilter: true,
     },
     {
-      id: "hours",
-      accessorKey: "hours",
+      id: "estimatedHours",
+      accessorKey: "estimatedHours",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Est. Hours" />
       ),
@@ -116,7 +116,7 @@ export function getTasksTableColumns({
         return <div className="w-20 text-right">{estimatedHours}</div>;
       },
       meta: {
-        label: "Hours",
+        label: "Est. Hours",
         variant: "range",
         range: [0, 24],
       },
