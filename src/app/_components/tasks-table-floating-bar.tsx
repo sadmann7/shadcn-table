@@ -1,3 +1,5 @@
+"use client";
+
 import { type Task, tasks } from "@/db/schema";
 import { SelectTrigger } from "@radix-ui/react-select";
 import type { Table } from "@tanstack/react-table";
@@ -57,13 +59,15 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
   return (
     <AnimatePresence>
       {rows.length > 0 && (
-        <Portal>
+        <Portal
+          role="toolbar"
+          className="fixed inset-x-0 bottom-6 z-50 mx-auto w-fit px-2.5"
+        >
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-x-0 bottom-6 z-50 mx-auto w-fit px-2.5"
+            transition={{ duration: 0.2, ease: "easeInOut" }}
           >
             <div className="w-full overflow-x-auto">
               <div className="mx-auto flex w-fit items-center gap-2 rounded-md border bg-background p-2 text-foreground shadow-sm">

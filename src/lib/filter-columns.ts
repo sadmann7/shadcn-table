@@ -19,19 +19,6 @@ import {
   or,
 } from "drizzle-orm";
 
-/**
- * Generate SQL conditions from filters for a specific table.
- *
- * This function returns a SQL expression combining conditions based on the provided filters
- * and the specified join operator ('AND' or 'OR').
- *
- * Each filter can use various operators (e.g., equality, comparison) to create the SQL expressions.
- *
- * @param table - The table to apply the filters on.
- * @param filters - An array of filters to be applied to the table.
- * @param joinOperator - The join operator to use for combining the filters.
- * @returns A SQL expression representing the combined filters.
- */
 export function filterColumns<T extends Table>({
   table,
   filters,
@@ -54,7 +41,7 @@ export function filterColumns<T extends Table>({
         if (column.dataType === "boolean" && typeof filter.value === "string") {
           return eq(column, filter.value === "true");
         }
-        if (filter.type === "date") {
+        if (filter.variant === "date") {
           const date = new Date(filter.value);
           const start = startOfDay(date);
           const end = endOfDay(date);
@@ -68,7 +55,7 @@ export function filterColumns<T extends Table>({
         if (column.dataType === "boolean" && typeof filter.value === "string") {
           return ne(column, filter.value === "true");
         }
-        if (filter.type === "date") {
+        if (filter.variant === "date") {
           const date = new Date(filter.value);
           const start = startOfDay(date);
           const end = endOfDay(date);
@@ -76,39 +63,39 @@ export function filterColumns<T extends Table>({
         }
         return ne(column, filter.value);
       case "iLike":
-        return filter.type === "text" && typeof filter.value === "string"
+        return filter.variant === "text" && typeof filter.value === "string"
           ? ilike(column, `%${filter.value}%`)
           : undefined;
       case "notILike":
-        return filter.type === "text" && typeof filter.value === "string"
+        return filter.variant === "text" && typeof filter.value === "string"
           ? notIlike(column, `%${filter.value}%`)
           : undefined;
       case "lt":
-        return filter.type === "number"
+        return filter.variant === "number"
           ? lt(column, filter.value)
-          : filter.type === "date" && typeof filter.value === "string"
+          : filter.variant === "date" && typeof filter.value === "string"
             ? lt(column, endOfDay(new Date(filter.value)))
             : undefined;
       case "lte":
-        return filter.type === "number"
+        return filter.variant === "number"
           ? lte(column, filter.value)
-          : filter.type === "date" && typeof filter.value === "string"
+          : filter.variant === "date" && typeof filter.value === "string"
             ? lte(column, endOfDay(new Date(filter.value)))
             : undefined;
       case "gt":
-        return filter.type === "number"
+        return filter.variant === "number"
           ? gt(column, filter.value)
-          : filter.type === "date" && typeof filter.value === "string"
+          : filter.variant === "date" && typeof filter.value === "string"
             ? gt(column, startOfDay(new Date(filter.value)))
             : undefined;
       case "gte":
-        return filter.type === "number"
+        return filter.variant === "number"
           ? gte(column, filter.value)
-          : filter.type === "date" && typeof filter.value === "string"
+          : filter.variant === "date" && typeof filter.value === "string"
             ? gte(column, startOfDay(new Date(filter.value)))
             : undefined;
       case "isBetween":
-        return filter.type === "date" &&
+        return filter.variant === "date" &&
           Array.isArray(filter.value) &&
           filter.value.length === 2
           ? and(
@@ -121,7 +108,7 @@ export function filterColumns<T extends Table>({
             )
           : undefined;
       case "isRelativeToToday":
-        if (filter.type === "date" && typeof filter.value === "string") {
+        if (filter.variant === "date" && typeof filter.value === "string") {
           const today = new Date();
           const [amount, unit] = filter.value.split(" ") ?? [];
           let startDate: Date;
@@ -170,12 +157,6 @@ export function filterColumns<T extends Table>({
   return validConditions.length > 0 ? joinFn(...validConditions) : undefined;
 }
 
-/**
- * Get table column.
- * @param table The table to get the column from.
- * @param columnKey The key of the column to retrieve from the table.
- * @returns The column corresponding to the provided key.
- */
 export function getColumn<T extends Table>(
   table: T,
   columnKey: keyof T,

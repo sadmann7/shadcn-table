@@ -49,8 +49,8 @@ export const getSortingStateParser = <TData>(
 export const filterSchema = z.object({
   id: z.string(),
   value: z.union([z.string(), z.array(z.string())]),
-  type: z.enum(dataTableConfig.columnTypes),
-  operator: z.enum(dataTableConfig.globalOperators),
+  variant: z.enum(dataTableConfig.columnVariants),
+  operator: z.enum(dataTableConfig.operators),
   filterId: z.string(),
 });
 
@@ -81,7 +81,7 @@ export const getFiltersStateParser = <T>(originalRow?: Row<T>["original"]) => {
         (filter, index) =>
           filter.id === b[index]?.id &&
           filter.value === b[index]?.value &&
-          filter.type === b[index]?.type &&
+          filter.variant === b[index]?.variant &&
           filter.operator === b[index]?.operator,
       ),
   });

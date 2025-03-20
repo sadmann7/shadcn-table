@@ -60,7 +60,7 @@ export const dataTableConfig = {
     { label: "Asc", value: "asc" as const },
     { label: "Desc", value: "desc" as const },
   ],
-  columnTypes: [
+  columnVariants: [
     "text",
     "number",
     "date",
@@ -68,7 +68,7 @@ export const dataTableConfig = {
     "select",
     "multi-select",
   ] as const,
-  globalOperators: [
+  operators: [
     "iLike",
     "notILike",
     "eq",

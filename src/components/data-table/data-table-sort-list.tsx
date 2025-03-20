@@ -53,11 +53,6 @@ export function DataTableSortList<TData>({
   const labelId = React.useId();
   const descriptionId = React.useId();
 
-  const initialSorting = React.useMemo(
-    () => table.initialState.sorting ?? [],
-    [table.initialState.sorting],
-  );
-
   const sorting = table.getState().sorting;
   const onSortingChange = table.setSorting;
 
@@ -104,8 +99,8 @@ export function DataTableSortList<TData>({
   );
 
   const onSortingReset = React.useCallback(
-    () => onSortingChange(initialSorting),
-    [onSortingChange, initialSorting],
+    () => onSortingChange(table.initialState.sorting),
+    [onSortingChange, table.initialState.sorting],
   );
 
   return (

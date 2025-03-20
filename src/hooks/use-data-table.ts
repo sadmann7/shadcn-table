@@ -30,8 +30,11 @@ import {
 import * as React from "react";
 
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
-import { getSortingStateParser } from "@/lib/parsers";
-import type { ExtendedColumnSort } from "@/types/data-table";
+import { getFiltersStateParser, getSortingStateParser } from "@/lib/parsers";
+import type {
+  ExtendedColumnFilter,
+  ExtendedColumnSort,
+} from "@/types/data-table";
 
 const PAGE_KEY = "page";
 const PER_PAGE_KEY = "perPage";
@@ -80,8 +83,8 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
 
   const queryStateOptions = React.useMemo<
     Omit<UseQueryStateOptions<string>, "parse">
-  >(() => {
-    return {
+  >(
+    () => ({
       history,
       scroll,
       shallow,
@@ -89,16 +92,17 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
       debounceMs,
       clearOnDefault,
       startTransition,
-    };
-  }, [
-    history,
-    scroll,
-    shallow,
-    throttleMs,
-    debounceMs,
-    clearOnDefault,
-    startTransition,
-  ]);
+    }),
+    [
+      history,
+      scroll,
+      shallow,
+      throttleMs,
+      debounceMs,
+      clearOnDefault,
+      startTransition,
+    ],
+  );
 
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>(
     initialState?.rowSelection ?? {},
@@ -220,8 +224,6 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
 
   const onColumnFiltersChange = React.useCallback(
     (updaterOrValue: Updater<ColumnFiltersState>) => {
-      if (enableAdvancedFilter) return;
-
       setColumnFilters((prev) => {
         const next =
           typeof updaterOrValue === "function"
@@ -247,7 +249,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
         return next;
       });
     },
-    [debouncedSetFilterValues, enableAdvancedFilter, filterableColumns],
+    [debouncedSetFilterValues, filterableColumns],
   );
 
   const table = useReactTable({
@@ -269,18 +271,12 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     onColumnFiltersChange,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: enableAdvancedFilter
-      ? undefined
-      : getFilteredRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: enableAdvancedFilter ? undefined : getFacetedRowModel(),
-    getFacetedUniqueValues: enableAdvancedFilter
-      ? undefined
-      : getFacetedUniqueValues(),
-    getFacetedMinMaxValues: enableAdvancedFilter
-      ? undefined
-      : getFacetedMinMaxValues(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    getFacetedMinMaxValues: getFacetedMinMaxValues(),
     manualPagination: true,
     manualSorting: true,
     manualFiltering: true,

@@ -113,8 +113,8 @@ export function DataTableFilterList<TData>({
       {
         id: filterField.id,
         value: "",
-        type: filterField.type,
-        operator: getDefaultFilterOperator(filterField.type),
+        variant: filterField.variant,
+        operator: getDefaultFilterOperator(filterField.variant),
         filterId: customAlphabet(
           "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
           6,
@@ -190,13 +190,13 @@ export function DataTableFilterList<TData>({
         );
       }
 
-      switch (filter.type) {
+      switch (filter.variant) {
         case "text":
         case "number":
           return (
             <Input
               id={inputId}
-              type={filter.type}
+              type={filter.variant}
               aria-label={`${filterField.label} filter value`}
               aria-describedby={`${inputId}-description`}
               placeholder={filterField.placeholder ?? "Enter a value..."}
@@ -626,9 +626,9 @@ export function DataTableFilterList<TData>({
                                           filterId: filter.filterId,
                                           field: {
                                             id: value as StringKeyOf<TData>,
-                                            type: filterField.type,
+                                            variant: filterField.variant,
                                             operator: getDefaultFilterOperator(
-                                              filterField.type,
+                                              filterField.variant,
                                             ),
                                             value: "",
                                           },
@@ -685,7 +685,7 @@ export function DataTableFilterList<TData>({
                             id={operatorListboxId}
                             className="origin-(--radix-select-content-transform-origin)"
                           >
-                            {getFilterOperators(filter.type).map((op) => (
+                            {getFilterOperators(filter.variant).map((op) => (
                               <SelectItem key={op.value} value={op.value}>
                                 {op.label}
                               </SelectItem>

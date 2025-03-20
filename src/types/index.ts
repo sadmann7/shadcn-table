@@ -28,9 +28,9 @@ export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
 
 export type ExtendedSortingState<TData> = ExtendedColumnSort<TData>[];
 
-export type ColumnType = DataTableConfig["columnTypes"][number];
+export type ColumnVariant = DataTableConfig["columnVariants"][number];
 
-export type FilterOperator = DataTableConfig["globalOperators"][number];
+export type FilterOperator = DataTableConfig["operators"][number];
 
 export type JoinOperator = DataTableConfig["joinOperators"][number]["value"];
 
@@ -43,7 +43,7 @@ export interface DataTableFilterField<TData> {
 
 export interface DataTableAdvancedFilterField<TData>
   extends DataTableFilterField<TData> {
-  type: ColumnType;
+  variant: ColumnVariant;
 }
 
 export type Filter<TData> = Prettify<

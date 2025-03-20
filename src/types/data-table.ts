@@ -1,10 +1,5 @@
-import type {
-  ColumnFilter,
-  ColumnSort,
-  RowData,
-  filterFns,
-} from "@tanstack/react-table";
-import type { StringKeyOf } from ".";
+import type { DataTableConfig } from "@/config/data-table";
+import type { ColumnFilter, ColumnSort, RowData } from "@tanstack/react-table";
 
 declare module "@tanstack/react-table" {
   // biome-ignore lint/correctness/noUnusedVariables: <explanation>
@@ -25,33 +20,16 @@ declare module "@tanstack/react-table" {
   }
 }
 
-export type FilterOperator =
-  | keyof typeof filterFns
-  | "notIncludesString"
-  | "notEqualsString"
-  | "notEquals"
-  | "greaterThan"
-  | "notGreaterThan"
-  | "greaterThanOrEqualTo"
-  | "notGreaterThanOrEqualTo"
-  | "lessThan"
-  | "notLessThan"
-  | "lessThanOrEqualTo"
-  | "notLessThanOrEqualTo"
-  | "isRelativeToToday"
-  | "inRange"
-  | "startsWith"
-  | "endsWith"
-  | "isEmpty"
-  | "isNotEmpty";
+export type FilterOperator = DataTableConfig["operators"][number];
 
-export type JoinOperator = "and" | "or";
+export type JoinOperator = DataTableConfig["joinOperators"][number]["value"];
 
 export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
   id: Extract<keyof TData, string>;
 }
 
-export interface ExtendedColumnFilter extends ColumnFilter {
+export interface ExtendedColumnFilter<TData> extends ColumnFilter {
+  id: Extract<keyof TData, string>;
   filterId?: string;
   operator?: FilterOperator;
   joinOperator?: JoinOperator;
