@@ -30,11 +30,8 @@ import {
 import * as React from "react";
 
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
-import { getFiltersStateParser, getSortingStateParser } from "@/lib/parsers";
-import type {
-  ExtendedColumnFilter,
-  ExtendedColumnSort,
-} from "@/types/data-table";
+import { getSortingStateParser } from "@/lib/parsers";
+import type { ExtendedColumnSort } from "@/types/data-table";
 
 const PAGE_KEY = "page";
 const PER_PAGE_KEY = "perPage";
@@ -121,6 +118,27 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
       .withDefault(initialState?.pagination?.pageSize ?? 10),
   );
 
+  const pagination: PaginationState = React.useMemo(() => {
+    return {
+      pageIndex: page - 1, // zero-based index -> one-based index
+      pageSize: perPage,
+    };
+  }, [page, perPage]);
+
+  const onPaginationChange = React.useCallback(
+    (updaterOrValue: Updater<PaginationState>) => {
+      if (typeof updaterOrValue === "function") {
+        const newPagination = updaterOrValue(pagination);
+        void setPage(newPagination.pageIndex + 1);
+        void setPerPage(newPagination.pageSize);
+      } else {
+        void setPage(updaterOrValue.pageIndex + 1);
+        void setPerPage(updaterOrValue.pageSize);
+      }
+    },
+    [pagination, setPage, setPerPage],
+  );
+
   const columnIds = React.useMemo(() => {
     return new Set(columns.map((column) => column.id).filter(Boolean));
   }, [columns]);
@@ -132,6 +150,18 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
       .withDefault(initialState?.sorting ?? []),
   );
   const debouncedSetSorting = useDebouncedCallback(setSorting, debounceMs);
+
+  const onSortingChange = React.useCallback(
+    (updaterOrValue: Updater<SortingState>) => {
+      if (typeof updaterOrValue === "function") {
+        const newSorting = updaterOrValue(sorting);
+        debouncedSetSorting(newSorting as ExtendedColumnSort<TData>[]);
+      } else {
+        debouncedSetSorting(updaterOrValue as ExtendedColumnSort<TData>[]);
+      }
+    },
+    [sorting, debouncedSetSorting],
+  );
 
   const filterableColumns = React.useMemo(() => {
     return columns.filter((column) => column.enableColumnFilter);
@@ -161,39 +191,6 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
       void setFilterValues(values);
     },
     debounceMs,
-  );
-
-  const pagination: PaginationState = React.useMemo(() => {
-    return {
-      pageIndex: page - 1, // zero-based index -> one-based index
-      pageSize: perPage,
-    };
-  }, [page, perPage]);
-
-  const onPaginationChange = React.useCallback(
-    (updaterOrValue: Updater<PaginationState>) => {
-      if (typeof updaterOrValue === "function") {
-        const newPagination = updaterOrValue(pagination);
-        void setPage(newPagination.pageIndex + 1);
-        void setPerPage(newPagination.pageSize);
-      } else {
-        void setPage(updaterOrValue.pageIndex + 1);
-        void setPerPage(updaterOrValue.pageSize);
-      }
-    },
-    [pagination, setPage, setPerPage],
-  );
-
-  const onSortingChange = React.useCallback(
-    (updaterOrValue: Updater<SortingState>) => {
-      if (typeof updaterOrValue === "function") {
-        const newSorting = updaterOrValue(sorting);
-        debouncedSetSorting(newSorting as ExtendedColumnSort<TData>[]);
-      } else {
-        debouncedSetSorting(updaterOrValue as ExtendedColumnSort<TData>[]);
-      }
-    },
-    [sorting, debouncedSetSorting],
   );
 
   const initialColumnFilters: ColumnFiltersState = React.useMemo(() => {

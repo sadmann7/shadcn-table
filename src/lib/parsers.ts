@@ -1,5 +1,4 @@
 import type { ExtendedColumnSort, Filter } from "@/types";
-import type { Row, SortingState } from "@tanstack/react-table";
 import { createParser } from "nuqs/server";
 import { z } from "zod";
 

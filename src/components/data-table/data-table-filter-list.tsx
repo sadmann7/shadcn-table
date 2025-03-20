@@ -586,11 +586,6 @@ export function DataTableFilterList<TData>({
                             id={fieldListboxId}
                             align="start"
                             className="w-40 origin-(--radix-popover-content-transform-origin) p-0"
-                            onCloseAutoFocus={() =>
-                              document.getElementById(fieldTriggerId)?.focus({
-                                preventScroll: true,
-                              })
-                            }
                           >
                             <Command>
                               <CommandInput placeholder="Search fields..." />
