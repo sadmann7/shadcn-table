@@ -54,8 +54,14 @@ export const filterSchema = z.object({
   filterId: z.string(),
 });
 
-export const getFiltersStateParser = <T>(originalRow?: Row<T>["original"]) => {
-  const validKeys = originalRow ? new Set(Object.keys(originalRow)) : null;
+export const getFiltersStateParser = <T>(
+  columnIds?: string[] | Set<string>,
+) => {
+  const validKeys = columnIds
+    ? columnIds instanceof Set
+      ? columnIds
+      : new Set(columnIds)
+    : null;
 
   return createParser<Filter<T>[]>({
     parse: (value) => {

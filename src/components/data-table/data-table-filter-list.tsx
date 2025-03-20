@@ -84,9 +84,10 @@ export function DataTableFilterList<TData>({
   const id = React.useId();
   const labelId = React.useId();
   const descriptionId = React.useId();
+
   const [filters, setFilters] = useQueryState(
     "filters",
-    getFiltersStateParser(table.getRowModel().rows[0]?.original)
+    getFiltersStateParser<TData>(table.getAllColumns().map((col) => col.id))
       .withDefault([])
       .withOptions({
         clearOnDefault: true,
@@ -104,47 +105,38 @@ export function DataTableFilterList<TData>({
   );
 
   const onFilterAdd = React.useCallback(() => {
-    const filterField = filterFields[0];
+    const firstFilterField = filterFields[0];
 
-    if (!filterField) return;
+    if (!firstFilterField) return;
 
-    void setFilters([
-      ...filters,
-      {
-        id: filterField.id,
-        value: "",
-        variant: filterField.variant,
-        operator: getDefaultFilterOperator(filterField.variant),
-        filterId: customAlphabet(
-          "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-          6,
-        )(),
-      },
-    ]);
-  }, [filterFields, filters, setFilters]);
+    const newFilter: Filter<TData> = {
+      id: firstFilterField.id,
+      value: "",
+      variant: firstFilterField.variant,
+      operator: getDefaultFilterOperator(firstFilterField.variant),
+      filterId: customAlphabet(
+        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+        6,
+      )(),
+    };
+
+    debouncedSetFilters([...filters, newFilter]);
+  }, [filterFields, filters, debouncedSetFilters]);
 
   const onFilterUpdate = React.useCallback(
-    ({
-      filterId,
-      field,
-      debounced = false,
-    }: {
-      filterId: string;
-      field: Omit<Partial<Filter<TData>>, "filterId">;
-      debounced?: boolean;
-    }) => {
-      const updateFunction = debounced ? debouncedSetFilters : setFilters;
-      updateFunction((prevFilters) => {
+    (filterId: string, updates: Partial<Filter<TData>>) => {
+      debouncedSetFilters((prevFilters) => {
         const updatedFilters = prevFilters.map((filter) => {
           if (filter.filterId === filterId) {
-            return { ...filter, ...field };
+            const updatedFilter: Filter<TData> = { ...filter, ...updates };
+            return updatedFilter;
           }
           return filter;
         });
         return updatedFilters;
       });
     },
-    [debouncedSetFilters, setFilters],
+    [debouncedSetFilters],
   );
 
   const onFilterRemove = React.useCallback(
@@ -205,10 +197,8 @@ export function DataTableFilterList<TData>({
                 typeof filter.value === "string" ? filter.value : undefined
               }
               onChange={(event) =>
-                onFilterUpdate({
-                  filterId: filter.filterId,
-                  field: { value: event.target.value },
-                  debounced: true,
+                onFilterUpdate(filter.filterId, {
+                  value: event.target.value,
                 })
               }
             />
@@ -220,7 +210,7 @@ export function DataTableFilterList<TData>({
                 typeof filter.value === "string" ? filter.value : undefined
               }
               onValueChange={(value) => {
-                onFilterUpdate({ filterId: filter.filterId, field: { value } });
+                onFilterUpdate(filter.filterId, { value });
               }}
             >
               <FacetedTrigger asChild>
@@ -279,7 +269,7 @@ export function DataTableFilterList<TData>({
               multiple
               value={selectedValues}
               onValueChange={(value) => {
-                onFilterUpdate({ filterId: filter.filterId, field: { value } });
+                onFilterUpdate(filter.filterId, { value });
               }}
             >
               <FacetedTrigger asChild>
@@ -388,16 +378,13 @@ export function DataTableFilterList<TData>({
                           }
                     }
                     onSelect={(date) => {
-                      onFilterUpdate({
-                        filterId: filter.filterId,
-                        field: {
-                          value: date
-                            ? [
-                                date.from?.toISOString() ?? "",
-                                date.to?.toISOString() ?? "",
-                              ]
-                            : [],
-                        },
+                      onFilterUpdate(filter.filterId, {
+                        value: date
+                          ? [
+                              date.from?.toISOString() ?? "",
+                              date.to?.toISOString() ?? "",
+                            ]
+                          : [],
                       });
                     }}
                     initialFocus
@@ -410,9 +397,8 @@ export function DataTableFilterList<TData>({
                     aria-label={`Select ${filterField.label} date`}
                     selected={dateValue[0] ? new Date(dateValue[0]) : undefined}
                     onSelect={(date) => {
-                      onFilterUpdate({
-                        filterId: filter.filterId,
-                        field: { value: date?.toISOString() ?? "" },
+                      onFilterUpdate(filter.filterId, {
+                        value: date?.toISOString() ?? "",
                       });
 
                       setTimeout(() => {
@@ -433,7 +419,7 @@ export function DataTableFilterList<TData>({
             <Select
               value={filter.value}
               onValueChange={(value) =>
-                onFilterUpdate({ filterId: filter.filterId, field: { value } })
+                onFilterUpdate(filter.filterId, { value })
               }
             >
               <SelectTrigger
@@ -622,16 +608,13 @@ export function DataTableFilterList<TData>({
 
                                         if (!filterField) return;
 
-                                        onFilterUpdate({
-                                          filterId: filter.filterId,
-                                          field: {
-                                            id: value as StringKeyOf<TData>,
-                                            variant: filterField.variant,
-                                            operator: getDefaultFilterOperator(
-                                              filterField.variant,
-                                            ),
-                                            value: "",
-                                          },
+                                        onFilterUpdate(filter.filterId, {
+                                          id: value as StringKeyOf<TData>,
+                                          variant: filterField.variant,
+                                          operator: getDefaultFilterOperator(
+                                            filterField.variant,
+                                          ),
+                                          value: "",
                                         });
 
                                         document
@@ -660,15 +643,12 @@ export function DataTableFilterList<TData>({
                         <Select
                           value={filter.operator}
                           onValueChange={(value: FilterOperator) =>
-                            onFilterUpdate({
-                              filterId: filter.filterId,
-                              field: {
-                                operator: value,
-                                value:
-                                  value === "isEmpty" || value === "isNotEmpty"
-                                    ? ""
-                                    : filter.value,
-                              },
+                            onFilterUpdate(filter.filterId, {
+                              operator: value,
+                              value:
+                                value === "isEmpty" || value === "isNotEmpty"
+                                  ? ""
+                                  : filter.value,
                             })
                           }
                         >
