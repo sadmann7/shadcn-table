@@ -7,6 +7,7 @@ import * as React from "react";
 import { DataTable } from "@/components/data-table/data-table";
 import { useDataTable } from "@/hooks/use-data-table";
 
+import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import type {
   getTaskPriorityCounts,
@@ -68,7 +69,9 @@ export function TasksTable({ promises }: TasksTableProps) {
         table={table}
         floatingBar={<TasksTableFloatingBar table={table} />}
       >
-        <DataTableToolbar table={table} />
+        <DataTableToolbar table={table}>
+          <DataTableSortList table={table} />
+        </DataTableToolbar>
       </DataTable>
       <UpdateTaskSheet
         open={rowAction?.type === "update"}

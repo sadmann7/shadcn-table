@@ -48,7 +48,7 @@ export type FilterOperator =
 export type JoinOperator = "and" | "or";
 
 export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
-  id: Extract<keyof TData, string | number>;
+  id: Extract<keyof TData, string>;
 }
 
 export interface ExtendedColumnFilter extends ColumnFilter {
