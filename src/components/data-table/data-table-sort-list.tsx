@@ -61,15 +61,6 @@ export function DataTableSortList<TData>({
   const sorting = table.getState().sorting;
   const onSortingChange = table.setSorting;
 
-  const uniqueSorting = React.useMemo(() => {
-    const uniqueIds = new Set();
-    return sorting.filter((sort) => {
-      if (uniqueIds.has(sort.id)) return false;
-      uniqueIds.add(sort.id);
-      return true;
-    });
-  }, [sorting]);
-
   const sortableColumns = React.useMemo(() => {
     const sortingIds = new Set<string>(sorting.map((s) => s.id));
     return table
@@ -77,8 +68,7 @@ export function DataTableSortList<TData>({
       .filter((column) => column.getCanSort() && !sortingIds.has(column.id))
       .map((column) => ({
         id: column.id,
-        label: toSentenceCase(column.id),
-        selected: false,
+        label: column.columnDef.meta?.label ?? toSentenceCase(column.id),
       }));
   }, [sorting, table]);
 
@@ -104,7 +94,7 @@ export function DataTableSortList<TData>({
     [onSortingChange],
   );
 
-  const onRemoveSort = React.useCallback(
+  const onSortRemove = React.useCallback(
     (sortId: string) => {
       onSortingChange((prevSorting) =>
         prevSorting.filter((item) => item.id !== sortId),
@@ -129,12 +119,12 @@ export function DataTableSortList<TData>({
           <Button variant="outline" size="sm" className="[&>svg]:size-3">
             <ArrowDownUp />
             Sort
-            {uniqueSorting.length > 0 && (
+            {sorting.length > 0 && (
               <Badge
                 variant="secondary"
                 className="h-[1.14rem] rounded-[0.2rem] px-[0.32rem] font-mono font-normal text-[0.65rem]"
               >
-                {uniqueSorting.length}
+                {sorting.length}
               </Badge>
             )}
           </Button>
@@ -148,34 +138,34 @@ export function DataTableSortList<TData>({
         >
           <div className="flex flex-col gap-1">
             <h4 id={labelId} className="font-medium leading-none">
-              {uniqueSorting.length > 0 ? "Sort by" : "No sorting applied"}
+              {sorting.length > 0 ? "Sort by" : "No sorting applied"}
             </h4>
             <p
               id={descriptionId}
               className={cn(
                 "text-muted-foreground text-sm",
-                uniqueSorting.length > 0 && "sr-only",
+                sorting.length > 0 && "sr-only",
               )}
             >
-              {uniqueSorting.length > 0
+              {sorting.length > 0
                 ? "Modify sorting to organize your results."
                 : "Add sorting to organize your results."}
             </p>
           </div>
-          {uniqueSorting.length > 0 && (
+          {sorting.length > 0 && (
             <SortableContent asChild>
               <div
                 role="list"
                 className="flex max-h-[300px] flex-col gap-2 overflow-y-auto p-0.5"
               >
-                {uniqueSorting.map((sort) => (
+                {sorting.map((sort) => (
                   <SortItem
                     key={sort.id}
                     sort={sort}
                     sortItemId={`${id}-sort-${sort.id}`}
-                    onSortUpdate={onSortUpdate}
-                    onRemoveSort={onRemoveSort}
                     sortableColumns={sortableColumns}
+                    onSortUpdate={onSortUpdate}
+                    onSortRemove={onSortRemove}
                   />
                 ))}
               </div>
@@ -190,7 +180,7 @@ export function DataTableSortList<TData>({
             >
               Add sort
             </Button>
-            {uniqueSorting.length > 0 && (
+            {sorting.length > 0 && (
               <Button
                 size="sm"
                 variant="outline"
@@ -218,16 +208,16 @@ export function DataTableSortList<TData>({
 interface SortItemProps {
   sort: ColumnSort;
   sortItemId: string;
+  sortableColumns: { id: string; label: string }[];
   onSortUpdate: (sortId: string, updates: Partial<ColumnSort>) => void;
-  onRemoveSort: (sortId: string) => void;
-  sortableColumns: { id: string; label: string; selected: boolean }[];
+  onSortRemove: (sortId: string) => void;
 }
 
 function SortItem({
   sort,
   sortItemId,
   onSortUpdate,
-  onRemoveSort,
+  onSortRemove,
   sortableColumns,
 }: SortItemProps) {
   const fieldListboxId = `${sortItemId}-field-listbox`;
@@ -272,12 +262,6 @@ function SortItem({
                       onSelect={(value) => onSortUpdate(sort.id, { id: value })}
                     >
                       <span className="truncate">{column.label}</span>
-                      <Check
-                        className={cn(
-                          "ml-auto",
-                          column.id === sort.id ? "opacity-100" : "opacity-0",
-                        )}
-                      />
                     </CommandItem>
                   ))}
                 </CommandGroup>
@@ -314,7 +298,7 @@ function SortItem({
           variant="outline"
           size="icon"
           className="size-8 shrink-0 rounded [&>svg]:size-3.5"
-          onClick={() => onRemoveSort(sort.id)}
+          onClick={() => onSortRemove(sort.id)}
         >
           <Trash2 />
         </Button>
