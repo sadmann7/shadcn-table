@@ -38,27 +38,26 @@ interface TasksTableFloatingBarProps {
 
 export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows;
-
   const [isPending, startTransition] = React.useTransition();
   const [action, setAction] = React.useState<
     "update-status" | "update-priority" | "export" | "delete"
   >();
 
   React.useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
+    function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         table.toggleAllRowsSelected(false);
       }
     }
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, [table]);
 
   return (
-    <Portal>
-      <AnimatePresence>
-        {rows.length > 0 && (
+    <AnimatePresence>
+      {rows.length > 0 && (
+        <Portal>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -291,8 +290,8 @@ export function TasksTableFloatingBar({ table }: TasksTableFloatingBarProps) {
               </div>
             </div>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </Portal>
+        </Portal>
+      )}
+    </AnimatePresence>
   );
 }
