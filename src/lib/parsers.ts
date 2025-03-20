@@ -11,9 +11,13 @@ export const sortingItemSchema = z.object({
 });
 
 export const getSortingStateParser = <TData>(
-  originalRow?: Row<TData>["original"],
+  columnIds?: string[] | Set<string>,
 ) => {
-  const validKeys = originalRow ? new Set(Object.keys(originalRow)) : null;
+  const validKeys = columnIds
+    ? columnIds instanceof Set
+      ? columnIds
+      : new Set(columnIds)
+    : null;
 
   return createParser<ExtendedColumnSort<TData>[]>({
     parse: (value) => {

@@ -62,7 +62,7 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
 
   return (
     <FeatureFlagsContext.Provider value={contextValue}>
-      <div className="w-full overflow-x-auto">
+      <div className="w-full overflow-x-auto p-px">
         <ToggleGroup
           type="multiple"
           variant="outline"
@@ -71,17 +71,12 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
           onValueChange={(value: FeatureFlagValue[]) => setFeatureFlags(value)}
           className="w-fit gap-0"
         >
-          {dataTableConfig.featureFlags.map((flag, index) => (
+          {dataTableConfig.featureFlags.map((flag) => (
             <Tooltip key={flag.value}>
               <ToggleGroupItem
                 value={flag.value}
                 className={cn(
-                  "gap-2 whitespace-nowrap rounded-none px-3 text-xs data-[state=on]:bg-accent/70 data-[state=on]:hover:bg-accent/90",
-                  {
-                    "rounded-l-sm border-r-0": index === 0,
-                    "rounded-r-sm":
-                      index === dataTableConfig.featureFlags.length - 1,
-                  },
+                  "gap-2 whitespace-nowrap rounded-sm px-3 text-xs data-[state=on]:bg-accent/70 data-[state=on]:hover:bg-accent/90",
                 )}
                 asChild
               >

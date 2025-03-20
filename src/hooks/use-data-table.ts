@@ -62,20 +62,22 @@ interface UseDataTableProps<TData>
   };
 }
 
-export function useDataTable<TData>({
-  columns,
-  pageCount = -1,
-  history = "replace",
-  scroll = false,
-  shallow = true,
-  throttleMs = 50,
-  debounceMs = 300,
-  clearOnDefault = false,
-  enableAdvancedFilter = false,
-  startTransition,
-  initialState,
-  ...props
-}: UseDataTableProps<TData>) {
+export function useDataTable<TData>(props: UseDataTableProps<TData>) {
+  const {
+    columns,
+    pageCount = -1,
+    history = "replace",
+    scroll = false,
+    shallow = true,
+    throttleMs = 50,
+    debounceMs = 300,
+    clearOnDefault = false,
+    enableAdvancedFilter = false,
+    startTransition,
+    initialState,
+    ...tableProps
+  } = props;
+
   const queryStateOptions = React.useMemo<
     Omit<UseQueryStateOptions<string>, "parse">
   >(() => {
@@ -114,9 +116,14 @@ export function useDataTable<TData>({
       .withOptions(queryStateOptions)
       .withDefault(initialState?.pagination?.pageSize ?? 10),
   );
+
+  const columnIds = React.useMemo(() => {
+    return new Set(columns.map((column) => column.id).filter(Boolean));
+  }, [columns]);
+
   const [sorting, setSorting] = useQueryState(
     SORT_KEY,
-    getSortingStateParser<TData>()
+    getSortingStateParser<TData>(columnIds)
       .withOptions(queryStateOptions)
       .withDefault(initialState?.sorting ?? []),
   );
@@ -244,7 +251,7 @@ export function useDataTable<TData>({
   );
 
   const table = useReactTable({
-    ...props,
+    ...tableProps,
     columns,
     initialState,
     pageCount,
