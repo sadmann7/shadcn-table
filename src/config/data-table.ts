@@ -11,13 +11,6 @@ export const dataTableConfig = {
       tooltipTitle: "Toggle advanced table",
       tooltipDescription: "A filter and sort builder to filter and sort rows.",
     },
-    {
-      label: "Floating bar",
-      value: "floatingBar" as const,
-      icon: SquareSquare,
-      tooltipTitle: "Toggle floating bar",
-      tooltipDescription: "A floating bar that sticks to the top of the table.",
-    },
   ],
   textOperators: [
     { label: "Contains", value: "iLike" as const },

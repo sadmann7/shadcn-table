@@ -1,4 +1,10 @@
-import type { ColumnFilter, RowData, filterFns } from "@tanstack/react-table";
+import type {
+  ColumnFilter,
+  ColumnSort,
+  RowData,
+  filterFns,
+} from "@tanstack/react-table";
+import type { StringKeyOf } from ".";
 
 declare module "@tanstack/react-table" {
   // biome-ignore lint/correctness/noUnusedVariables: <explanation>
@@ -40,6 +46,10 @@ export type FilterOperator =
   | "isNotEmpty";
 
 export type JoinOperator = "and" | "or";
+
+export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
+  id: Extract<keyof TData, string | number>;
+}
 
 export interface ExtendedColumnFilter extends ColumnFilter {
   filterId?: string;

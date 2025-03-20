@@ -44,7 +44,6 @@ export function TasksTable({ promises }: TasksTableProps) {
   );
 
   const enableAdvancedTable = featureFlags.includes("advancedTable");
-  const enableFloatingBar = featureFlags.includes("floatingBar");
 
   const { table } = useDataTable({
     data,
@@ -63,14 +62,12 @@ export function TasksTable({ promises }: TasksTableProps) {
     clearOnDefault: true,
   });
 
-  const floatingBar = React.useMemo(() => {
-    if (enableFloatingBar) return <TasksTableFloatingBar table={table} />;
-    return null;
-  }, [enableFloatingBar, table]);
-
   return (
     <>
-      <DataTable table={table} floatingBar={floatingBar}>
+      <DataTable
+        table={table}
+        floatingBar={<TasksTableFloatingBar table={table} />}
+      >
         <DataTableToolbar table={table} />
       </DataTable>
       <UpdateTaskSheet

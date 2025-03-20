@@ -43,11 +43,7 @@ export function DataTableAdvancedToolbar<TData>({
           debounceMs={debounceMs}
           shallow={shallow}
         />
-        <DataTableSortList
-          table={table}
-          debounceMs={debounceMs}
-          shallow={shallow}
-        />
+        <DataTableSortList table={table} />
       </div>
       <div className="flex items-center gap-2">
         {children}

@@ -1,6 +1,5 @@
 "use client";
 
-import type { DataTableFilterField, ExtendedSortingState } from "@/types";
 import {
   type ColumnFiltersState,
   type PaginationState,
@@ -32,6 +31,7 @@ import * as React from "react";
 
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { getSortingStateParser } from "@/lib/parsers";
+import type { ExtendedColumnSort } from "@/types";
 
 const PAGE_KEY = "page";
 const PER_PAGE_KEY = "perPage";
@@ -49,7 +49,6 @@ interface UseDataTableProps<TData>
       | "manualSorting"
     >,
     Required<Pick<TableOptions<TData>, "pageCount">> {
-  filterFields?: DataTableFilterField<TData>[];
   history?: "push" | "replace";
   scroll?: boolean;
   shallow?: boolean;
@@ -59,21 +58,20 @@ interface UseDataTableProps<TData>
   clearOnDefault?: boolean;
   enableAdvancedFilter?: boolean;
   initialState?: Omit<Partial<TableState>, "sorting"> & {
-    sorting?: ExtendedSortingState<TData>;
+    sorting?: ExtendedColumnSort<TData>[];
   };
 }
 
 export function useDataTable<TData>({
   columns,
   pageCount = -1,
-  filterFields = [],
-  enableAdvancedFilter = false,
   history = "replace",
   scroll = false,
   shallow = true,
   throttleMs = 50,
   debounceMs = 300,
   clearOnDefault = false,
+  enableAdvancedFilter = false,
   startTransition,
   initialState,
   ...props
@@ -122,6 +120,7 @@ export function useDataTable<TData>({
       .withOptions(queryStateOptions)
       .withDefault(initialState?.sorting ?? []),
   );
+  const debouncedSetSorting = useDebouncedCallback(setSorting, debounceMs);
 
   const filterableColumns = React.useMemo(() => {
     return columns.filter((column) => column.enableColumnFilter);
@@ -177,13 +176,13 @@ export function useDataTable<TData>({
   const onSortingChange = React.useCallback(
     (updaterOrValue: Updater<SortingState>) => {
       if (typeof updaterOrValue === "function") {
-        const newSorting = updaterOrValue(
-          sorting,
-        ) as ExtendedSortingState<TData>;
-        void setSorting(newSorting);
+        const newSorting = updaterOrValue(sorting);
+        debouncedSetSorting(newSorting as ExtendedColumnSort<TData>[]);
+      } else {
+        debouncedSetSorting(updaterOrValue as ExtendedColumnSort<TData>[]);
       }
     },
-    [sorting, setSorting],
+    [sorting, debouncedSetSorting],
   );
 
   const initialColumnFilters: ColumnFiltersState = React.useMemo(() => {

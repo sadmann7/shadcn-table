@@ -1,5 +1,5 @@
-import type { ExtendedSortingState, Filter } from "@/types";
-import type { Row } from "@tanstack/react-table";
+import type { ExtendedColumnSort, Filter } from "@/types";
+import type { Row, SortingState } from "@tanstack/react-table";
 import { createParser } from "nuqs/server";
 import { z } from "zod";
 
@@ -10,17 +10,12 @@ export const sortingItemSchema = z.object({
   desc: z.boolean(),
 });
 
-/**
- * Creates a parser for TanStack Table sorting state.
- * @param originalRow The original row data to validate sorting keys against.
- * @returns A parser for TanStack Table sorting state.
- */
 export const getSortingStateParser = <TData>(
   originalRow?: Row<TData>["original"],
 ) => {
   const validKeys = originalRow ? new Set(Object.keys(originalRow)) : null;
 
-  return createParser<ExtendedSortingState<TData>>({
+  return createParser<ExtendedColumnSort<TData>[]>({
     parse: (value) => {
       try {
         const parsed = JSON.parse(value);
@@ -32,7 +27,7 @@ export const getSortingStateParser = <TData>(
           return null;
         }
 
-        return result.data as ExtendedSortingState<TData>;
+        return result.data as ExtendedColumnSort<TData>[];
       } catch {
         return null;
       }
@@ -55,11 +50,6 @@ export const filterSchema = z.object({
   filterId: z.string(),
 });
 
-/**
- * Create a parser for data table filters.
- * @param originalRow The original row data to create the parser for.
- * @returns A parser for data table filters state.
- */
 export const getFiltersStateParser = <T>(originalRow?: Row<T>["original"]) => {
   const validKeys = originalRow ? new Set(Object.keys(originalRow)) : null;
 

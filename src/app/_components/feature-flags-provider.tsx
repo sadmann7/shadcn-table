@@ -52,13 +52,16 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
     },
   );
 
+  const contextValue = React.useMemo<FeatureFlagsContextProps>(
+    () => ({
+      featureFlags,
+      setFeatureFlags: (value) => void setFeatureFlags(value),
+    }),
+    [featureFlags, setFeatureFlags],
+  );
+
   return (
-    <FeatureFlagsContext.Provider
-      value={{
-        featureFlags,
-        setFeatureFlags: (value) => void setFeatureFlags(value),
-      }}
-    >
+    <FeatureFlagsContext.Provider value={contextValue}>
       <div className="w-full overflow-x-auto">
         <ToggleGroup
           type="multiple"

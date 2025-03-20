@@ -1,11 +1,6 @@
 "use client";
 
-import type {
-  ExtendedColumnSort,
-  ExtendedSortingState,
-  StringKeyOf,
-} from "@/types";
-import type { SortDirection, Table } from "@tanstack/react-table";
+import type { ColumnSort, SortDirection, Table } from "@tanstack/react-table";
 import {
   ArrowDownUp,
   Check,
@@ -13,7 +8,6 @@ import {
   GripVertical,
   Trash2,
 } from "lucide-react";
-import { useQueryState } from "nuqs";
 import * as React from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -46,43 +40,26 @@ import {
   SortableOverlay,
 } from "@/components/ui/sortable";
 import { dataTableConfig } from "@/config/data-table";
-import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
-import { getSortingStateParser } from "@/lib/parsers";
 import { cn, toSentenceCase } from "@/lib/utils";
 
 interface DataTableSortListProps<TData> {
   table: Table<TData>;
-  debounceMs: number;
-  shallow?: boolean;
 }
 
 export function DataTableSortList<TData>({
   table,
-  debounceMs,
-  shallow,
 }: DataTableSortListProps<TData>) {
   const id = React.useId();
   const labelId = React.useId();
   const descriptionId = React.useId();
 
   const initialSorting = React.useMemo(
-    () => (table.initialState.sorting ?? []) as ExtendedSortingState<TData>,
+    () => table.initialState.sorting ?? [],
     [table.initialState.sorting],
   );
 
-  const sortingParser = React.useMemo(
-    () =>
-      getSortingStateParser(table.getRowModel().rows[0]?.original)
-        .withDefault(initialSorting)
-        .withOptions({
-          clearOnDefault: true,
-          shallow,
-        }),
-    [initialSorting, shallow, table],
-  );
-
-  const [sorting, setSorting] = useQueryState("sort", sortingParser);
-  const debouncedSetSorting = useDebouncedCallback(setSorting, debounceMs);
+  const sorting = table.getState().sorting;
+  const onSortingChange = table.setSorting;
 
   const uniqueSorting = React.useMemo(() => {
     const uniqueIds = new Set();
@@ -105,60 +82,51 @@ export function DataTableSortList<TData>({
       }));
   }, [sorting, table]);
 
-  const onAddSort = React.useCallback(() => {
+  const onSortAdd = React.useCallback(() => {
     const firstAvailableColumn = sortableColumns[0];
+
     if (!firstAvailableColumn) return;
 
-    void setSorting([
-      ...sorting,
+    onSortingChange((prevSorting) => [
+      ...prevSorting,
       {
-        id: firstAvailableColumn.id as StringKeyOf<TData>,
+        id: firstAvailableColumn.id,
         desc: false,
       },
     ]);
-  }, [sortableColumns, sorting, setSorting]);
+  }, [sortableColumns, onSortingChange]);
 
-  const onUpdateSort = React.useCallback(
-    ({
-      id,
-      field,
-      debounced = false,
-    }: {
-      id: string;
-      field: Partial<ExtendedColumnSort<TData>>;
-      debounced?: boolean;
-    }) => {
-      const updateFunction = debounced ? debouncedSetSorting : setSorting;
-
-      updateFunction((prevSorting) => {
+  const onSortUpdate = React.useCallback(
+    (sortId: string, updates: Partial<ColumnSort>) => {
+      onSortingChange((prevSorting) => {
         if (!prevSorting) return prevSorting;
 
         return prevSorting.map((sort) =>
-          sort.id === id ? { ...sort, ...field } : sort,
+          sort.id === sortId ? { ...sort, ...updates } : sort,
         );
       });
     },
-    [debouncedSetSorting, setSorting],
+    [onSortingChange],
   );
 
   const onRemoveSort = React.useCallback(
-    (id: string) => {
-      void setSorting((prevSorting) =>
-        prevSorting.filter((item) => item.id !== id),
+    (sortId: string) => {
+      onSortingChange((prevSorting) =>
+        prevSorting.filter((item) => item.id !== sortId),
       );
     },
-    [setSorting],
+    [onSortingChange],
   );
 
   const onSortingReset = React.useCallback(
-    () => setSorting(null),
-    [setSorting],
+    () => onSortingChange(initialSorting),
+    [onSortingChange, initialSorting],
   );
 
   return (
     <Sortable
       value={sorting}
-      onValueChange={setSorting}
+      onValueChange={onSortingChange}
       getItemValue={(item) => item.id}
     >
       <Popover>
@@ -253,11 +221,6 @@ export function DataTableSortList<TData>({
                           <PopoverContent
                             id={fieldListboxId}
                             className="w-(--radix-popover-trigger-width) origin-(--radix-popover-content-transform-origin) p-0"
-                            onCloseAutoFocus={() =>
-                              document
-                                .getElementById(fieldTriggerId)
-                                ?.focus({ preventScroll: true })
-                            }
                           >
                             <Command>
                               <CommandInput placeholder="Search fields..." />
@@ -268,34 +231,22 @@ export function DataTableSortList<TData>({
                                     <CommandItem
                                       key={column.id}
                                       value={column.id}
-                                      onSelect={(value) => {
-                                        const newFieldTriggerId = `${id}-sort-${value}-field-trigger`;
-
-                                        onUpdateSort({
-                                          id: sort.id,
-                                          field: {
-                                            id: value as StringKeyOf<TData>,
-                                          },
-                                        });
-
-                                        requestAnimationFrame(() => {
-                                          document
-                                            .getElementById(newFieldTriggerId)
-                                            ?.focus();
-                                        });
-                                      }}
+                                      onSelect={(value) =>
+                                        onSortUpdate(sort.id, {
+                                          id: value,
+                                        })
+                                      }
                                     >
                                       <span className="truncate">
                                         {column.label}
                                       </span>
                                       <Check
                                         className={cn(
-                                          "ml-auto size-4 shrink-0",
+                                          "ml-auto",
                                           column.id === sort.id
                                             ? "opacity-100"
                                             : "opacity-0",
                                         )}
-                                        aria-hidden="true"
                                       />
                                     </CommandItem>
                                   ))}
@@ -307,9 +258,9 @@ export function DataTableSortList<TData>({
                         <Select
                           value={sort.desc ? "desc" : "asc"}
                           onValueChange={(value: SortDirection) =>
-                            onUpdateSort({
+                            onSortUpdate(sort.id, {
                               id: sort.id,
-                              field: { id: sort.id, desc: value === "desc" },
+                              desc: value === "desc",
                             })
                           }
                         >
@@ -362,8 +313,7 @@ export function DataTableSortList<TData>({
             <Button
               size="sm"
               className="h-[1.85rem] rounded"
-              onClick={onAddSort}
-              disabled={uniqueSorting.length >= sortableColumns.length}
+              onClick={onSortAdd}
             >
               Add sort
             </Button>

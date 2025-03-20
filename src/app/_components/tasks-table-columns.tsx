@@ -130,7 +130,7 @@ export function getTasksTableColumns({
       },
       meta: {
         label: "Status",
-        variant: "select",
+        variant: "multi-select",
         options: tasks.status.enumValues.map((status) => ({
           label: status.charAt(0).toUpperCase() + status.slice(1),
           value: status,
