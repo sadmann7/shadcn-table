@@ -71,12 +71,17 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
           onValueChange={(value: FeatureFlagValue[]) => setFeatureFlags(value)}
           className="w-fit gap-0"
         >
-          {dataTableConfig.featureFlags.map((flag) => (
+          {dataTableConfig.featureFlags.map((flag, index) => (
             <Tooltip key={flag.value}>
               <ToggleGroupItem
                 value={flag.value}
                 className={cn(
-                  "gap-2 whitespace-nowrap px-3 text-xs data-[state=on]:bg-accent/70 data-[state=on]:hover:bg-accent/90",
+                  "gap-2 whitespace-nowrap rounded-none px-3 text-xs data-[state=on]:bg-accent/70 data-[state=on]:hover:bg-accent/90",
+                  {
+                    "rounded-l-sm border-r-0": index === 0,
+                    "rounded-r-sm":
+                      index === dataTableConfig.featureFlags.length - 1,
+                  },
                 )}
                 asChild
               >

@@ -1,15 +1,23 @@
-import { Pickaxe, SquareSquare } from "lucide-react";
+import { CommandIcon, PickaxeIcon } from "lucide-react";
 
 export type DataTableConfig = typeof dataTableConfig;
 
 export const dataTableConfig = {
   featureFlags: [
     {
-      label: "Advanced table",
-      value: "advancedTable" as const,
-      icon: Pickaxe,
-      tooltipTitle: "Toggle advanced table",
-      tooltipDescription: "A filter and sort builder to filter and sort rows.",
+      label: "Advanced filters",
+      value: "advancedFilters" as const,
+      icon: PickaxeIcon,
+      tooltipTitle: "Advanced filter options",
+      tooltipDescription: "Create complex, spreadsheet-like filters.",
+    },
+    {
+      label: "Command filters",
+      value: "commandFilters" as const,
+      icon: CommandIcon,
+      tooltipTitle: "Command filter chips",
+      tooltipDescription:
+        "Create filters using pre-defined chips from a command menu.",
     },
   ],
   textOperators: [

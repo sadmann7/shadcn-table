@@ -11,7 +11,9 @@ import * as z from "zod";
 import { getFiltersStateParser, getSortingStateParser } from "@/lib/parsers";
 
 export const searchParamsCache = createSearchParamsCache({
-  flags: parseAsArrayOf(z.enum(["advancedTable"])).withDefault([]),
+  flags: parseAsArrayOf(
+    z.enum(["advancedFilters", "compactFilters"]),
+  ).withDefault([]),
   page: parseAsInteger.withDefault(1),
   perPage: parseAsInteger.withDefault(10),
   sort: getSortingStateParser<Task>().withDefault([
