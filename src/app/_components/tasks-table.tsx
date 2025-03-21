@@ -17,8 +17,8 @@ import type {
 } from "../_lib/queries";
 import { DeleteTasksDialog } from "./delete-tasks-dialog";
 import { useFeatureFlags } from "./feature-flags-provider";
+import { TasksTableActionBar } from "./tasks-table-action-bar";
 import { getTasksTableColumns } from "./tasks-table-columns";
-import { TasksTableFloatingBar } from "./tasks-table-floating-bar";
 import { UpdateTaskSheet } from "./update-task-sheet";
 
 interface TasksTableProps {
@@ -68,7 +68,7 @@ export function TasksTable({ promises }: TasksTableProps) {
     <>
       <DataTable
         table={table}
-        floatingBar={<TasksTableFloatingBar table={table} />}
+        actionBar={<TasksTableActionBar table={table} />}
       >
         <DataTableToolbar table={table}>
           <DataTableSortList table={table} />

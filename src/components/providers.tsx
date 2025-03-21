@@ -11,7 +11,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
     <NextThemesProvider {...props}>
-      <TooltipProvider>
+      <TooltipProvider delayDuration={120}>
         <NuqsAdapter>{children}</NuqsAdapter>
       </TooltipProvider>
     </NextThemesProvider>
