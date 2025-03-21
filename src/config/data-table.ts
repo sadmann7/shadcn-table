@@ -60,10 +60,12 @@ export const dataTableConfig = {
     { label: "Asc", value: "asc" as const },
     { label: "Desc", value: "desc" as const },
   ],
-  columnVariants: [
+  filterVariants: [
     "text",
     "number",
+    "range",
     "date",
+    "date-range",
     "boolean",
     "select",
     "multi-select",

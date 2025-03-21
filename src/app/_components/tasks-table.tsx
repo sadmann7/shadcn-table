@@ -7,6 +7,7 @@ import * as React from "react";
 import { DataTable } from "@/components/data-table/data-table";
 import { useDataTable } from "@/hooks/use-data-table";
 
+import { DataTableFilterList } from "@/components/data-table/data-table-filter-list";
 import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import type {
@@ -71,6 +72,7 @@ export function TasksTable({ promises }: TasksTableProps) {
       >
         <DataTableToolbar table={table}>
           <DataTableSortList table={table} />
+          <DataTableFilterList table={table} shallow={false} />
         </DataTableToolbar>
       </DataTable>
       <UpdateTaskSheet

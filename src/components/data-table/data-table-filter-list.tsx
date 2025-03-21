@@ -64,30 +64,46 @@ import {
 } from "@/components/ui/sortable";
 import { dataTableConfig } from "@/config/data-table";
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
-import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table";
+import { getFilterOperators } from "@/lib/data-table";
 import { getFiltersStateParser } from "@/lib/parsers";
 import { cn, formatDate } from "@/lib/utils";
 
 interface DataTableFilterListProps<TData> {
   table: Table<TData>;
-  filterFields: DataTableAdvancedFilterField<TData>[];
-  debounceMs: number;
+  debounceMs?: number;
   shallow?: boolean;
 }
 
 export function DataTableFilterList<TData>({
   table,
-  filterFields,
-  debounceMs,
-  shallow,
+  debounceMs = 300,
+  shallow = true,
 }: DataTableFilterListProps<TData>) {
   const id = React.useId();
   const labelId = React.useId();
   const descriptionId = React.useId();
 
+  const filterFields = React.useMemo(
+    () =>
+      table
+        .getAllColumns()
+        .filter((column) => column.columnDef.enableColumnFilter)
+        .map(
+          (column) =>
+            ({
+              id: column.id as StringKeyOf<TData>,
+              label: column.columnDef.meta?.label ?? column.id,
+              placeholder: column.columnDef.meta?.placeholder,
+              variant: column.columnDef.meta?.variant ?? "text",
+              options: column.columnDef.meta?.options,
+            }) satisfies DataTableAdvancedFilterField<TData>,
+        ),
+    [table],
+  );
+
   const [filters, setFilters] = useQueryState(
     "filters",
-    getFiltersStateParser<TData>(table.getAllColumns().map((col) => col.id))
+    getFiltersStateParser<TData>(filterFields.map((field) => field.id))
       .withDefault([])
       .withOptions({
         clearOnDefault: true,
@@ -105,15 +121,19 @@ export function DataTableFilterList<TData>({
   );
 
   const onFilterAdd = React.useCallback(() => {
-    const firstFilterField = filterFields[0];
+    const filterField = filterFields[0];
 
-    if (!firstFilterField) return;
+    if (!filterField) return;
 
     const newFilter: Filter<TData> = {
-      id: firstFilterField.id,
+      id: filterField.id,
       value: "",
-      variant: firstFilterField.variant,
-      operator: getDefaultFilterOperator(firstFilterField.variant),
+      variant: filterField.variant,
+      operator:
+        (getFilterOperators(filterField.variant)[0]?.value ??
+        filterField.variant === "text")
+          ? "iLike"
+          : "eq",
       filterId: customAlphabet(
         "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
         6,
@@ -124,12 +144,11 @@ export function DataTableFilterList<TData>({
   }, [filterFields, filters, debouncedSetFilters]);
 
   const onFilterUpdate = React.useCallback(
-    (filterId: string, updates: Partial<Filter<TData>>) => {
+    (filterId: string, updates: Partial<Omit<Filter<TData>, "filterId">>) => {
       debouncedSetFilters((prevFilters) => {
         const updatedFilters = prevFilters.map((filter) => {
           if (filter.filterId === filterId) {
-            const updatedFilter: Filter<TData> = { ...filter, ...updates };
-            return updatedFilter;
+            return { ...filter, ...updates } as Filter<TData>;
           }
           return filter;
         });
@@ -210,7 +229,9 @@ export function DataTableFilterList<TData>({
                 typeof filter.value === "string" ? filter.value : undefined
               }
               onValueChange={(value) => {
-                onFilterUpdate(filter.filterId, { value });
+                onFilterUpdate(filter.filterId, {
+                  value,
+                });
               }}
             >
               <FacetedTrigger asChild>
@@ -267,9 +288,11 @@ export function DataTableFilterList<TData>({
           return (
             <Faceted
               multiple
-              value={selectedValues}
+              value={selectedValues as string[]}
               onValueChange={(value) => {
-                onFilterUpdate(filter.filterId, { value });
+                onFilterUpdate(filter.filterId, {
+                  value,
+                });
               }}
             >
               <FacetedTrigger asChild>
@@ -400,10 +423,6 @@ export function DataTableFilterList<TData>({
                       onFilterUpdate(filter.filterId, {
                         value: date?.toISOString() ?? "",
                       });
-
-                      setTimeout(() => {
-                        document.getElementById(inputId)?.click();
-                      }, 0);
                     }}
                     initialFocus
                   />
@@ -419,7 +438,9 @@ export function DataTableFilterList<TData>({
             <Select
               value={filter.value}
               onValueChange={(value) =>
-                onFilterUpdate(filter.filterId, { value })
+                onFilterUpdate(filter.filterId, {
+                  value,
+                })
               }
             >
               <SelectTrigger
@@ -606,15 +627,15 @@ export function DataTableFilterList<TData>({
                                         onFilterUpdate(filter.filterId, {
                                           id: value as StringKeyOf<TData>,
                                           variant: filterField.variant,
-                                          operator: getDefaultFilterOperator(
-                                            filterField.variant,
-                                          ),
+                                          operator:
+                                            getFilterOperators(
+                                              filterField.variant,
+                                            )[0]?.value ??
+                                            (filterField.variant === "text"
+                                              ? "iLike"
+                                              : "eq"),
                                           value: "",
                                         });
-
-                                        document
-                                          .getElementById(fieldTriggerId)
-                                          ?.click();
                                       }}
                                     >
                                       <span className="truncate">

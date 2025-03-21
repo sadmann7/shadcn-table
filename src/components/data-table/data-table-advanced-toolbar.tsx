@@ -19,7 +19,6 @@ interface DataTableAdvancedToolbarProps<TData>
 
 export function DataTableAdvancedToolbar<TData>({
   table,
-  filterFields = [],
   debounceMs = 300,
   shallow = true,
   children,
@@ -39,7 +38,6 @@ export function DataTableAdvancedToolbar<TData>({
       <div className="flex items-center gap-2">
         <DataTableFilterList
           table={table}
-          filterFields={filterFields}
           debounceMs={debounceMs}
           shallow={shallow}
         />

@@ -100,10 +100,10 @@ export function filterColumns<T extends Table>({
           filter.value.length === 2
           ? and(
               filter.value[0]
-                ? gte(column, startOfDay(new Date(filter.value[0])))
+                ? gte(column, startOfDay(new Date(filter.value[0] as string)))
                 : undefined,
               filter.value[1]
-                ? lte(column, endOfDay(new Date(filter.value[1])))
+                ? lte(column, endOfDay(new Date(filter.value[1] as string)))
                 : undefined,
             )
           : undefined;

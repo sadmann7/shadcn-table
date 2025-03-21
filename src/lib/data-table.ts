@@ -1,4 +1,4 @@
-import type { ColumnVariant, Filter, FilterOperator } from "@/types";
+import type { Filter, FilterOperator, FilterVariant } from "@/types";
 import type { Column } from "@tanstack/react-table";
 
 import { dataTableConfig } from "@/config/data-table";
@@ -34,30 +34,22 @@ export function getCommonPinningStyles<TData>({
   };
 }
 
-export function getDefaultFilterOperator(
-  columnVariant: ColumnVariant,
-): FilterOperator {
-  if (columnVariant === "text") {
-    return "iLike";
-  }
-
-  return "eq";
-}
-
-export function getFilterOperators(columnVariant: ColumnVariant) {
+export function getFilterOperators(filterVariant: FilterVariant) {
   const operatorMap: Record<
-    ColumnVariant,
+    FilterVariant,
     { label: string; value: FilterOperator }[]
   > = {
     text: dataTableConfig.textOperators,
     number: dataTableConfig.numericOperators,
+    range: dataTableConfig.numericOperators,
+    date: dataTableConfig.dateOperators,
+    "date-range": dataTableConfig.dateOperators,
+    boolean: dataTableConfig.booleanOperators,
     select: dataTableConfig.selectOperators,
     "multi-select": dataTableConfig.selectOperators,
-    boolean: dataTableConfig.booleanOperators,
-    date: dataTableConfig.dateOperators,
   };
 
-  return operatorMap[columnVariant] ?? dataTableConfig.textOperators;
+  return operatorMap[filterVariant] ?? dataTableConfig.textOperators;
 }
 
 export function getValidFilters<TData>(

@@ -6,22 +6,20 @@ declare module "@tanstack/react-table" {
   interface ColumnMeta<TData extends RowData, TValue> {
     label?: string;
     placeholder?: string;
-    variant?:
-      | "text"
-      | "number"
-      | "date"
-      | "date-range"
-      | "range"
-      | "select"
-      | "multi-select";
-    options?: { label: string; value: string; count?: number }[];
+    variant?: FilterVariant;
+    options?: {
+      label: string;
+      value: string;
+      count?: number;
+      icon?: React.ComponentType<{ className?: string }>;
+    }[];
     range?: [number, number];
     unit?: string;
   }
 }
 
 export type FilterOperator = DataTableConfig["operators"][number];
-
+export type FilterVariant = DataTableConfig["filterVariants"][number];
 export type JoinOperator = DataTableConfig["joinOperators"][number]["value"];
 
 export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
