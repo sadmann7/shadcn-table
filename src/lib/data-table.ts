@@ -56,6 +56,12 @@ export function getFilterOperators(filterVariant: FilterVariant) {
   return operatorMap[filterVariant] ?? dataTableConfig.textOperators;
 }
 
+export function getDefaultFilterOperator(filterVariant: FilterVariant) {
+  const operators = getFilterOperators(filterVariant);
+
+  return operators[0]?.value ?? (filterVariant === "text" ? "iLike" : "eq");
+}
+
 export function getValidFilters<TData>(
   filters: ExtendedColumnFilter<TData>[],
 ): ExtendedColumnFilter<TData>[] {
