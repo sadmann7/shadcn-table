@@ -1,6 +1,12 @@
 import type { DataTableConfig } from "@/config/data-table";
 import type { filterSchema } from "@/lib/parsers";
-import type { ColumnSort, Row, RowData } from "@tanstack/react-table";
+import type {
+  ColumnSort,
+  Row,
+  RowData,
+  SortingState,
+  Updater,
+} from "@tanstack/react-table";
 import type { z } from "zod";
 
 declare module "@tanstack/react-table" {
