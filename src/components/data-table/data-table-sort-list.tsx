@@ -273,7 +273,8 @@ function SortItem({
           <SelectTrigger
             aria-label="Select sort direction"
             aria-controls={directionListboxId}
-            className="h-8 w-24 rounded"
+            size="sm"
+            className="w-24 rounded dark:bg-transparent"
           >
             <SelectValue />
           </SelectTrigger>

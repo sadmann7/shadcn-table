@@ -449,7 +449,8 @@ export function DataTableFilterList<TData>({
                 id={inputId}
                 aria-controls={`${inputId}-listbox`}
                 aria-label={`${filterField.label} boolean filter`}
-                className="h-8 w-full rounded bg-transparent"
+                size="sm"
+                className="w-full rounded dark:bg-transparent"
               >
                 <SelectValue placeholder={filter.value ? "True" : "False"} />
               </SelectTrigger>
@@ -559,7 +560,8 @@ export function DataTableFilterList<TData>({
                               <SelectTrigger
                                 aria-label="Select join operator"
                                 aria-controls={joinOperatorListboxId}
-                                className="h-8 rounded lowercase"
+                                size="sm"
+                                className="rounded lowercase dark:bg-transparent"
                               >
                                 <SelectValue placeholder={joinOperator} />
                               </SelectTrigger>
@@ -676,7 +678,8 @@ export function DataTableFilterList<TData>({
                           <SelectTrigger
                             aria-label="Select filter operator"
                             aria-controls={operatorListboxId}
-                            className="h-8 w-32 rounded"
+                            size="sm"
+                            className="w-32 rounded dark:bg-transparent"
                           >
                             <div className="truncate">
                               <SelectValue placeholder={filter.operator} />
