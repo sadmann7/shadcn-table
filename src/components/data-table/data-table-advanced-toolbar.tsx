@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 interface DataTableAdvancedToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
   table: Table<TData>;
-  filterFields: DataTableFilterField<TData>[];
   debounceMs?: number;
   shallow?: boolean;
 }
