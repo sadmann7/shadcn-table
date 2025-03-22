@@ -1,4 +1,8 @@
-import type { Filter, FilterOperator, FilterVariant } from "@/types";
+import type {
+  ExtendedColumnFilter,
+  FilterOperator,
+  FilterVariant,
+} from "@/types/data-table";
 import type { Column } from "@tanstack/react-table";
 
 import { dataTableConfig } from "@/config/data-table";
@@ -53,8 +57,8 @@ export function getFilterOperators(filterVariant: FilterVariant) {
 }
 
 export function getValidFilters<TData>(
-  filters: Filter<TData>[],
-): Filter<TData>[] {
+  filters: ExtendedColumnFilter<TData>[],
+): ExtendedColumnFilter<TData>[] {
   return filters.filter(
     (filter) =>
       filter.operator === "isEmpty" ||

@@ -1,6 +1,6 @@
 "use client";
 
-import type { DataTableAdvancedFilterField } from "@/types";
+import type { DataTableFilterField } from "@/types/data-table";
 import type { Table } from "@tanstack/react-table";
 import type * as React from "react";
 
@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 interface DataTableAdvancedToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
   table: Table<TData>;
-  filterFields: DataTableAdvancedFilterField<TData>[];
+  filterFields: DataTableFilterField<TData>[];
   debounceMs?: number;
   shallow?: boolean;
 }

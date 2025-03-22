@@ -1,7 +1,7 @@
 "use client";
 
 import { type Task, tasks } from "@/db/schema";
-import type { DataTableRowAction } from "@/types";
+import type { DataTableRowAction } from "@/types/data-table";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Ellipsis } from "lucide-react";
 import * as React from "react";
@@ -223,7 +223,7 @@ export function getTasksTableColumns({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuItem
-                onSelect={() => setRowAction({ row, type: "update" })}
+                onSelect={() => setRowAction({ row, variant: "update" })}
               >
                 Edit
               </DropdownMenuItem>
@@ -263,7 +263,7 @@ export function getTasksTableColumns({
               </DropdownMenuSub>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onSelect={() => setRowAction({ row, type: "delete" })}
+                onSelect={() => setRowAction({ row, variant: "delete" })}
               >
                 Delete
                 <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>

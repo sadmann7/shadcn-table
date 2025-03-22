@@ -1,7 +1,7 @@
 "use client";
 
 import type { Task } from "@/db/schema";
-import type { DataTableRowAction } from "@/types";
+import type { DataTableRowAction } from "@/types/data-table";
 import * as React from "react";
 
 import { DataTable } from "@/components/data-table/data-table";
@@ -76,12 +76,12 @@ export function TasksTable({ promises }: TasksTableProps) {
         </DataTableToolbar>
       </DataTable>
       <UpdateTaskSheet
-        open={rowAction?.type === "update"}
+        open={rowAction?.variant === "update"}
         onOpenChange={() => setRowAction(null)}
         task={rowAction?.row.original ?? null}
       />
       <DeleteTasksDialog
-        open={rowAction?.type === "delete"}
+        open={rowAction?.variant === "delete"}
         onOpenChange={() => setRowAction(null)}
         tasks={rowAction?.row.original ? [rowAction?.row.original] : []}
         showTrigger={false}

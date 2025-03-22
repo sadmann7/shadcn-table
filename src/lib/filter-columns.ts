@@ -1,5 +1,5 @@
 import { isEmpty, isNotEmpty } from "@/db/utils";
-import type { Filter, JoinOperator } from "@/types";
+import type { ExtendedColumnFilter, JoinOperator } from "@/types/data-table";
 import { addDays, endOfDay, startOfDay } from "date-fns";
 import {
   type AnyColumn,
@@ -25,7 +25,7 @@ export function filterColumns<T extends Table>({
   joinOperator,
 }: {
   table: T;
-  filters: Filter<T>[];
+  filters: ExtendedColumnFilter<T>[];
   joinOperator: JoinOperator;
 }): SQL | undefined {
   const joinFn = joinOperator === "and" ? and : or;

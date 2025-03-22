@@ -1,4 +1,4 @@
-import { CommandIcon, PickaxeIcon } from "lucide-react";
+import { ChevronsUpDown, CommandIcon, PickaxeIcon } from "lucide-react";
 
 export type DataTableConfig = typeof dataTableConfig;
 
@@ -18,6 +18,13 @@ export const dataTableConfig = {
       tooltipTitle: "Command filter chips",
       tooltipDescription:
         "Create filters using pre-defined chips from a command menu.",
+    },
+    {
+      label: "Multi sort",
+      value: "multiSort" as const,
+      icon: ChevronsUpDown,
+      tooltipTitle: "Multi sort options",
+      tooltipDescription: "Sort the table by multiple columns.",
     },
   ],
   textOperators: [

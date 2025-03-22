@@ -78,9 +78,11 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
                 className={cn(
                   "gap-2 whitespace-nowrap rounded-none px-3 text-xs data-[state=on]:bg-accent/70 data-[state=on]:hover:bg-accent/90",
                   {
-                    "rounded-l-sm border-r-0": index === 0,
+                    "rounded-l-sm": index === 0,
                     "rounded-r-sm":
                       index === dataTableConfig.featureFlags.length - 1,
+                    "border-r-0":
+                      index < dataTableConfig.featureFlags.length - 1,
                   },
                 )}
                 asChild
@@ -94,7 +96,7 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
                 align="start"
                 side="bottom"
                 sideOffset={6}
-                className="flex max-w-60 flex-col space-y-1.5 border bg-background py-2 font-semibold text-foreground"
+                className="flex max-w-60 flex-col gap-1.5 border bg-background py-2 font-semibold text-foreground"
               >
                 <div>{flag.tooltipTitle}</div>
                 <div className="text-muted-foreground text-xs">

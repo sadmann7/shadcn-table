@@ -1,12 +1,5 @@
 "use client";
 
-import type {
-  DataTableAdvancedFilterField,
-  Filter,
-  FilterOperator,
-  JoinOperator,
-  StringKeyOf,
-} from "@/types";
 import type { Table } from "@tanstack/react-table";
 import {
   CalendarIcon,
@@ -67,6 +60,12 @@ import { getFilterOperators } from "@/lib/data-table";
 import { generateId } from "@/lib/id";
 import { getFiltersStateParser } from "@/lib/parsers";
 import { cn, formatDate } from "@/lib/utils";
+import type {
+  DataTableFilterField,
+  ExtendedColumnFilter,
+  FilterOperator,
+  JoinOperator,
+} from "@/types/data-table";
 
 interface DataTableFilterListProps<TData> {
   table: Table<TData>;
@@ -91,12 +90,12 @@ export function DataTableFilterList<TData>({
         .map(
           (column) =>
             ({
-              id: column.id as StringKeyOf<TData>,
+              id: column.id as Extract<keyof TData, string>,
               label: column.columnDef.meta?.label ?? column.id,
               placeholder: column.columnDef.meta?.placeholder,
               variant: column.columnDef.meta?.variant ?? "text",
               options: column.columnDef.meta?.options,
-            }) satisfies DataTableAdvancedFilterField<TData>,
+            }) satisfies DataTableFilterField<TData>,
         ),
     [table],
   );
@@ -125,7 +124,7 @@ export function DataTableFilterList<TData>({
 
     if (!filterField) return;
 
-    const newFilter: Filter<TData> = {
+    const newFilter: ExtendedColumnFilter<TData> = {
       id: filterField.id,
       value: "",
       variant: filterField.variant,
@@ -141,11 +140,14 @@ export function DataTableFilterList<TData>({
   }, [filterFields, filters, debouncedSetFilters]);
 
   const onFilterUpdate = React.useCallback(
-    (filterId: string, updates: Partial<Omit<Filter<TData>, "filterId">>) => {
+    (
+      filterId: string,
+      updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
+    ) => {
       debouncedSetFilters((prevFilters) => {
         const updatedFilters = prevFilters.map((filter) => {
           if (filter.filterId === filterId) {
-            return { ...filter, ...updates } as Filter<TData>;
+            return { ...filter, ...updates } as ExtendedColumnFilter<TData>;
           }
           return filter;
         });
@@ -179,7 +181,10 @@ export function DataTableFilterList<TData>({
   );
 
   const onFilterInputRender = React.useCallback(
-    ({ filter, inputId }: { filter: Filter<TData>; inputId: string }) => {
+    ({
+      filter,
+      inputId,
+    }: { filter: ExtendedColumnFilter<TData>; inputId: string }) => {
       const filterField = filterFields.find((f) => f.id === filter.id);
 
       if (!filterField) return null;
@@ -622,7 +627,10 @@ export function DataTableFilterList<TData>({
                                         if (!filterField) return;
 
                                         onFilterUpdate(filter.filterId, {
-                                          id: value as StringKeyOf<TData>,
+                                          id: value as Extract<
+                                            keyof TData,
+                                            string
+                                          >,
                                           variant: filterField.variant,
                                           operator:
                                             getFilterOperators(
