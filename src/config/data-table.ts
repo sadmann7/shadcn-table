@@ -60,10 +60,6 @@ export const dataTableConfig = {
     { label: "Is", value: "eq" as const },
     { label: "Is not", value: "ne" as const },
   ],
-  joinOperators: [
-    { label: "And", value: "and" as const },
-    { label: "Or", value: "or" as const },
-  ],
   sortOrders: [
     { label: "Asc", value: "asc" as const },
     { label: "Desc", value: "desc" as const },
@@ -94,4 +90,5 @@ export const dataTableConfig = {
     "and",
     "or",
   ] as const,
+  joinOperators: ["and", "or"] as const,
 };

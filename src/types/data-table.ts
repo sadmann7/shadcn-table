@@ -1,5 +1,7 @@
 import type { DataTableConfig } from "@/config/data-table";
+import type { filterSchema } from "@/lib/parsers";
 import type { ColumnFilter, ColumnSort, RowData } from "@tanstack/react-table";
+import type { z } from "zod";
 
 declare module "@tanstack/react-table" {
   // biome-ignore lint/correctness/noUnusedVariables: <explanation>
@@ -20,15 +22,13 @@ declare module "@tanstack/react-table" {
 
 export type FilterOperator = DataTableConfig["operators"][number];
 export type FilterVariant = DataTableConfig["filterVariants"][number];
-export type JoinOperator = DataTableConfig["joinOperators"][number]["value"];
+export type JoinOperator = DataTableConfig["joinOperators"][number];
 
 export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
   id: Extract<keyof TData, string>;
 }
 
-export interface ExtendedColumnFilter<TData> extends ColumnFilter {
+export interface ExtendedColumnFilter<TData>
+  extends z.infer<typeof filterSchema> {
   id: Extract<keyof TData, string>;
-  filterId?: string;
-  operator?: FilterOperator;
-  joinOperator?: JoinOperator;
 }

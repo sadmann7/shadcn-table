@@ -1,10 +1,14 @@
-import type { ExtendedColumnSort, Filter } from "@/types";
 import { createParser } from "nuqs/server";
 import { z } from "zod";
 
 import { dataTableConfig } from "@/config/data-table";
 
-export const sortingItemSchema = z.object({
+import type {
+  ExtendedColumnFilter,
+  ExtendedColumnSort,
+} from "@/types/data-table";
+
+const sortingItemSchema = z.object({
   id: z.string(),
   desc: z.boolean(),
 });
@@ -18,7 +22,7 @@ export const getSortingStateParser = <TData>(
       : new Set(columnIds)
     : null;
 
-  return createParser<ExtendedColumnSort<TData>[]>({
+  return createParser({
     parse: (value) => {
       try {
         const parsed = JSON.parse(value);
@@ -53,7 +57,7 @@ export const filterSchema = z.object({
   filterId: z.string(),
 });
 
-export const getFiltersStateParser = <T>(
+export const getFiltersStateParser = <TData>(
   columnIds?: string[] | Set<string>,
 ) => {
   const validKeys = columnIds
@@ -62,7 +66,7 @@ export const getFiltersStateParser = <T>(
       : new Set(columnIds)
     : null;
 
-  return createParser<Filter<T>[]>({
+  return createParser({
     parse: (value) => {
       try {
         const parsed = JSON.parse(value);
@@ -74,7 +78,7 @@ export const getFiltersStateParser = <T>(
           return null;
         }
 
-        return result.data as Filter<T>[];
+        return result.data as ExtendedColumnFilter<TData>[];
       } catch {
         return null;
       }

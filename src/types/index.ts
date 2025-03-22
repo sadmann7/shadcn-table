@@ -30,7 +30,7 @@ export type ExtendedSortingState<TData> = ExtendedColumnSort<TData>[];
 
 export type FilterVariant = DataTableConfig["filterVariants"][number];
 export type FilterOperator = DataTableConfig["operators"][number];
-export type JoinOperator = DataTableConfig["joinOperators"][number]["value"];
+export type JoinOperator = DataTableConfig["joinOperators"][number];
 
 export interface DataTableFilterField<TData> {
   id: StringKeyOf<TData>;

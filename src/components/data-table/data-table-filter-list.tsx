@@ -16,7 +16,6 @@ import {
   ListFilter,
   Trash2,
 } from "lucide-react";
-import { customAlphabet } from "nanoid";
 import { parseAsStringEnum, useQueryState } from "nuqs";
 import * as React from "react";
 
@@ -65,6 +64,7 @@ import {
 import { dataTableConfig } from "@/config/data-table";
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { getFilterOperators } from "@/lib/data-table";
+import { generateId } from "@/lib/id";
 import { getFiltersStateParser } from "@/lib/parsers";
 import { cn, formatDate } from "@/lib/utils";
 
@@ -134,10 +134,7 @@ export function DataTableFilterList<TData>({
         filterField.variant === "text")
           ? "iLike"
           : "eq",
-      filterId: customAlphabet(
-        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
-        6,
-      )(),
+      filterId: generateId({ length: 8 }),
     };
 
     debouncedSetFilters([...filters, newFilter]);
@@ -569,10 +566,10 @@ export function DataTableFilterList<TData>({
                                 {dataTableConfig.joinOperators.map(
                                   (joinOperator) => (
                                     <SelectItem
-                                      key={joinOperator.value}
-                                      value={joinOperator.value}
+                                      key={joinOperator}
+                                      value={joinOperator}
                                     >
-                                      {joinOperator.label}
+                                      {joinOperator}
                                     </SelectItem>
                                   ),
                                 )}
