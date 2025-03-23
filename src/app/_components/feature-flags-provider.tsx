@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  parseAsBoolean,
-  parseAsString,
-  parseAsStringEnum,
-  useQueryState,
-} from "nuqs";
+import { useQueryState } from "nuqs";
 import * as React from "react";
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -15,7 +10,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { type DataTableConfig, dataTableConfig } from "@/config/data-table";
-import { cn } from "@/lib/utils";
 
 type FilterVariant = DataTableConfig["featureFlags"][number]["value"];
 
@@ -73,7 +67,7 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
 
   return (
     <FeatureFlagsContext.Provider value={contextValue}>
-      <div className="w-full overflow-x-auto p-px">
+      <div className="w-full overflow-x-auto p-1">
         <ToggleGroup
           type="single"
           variant="outline"

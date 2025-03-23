@@ -1,7 +1,7 @@
 "use client";
 
 import type { Column, Table } from "@tanstack/react-table";
-import { CalendarIcon, Check, ListFilter, X } from "lucide-react";
+import { CalendarIcon, Check, CheckCircle2, ListFilter, X } from "lucide-react";
 import { useQueryState } from "nuqs";
 import * as React from "react";
 
@@ -383,7 +383,7 @@ function FilterValueSelector<TData>({
             onSelect={() => onSelect(value)}
             disabled={value.trim() === ""}
           >
-            <Check />
+            <CheckCircle2 />
             Apply filter
           </CommandItem>
         </CommandGroup>

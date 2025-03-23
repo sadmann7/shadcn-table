@@ -3,7 +3,14 @@
 import { type Task, tasks } from "@/db/schema";
 import type { DataTableRowAction } from "@/types/data-table";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Ellipsis } from "lucide-react";
+import {
+  ArrowUpDown,
+  BadgeIcon,
+  CalendarIcon,
+  Clock,
+  Ellipsis,
+  Text,
+} from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
 
@@ -105,6 +112,7 @@ export function getTasksTableColumns({
         label: "Title",
         placeholder: "Search titles...",
         variant: "text",
+        icon: Text,
       },
       enableColumnFilter: true,
     },
@@ -139,6 +147,7 @@ export function getTasksTableColumns({
           count: statusCounts[status],
           icon: getStatusIcon(status),
         })),
+        icon: BadgeIcon,
       },
       enableColumnFilter: true,
     },
@@ -173,6 +182,7 @@ export function getTasksTableColumns({
           count: priorityCounts[priority],
           icon: getPriorityIcon(priority),
         })),
+        icon: ArrowUpDown,
       },
       enableColumnFilter: true,
     },
@@ -191,6 +201,7 @@ export function getTasksTableColumns({
         variant: "range",
         range: [estimatedHoursRange.min, estimatedHoursRange.max],
         unit: "hr",
+        icon: Clock,
       },
       enableColumnFilter: true,
     },
@@ -204,6 +215,7 @@ export function getTasksTableColumns({
       meta: {
         label: "Created At",
         variant: "date-range",
+        icon: CalendarIcon,
       },
       enableColumnFilter: true,
     },
