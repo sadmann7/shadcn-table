@@ -132,7 +132,7 @@ export function DataTableSortList<TData>({
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="outline" size="sm">
-            <ArrowDownUp className="size-3.5" />
+            <ArrowDownUp />
             Sort
             {sorting.length > 0 && (
               <Badge

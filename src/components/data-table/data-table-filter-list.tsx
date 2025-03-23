@@ -184,7 +184,7 @@ export function DataTableFilterList<TData>({
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="outline" size="sm" className="[&>svg]:size-3">
-            <ListFilter aria-hidden="true" />
+            <ListFilter />
             Filters
             {filters.length > 0 && (
               <Badge
