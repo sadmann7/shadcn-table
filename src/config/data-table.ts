@@ -1,15 +1,21 @@
-import { ChevronsUpDown, CommandIcon, PickaxeIcon } from "lucide-react";
+import {
+  ChevronsUpDown,
+  CommandIcon,
+  FileSpreadsheetIcon,
+  PickaxeIcon,
+} from "lucide-react";
 
 export type DataTableConfig = typeof dataTableConfig;
 
 export const dataTableConfig = {
   featureFlags: [
     {
-      label: "Advanced filters",
-      value: "advancedFilters" as const,
-      icon: PickaxeIcon,
-      tooltipTitle: "Advanced filter options",
-      tooltipDescription: "Create complex, spreadsheet-like filters.",
+      label: "Query builder",
+      value: "queryBuilder" as const,
+      icon: FileSpreadsheetIcon,
+      tooltipTitle: "Visual Query Builder",
+      tooltipDescription:
+        "Build complex data filters using a visual interface.",
     },
     {
       label: "Command filters",
@@ -18,13 +24,6 @@ export const dataTableConfig = {
       tooltipTitle: "Command filter chips",
       tooltipDescription:
         "Create filters using pre-defined chips from a command menu.",
-    },
-    {
-      label: "Multi sort",
-      value: "multiSort" as const,
-      icon: ChevronsUpDown,
-      tooltipTitle: "Multi sort options",
-      tooltipDescription: "Sort the table by multiple columns.",
     },
   ],
   textOperators: [

@@ -3,7 +3,6 @@
 import type { ColumnSort, SortDirection, Table } from "@tanstack/react-table";
 import {
   ArrowDownUp,
-  Check,
   ChevronsUpDown,
   GripVertical,
   Trash2,
@@ -41,13 +40,23 @@ import {
 } from "@/components/ui/sortable";
 import { dataTableConfig } from "@/config/data-table";
 import { cn, toSentenceCase } from "@/lib/utils";
+import type { PopoverContentProps } from "@radix-ui/react-popover";
 
-interface DataTableSortListProps<TData> {
+interface DataTableSortListProps<TData>
+  extends Pick<
+    PopoverContentProps,
+    "align" | "alignOffset" | "collisionPadding" | "side" | "sideOffset"
+  > {
   table: Table<TData>;
 }
 
 export function DataTableSortList<TData>({
   table,
+  align = "center",
+  side = "bottom",
+  alignOffset = 0,
+  sideOffset = 4,
+  collisionPadding = 16,
 }: DataTableSortListProps<TData>) {
   const id = React.useId();
   const labelId = React.useId();
@@ -127,8 +136,11 @@ export function DataTableSortList<TData>({
         <PopoverContent
           aria-labelledby={labelId}
           aria-describedby={descriptionId}
-          align="start"
-          collisionPadding={16}
+          align={align}
+          side={side}
+          alignOffset={alignOffset}
+          sideOffset={sideOffset}
+          collisionPadding={collisionPadding}
           className="flex w-[calc(100vw-(--spacing(20)))] min-w-72 max-w-[25rem] origin-(--radix-popover-content-transform-origin) flex-col gap-3.5 p-4 sm:w-[25rem]"
         >
           <div className="flex flex-col gap-1">

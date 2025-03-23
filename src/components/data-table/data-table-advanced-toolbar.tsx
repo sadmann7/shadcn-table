@@ -12,14 +12,10 @@ import { cn } from "@/lib/utils";
 interface DataTableAdvancedToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
   table: Table<TData>;
-  debounceMs?: number;
-  shallow?: boolean;
 }
 
 export function DataTableAdvancedToolbar<TData>({
   table,
-  debounceMs = 300,
-  shallow = true,
   children,
   className,
   ...props
@@ -34,16 +30,8 @@ export function DataTableAdvancedToolbar<TData>({
       )}
       {...props}
     >
+      <div className="flex items-center gap-2">{children}</div>
       <div className="flex items-center gap-2">
-        <DataTableFilterList
-          table={table}
-          debounceMs={debounceMs}
-          shallow={shallow}
-        />
-        <DataTableSortList table={table} />
-      </div>
-      <div className="flex items-center gap-2">
-        {children}
         <DataTableViewOptions table={table} />
       </div>
     </div>

@@ -1,6 +1,11 @@
 "use client";
 
-import { useQueryState } from "nuqs";
+import {
+  parseAsBoolean,
+  parseAsString,
+  parseAsStringEnum,
+  useQueryState,
+} from "nuqs";
 import * as React from "react";
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
@@ -12,17 +17,15 @@ import {
 import { type DataTableConfig, dataTableConfig } from "@/config/data-table";
 import { cn } from "@/lib/utils";
 
-type FeatureFlagValue = DataTableConfig["featureFlags"][number]["value"];
+type FilterVariant = DataTableConfig["featureFlags"][number]["value"];
 
 interface FeatureFlagsContextProps {
-  featureFlags: FeatureFlagValue[];
-  setFeatureFlags: (value: FeatureFlagValue[]) => void;
+  filterVariant: FilterVariant;
+  enableAdvancedFilter: boolean;
 }
 
-const FeatureFlagsContext = React.createContext<FeatureFlagsContextProps>({
-  featureFlags: [],
-  setFeatureFlags: () => {},
-});
+const FeatureFlagsContext =
+  React.createContext<FeatureFlagsContextProps | null>(null);
 
 export function useFeatureFlags() {
   const context = React.useContext(FeatureFlagsContext);
@@ -39,40 +42,52 @@ interface FeatureFlagsProviderProps {
 }
 
 export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
-  const [featureFlags, setFeatureFlags] = useQueryState<FeatureFlagValue[]>(
-    "flags",
+  const [filterVariant, setFilterVariant] = useQueryState<FilterVariant | null>(
+    "filterVariant",
     {
-      defaultValue: [],
-      parse: (value) => value.split(",") as FeatureFlagValue[],
-      serialize: (value) => value.join(","),
-      eq: (a, b) =>
-        a.length === b.length && a.every((value, index) => value === b[index]),
+      parse: (value) => {
+        if (!value) return null;
+        const validValues = dataTableConfig.featureFlags.map(
+          (flag) => flag.value,
+        );
+        return validValues.includes(value as FilterVariant)
+          ? (value as FilterVariant)
+          : null;
+      },
+      serialize: (value) => value ?? "",
+      defaultValue: null,
       clearOnDefault: true,
       shallow: false,
+      eq: (a, b) => (!a && !b) || a === b,
     },
   );
 
   const contextValue = React.useMemo<FeatureFlagsContextProps>(
     () => ({
-      featureFlags,
-      setFeatureFlags: (value) => void setFeatureFlags(value),
+      filterVariant,
+      enableAdvancedFilter:
+        filterVariant === "queryBuilder" || filterVariant === "commandFilters",
     }),
-    [featureFlags, setFeatureFlags],
+    [filterVariant],
   );
 
   return (
     <FeatureFlagsContext.Provider value={contextValue}>
       <div className="w-full overflow-x-auto p-px">
         <ToggleGroup
-          type="multiple"
+          type="single"
           variant="outline"
           size="sm"
-          value={featureFlags}
-          onValueChange={(value: FeatureFlagValue[]) => setFeatureFlags(value)}
+          value={filterVariant}
+          onValueChange={(
+            value: DataTableConfig["featureFlags"][number]["value"],
+          ) => {
+            setFilterVariant(value);
+          }}
           className="w-fit gap-0"
         >
           {dataTableConfig.featureFlags.map((flag, index) => (
-            <Tooltip key={flag.value}>
+            <Tooltip key={flag.value} delayDuration={700}>
               <ToggleGroupItem
                 value={flag.value}
                 className={cn(

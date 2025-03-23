@@ -66,8 +66,13 @@ import type {
   FilterOperator,
   JoinOperator,
 } from "@/types/data-table";
+import type { PopoverContentProps } from "@radix-ui/react-popover";
 
-interface DataTableFilterListProps<TData> {
+interface DataTableFilterListProps<TData>
+  extends Pick<
+    PopoverContentProps,
+    "align" | "alignOffset" | "collisionPadding" | "side" | "sideOffset"
+  > {
   table: Table<TData>;
   debounceMs?: number;
   shallow?: boolean;
@@ -77,6 +82,11 @@ export function DataTableFilterList<TData>({
   table,
   debounceMs = 300,
   shallow = true,
+  align = "center",
+  side = "bottom",
+  alignOffset = 0,
+  sideOffset = 4,
+  collisionPadding = 16,
 }: DataTableFilterListProps<TData>) {
   const id = React.useId();
   const labelId = React.useId();
@@ -189,8 +199,11 @@ export function DataTableFilterList<TData>({
         <PopoverContent
           aria-describedby={descriptionId}
           aria-labelledby={labelId}
-          align="start"
-          collisionPadding={16}
+          align={align}
+          alignOffset={alignOffset}
+          collisionPadding={collisionPadding}
+          side={side}
+          sideOffset={sideOffset}
           className="flex w-[calc(100vw-(--spacing(12)))] min-w-60 origin-(--radix-popover-content-transform-origin) flex-col gap-3.5 p-4 sm:w-[36rem]"
         >
           <div className="flex flex-col gap-1">

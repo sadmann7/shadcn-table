@@ -7,6 +7,7 @@ import * as React from "react";
 import { DataTable } from "@/components/data-table/data-table";
 import { useDataTable } from "@/hooks/use-data-table";
 
+import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar";
 import { DataTableFilterList } from "@/components/data-table/data-table-filter-list";
 import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
@@ -32,7 +33,7 @@ interface TasksTableProps {
 }
 
 export function TasksTable({ promises }: TasksTableProps) {
-  const { featureFlags } = useFeatureFlags();
+  const { enableAdvancedFilter } = useFeatureFlags();
 
   const [{ data, pageCount }, statusCounts, priorityCounts] =
     React.use(promises);
@@ -45,13 +46,11 @@ export function TasksTable({ promises }: TasksTableProps) {
     [statusCounts, priorityCounts],
   );
 
-  const enableAdvancedTable = featureFlags.includes("advancedTable");
-
-  const { table } = useDataTable({
+  const { table, shallow, debounceMs } = useDataTable({
     data,
     columns,
     pageCount,
-    enableAdvancedFilter: enableAdvancedTable,
+    enableAdvancedFilter,
     defaultColumn: {
       enableColumnFilter: false,
     },
@@ -70,10 +69,21 @@ export function TasksTable({ promises }: TasksTableProps) {
         table={table}
         actionBar={<TasksTableActionBar table={table} />}
       >
-        <DataTableToolbar table={table}>
-          <DataTableSortList table={table} />
-          <DataTableFilterList table={table} shallow={false} />
-        </DataTableToolbar>
+        {enableAdvancedFilter ? (
+          <DataTableAdvancedToolbar table={table}>
+            <DataTableSortList table={table} align="start" />
+            <DataTableFilterList
+              table={table}
+              shallow={shallow}
+              debounceMs={debounceMs}
+              align="start"
+            />
+          </DataTableAdvancedToolbar>
+        ) : (
+          <DataTableToolbar table={table}>
+            <DataTableSortList table={table} align="end" />
+          </DataTableToolbar>
+        )}
       </DataTable>
       <UpdateTaskSheet
         open={rowAction?.variant === "update"}

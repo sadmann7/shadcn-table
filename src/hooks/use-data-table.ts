@@ -281,5 +281,5 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     manualFiltering: true,
   });
 
-  return { table };
+  return { table, shallow, debounceMs };
 }

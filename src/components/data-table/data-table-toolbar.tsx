@@ -38,13 +38,10 @@ export function DataTableToolbar<TData>({
     <div
       role="toolbar"
       aria-orientation="horizontal"
-      className={cn(
-        "flex w-full items-center justify-between gap-2 overflow-auto",
-        className,
-      )}
+      className={cn("flex w-full items-start justify-between gap-2", className)}
       {...props}
     >
-      <div className="flex flex-1 items-center gap-2 p-0.5">
+      <div className="flex flex-1 flex-wrap items-center gap-2">
         {columns.map((column) => {
           const columnMeta = column.columnDef.meta;
 
