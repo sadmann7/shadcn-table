@@ -39,7 +39,7 @@ export function DataTablePagination<TData>({
               table.setPageSize(Number(value));
             }}
           >
-            <SelectTrigger className="h-8 w-[4.5rem]">
+            <SelectTrigger size="sm" className="w-[4.5rem]">
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
@@ -59,11 +59,12 @@ export function DataTablePagination<TData>({
           <Button
             aria-label="Go to first page"
             variant="outline"
-            className="hidden size-8 p-0 lg:flex"
+            size="icon"
+            className="hidden size-8 lg:flex"
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
-            <ChevronsLeft className="size-4" aria-hidden="true" />
+            <ChevronsLeft />
           </Button>
           <Button
             aria-label="Go to previous page"
@@ -73,7 +74,7 @@ export function DataTablePagination<TData>({
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            <ChevronLeft className="size-4" aria-hidden="true" />
+            <ChevronLeft />
           </Button>
           <Button
             aria-label="Go to next page"
@@ -83,7 +84,7 @@ export function DataTablePagination<TData>({
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            <ChevronRight className="size-4" aria-hidden="true" />
+            <ChevronRight />
           </Button>
           <Button
             aria-label="Go to last page"
@@ -93,7 +94,7 @@ export function DataTablePagination<TData>({
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
-            <ChevronsRight className="size-4" aria-hidden="true" />
+            <ChevronsRight />
           </Button>
         </div>
       </div>
