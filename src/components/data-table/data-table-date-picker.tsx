@@ -1,7 +1,6 @@
 "use client";
 
 import type { Column } from "@tanstack/react-table";
-import { format } from "date-fns";
 import { CalendarIcon, XCircle } from "lucide-react";
 import * as React from "react";
 import type { DateRange } from "react-day-picker";
@@ -14,6 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
+import { formatDate } from "@/lib/utils";
 
 type DateSelection = Date[] | DateRange;
 
@@ -109,25 +109,13 @@ export function DataTableDatePicker<TData>({
     return selectedDates.length > 0;
   }, [multiple, selectedDates]);
 
-  const formatSelectedDate = React.useCallback((date: Date | undefined) => {
-    if (!date) return "";
-    try {
-      return format(date, "MMMM d, y");
-    } catch {
-      return "Invalid date";
+  const formatDateRange = React.useCallback((range: DateRange) => {
+    if (!range.from && !range.to) return "";
+    if (range.from && range.to) {
+      return `${formatDate(range.from)} - ${formatDate(range.to)}`;
     }
+    return formatDate(range.from ?? range.to);
   }, []);
-
-  const formatDateRange = React.useCallback(
-    (range: DateRange) => {
-      if (!range.from && !range.to) return "";
-      if (range.from && range.to) {
-        return `${formatSelectedDate(range.from)} - ${formatSelectedDate(range.to)}`;
-      }
-      return formatSelectedDate(range.from ?? range.to);
-    },
-    [formatSelectedDate],
-  );
 
   const label = React.useMemo(() => {
     if (multiple) {
@@ -155,7 +143,7 @@ export function DataTableDatePicker<TData>({
 
     const hasSelectedDate = selectedDates.length > 0;
     const dateText = hasSelectedDate
-      ? formatSelectedDate(selectedDates[0])
+      ? formatDate(selectedDates[0])
       : "Select date";
 
     return (
@@ -169,7 +157,7 @@ export function DataTableDatePicker<TData>({
         )}
       </span>
     );
-  }, [selectedDates, multiple, formatDateRange, formatSelectedDate, title]);
+  }, [selectedDates, multiple, formatDateRange, title]);
 
   return (
     <Popover>

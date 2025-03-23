@@ -152,7 +152,7 @@ export function DataTableSortList<TData>({
           alignOffset={alignOffset}
           sideOffset={sideOffset}
           collisionPadding={collisionPadding}
-          className="flex w-[calc(100vw-(--spacing(20)))] min-w-72 max-w-[25rem] origin-(--radix-popover-content-transform-origin) flex-col gap-3.5 p-4 sm:w-[25rem]"
+          className="flex w-[calc(100vw-(--spacing(20)))] origin-(--radix-popover-content-transform-origin) flex-col gap-3.5 p-4 sm:w-[var(--radix-popover-content-width)] sm:min-w-[25rem]"
         >
           <div className="flex flex-col gap-1">
             <h4 id={labelId} className="font-medium leading-none">

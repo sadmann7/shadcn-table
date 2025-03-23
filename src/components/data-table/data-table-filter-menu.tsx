@@ -591,16 +591,16 @@ function onFilerInputRender<TData>({
     case "date-range": {
       const dateValue = Array.isArray(filter.value)
         ? filter.value.filter(Boolean)
-        : [filter.value].filter(Boolean);
+        : [filter.value, filter.value].filter(Boolean);
 
-      function formatValue(dateStr: string | undefined) {
-        if (!dateStr) return "";
-        try {
-          return formatDate(new Date(dateStr));
-        } catch {
-          return "";
-        }
-      }
+      const displayValue =
+        filter.operator === "isBetween" && dateValue.length === 2
+          ? `${formatDate(new Date(Number(dateValue[0])))} - ${formatDate(
+              new Date(Number(dateValue[1])),
+            )}`
+          : dateValue[0]
+            ? formatDate(new Date(Number(dateValue[0])))
+            : "Pick date...";
 
       return (
         <Popover>
@@ -608,43 +608,52 @@ function onFilerInputRender<TData>({
             <Button
               variant="ghost"
               size="sm"
-              className="h-auto px-0 py-0.5 font-normal"
+              className={cn(
+                "h-auto px-0 py-0.5 font-normal",
+                !filter.value && "text-muted-foreground",
+              )}
             >
               <CalendarIcon className="size-3.5" />
-              {dateValue.length > 0
-                ? filter.operator === "isBetween" && dateValue.length === 2
-                  ? `${formatValue(dateValue[0])} - ${formatValue(dateValue[1])}`
-                  : formatValue(dateValue[0])
-                : "Pick date..."}
+              <span className="truncate">{displayValue}</span>
             </Button>
           </PopoverTrigger>
           <PopoverContent align="start" className="w-auto p-0">
             {filter.operator === "isBetween" ? (
               <Calendar
                 mode="range"
-                selected={{
-                  from: dateValue[0] ? new Date(dateValue[0]) : undefined,
-                  to: dateValue[1] ? new Date(dateValue[1]) : undefined,
-                }}
-                onSelect={(date: { from?: Date; to?: Date } | undefined) => {
-                  if (date) {
-                    onFilterUpdate(filter.filterId, {
-                      value: [
-                        date.from?.toISOString() ?? "",
-                        date.to?.toISOString() ?? "",
-                      ],
-                    });
-                  }
+                selected={
+                  dateValue.length === 2
+                    ? {
+                        from: new Date(Number(dateValue[0])),
+                        to: new Date(Number(dateValue[1])),
+                      }
+                    : {
+                        from: new Date(),
+                        to: new Date(),
+                      }
+                }
+                onSelect={(date) => {
+                  onFilterUpdate(filter.filterId, {
+                    value: date
+                      ? [
+                          (date.from?.getTime() ?? "").toString(),
+                          (date.to?.getTime() ?? "").toString(),
+                        ]
+                      : [],
+                  });
                 }}
                 initialFocus
+                numberOfMonths={1}
               />
             ) : (
               <Calendar
                 mode="single"
-                selected={dateValue[0] ? new Date(dateValue[0]) : undefined}
-                onSelect={(date: Date | undefined) => {
+                selected={
+                  dateValue[0] ? new Date(Number(dateValue[0])) : undefined
+                }
+                onSelect={(date) => {
                   onFilterUpdate(filter.filterId, {
-                    value: date?.toISOString() ?? "",
+                    value: (date?.getTime() ?? "").toString(),
                   });
                 }}
                 initialFocus

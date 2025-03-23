@@ -204,7 +204,7 @@ export function DataTableFilterList<TData>({
           collisionPadding={collisionPadding}
           side={side}
           sideOffset={sideOffset}
-          className="flex w-[calc(100vw-(--spacing(12)))] min-w-60 origin-(--radix-popover-content-transform-origin) flex-col gap-3.5 p-4 sm:w-[38rem]"
+          className="flex w-[calc(100vw-(--spacing(12)))] origin-(--radix-popover-content-transform-origin) flex-col gap-3.5 p-4 sm:w-[var(--radix-popover-content-width)] sm:min-w-[25rem]"
         >
           <div className="flex flex-col gap-1">
             <h4 id={labelId} className="font-medium leading-none">
@@ -535,11 +535,11 @@ function FilterItem<TData>({
 
           const displayValue =
             filter.operator === "isBetween" && dateValue.length === 2
-              ? `${formatDate(dateValue[0] ?? new Date())} - ${formatDate(
-                  dateValue[1] ?? new Date(),
+              ? `${formatDate(new Date(Number(dateValue[0])))} - ${formatDate(
+                  new Date(Number(dateValue[1])),
                 )}`
               : dateValue[0]
-                ? formatDate(dateValue[0])
+                ? formatDate(new Date(Number(dateValue[0])))
                 : "Pick a date";
 
           return (
@@ -573,8 +573,8 @@ function FilterItem<TData>({
                     selected={
                       dateValue.length === 2
                         ? {
-                            from: new Date(dateValue[0] ?? ""),
-                            to: new Date(dateValue[1] ?? ""),
+                            from: new Date(Number(dateValue[0])),
+                            to: new Date(Number(dateValue[1])),
                           }
                         : {
                             from: new Date(),
@@ -585,8 +585,8 @@ function FilterItem<TData>({
                       onFilterUpdate(filter.filterId, {
                         value: date
                           ? [
-                              date.from?.toISOString() ?? "",
-                              date.to?.toISOString() ?? "",
+                              (date.from?.getTime() ?? "").toString(),
+                              (date.to?.getTime() ?? "").toString(),
                             ]
                           : [],
                       });
@@ -599,10 +599,12 @@ function FilterItem<TData>({
                     id={`${inputId}-calendar`}
                     mode="single"
                     aria-label={`Select ${column.columnDef.meta?.label} date`}
-                    selected={dateValue[0] ? new Date(dateValue[0]) : undefined}
+                    selected={
+                      dateValue[0] ? new Date(Number(dateValue[0])) : undefined
+                    }
                     onSelect={(date) => {
                       onFilterUpdate(filter.filterId, {
-                        value: date?.toISOString() ?? "",
+                        value: (date?.getTime() ?? "").toString(),
                       });
                     }}
                     initialFocus
