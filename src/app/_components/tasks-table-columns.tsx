@@ -5,8 +5,8 @@ import type { DataTableRowAction } from "@/types/data-table";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,
-  BadgeIcon,
   CalendarIcon,
+  CircleDashed,
   Clock,
   Ellipsis,
   Text,
@@ -147,7 +147,7 @@ export function getTasksTableColumns({
           count: statusCounts[status],
           icon: getStatusIcon(status),
         })),
-        icon: BadgeIcon,
+        icon: CircleDashed,
       },
       enableColumnFilter: true,
     },

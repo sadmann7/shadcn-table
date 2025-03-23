@@ -7,7 +7,6 @@ import {
   Check,
   ChevronsUpDown,
   ListFilter,
-  SquareCheck,
   Text,
   X,
 } from "lucide-react";
@@ -72,6 +71,16 @@ export function DataTableFilterMenu<TData>({
     React.useState<Column<TData> | null>(null);
   const [inputValue, setInputValue] = React.useState("");
   const inputRef = React.useRef<HTMLInputElement>(null);
+
+  const onInputKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Backspace" && !inputValue && selectedColumn) {
+        event.preventDefault();
+        setSelectedColumn(null);
+      }
+    },
+    [inputValue, selectedColumn],
+  );
 
   const [filters, setFilters] = useQueryState(
     FILTERS_KEY,
@@ -140,15 +149,9 @@ export function DataTableFilterMenu<TData>({
     [debouncedSetFilters],
   );
 
-  const onInputKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === "Backspace" && !inputValue && selectedColumn) {
-        event.preventDefault();
-        setSelectedColumn(null);
-      }
-    },
-    [inputValue, selectedColumn],
-  );
+  const onFiltersReset = React.useCallback(() => {
+    debouncedSetFilters([]);
+  }, [debouncedSetFilters]);
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -159,92 +162,95 @@ export function DataTableFilterMenu<TData>({
         return (
           <div
             key={filter.filterId}
-            className="flex items-center gap-1.5 rounded-md border bg-background px-2 py-1"
+            className="flex h-8 items-center divide-x rounded-md border bg-background"
           >
-            {column.columnDef.meta?.icon && (
-              <column.columnDef.meta.icon className="size-4 text-muted-foreground" />
-            )}
-
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-auto px-1 py-0.5 font-normal text-sm"
-                >
-                  {column.columnDef.meta?.label ?? column.id}
-                  <ChevronsUpDown className="ml-1 size-3 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent align="start" className="w-48 p-0">
-                <Command>
-                  <CommandInput placeholder="Search fields..." />
-                  <CommandList>
-                    <CommandEmpty>No fields found.</CommandEmpty>
-                    <CommandGroup>
-                      {columns.map((col) => (
-                        <CommandItem
-                          key={col.id}
-                          value={col.id}
-                          onSelect={() => {
-                            onFilterUpdate(filter.filterId, {
-                              id: col.id as Extract<keyof TData, string>,
-                              variant: col.columnDef.meta?.variant ?? "text",
-                              operator: getDefaultFilterOperator(
-                                col.columnDef.meta?.variant ?? "text",
-                              ),
-                              value: "",
-                            });
-                          }}
-                        >
-                          {col.columnDef.meta?.icon && (
-                            <col.columnDef.meta.icon />
-                          )}
-                          <span className="truncate">
-                            {col.columnDef.meta?.label ?? col.id}
-                          </span>
-                          <Check
-                            className={cn(
-                              "ml-auto",
-                              col.id === filter.id
-                                ? "opacity-100"
-                                : "opacity-0",
-                            )}
-                          />
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-            <Select
-              value={filter.operator}
-              onValueChange={(value) =>
-                onFilterUpdate(filter.filterId, {
-                  operator: value as FilterOperator,
-                  value:
-                    value === "isEmpty" || value === "isNotEmpty"
-                      ? ""
-                      : filter.value,
-                })
-              }
-            >
-              <SelectTrigger className="h-auto border-0 bg-transparent px-1 py-0.5 font-normal text-sm shadow-none [&>svg]:size-3">
-                <SelectValue placeholder={filter.operator} />
-              </SelectTrigger>
-              <SelectContent>
-                {getFilterOperators(filter.variant).map((operator) => (
-                  <SelectItem
-                    key={operator.value}
-                    value={operator.value}
-                    className="text-sm"
+            <div className="flex items-center gap-1.5 px-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-auto px-0 py-0.5 font-normal text-sm"
                   >
-                    {operator.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                    {column.columnDef.meta?.icon && (
+                      <column.columnDef.meta.icon className="text-muted-foreground" />
+                    )}
+                    {column.columnDef.meta?.label ?? column.id}
+                    <ChevronsUpDown className="ml-1 size-3 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-48 p-0">
+                  <Command>
+                    <CommandInput placeholder="Search fields..." />
+                    <CommandList>
+                      <CommandEmpty>No fields found.</CommandEmpty>
+                      <CommandGroup>
+                        {columns.map((col) => (
+                          <CommandItem
+                            key={col.id}
+                            value={col.id}
+                            onSelect={() => {
+                              onFilterUpdate(filter.filterId, {
+                                id: col.id as Extract<keyof TData, string>,
+                                variant: col.columnDef.meta?.variant ?? "text",
+                                operator: getDefaultFilterOperator(
+                                  col.columnDef.meta?.variant ?? "text",
+                                ),
+                                value: "",
+                              });
+                            }}
+                          >
+                            {col.columnDef.meta?.icon && (
+                              <col.columnDef.meta.icon />
+                            )}
+                            <span className="truncate">
+                              {col.columnDef.meta?.label ?? col.id}
+                            </span>
+                            <Check
+                              className={cn(
+                                "ml-auto",
+                                col.id === filter.id
+                                  ? "opacity-100"
+                                  : "opacity-0",
+                              )}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div className="px-2">
+              <Select
+                value={filter.operator}
+                onValueChange={(value) =>
+                  onFilterUpdate(filter.filterId, {
+                    operator: value as FilterOperator,
+                    value:
+                      value === "isEmpty" || value === "isNotEmpty"
+                        ? ""
+                        : filter.value,
+                  })
+                }
+              >
+                <SelectTrigger className="h-auto border-0 bg-transparent px-0 py-0.5 font-normal text-sm shadow-none [&>svg]:size-3">
+                  <SelectValue placeholder={filter.operator} />
+                </SelectTrigger>
+                <SelectContent>
+                  {getFilterOperators(filter.variant).map((operator) => (
+                    <SelectItem
+                      key={operator.value}
+                      value={operator.value}
+                      className="text-sm"
+                    >
+                      {operator.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             {renderFilterInput({
               filter,
               column,
@@ -254,13 +260,19 @@ export function DataTableFilterMenu<TData>({
               variant="ghost"
               size="sm"
               onClick={() => onFilterRemove(filter.filterId)}
-              className="-mr-2 h-auto px-1 py-0.5 text-muted-foreground hover:text-foreground"
+              className="h-full rounded-none"
             >
-              <X className="size-3" />
+              <X className="size-3.5" />
             </Button>
           </div>
         );
       })}
+      {filters.length > 0 && (
+        <Button variant="outline" size="sm" onClick={onFiltersReset}>
+          <X />
+          Reset
+        </Button>
+      )}
       <Popover
         open={open}
         onOpenChange={async (open) => {
@@ -458,7 +470,7 @@ function renderFilterInput<TData>({
         <Input
           type={isNumber ? "number" : "text"}
           placeholder={column.columnDef.meta?.placeholder ?? "Enter value..."}
-          className="h-auto w-[120px] border-0 bg-transparent px-1 py-0.5 text-sm shadow-none"
+          className="h-auto w-[120px] border-0 bg-transparent px-0 py-0.5 text-sm shadow-none"
           value={typeof filter.value === "string" ? filter.value : ""}
           onChange={(e) =>
             onFilterUpdate(filter.filterId, { value: e.target.value })
@@ -475,7 +487,7 @@ function renderFilterInput<TData>({
             onFilterUpdate(filter.filterId, { value })
           }
         >
-          <SelectTrigger className="h-auto border-0 bg-transparent px-1 py-0.5 text-sm shadow-none [&>svg]:size-3">
+          <SelectTrigger className="h-auto border-0 bg-transparent px-0 py-0.5 text-sm shadow-none [&>svg]:size-3">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -498,7 +510,7 @@ function renderFilterInput<TData>({
             <Button
               variant="ghost"
               size="sm"
-              className="h-auto px-1 py-0.5 font-normal text-sm"
+              className="h-full rounded-none px-1.5 font-normal text-sm"
             >
               {selectedValues.length > 0
                 ? `${selectedValues.length} selected`
@@ -553,14 +565,14 @@ function renderFilterInput<TData>({
         ? filter.value.filter(Boolean)
         : [filter.value].filter(Boolean);
 
-      const formatDateSafely = (dateStr: string | undefined) => {
+      function formatValue(dateStr: string | undefined) {
         if (!dateStr) return "";
         try {
           return formatDate(new Date(dateStr));
         } catch {
           return "";
         }
-      };
+      }
 
       return (
         <Popover>
@@ -568,13 +580,13 @@ function renderFilterInput<TData>({
             <Button
               variant="ghost"
               size="sm"
-              className="h-auto px-1 py-0.5 font-normal text-sm"
+              className="h-auto px-0 py-0.5 font-normal text-sm"
             >
-              <CalendarIcon className="mr-1 size-3" />
+              <CalendarIcon className="size-3" />
               {dateValue.length > 0
                 ? filter.operator === "isBetween" && dateValue.length === 2
-                  ? `${formatDateSafely(dateValue[0])} - ${formatDateSafely(dateValue[1])}`
-                  : formatDateSafely(dateValue[0])
+                  ? `${formatValue(dateValue[0])} - ${formatValue(dateValue[1])}`
+                  : formatValue(dateValue[0])
                 : "Pick date..."}
             </Button>
           </PopoverTrigger>
