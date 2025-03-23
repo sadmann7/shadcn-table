@@ -1,7 +1,7 @@
 "use client";
 
 import type { Column, Table } from "@tanstack/react-table";
-import { CalendarIcon, Check, CheckCircle2, ListFilter, X } from "lucide-react";
+import { CalendarIcon, CheckCircle2, ListFilter, X } from "lucide-react";
 import { useQueryState } from "nuqs";
 import * as React from "react";
 
@@ -25,7 +25,7 @@ import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { getDefaultFilterOperator } from "@/lib/data-table";
 import { generateId } from "@/lib/id";
 import { getFiltersStateParser } from "@/lib/parsers";
-import { cn, formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import type { ExtendedColumnFilter } from "@/types/data-table";
 
 const FILTERS_KEY = "filters";
@@ -124,7 +124,7 @@ export function DataTableFilterMenu<TData>({
     [debouncedSetFilters],
   );
 
-  const clearAllFilters = React.useCallback(() => {
+  const onFiltersReset = React.useCallback(() => {
     setFilters([]);
   }, [setFilters]);
 
@@ -183,9 +183,11 @@ export function DataTableFilterMenu<TData>({
     }
   };
 
+  const isFiltered = filters.length > 0;
+
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {filters.length > 0 && (
+      {isFiltered && (
         <div className="flex flex-wrap gap-2">
           {filters.map((filter) => {
             const column = columns.find((col) => col.id === filter.id);
@@ -205,20 +207,16 @@ export function DataTableFilterMenu<TData>({
                   variant="ghost"
                   size="icon"
                   onClick={() => onFilterRemove(filter.filterId)}
-                  className="ml-1 h-3.5 w-3.5 rounded-full p-0"
+                  className="size-4"
                 >
-                  <X className="h-2.5 w-2.5" />
+                  <X className="size-3" />
                 </Button>
               </Badge>
             );
           })}
-          {filters.length > 0 && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-6 rounded-sm text-xs"
-              onClick={clearAllFilters}
-            >
+          {isFiltered && (
+            <Button variant="outline" size="sm" onClick={onFiltersReset}>
+              <X />
               Clear
             </Button>
           )}
@@ -239,15 +237,12 @@ export function DataTableFilterMenu<TData>({
       >
         <PopoverTrigger asChild>
           <Button
-            variant="ghost"
-            size="sm"
-            className={cn(
-              "group flex h-6 items-center gap-1.5 rounded-sm text-xs transition",
-              filters.length > 0 && "w-6",
-            )}
+            variant="outline"
+            size={isFiltered ? "icon" : "sm"}
+            className="h-8"
           >
-            <ListFilter className="size-3 text-muted-foreground transition-all group-hover:text-primary" />
-            {!filters.length && "Filter"}
+            <ListFilter />
+            {isFiltered ? null : "Filters"}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[250px] p-0" align="start">
@@ -293,7 +288,12 @@ export function DataTableFilterMenu<TData>({
                         }}
                         className="group flex items-center gap-2 text-sm"
                       >
-                        <span>{column.columnDef.meta?.label ?? column.id}</span>
+                        {column.columnDef.meta?.icon && (
+                          <column.columnDef.meta.icon />
+                        )}
+                        <span className="truncate">
+                          {column.columnDef.meta?.label ?? column.id}
+                        </span>
                       </CommandItem>
                     ))}
                   </CommandGroup>

@@ -170,6 +170,11 @@ export function DataTableFilterList<TData>({
     [filters, setFilters],
   );
 
+  const onFiltersReset = React.useCallback(() => {
+    void setFilters(null);
+    void setJoinOperator("and");
+  }, [setFilters, setJoinOperator]);
+
   return (
     <Sortable
       value={filters}
@@ -178,12 +183,7 @@ export function DataTableFilterList<TData>({
     >
       <Popover>
         <PopoverTrigger asChild>
-          <Button
-            aria-label="Open filters"
-            variant="outline"
-            size="sm"
-            className="[&>svg]:size-3"
-          >
+          <Button variant="outline" size="sm" className="[&>svg]:size-3">
             <ListFilter aria-hidden="true" />
             Filters
             {filters.length > 0 && (
@@ -257,10 +257,7 @@ export function DataTableFilterList<TData>({
                 size="sm"
                 variant="outline"
                 className="rounded"
-                onClick={() => {
-                  void setFilters(null);
-                  void setJoinOperator("and");
-                }}
+                onClick={onFiltersReset}
               >
                 Reset filters
               </Button>
@@ -669,9 +666,9 @@ function FilterItem<TData>({
           <PopoverTrigger asChild>
             <Button
               id={fieldTriggerId}
+              role="combobox"
               variant="outline"
               size="sm"
-              role="combobox"
               aria-label="Select filter field"
               aria-controls={fieldListboxId}
               className="w-32 justify-between rounded"
