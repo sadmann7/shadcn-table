@@ -55,7 +55,7 @@
     "nuqs": "^2.3.1",
     "postgres": "^3.4.5",
     "react": "^19.0.0",
-    "react-day-picker": "^8.10.1",
+    "react-day-picker": "^9.6.3",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",
     "server-only": "^0.0.1",
