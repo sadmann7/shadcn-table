@@ -12,6 +12,7 @@ import { DataTableFilterList } from "@/components/data-table/data-table-filter-l
 import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import type {
+  getEstimatedHoursRange,
   getTaskPriorityCounts,
   getTaskStatusCounts,
   getTasks,
@@ -28,6 +29,7 @@ interface TasksTableProps {
       Awaited<ReturnType<typeof getTasks>>,
       Awaited<ReturnType<typeof getTaskStatusCounts>>,
       Awaited<ReturnType<typeof getTaskPriorityCounts>>,
+      Awaited<ReturnType<typeof getEstimatedHoursRange>>,
     ]
   >;
 }
@@ -35,15 +37,25 @@ interface TasksTableProps {
 export function TasksTable({ promises }: TasksTableProps) {
   const { enableAdvancedFilter } = useFeatureFlags();
 
-  const [{ data, pageCount }, statusCounts, priorityCounts] =
-    React.use(promises);
+  const [
+    { data, pageCount },
+    statusCounts,
+    priorityCounts,
+    estimatedHoursRange,
+  ] = React.use(promises);
 
   const [rowAction, setRowAction] =
     React.useState<DataTableRowAction<Task> | null>(null);
 
   const columns = React.useMemo(
-    () => getTasksTableColumns({ statusCounts, priorityCounts, setRowAction }),
-    [statusCounts, priorityCounts],
+    () =>
+      getTasksTableColumns({
+        statusCounts,
+        priorityCounts,
+        estimatedHoursRange,
+        setRowAction,
+      }),
+    [statusCounts, priorityCounts, estimatedHoursRange],
   );
 
   const { table, shallow, debounceMs, throttleMs } = useDataTable({

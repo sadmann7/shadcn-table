@@ -4,9 +4,9 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { parseAsString, useQueryStates } from "nuqs";
 import * as React from "react";
-import type { DateRange } from "react-day-picker";
+import type { ButtonProps, DateRange } from "react-day-picker";
 
-import { Button, type ButtonProps } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -19,8 +19,11 @@ interface DateRangePickerProps
   extends React.ComponentPropsWithoutRef<typeof PopoverContent> {
   defaultDateRange?: DateRange;
   placeholder?: string;
-  triggerVariant?: Exclude<ButtonProps["variant"], "destructive" | "link">;
-  triggerSize?: Exclude<ButtonProps["size"], "icon">;
+  triggerVariant?: Exclude<
+    React.ComponentProps<typeof Button>["variant"],
+    "destructive" | "link"
+  >;
+  triggerSize?: Exclude<React.ComponentProps<typeof Button>["size"], "icon">;
   triggerClassName?: string;
   shallow?: boolean;
 }

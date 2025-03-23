@@ -2,7 +2,6 @@
 
 import type { Table } from "@tanstack/react-table";
 import { Check, ChevronsUpDown, Settings2 } from "lucide-react";
-import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,8 +17,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn, toSentenceCase } from "@/lib/utils";
-
+import { cn } from "@/lib/utils";
+import * as React from "react";
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
 }
@@ -27,13 +26,24 @@ interface DataTableViewOptionsProps<TData> {
 export function DataTableViewOptions<TData>({
   table,
 }: DataTableViewOptionsProps<TData>) {
+  const columns = React.useMemo(
+    () =>
+      table
+        .getAllColumns()
+        .filter(
+          (column) =>
+            typeof column.accessorFn !== "undefined" && column.getCanHide(),
+        ),
+    [table],
+  );
+
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           aria-label="Toggle columns"
-          variant="outline"
           role="combobox"
+          variant="outline"
           size="sm"
           className="ml-auto hidden h-8 lg:flex"
         >
@@ -48,34 +58,24 @@ export function DataTableViewOptions<TData>({
           <CommandList>
             <CommandEmpty>No columns found.</CommandEmpty>
             <CommandGroup>
-              {table
-                .getAllColumns()
-                .filter(
-                  (column) =>
-                    typeof column.accessorFn !== "undefined" &&
-                    column.getCanHide(),
-                )
-                .map((column) => {
-                  return (
-                    <CommandItem
-                      key={column.id}
-                      onSelect={() =>
-                        column.toggleVisibility(!column.getIsVisible())
-                      }
-                    >
-                      <span className="truncate">
-                        {column.columnDef.meta?.label ??
-                          toSentenceCase(column.id)}
-                      </span>
-                      <Check
-                        className={cn(
-                          "ml-auto size-4 shrink-0",
-                          column.getIsVisible() ? "opacity-100" : "opacity-0",
-                        )}
-                      />
-                    </CommandItem>
-                  );
-                })}
+              {columns.map((column) => (
+                <CommandItem
+                  key={column.id}
+                  onSelect={() =>
+                    column.toggleVisibility(!column.getIsVisible())
+                  }
+                >
+                  <span className="truncate">
+                    {column.columnDef.meta?.label ?? column.id}
+                  </span>
+                  <Check
+                    className={cn(
+                      "ml-auto size-4 shrink-0",
+                      column.getIsVisible() ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                </CommandItem>
+              ))}
             </CommandGroup>
           </CommandList>
         </Command>

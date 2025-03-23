@@ -33,6 +33,7 @@ import { getPriorityIcon, getStatusIcon } from "../_lib/utils";
 interface GetTasksTableColumnsProps {
   statusCounts: Record<Task["status"], number>;
   priorityCounts: Record<Task["priority"], number>;
+  estimatedHoursRange: { min: number; max: number };
   setRowAction: React.Dispatch<
     React.SetStateAction<DataTableRowAction<Task> | null>
   >;
@@ -41,6 +42,7 @@ interface GetTasksTableColumnsProps {
 export function getTasksTableColumns({
   statusCounts,
   priorityCounts,
+  estimatedHoursRange,
   setRowAction,
 }: GetTasksTableColumnsProps): ColumnDef<Task>[] {
   return [
@@ -187,7 +189,7 @@ export function getTasksTableColumns({
       meta: {
         label: "Est. Hours",
         variant: "range",
-        range: [0, 24],
+        range: [estimatedHoursRange.min, estimatedHoursRange.max],
         unit: "hr",
       },
       enableColumnFilter: true,

@@ -2,7 +2,7 @@
 
 import type { Column } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { CalendarIcon, X, XCircle } from "lucide-react";
+import { CalendarIcon, XCircle } from "lucide-react";
 import * as React from "react";
 import type { DateRange } from "react-day-picker";
 
@@ -45,11 +45,13 @@ function parseColumnFilterValue(
 
 interface DataTableDatePickerProps<TData> {
   column: Column<TData, unknown>;
+  title?: string;
   multiple?: boolean;
 }
 
 export function DataTableDatePicker<TData>({
   column,
+  title,
   multiple,
 }: DataTableDatePickerProps<TData>) {
   const columnFilterValue = column.getFilterValue();
@@ -128,8 +130,6 @@ export function DataTableDatePicker<TData>({
   );
 
   const label = React.useMemo(() => {
-    const columnName = column.columnDef.meta?.label ?? column.id;
-
     if (multiple) {
       if (!isDateRange(selectedDates)) return null;
 
@@ -140,7 +140,7 @@ export function DataTableDatePicker<TData>({
 
       return (
         <span className="flex items-center gap-2">
-          <span>{columnName}</span>
+          <span>{title}</span>
           {hasSelectedDates && (
             <>
               <Separator orientation="vertical" className="mx-0.5 h-4" />
@@ -160,7 +160,7 @@ export function DataTableDatePicker<TData>({
 
     return (
       <span className="flex items-center gap-2">
-        <span>{columnName}</span>
+        <span>{title}</span>
         {hasSelectedDate && (
           <>
             <Separator orientation="vertical" className="mx-0.5 h-4" />
@@ -169,26 +169,15 @@ export function DataTableDatePicker<TData>({
         )}
       </span>
     );
-  }, [
-    selectedDates,
-    multiple,
-    formatDateRange,
-    formatSelectedDate,
-    column.columnDef.meta?.label,
-    column.id,
-  ]);
+  }, [selectedDates, multiple, formatDateRange, formatSelectedDate, title]);
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="border-dashed hover:bg-accent/50"
-        >
+        <Button variant="outline" size="sm" className="border-dashed">
           {hasValue ? (
             <div
-              aria-label="Clear filter"
+              aria-label={`Clear ${title} filter`}
               role="button"
               tabIndex={0}
               onClick={onReset}

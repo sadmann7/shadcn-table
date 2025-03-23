@@ -71,11 +71,7 @@ export function DataTableRangeFilter<TData>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="border-dashed hover:bg-accent/50"
-        >
+        <Button variant="outline" size="sm" className="border-dashed">
           {columnFilterValue ? (
             <div
               aria-label="Clear filter"
@@ -112,9 +108,9 @@ export function DataTableRangeFilter<TData>({
             <div className="relative">
               <Input
                 id={`${id}-from`}
+                type="text"
                 aria-valuemin={min}
                 aria-valuemax={max}
-                type="text"
                 inputMode="numeric"
                 pattern="[0-9]*"
                 placeholder={min.toString()}

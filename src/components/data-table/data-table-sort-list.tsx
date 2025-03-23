@@ -39,7 +39,7 @@ import {
   SortableOverlay,
 } from "@/components/ui/sortable";
 import { dataTableConfig } from "@/config/data-table";
-import { cn, toSentenceCase } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import type { PopoverContentProps } from "@radix-ui/react-popover";
 
 interface DataTableSortListProps<TData>
@@ -65,26 +65,37 @@ export function DataTableSortList<TData>({
   const sorting = table.getState().sorting;
   const onSortingChange = table.setSorting;
 
-  const sortableColumns = React.useMemo(() => {
-    const sortingIds = new Set<string>(sorting.map((s) => s.id));
-    return table
-      .getAllColumns()
-      .filter((column) => column.getCanSort() && !sortingIds.has(column.id))
-      .map((column) => ({
-        id: column.id,
-        label: column.columnDef.meta?.label ?? toSentenceCase(column.id),
-      }));
+  const { columnLabels, columns } = React.useMemo(() => {
+    const labels = new Map<string, string>();
+    const sortingIds = new Set(sorting.map((s) => s.id));
+    const availableColumns: { id: string; label: string }[] = [];
+
+    for (const column of table.getAllColumns()) {
+      if (!column.getCanSort()) continue;
+
+      const label = column.columnDef.meta?.label ?? column.id;
+      labels.set(column.id, label);
+
+      if (!sortingIds.has(column.id)) {
+        availableColumns.push({ id: column.id, label });
+      }
+    }
+
+    return {
+      columnLabels: labels,
+      columns: availableColumns,
+    };
   }, [sorting, table]);
 
   const onSortAdd = React.useCallback(() => {
-    const firstAvailableColumn = sortableColumns[0];
-    if (!firstAvailableColumn) return;
+    const firstColumn = columns[0];
+    if (!firstColumn) return;
 
     onSortingChange((prevSorting) => [
       ...prevSorting,
-      { id: firstAvailableColumn.id, desc: false },
+      { id: firstColumn.id, desc: false },
     ]);
-  }, [sortableColumns, onSortingChange]);
+  }, [columns, onSortingChange]);
 
   const onSortUpdate = React.useCallback(
     (sortId: string, updates: Partial<ColumnSort>) => {
@@ -120,8 +131,8 @@ export function DataTableSortList<TData>({
     >
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="outline" size="sm" className="[&>svg]:size-3">
-            <ArrowDownUp />
+          <Button variant="outline" size="sm">
+            <ArrowDownUp className="size-3.5" />
             Sort
             {sorting.length > 0 && (
               <Badge
@@ -170,7 +181,8 @@ export function DataTableSortList<TData>({
                     key={sort.id}
                     sort={sort}
                     sortItemId={`${id}-sort-${sort.id}`}
-                    sortableColumns={sortableColumns}
+                    columns={columns}
+                    columnLabels={columnLabels}
                     onSortUpdate={onSortUpdate}
                     onSortRemove={onSortRemove}
                   />
@@ -183,7 +195,7 @@ export function DataTableSortList<TData>({
               size="sm"
               className="h-[1.85rem] rounded"
               onClick={onSortAdd}
-              disabled={sortableColumns.length === 0}
+              disabled={columns.length === 0}
             >
               Add sort
             </Button>
@@ -215,7 +227,8 @@ export function DataTableSortList<TData>({
 interface SortItemProps {
   sort: ColumnSort;
   sortItemId: string;
-  sortableColumns: { id: string; label: string }[];
+  columns: { id: string; label: string }[];
+  columnLabels: Map<string, string>;
   onSortUpdate: (sortId: string, updates: Partial<ColumnSort>) => void;
   onSortRemove: (sortId: string) => void;
 }
@@ -223,9 +236,10 @@ interface SortItemProps {
 function SortItem({
   sort,
   sortItemId,
+  columns,
+  columnLabels,
   onSortUpdate,
   onSortRemove,
-  sortableColumns,
 }: SortItemProps) {
   const fieldListboxId = `${sortItemId}-field-listbox`;
   const fieldTriggerId = `${sortItemId}-field-trigger`;
@@ -249,7 +263,7 @@ function SortItem({
               size="sm"
               className="w-44 justify-between rounded"
             >
-              <span className="truncate">{toSentenceCase(sort.id)}</span>
+              <span className="truncate">{columnLabels.get(sort.id)}</span>
               <ChevronsUpDown className="opacity-50" />
             </Button>
           </PopoverTrigger>
@@ -262,7 +276,7 @@ function SortItem({
               <CommandList>
                 <CommandEmpty>No fields found.</CommandEmpty>
                 <CommandGroup>
-                  {sortableColumns.map((column) => (
+                  {columns.map((column) => (
                     <CommandItem
                       key={column.id}
                       value={column.id}
@@ -286,7 +300,7 @@ function SortItem({
             aria-label="Select sort direction"
             aria-controls={directionListboxId}
             size="sm"
-            className="w-24 rounded dark:bg-transparent"
+            className="w-24 rounded"
           >
             <SelectValue />
           </SelectTrigger>

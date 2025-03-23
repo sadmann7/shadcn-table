@@ -8,6 +8,7 @@ import { getValidFilters } from "@/lib/data-table";
 import { FeatureFlagsProvider } from "./_components/feature-flags-provider";
 import { TasksTable } from "./_components/tasks-table";
 import {
+  getEstimatedHoursRange,
   getTaskPriorityCounts,
   getTaskStatusCounts,
   getTasks,
@@ -31,6 +32,7 @@ export default async function IndexPage(props: IndexPageProps) {
     }),
     getTaskStatusCounts(),
     getTaskPriorityCounts(),
+    getEstimatedHoursRange(),
   ]);
 
   return (

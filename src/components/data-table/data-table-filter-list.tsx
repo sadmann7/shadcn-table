@@ -98,7 +98,7 @@ export function DataTableFilterList<TData>({
   const labelId = React.useId();
   const descriptionId = React.useId();
 
-  const filterableColumns = React.useMemo(() => {
+  const columns = React.useMemo(() => {
     return table
       .getAllColumns()
       .filter((column) => column.columnDef.enableColumnFilter);
@@ -106,7 +106,7 @@ export function DataTableFilterList<TData>({
 
   const [filters, setFilters] = useQueryState(
     FILTERS_KEY,
-    getFiltersStateParser<TData>(filterableColumns.map((field) => field.id))
+    getFiltersStateParser<TData>(columns.map((field) => field.id))
       .withDefault([])
       .withOptions({
         clearOnDefault: true,
@@ -125,22 +125,22 @@ export function DataTableFilterList<TData>({
   );
 
   const onFilterAdd = React.useCallback(() => {
-    const filterableColumn = filterableColumns[0];
+    const column = columns[0];
 
-    if (!filterableColumn) return;
+    if (!column) return;
 
     const newFilter: ExtendedColumnFilter<TData> = {
-      id: filterableColumn.id as Extract<keyof TData, string>,
+      id: column.id as Extract<keyof TData, string>,
       value: "",
-      variant: filterableColumn.columnDef.meta?.variant ?? "text",
+      variant: column.columnDef.meta?.variant ?? "text",
       operator: getDefaultFilterOperator(
-        filterableColumn.columnDef.meta?.variant ?? "text",
+        column.columnDef.meta?.variant ?? "text",
       ),
       filterId: generateId({ length: 8 }),
     };
 
     debouncedSetFilters([...filters, newFilter]);
-  }, [filterableColumns, filters, debouncedSetFilters]);
+  }, [columns, filters, debouncedSetFilters]);
 
   const onFilterUpdate = React.useCallback(
     (
@@ -236,7 +236,7 @@ export function DataTableFilterList<TData>({
                     filterItemId={`${id}-filter-${filter.filterId}`}
                     joinOperator={joinOperator}
                     setJoinOperator={setJoinOperator}
-                    filterableColumns={filterableColumns}
+                    columns={columns}
                     onFilterUpdate={onFilterUpdate}
                     onFilterRemove={onFilterRemove}
                   />
@@ -288,7 +288,7 @@ interface FilterItemProps<TData> {
   filterItemId: string;
   joinOperator: JoinOperator;
   setJoinOperator: (value: JoinOperator) => void;
-  filterableColumns: Column<TData>[];
+  columns: Column<TData>[];
   onFilterUpdate: (
     filterId: string,
     updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
@@ -302,7 +302,7 @@ function FilterItem<TData>({
   filterItemId,
   joinOperator,
   setJoinOperator,
-  filterableColumns,
+  columns,
   onFilterUpdate,
   onFilterRemove,
 }: FilterItemProps<TData>) {
@@ -311,13 +311,14 @@ function FilterItem<TData>({
   const fieldTriggerId = `${filterItemId}-field-trigger`;
   const operatorListboxId = `${filterItemId}-operator-listbox`;
   const inputId = `${filterItemId}-input`;
+  const [showFieldSelector, setShowFieldSelector] = React.useState(false);
 
   const onFilterInputRender = React.useCallback(
     ({
       filter,
       inputId,
     }: { filter: ExtendedColumnFilter<TData>; inputId: string }) => {
-      const column = filterableColumns.find((f) => f.id === filter.id);
+      const column = columns.find((f) => f.id === filter.id);
 
       if (!column) return null;
 
@@ -338,7 +339,7 @@ function FilterItem<TData>({
       switch (filter.variant) {
         case "text":
         case "number":
-        case "range":
+        case "range": {
           if (filter.variant === "range" && filter.operator === "isBetween") {
             return (
               <RangeFilter
@@ -350,12 +351,16 @@ function FilterItem<TData>({
             );
           }
 
+          const isNumber =
+            filter.variant === "number" || filter.variant === "range";
+
           return (
             <Input
               id={inputId}
-              type={filter.variant === "range" ? "number" : filter.variant}
+              type={isNumber ? "number" : filter.variant}
               aria-label={`${column.columnDef.meta?.label} filter value`}
               aria-describedby={`${inputId}-description`}
+              inputMode={isNumber ? "numeric" : undefined}
               placeholder={
                 column.columnDef.meta?.placeholder ?? "Enter a value..."
               }
@@ -370,6 +375,37 @@ function FilterItem<TData>({
               }
             />
           );
+        }
+
+        case "boolean": {
+          if (Array.isArray(filter.value)) return null;
+
+          return (
+            <Select
+              value={filter.value}
+              onValueChange={(value) =>
+                onFilterUpdate(filter.filterId, {
+                  value,
+                })
+              }
+            >
+              <SelectTrigger
+                id={inputId}
+                aria-controls={`${inputId}-listbox`}
+                aria-label={`${column.columnDef.meta?.label} boolean filter`}
+                size="sm"
+                className="w-full rounded"
+              >
+                <SelectValue placeholder={filter.value ? "True" : "False"} />
+              </SelectTrigger>
+              <SelectContent id={`${inputId}-listbox`}>
+                <SelectItem value="true">True</SelectItem>
+                <SelectItem value="false">False</SelectItem>
+              </SelectContent>
+            </Select>
+          );
+        }
+
         case "select":
           return (
             <Faceted
@@ -431,6 +467,7 @@ function FilterItem<TData>({
               </FacetedContent>
             </Faceted>
           );
+
         case "multi-select": {
           const selectedValues = Array.isArray(filter.value)
             ? filter.value
@@ -492,6 +529,7 @@ function FilterItem<TData>({
             </Faceted>
           );
         }
+
         case "date":
         case "date-range": {
           const dateValue = Array.isArray(filter.value)
@@ -577,39 +615,12 @@ function FilterItem<TData>({
             </Popover>
           );
         }
-        case "boolean": {
-          if (Array.isArray(filter.value)) return null;
 
-          return (
-            <Select
-              value={filter.value}
-              onValueChange={(value) =>
-                onFilterUpdate(filter.filterId, {
-                  value,
-                })
-              }
-            >
-              <SelectTrigger
-                id={inputId}
-                aria-controls={`${inputId}-listbox`}
-                aria-label={`${column.columnDef.meta?.label} boolean filter`}
-                size="sm"
-                className="w-full rounded dark:bg-transparent"
-              >
-                <SelectValue placeholder={filter.value ? "True" : "False"} />
-              </SelectTrigger>
-              <SelectContent id={`${inputId}-listbox`}>
-                <SelectItem value="true">True</SelectItem>
-                <SelectItem value="false">False</SelectItem>
-              </SelectContent>
-            </Select>
-          );
-        }
         default:
           return null;
       }
     },
-    [filterableColumns, onFilterUpdate],
+    [columns, onFilterUpdate],
   );
 
   return (
@@ -632,7 +643,7 @@ function FilterItem<TData>({
                 aria-label="Select join operator"
                 aria-controls={joinOperatorListboxId}
                 size="sm"
-                className="rounded lowercase dark:bg-transparent"
+                className="rounded lowercase"
               >
                 <SelectValue placeholder={joinOperator} />
               </SelectTrigger>
@@ -654,7 +665,7 @@ function FilterItem<TData>({
             </span>
           )}
         </div>
-        <Popover>
+        <Popover open={showFieldSelector} onOpenChange={setShowFieldSelector}>
           <PopoverTrigger asChild>
             <Button
               id={fieldTriggerId}
@@ -666,8 +677,8 @@ function FilterItem<TData>({
               className="w-32 justify-between rounded"
             >
               <span className="truncate">
-                {filterableColumns.find((field) => field.id === filter.id)
-                  ?.columnDef.meta?.label ?? "Select field"}
+                {columns.find((field) => field.id === filter.id)?.columnDef.meta
+                  ?.label ?? "Select field"}
               </span>
               <ChevronsUpDown className="opacity-50" />
             </Button>
@@ -682,30 +693,25 @@ function FilterItem<TData>({
               <CommandList>
                 <CommandEmpty>No fields found.</CommandEmpty>
                 <CommandGroup>
-                  {filterableColumns.map((column) => (
+                  {columns.map((column) => (
                     <CommandItem
                       key={column.id}
                       value={column.id}
                       onSelect={(value) => {
-                        const filterableColumn = filterableColumns.find(
-                          (col) => col.id === value,
-                        );
+                        const column = columns.find((col) => col.id === value);
 
-                        if (!filterableColumn) return;
+                        if (!column) return;
 
                         onFilterUpdate(filter.filterId, {
                           id: value as Extract<keyof TData, string>,
-                          variant:
-                            filterableColumn.columnDef.meta?.variant ?? "text",
+                          variant: column.columnDef.meta?.variant ?? "text",
                           operator: getDefaultFilterOperator(
-                            filterableColumn.columnDef.meta?.variant ?? "text",
+                            column.columnDef.meta?.variant ?? "text",
                           ),
                           value: "",
                         });
 
-                        requestAnimationFrame(() => {
-                          document.getElementById(fieldTriggerId)?.click();
-                        });
+                        setShowFieldSelector(false);
                       }}
                     >
                       <span className="truncate">
@@ -740,7 +746,7 @@ function FilterItem<TData>({
             aria-label="Select filter operator"
             aria-controls={operatorListboxId}
             size="sm"
-            className="w-32 rounded dark:bg-transparent"
+            className="w-32 rounded lowercase"
           >
             <div className="truncate">
               <SelectValue placeholder={filter.operator} />
@@ -750,9 +756,13 @@ function FilterItem<TData>({
             id={operatorListboxId}
             className="origin-(--radix-select-content-transform-origin)"
           >
-            {getFilterOperators(filter.variant).map((op) => (
-              <SelectItem key={op.value} value={op.value}>
-                {op.label}
+            {getFilterOperators(filter.variant).map((operator) => (
+              <SelectItem
+                key={operator.value}
+                value={operator.value}
+                className="lowercase"
+              >
+                {operator.label}
               </SelectItem>
             ))}
           </SelectContent>
@@ -863,10 +873,9 @@ function RangeFilter<TData>({
         aria-valuemin={min}
         aria-valuemax={max}
         inputMode="numeric"
-        pattern="[0-9]*"
+        placeholder={min.toString()}
         min={min}
         max={max}
-        placeholder={min.toString()}
         className="h-8 w-full rounded"
         defaultValue={value[0]}
         onChange={(event) => onRangeValueChange(event.target.value, true)}
@@ -879,7 +888,6 @@ function RangeFilter<TData>({
         aria-valuemin={min}
         aria-valuemax={max}
         inputMode="numeric"
-        pattern="[0-9]*"
         placeholder={max.toString()}
         min={min}
         max={max}

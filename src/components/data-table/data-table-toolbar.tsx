@@ -1,6 +1,6 @@
 "use client";
 
-import type { Table } from "@tanstack/react-table";
+import type { Column, Table } from "@tanstack/react-table";
 import { X } from "lucide-react";
 import * as React from "react";
 
@@ -42,46 +42,10 @@ export function DataTableToolbar<TData>({
       {...props}
     >
       <div className="flex flex-1 flex-wrap items-center gap-2">
-        {columns.map((column) => {
-          const columnMeta = column.columnDef.meta;
-
-          return columnMeta?.variant === "text" ||
-            columnMeta?.variant === "number" ? (
-            <Input
-              key={column.id}
-              type={columnMeta?.variant}
-              placeholder={columnMeta?.placeholder ?? columnMeta?.label}
-              value={(column.getFilterValue() as string) ?? ""}
-              onChange={(event) => column.setFilterValue(event.target.value)}
-              className="h-8 w-40 lg:w-56"
-            />
-          ) : columnMeta?.variant === "date" ||
-            columnMeta?.variant === "date-range" ? (
-            <DataTableDatePicker
-              key={column.id}
-              column={column}
-              multiple={columnMeta?.variant === "date-range"}
-            />
-          ) : columnMeta?.variant === "range" ? (
-            <DataTableRangeFilter
-              key={column.id}
-              column={column}
-              title={columnMeta?.label ?? column.id}
-            />
-          ) : (
-            (columnMeta?.variant === "select" ||
-              columnMeta?.variant === "multi-select") && (
-              <DataTableFacetedFilter
-                key={column.id}
-                column={column}
-                title={columnMeta?.label ?? column.id}
-                options={columnMeta?.options ?? []}
-                multiple={columnMeta?.variant === "multi-select"}
-              />
-            )
-          );
-        })}
-        {isFiltered && (
+        {columns.map((column) => (
+          <DataTableToolbarFilter key={column.id} column={column} />
+        ))}
+        {isFiltered ? (
           <Button
             aria-label="Reset filters"
             variant="ghost"
@@ -91,7 +55,7 @@ export function DataTableToolbar<TData>({
             Reset
             <X />
           </Button>
-        )}
+        ) : null}
       </div>
       <div className="flex items-center gap-2">
         {children}
@@ -99,4 +63,68 @@ export function DataTableToolbar<TData>({
       </div>
     </div>
   );
+}
+
+interface DataTableToolbarFilterProps<TData> {
+  column: Column<TData>;
+}
+
+function DataTableToolbarFilter<TData>({
+  column,
+}: DataTableToolbarFilterProps<TData>) {
+  {
+    const columnMeta = column.columnDef.meta;
+
+    const onFilterRender = React.useCallback(() => {
+      if (!columnMeta?.variant) return null;
+
+      switch (columnMeta.variant) {
+        case "text":
+        case "number":
+          return (
+            <Input
+              type={columnMeta.variant}
+              placeholder={columnMeta.placeholder ?? columnMeta.label}
+              value={(column.getFilterValue() as string) ?? ""}
+              onChange={(event) => column.setFilterValue(event.target.value)}
+              className="h-8 w-40 lg:w-56"
+            />
+          );
+
+        case "date":
+        case "date-range":
+          return (
+            <DataTableDatePicker
+              column={column}
+              title={columnMeta.label ?? column.id}
+              multiple={columnMeta.variant === "date-range"}
+            />
+          );
+
+        case "range":
+          return (
+            <DataTableRangeFilter
+              column={column}
+              title={columnMeta.label ?? column.id}
+            />
+          );
+
+        case "select":
+        case "multi-select":
+          return (
+            <DataTableFacetedFilter
+              column={column}
+              title={columnMeta.label ?? column.id}
+              options={columnMeta.options ?? []}
+              multiple={columnMeta.variant === "multi-select"}
+            />
+          );
+
+        default:
+          return null;
+      }
+    }, [column, columnMeta]);
+
+    return onFilterRender();
+  }
 }

@@ -1,4 +1,4 @@
-import { isEmpty, isNotEmpty } from "@/db/utils";
+import { isEmpty } from "@/db/utils";
 import type { ExtendedColumnFilter, JoinOperator } from "@/types/data-table";
 import { addDays, endOfDay, startOfDay } from "date-fns";
 import {
@@ -14,6 +14,7 @@ import {
   lt,
   lte,
   ne,
+  not,
   notIlike,
   notInArray,
   or,
@@ -157,7 +158,7 @@ export function filterColumns<T extends Table>({
       case "isEmpty":
         return isEmpty(column);
       case "isNotEmpty":
-        return isNotEmpty(column);
+        return not(isEmpty(column));
 
       default:
         throw new Error(`Unsupported operator: ${filter.operator}`);

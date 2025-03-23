@@ -1,6 +1,5 @@
 "use client";
 
-import type { ButtonProps } from "@/components/ui/button";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -79,7 +78,8 @@ function DataTableActionBar<TData>({
   );
 }
 
-interface DataTableActionBarActionProps extends ButtonProps {
+interface DataTableActionBarActionProps
+  extends React.ComponentProps<typeof Button> {
   tooltip?: string;
   isPending?: boolean;
 }

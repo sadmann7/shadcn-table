@@ -76,14 +76,10 @@ export function DataTableFacetedFilter<TData, TValue>({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="border-dashed hover:bg-accent/50"
-        >
+        <Button variant="outline" size="sm" className="border-dashed">
           {selectedValues?.size > 0 ? (
             <div
-              aria-label="Clear filter"
+              aria-label={`Clear ${title} filter`}
               role="button"
               tabIndex={0}
               onClick={onReset}

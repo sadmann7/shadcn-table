@@ -137,18 +137,28 @@ export async function getTaskStatusCounts() {
           })
           .from(tasks)
           .groupBy(tasks.status)
-          .having(gt(count(), 0))
+          .having(gt(count(tasks.status), 0))
           .then((res) =>
             res.reduce(
               (acc, { status, count }) => {
                 acc[status] = count;
                 return acc;
               },
-              {} as Record<Task["status"], number>,
+              {
+                todo: 0,
+                "in-progress": 0,
+                done: 0,
+                canceled: 0,
+              },
             ),
           );
       } catch (_err) {
-        return {} as Record<Task["status"], number>;
+        return {
+          todo: 0,
+          "in-progress": 0,
+          done: 0,
+          canceled: 0,
+        };
       }
     },
     ["task-status-counts"],
@@ -176,11 +186,19 @@ export async function getTaskPriorityCounts() {
                 acc[priority] = count;
                 return acc;
               },
-              {} as Record<Task["priority"], number>,
+              {
+                low: 0,
+                medium: 0,
+                high: 0,
+              },
             ),
           );
       } catch (_err) {
-        return {} as Record<Task["priority"], number>;
+        return {
+          low: 0,
+          medium: 0,
+          high: 0,
+        };
       }
     },
     ["task-priority-counts"],
@@ -200,7 +218,7 @@ export async function getEstimatedHoursRange() {
             max: sql<number>`max(${tasks.estimatedHours})`,
           })
           .from(tasks)
-          .then((res) => res[0]);
+          .then((res) => res[0] ?? { min: 0, max: 0 });
       } catch (_err) {
         return { min: 0, max: 0 };
       }
