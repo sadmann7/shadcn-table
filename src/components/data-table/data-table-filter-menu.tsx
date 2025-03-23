@@ -164,19 +164,19 @@ export function DataTableFilterMenu<TData>({
             key={filter.filterId}
             className="flex h-8 items-center divide-x rounded-md border bg-background"
           >
-            <div className="flex items-center gap-1.5 px-2">
+            <div className="flex items-center gap-1.5">
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-auto px-0 py-0.5 font-normal text-sm"
+                    className="rounded-none rounded-l-md font-normal dark:bg-input/30"
                   >
                     {column.columnDef.meta?.icon && (
                       <column.columnDef.meta.icon className="text-muted-foreground" />
                     )}
                     {column.columnDef.meta?.label ?? column.id}
-                    <ChevronsUpDown className="ml-1 size-3 opacity-50" />
+                    <ChevronsUpDown className="size-3.5" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent align="start" className="w-48 p-0">
@@ -234,13 +234,16 @@ export function DataTableFilterMenu<TData>({
                 })
               }
             >
-              <SelectTrigger className="rounded-none border-none px-1.5">
+              <SelectTrigger
+                size="sm"
+                className="rounded-none border-y-0 border-l-0 px-1.5 lowercase"
+              >
                 <SelectValue placeholder={filter.operator} />
               </SelectTrigger>
               <SelectContent>
                 {getFilterOperators(filter.variant).map((operator) => (
                   <SelectItem
-                    className="text-sm"
+                    className="lowercase"
                     key={operator.value}
                     value={operator.value}
                   >
@@ -249,7 +252,7 @@ export function DataTableFilterMenu<TData>({
                 ))}
               </SelectContent>
             </Select>
-            {renderFilterInput({
+            {onFilerInputRender({
               filter,
               column,
               onFilterUpdate,
@@ -257,8 +260,8 @@ export function DataTableFilterMenu<TData>({
             <Button
               variant="ghost"
               size="sm"
+              className="h-full rounded-none rounded-r-md px-1.5 font-normal dark:bg-input/30"
               onClick={() => onFilterRemove(filter.filterId)}
-              className="h-full rounded-none px-1.5"
             >
               <X className="size-3.5" />
             </Button>
@@ -442,7 +445,7 @@ function FilterValueSelector<TData>({
   }
 }
 
-function renderFilterInput<TData>({
+function onFilerInputRender<TData>({
   filter,
   column,
   onFilterUpdate,
@@ -467,8 +470,9 @@ function renderFilterInput<TData>({
       return (
         <Input
           type={isNumber ? "number" : "text"}
+          inputMode={isNumber ? "numeric" : undefined}
           placeholder={column.columnDef.meta?.placeholder ?? "Enter value..."}
-          className="h-auto w-[120px] border-0 bg-transparent px-0 py-0.5 text-sm shadow-none"
+          className="h-full w-28 rounded-none border-0 bg-transparent px-1.5 text-sm shadow-none"
           value={typeof filter.value === "string" ? filter.value : ""}
           onChange={(e) =>
             onFilterUpdate(filter.filterId, { value: e.target.value })
@@ -485,7 +489,7 @@ function renderFilterInput<TData>({
             onFilterUpdate(filter.filterId, { value })
           }
         >
-          <SelectTrigger className="h-auto border-0 bg-transparent px-0 py-0.5 text-sm shadow-none [&>svg]:size-3">
+          <SelectTrigger className="h-auto rounded-none border-0 bg-transparent px-1.5 py-0.5 shadow-none [&>svg]:size-3">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -502,17 +506,30 @@ function renderFilterInput<TData>({
         ? filter.value
         : [filter.value];
 
+      const selectedOption = options.find(
+        (option) => option.value === selectedValues[0],
+      );
+
       return (
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant="ghost"
               size="sm"
-              className="h-full rounded-none px-1.5 font-normal text-sm"
+              className="h-full min-w-16 rounded-none px-1.5 font-normal dark:bg-input/30"
             >
-              {selectedValues.length > 0
-                ? `${selectedValues.length} selected`
-                : "Select..."}
+              {selectedValues.length === 0 ? (
+                "Select..."
+              ) : selectedValues.length === 1 ? (
+                <>
+                  {selectedOption?.icon && (
+                    <selectedOption.icon className="size-3.5" />
+                  )}
+                  <span className="truncate">{selectedOption?.label}</span>
+                </>
+              ) : (
+                `${selectedValues.length} selected`
+              )}
             </Button>
           </PopoverTrigger>
           <PopoverContent align="start" className="w-[200px] p-0">
@@ -578,9 +595,9 @@ function renderFilterInput<TData>({
             <Button
               variant="ghost"
               size="sm"
-              className="h-auto px-0 py-0.5 font-normal text-sm"
+              className="h-auto px-0 py-0.5 font-normal"
             >
-              <CalendarIcon className="size-3" />
+              <CalendarIcon className="size-3.5" />
               {dateValue.length > 0
                 ? filter.operator === "isBetween" && dateValue.length === 2
                   ? `${formatValue(dateValue[0])} - ${formatValue(dateValue[1])}`
