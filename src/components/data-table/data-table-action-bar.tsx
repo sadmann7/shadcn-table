@@ -114,7 +114,10 @@ function DataTableActionBarAction({
   return (
     <Tooltip>
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-      <TooltipContent className="border bg-accent font-semibold text-foreground dark:bg-zinc-900">
+      <TooltipContent
+        sideOffset={6}
+        className="border bg-accent font-semibold text-foreground dark:bg-zinc-900 [&>span]:hidden"
+      >
         <p>{tooltip}</p>
       </TooltipContent>
     </Tooltip>

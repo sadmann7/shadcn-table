@@ -15,26 +15,18 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { getDefaultFilterOperator } from "@/lib/data-table";
 import { generateId } from "@/lib/id";
 import { getFiltersStateParser } from "@/lib/parsers";
 import { cn, formatDate } from "@/lib/utils";
-import type { ExtendedColumnFilter, FilterVariant } from "@/types/data-table";
+import type { ExtendedColumnFilter } from "@/types/data-table";
 
 const FILTERS_KEY = "filters";
 const DEBOUNCE_MS = 300;
@@ -259,46 +251,53 @@ export function DataTableFilterMenu<TData>({
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[250px] p-0" align="start">
-          <Command>
+          <Command className="[&_[data-slot=command-input-wrapper]_svg]:hidden">
             <CommandInput
               placeholder={
                 selectedColumn
-                  ? `Filter ${selectedColumn.columnDef.meta?.label ?? selectedColumn.id}...`
+                  ? (selectedColumn.columnDef.meta?.label ?? selectedColumn.id)
                   : "Filter..."
               }
               className="h-9"
+              ref={inputRef}
               value={inputValue}
               onValueChange={setInputValue}
-              ref={inputRef}
               onKeyDown={onInputKeyDown}
             />
             <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
               {selectedColumn ? (
-                <FilterValueSelector
-                  column={selectedColumn}
-                  value={inputValue}
-                  onSelect={(value) => onFilterAdd(selectedColumn, value)}
-                />
+                <>
+                  {selectedColumn?.columnDef.meta?.options && (
+                    <CommandEmpty>No results found.</CommandEmpty>
+                  )}
+                  <FilterValueSelector
+                    column={selectedColumn}
+                    value={inputValue}
+                    onSelect={(value) => onFilterAdd(selectedColumn, value)}
+                  />
+                </>
               ) : (
-                <CommandGroup>
-                  {columns.map((column) => (
-                    <CommandItem
-                      key={column.id}
-                      value={column.id}
-                      onSelect={() => {
-                        setSelectedColumn(column);
-                        setInputValue("");
-                        requestAnimationFrame(() => {
-                          inputRef.current?.focus();
-                        });
-                      }}
-                      className="group flex items-center gap-2 text-sm"
-                    >
-                      <span>{column.columnDef.meta?.label ?? column.id}</span>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                <>
+                  <CommandEmpty>No results found.</CommandEmpty>
+                  <CommandGroup>
+                    {columns.map((column) => (
+                      <CommandItem
+                        key={column.id}
+                        value={column.id}
+                        onSelect={() => {
+                          setSelectedColumn(column);
+                          setInputValue("");
+                          requestAnimationFrame(() => {
+                            inputRef.current?.focus();
+                          });
+                        }}
+                        className="group flex items-center gap-2 text-sm"
+                      >
+                        <span>{column.columnDef.meta?.label ?? column.id}</span>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </>
               )}
             </CommandList>
           </Command>
@@ -320,11 +319,6 @@ function FilterValueSelector<TData>({
   onSelect,
 }: FilterValueSelectorProps<TData>) {
   const variant = column.columnDef.meta?.variant ?? "text";
-  const [localInputValue, setLocalInputValue] = React.useState(value);
-
-  React.useEffect(() => {
-    setLocalInputValue(value);
-  }, [value]);
 
   switch (variant) {
     case "boolean":
@@ -338,29 +332,31 @@ function FilterValueSelector<TData>({
           </CommandItem>
         </CommandGroup>
       );
+
     case "select":
     case "multi-select":
       return (
-        <CommandGroup>
-          {column.columnDef.meta?.options?.map((option) => (
-            <CommandItem
-              key={option.value}
-              value={option.value}
-              onSelect={() => onSelect(option.value)}
-            >
-              {option.icon && (
-                <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-              )}
-              {option.label}
-              {option.count && (
-                <span className="ml-auto flex h-4 w-4 items-center justify-center font-mono text-xs">
-                  {option.count}
-                </span>
-              )}
-            </CommandItem>
-          ))}
-        </CommandGroup>
+        <>
+          <CommandGroup>
+            {column.columnDef.meta?.options?.map((option) => (
+              <CommandItem
+                key={option.value}
+                value={option.value}
+                onSelect={() => onSelect(option.value)}
+              >
+                {option.icon && <option.icon />}
+                <span className="truncate">{option.label}</span>
+                {option.count && (
+                  <span className="ml-auto font-mono text-xs">
+                    {option.count}
+                  </span>
+                )}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </>
       );
+
     case "date":
     case "date-range":
       return (
@@ -377,33 +373,20 @@ function FilterValueSelector<TData>({
           />
         </div>
       );
+
     default:
       return (
-        <div className="px-2 py-3">
-          <div className="flex gap-2">
-            <input
-              className="w-full rounded-sm border px-2 py-1 text-sm"
-              type={
-                variant === "number" || variant === "range" ? "number" : "text"
-              }
-              value={localInputValue}
-              onChange={(e) => setLocalInputValue(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  onSelect(e.currentTarget.value);
-                }
-              }}
-              placeholder={`Enter ${variant} value...`}
-            />
-            <Button
-              size="sm"
-              className="h-7"
-              onClick={() => onSelect(localInputValue)}
-            >
-              Add
-            </Button>
-          </div>
-        </div>
+        <CommandGroup>
+          <CommandItem
+            value={value}
+            className="justify-center"
+            onSelect={() => onSelect(value)}
+            disabled={value.trim() === ""}
+          >
+            <Check />
+            Apply filter
+          </CommandItem>
+        </CommandGroup>
       );
   }
 }

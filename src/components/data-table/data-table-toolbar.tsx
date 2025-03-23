@@ -45,7 +45,7 @@ export function DataTableToolbar<TData>({
         {columns.map((column) => (
           <DataTableToolbarFilter key={column.id} column={column} />
         ))}
-        {isFiltered ? (
+        {isFiltered && (
           <Button
             aria-label="Reset filters"
             variant="ghost"
@@ -55,7 +55,7 @@ export function DataTableToolbar<TData>({
             Reset
             <X />
           </Button>
-        ) : null}
+        )}
       </div>
       <div className="flex items-center gap-2">
         {children}
