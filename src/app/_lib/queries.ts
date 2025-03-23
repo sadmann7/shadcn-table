@@ -12,6 +12,7 @@ import {
   ilike,
   inArray,
   lte,
+  sql,
 } from "drizzle-orm";
 
 import { filterColumns } from "@/lib/filter-columns";
@@ -183,6 +184,28 @@ export async function getTaskPriorityCounts() {
       }
     },
     ["task-priority-counts"],
+    {
+      revalidate: 3600,
+    },
+  )();
+}
+
+export async function getEstimatedHoursRange() {
+  return unstable_cache(
+    async () => {
+      try {
+        return await db
+          .select({
+            min: sql<number>`min(${tasks.estimatedHours})`,
+            max: sql<number>`max(${tasks.estimatedHours})`,
+          })
+          .from(tasks)
+          .then((res) => res[0]);
+      } catch (_err) {
+        return { min: 0, max: 0 };
+      }
+    },
+    ["estimated-hours-range"],
     {
       revalidate: 3600,
     },

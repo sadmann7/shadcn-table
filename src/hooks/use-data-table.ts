@@ -30,16 +30,15 @@ import {
 import * as React from "react";
 
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
-import { getFiltersStateParser, getSortingStateParser } from "@/lib/parsers";
-import type {
-  DataTableFilterField,
-  ExtendedColumnSort,
-} from "@/types/data-table";
+import { getSortingStateParser } from "@/lib/parsers";
+import type { ExtendedColumnSort } from "@/types/data-table";
 
 const PAGE_KEY = "page";
 const PER_PAGE_KEY = "perPage";
 const SORT_KEY = "sort";
 const ARRAY_SEPARATOR = ",";
+const DEBOUNCE_MS = 300;
+const THROTTLE_MS = 50;
 
 interface UseDataTableProps<TData>
   extends Omit<
@@ -52,32 +51,32 @@ interface UseDataTableProps<TData>
       | "manualSorting"
     >,
     Required<Pick<TableOptions<TData>, "pageCount">> {
-  history?: "push" | "replace";
-  scroll?: boolean;
-  shallow?: boolean;
-  throttleMs?: number;
-  debounceMs?: number;
-  startTransition?: React.TransitionStartFunction;
-  clearOnDefault?: boolean;
-  enableAdvancedFilter?: boolean;
   initialState?: Omit<Partial<TableState>, "sorting"> & {
     sorting?: ExtendedColumnSort<TData>[];
   };
+  history?: "push" | "replace";
+  throttleMs?: number;
+  debounceMs?: number;
+  scroll?: boolean;
+  shallow?: boolean;
+  clearOnDefault?: boolean;
+  enableAdvancedFilter?: boolean;
+  startTransition?: React.TransitionStartFunction;
 }
 
 export function useDataTable<TData>(props: UseDataTableProps<TData>) {
   const {
     columns,
     pageCount = -1,
+    initialState,
     history = "replace",
+    throttleMs = THROTTLE_MS,
+    debounceMs = DEBOUNCE_MS,
     scroll = false,
     shallow = true,
-    throttleMs = 50,
-    debounceMs = 300,
     clearOnDefault = false,
     enableAdvancedFilter = false,
     startTransition,
-    initialState,
     ...tableProps
   } = props;
 
@@ -166,10 +165,14 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
   );
 
   const filterableColumns = React.useMemo(() => {
+    if (enableAdvancedFilter) return [];
+
     return columns.filter((column) => column.enableColumnFilter);
-  }, [columns]);
+  }, [columns, enableAdvancedFilter]);
 
   const filterParsers = React.useMemo(() => {
+    if (enableAdvancedFilter) return {};
+
     return filterableColumns.reduce<
       Record<string, Parser<string> | Parser<string[]>>
     >((acc, column) => {
@@ -183,7 +186,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
       }
       return acc;
     }, {});
-  }, [filterableColumns, queryStateOptions]);
+  }, [filterableColumns, queryStateOptions, enableAdvancedFilter]);
 
   const [filterValues, setFilterValues] = useQueryStates(filterParsers);
 
@@ -196,26 +199,26 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
   );
 
   const initialColumnFilters: ColumnFiltersState = React.useMemo(() => {
-    return enableAdvancedFilter
-      ? []
-      : Object.entries(filterValues).reduce<ColumnFiltersState>(
-          (filters, [key, value]) => {
-            if (value !== null) {
-              const processedValue = Array.isArray(value)
-                ? value
-                : typeof value === "string" && /[^a-zA-Z0-9]/.test(value)
-                  ? value.split(/[^a-zA-Z0-9]+/).filter(Boolean)
-                  : [value];
+    if (enableAdvancedFilter) return [];
 
-              filters.push({
-                id: key,
-                value: processedValue,
-              });
-            }
-            return filters;
-          },
-          [],
-        );
+    return Object.entries(filterValues).reduce<ColumnFiltersState>(
+      (filters, [key, value]) => {
+        if (value !== null) {
+          const processedValue = Array.isArray(value)
+            ? value
+            : typeof value === "string" && /[^a-zA-Z0-9]/.test(value)
+              ? value.split(/[^a-zA-Z0-9]+/).filter(Boolean)
+              : [value];
+
+          filters.push({
+            id: key,
+            value: processedValue,
+          });
+        }
+        return filters;
+      },
+      [],
+    );
   }, [filterValues, enableAdvancedFilter]);
 
   const [columnFilters, setColumnFilters] =
@@ -223,6 +226,8 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
 
   const onColumnFiltersChange = React.useCallback(
     (updaterOrValue: Updater<ColumnFiltersState>) => {
+      if (enableAdvancedFilter) return;
+
       setColumnFilters((prev) => {
         const next =
           typeof updaterOrValue === "function"
@@ -248,7 +253,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
         return next;
       });
     },
-    [debouncedSetFilterValues, filterableColumns],
+    [debouncedSetFilterValues, filterableColumns, enableAdvancedFilter],
   );
 
   const table = useReactTable({
@@ -281,5 +286,5 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     manualFiltering: true,
   });
 
-  return { table, shallow, debounceMs };
+  return { table, shallow, debounceMs, throttleMs };
 }

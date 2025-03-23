@@ -46,7 +46,7 @@ export function TasksTable({ promises }: TasksTableProps) {
     [statusCounts, priorityCounts],
   );
 
-  const { table, shallow, debounceMs } = useDataTable({
+  const { table, shallow, debounceMs, throttleMs } = useDataTable({
     data,
     columns,
     pageCount,
@@ -76,6 +76,7 @@ export function TasksTable({ promises }: TasksTableProps) {
               table={table}
               shallow={shallow}
               debounceMs={debounceMs}
+              throttleMs={throttleMs}
               align="start"
             />
           </DataTableAdvancedToolbar>

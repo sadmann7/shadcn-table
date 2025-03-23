@@ -95,18 +95,32 @@ export function filterColumns<T extends Table>({
             ? gte(column, startOfDay(new Date(filter.value)))
             : undefined;
       case "isBetween":
-        return filter.variant === "date" &&
+        if (
+          filter.variant === "date" &&
           Array.isArray(filter.value) &&
           filter.value.length === 2
-          ? and(
-              filter.value[0]
-                ? gte(column, startOfDay(new Date(filter.value[0] as string)))
-                : undefined,
-              filter.value[1]
-                ? lte(column, endOfDay(new Date(filter.value[1] as string)))
-                : undefined,
-            )
-          : undefined;
+        ) {
+          return and(
+            filter.value[0]
+              ? gte(column, startOfDay(new Date(filter.value[0] as string)))
+              : undefined,
+            filter.value[1]
+              ? lte(column, endOfDay(new Date(filter.value[1] as string)))
+              : undefined,
+          );
+        }
+
+        if (
+          filter.variant === "number" &&
+          Array.isArray(filter.value) &&
+          filter.value.length === 2
+        ) {
+          return and(
+            filter.value[0] !== null ? gte(column, filter.value[0]) : undefined,
+            filter.value[1] !== null ? lte(column, filter.value[1]) : undefined,
+          );
+        }
+        return undefined;
       case "isRelativeToToday":
         if (filter.variant === "date" && typeof filter.value === "string") {
           const today = new Date();

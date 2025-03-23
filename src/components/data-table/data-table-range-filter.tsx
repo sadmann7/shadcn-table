@@ -112,9 +112,12 @@ export function DataTableRangeFilter<TData>({
             <div className="relative">
               <Input
                 id={`${id}-from`}
+                aria-valuemin={min}
+                aria-valuemax={max}
                 type="text"
                 inputMode="numeric"
                 pattern="[0-9]*"
+                placeholder={min.toString()}
                 min={min}
                 max={max}
                 value={range[0].toString()}
@@ -143,8 +146,11 @@ export function DataTableRangeFilter<TData>({
               <Input
                 id={`${id}-to`}
                 type="text"
+                aria-valuemin={min}
+                aria-valuemax={max}
                 inputMode="numeric"
                 pattern="[0-9]*"
+                placeholder={max.toString()}
                 min={min}
                 max={max}
                 value={range[1].toString()}

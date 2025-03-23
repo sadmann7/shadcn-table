@@ -1,12 +1,6 @@
 import type { DataTableConfig } from "@/config/data-table";
 import type { filterSchema } from "@/lib/parsers";
-import type {
-  ColumnSort,
-  Row,
-  RowData,
-  SortingState,
-  Updater,
-} from "@tanstack/react-table";
+import type { ColumnSort, Row, RowData } from "@tanstack/react-table";
 import type { z } from "zod";
 
 declare module "@tanstack/react-table" {
@@ -39,14 +33,6 @@ export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
 export interface ExtendedColumnFilter<TData>
   extends z.infer<typeof filterSchema> {
   id: Extract<keyof TData, string>;
-}
-
-export interface DataTableFilterField<TData> {
-  id: Extract<keyof TData, string>;
-  label: string;
-  placeholder?: string;
-  options?: Option[];
-  variant: FilterVariant;
 }
 
 export interface DataTableRowAction<TData> {

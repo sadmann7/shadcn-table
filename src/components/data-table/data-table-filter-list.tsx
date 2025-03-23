@@ -1,6 +1,6 @@
 "use client";
 
-import type { Table } from "@tanstack/react-table";
+import type { Column, Table } from "@tanstack/react-table";
 import {
   CalendarIcon,
   Check,
@@ -61,12 +61,16 @@ import { generateId } from "@/lib/id";
 import { getFiltersStateParser } from "@/lib/parsers";
 import { cn, formatDate } from "@/lib/utils";
 import type {
-  DataTableFilterField,
   ExtendedColumnFilter,
   FilterOperator,
   JoinOperator,
 } from "@/types/data-table";
 import type { PopoverContentProps } from "@radix-ui/react-popover";
+
+const FILTERS_KEY = "filters";
+const JOIN_OPERATOR_KEY = "joinOperator";
+const DEBOUNCE_MS = 300;
+const THROTTLE_MS = 50;
 
 interface DataTableFilterListProps<TData>
   extends Pick<
@@ -75,12 +79,14 @@ interface DataTableFilterListProps<TData>
   > {
   table: Table<TData>;
   debounceMs?: number;
+  throttleMs?: number;
   shallow?: boolean;
 }
 
 export function DataTableFilterList<TData>({
   table,
-  debounceMs = 300,
+  debounceMs = DEBOUNCE_MS,
+  throttleMs = THROTTLE_MS,
   shallow = true,
   align = "center",
   side = "bottom",
@@ -92,36 +98,26 @@ export function DataTableFilterList<TData>({
   const labelId = React.useId();
   const descriptionId = React.useId();
 
-  const filterFields = React.useMemo<DataTableFilterField<TData>[]>(
-    () =>
-      table
-        .getAllColumns()
-        .filter((column) => column.columnDef.enableColumnFilter)
-        .map((column) => ({
-          id: column.id as Extract<keyof TData, string>,
-          label: column.columnDef.meta?.label ?? column.id,
-          placeholder: column.columnDef.meta?.placeholder,
-          variant: column.columnDef.meta?.variant ?? "text",
-          options: column.columnDef.meta?.options,
-        })),
-    [table],
-  );
+  const filterableColumns = React.useMemo(() => {
+    return table
+      .getAllColumns()
+      .filter((column) => column.columnDef.enableColumnFilter);
+  }, [table]);
 
   const [filters, setFilters] = useQueryState(
-    "filters",
-    getFiltersStateParser<TData>(filterFields.map((field) => field.id))
+    FILTERS_KEY,
+    getFiltersStateParser<TData>(filterableColumns.map((field) => field.id))
       .withDefault([])
       .withOptions({
         clearOnDefault: true,
         shallow,
+        throttleMs,
       }),
   );
   const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
 
-  console.log({ filters });
-
   const [joinOperator, setJoinOperator] = useQueryState(
-    "joinOperator",
+    JOIN_OPERATOR_KEY,
     parseAsStringEnum(["and", "or"]).withDefault("and").withOptions({
       clearOnDefault: true,
       shallow,
@@ -129,20 +125,22 @@ export function DataTableFilterList<TData>({
   );
 
   const onFilterAdd = React.useCallback(() => {
-    const filterField = filterFields[0];
+    const filterableColumn = filterableColumns[0];
 
-    if (!filterField) return;
+    if (!filterableColumn) return;
 
     const newFilter: ExtendedColumnFilter<TData> = {
-      id: filterField.id,
+      id: filterableColumn.id as Extract<keyof TData, string>,
       value: "",
-      variant: filterField.variant,
-      operator: getDefaultFilterOperator(filterField.variant),
+      variant: filterableColumn.columnDef.meta?.variant ?? "text",
+      operator: getDefaultFilterOperator(
+        filterableColumn.columnDef.meta?.variant ?? "text",
+      ),
       filterId: generateId({ length: 8 }),
     };
 
     debouncedSetFilters([...filters, newFilter]);
-  }, [filterFields, filters, debouncedSetFilters]);
+  }, [filterableColumns, filters, debouncedSetFilters]);
 
   const onFilterUpdate = React.useCallback(
     (
@@ -238,7 +236,7 @@ export function DataTableFilterList<TData>({
                     filterItemId={`${id}-filter-${filter.filterId}`}
                     joinOperator={joinOperator}
                     setJoinOperator={setJoinOperator}
-                    filterFields={filterFields}
+                    filterableColumns={filterableColumns}
                     onFilterUpdate={onFilterUpdate}
                     onFilterRemove={onFilterRemove}
                   />
@@ -290,7 +288,7 @@ interface FilterItemProps<TData> {
   filterItemId: string;
   joinOperator: JoinOperator;
   setJoinOperator: (value: JoinOperator) => void;
-  filterFields: DataTableFilterField<TData>[];
+  filterableColumns: Column<TData>[];
   onFilterUpdate: (
     filterId: string,
     updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
@@ -304,7 +302,7 @@ function FilterItem<TData>({
   filterItemId,
   joinOperator,
   setJoinOperator,
-  filterFields,
+  filterableColumns,
   onFilterUpdate,
   onFilterRemove,
 }: FilterItemProps<TData>) {
@@ -319,9 +317,9 @@ function FilterItem<TData>({
       filter,
       inputId,
     }: { filter: ExtendedColumnFilter<TData>; inputId: string }) => {
-      const filterField = filterFields.find((f) => f.id === filter.id);
+      const column = filterableColumns.find((f) => f.id === filter.id);
 
-      if (!filterField) return null;
+      if (!column) return null;
 
       if (filter.operator === "isEmpty" || filter.operator === "isNotEmpty") {
         return (
@@ -329,7 +327,7 @@ function FilterItem<TData>({
             id={inputId}
             role="status"
             aria-live="polite"
-            aria-label={`${filterField.label} filter is ${
+            aria-label={`${column.columnDef.meta?.label} filter is ${
               filter.operator === "isEmpty" ? "empty" : "not empty"
             }`}
             className="h-8 w-full rounded border border-dashed"
@@ -340,13 +338,27 @@ function FilterItem<TData>({
       switch (filter.variant) {
         case "text":
         case "number":
+        case "range":
+          if (filter.variant === "range" && filter.operator === "isBetween") {
+            return (
+              <RangeFilter
+                filter={filter}
+                column={column}
+                inputId={inputId}
+                onFilterUpdate={onFilterUpdate}
+              />
+            );
+          }
+
           return (
             <Input
               id={inputId}
-              type={filter.variant}
-              aria-label={`${filterField.label} filter value`}
+              type={filter.variant === "range" ? "number" : filter.variant}
+              aria-label={`${column.columnDef.meta?.label} filter value`}
               aria-describedby={`${inputId}-description`}
-              placeholder={filterField.placeholder ?? "Enter a value..."}
+              placeholder={
+                column.columnDef.meta?.placeholder ?? "Enter a value..."
+              }
               className="h-8 w-full rounded"
               defaultValue={
                 typeof filter.value === "string" ? filter.value : undefined
@@ -374,15 +386,16 @@ function FilterItem<TData>({
                 <Button
                   id={inputId}
                   aria-controls={`${inputId}-listbox`}
-                  aria-label={`${filterField.label} filter value`}
+                  aria-label={`${column.columnDef.meta?.label} filter value`}
                   variant="outline"
                   size="sm"
                   className="w-full rounded px-1.5"
                 >
                   <FacetedBadgeList
-                    options={filterField.options}
+                    options={column.columnDef.meta?.options}
                     placeholder={
-                      filterField.placeholder ?? "Select an option..."
+                      column.columnDef.meta?.placeholder ??
+                      "Select an option..."
                     }
                   />
                 </Button>
@@ -392,13 +405,15 @@ function FilterItem<TData>({
                 className="w-[12.5rem] origin-(--radix-popover-content-transform-origin)"
               >
                 <FacetedInput
-                  aria-label={`Search ${filterField?.label} options`}
-                  placeholder={filterField?.label ?? "Search options..."}
+                  aria-label={`Search ${column.columnDef.meta?.label} options`}
+                  placeholder={
+                    column.columnDef.meta?.placeholder ?? "Search options..."
+                  }
                 />
                 <FacetedList>
                   <FacetedEmpty>No options found.</FacetedEmpty>
                   <FacetedGroup>
-                    {filterField?.options?.map((option) => (
+                    {column.columnDef.meta?.options?.map((option) => (
                       <FacetedItem key={option.value} value={option.value}>
                         {option.icon && (
                           <option.icon className="size-4 text-muted-foreground" />
@@ -435,28 +450,30 @@ function FilterItem<TData>({
                 <Button
                   id={inputId}
                   aria-controls={`${inputId}-listbox`}
-                  aria-label={`${filterField.label} filter values`}
+                  aria-label={`${column.columnDef.meta?.label} filter values`}
                   variant="outline"
                   size="sm"
                   className="w-full rounded px-1.5"
                 >
                   <FacetedBadgeList
-                    options={filterField.options}
+                    options={column.columnDef.meta?.options}
                     placeholder={
-                      filterField.placeholder ?? " Select options..."
+                      column.columnDef.meta?.placeholder ?? " Select options..."
                     }
                   />
                 </Button>
               </FacetedTrigger>
               <FacetedContent id={`${inputId}-listbox`}>
                 <FacetedInput
-                  aria-label={`Search ${filterField?.label} options`}
-                  placeholder={filterField?.label ?? "Search options..."}
+                  aria-label={`Search ${column.columnDef.meta?.label} options`}
+                  placeholder={
+                    column.columnDef.meta?.placeholder ?? "Search options..."
+                  }
                 />
                 <FacetedList>
                   <FacetedEmpty>No options found.</FacetedEmpty>
                   <FacetedGroup>
-                    {filterField?.options?.map((option) => (
+                    {column.columnDef.meta?.options?.map((option) => (
                       <FacetedItem key={option.value} value={option.value}>
                         {option.icon && (
                           <option.icon className="size-4 text-muted-foreground" />
@@ -496,7 +513,7 @@ function FilterItem<TData>({
                 <Button
                   id={inputId}
                   aria-controls={`${inputId}-calendar`}
-                  aria-label={`${filterField.label} date filter`}
+                  aria-label={`${column.columnDef.meta?.label} date filter`}
                   variant="outline"
                   size="sm"
                   className={cn(
@@ -517,7 +534,7 @@ function FilterItem<TData>({
                   <Calendar
                     id={`${inputId}-calendar`}
                     mode="range"
-                    aria-label={`Select ${filterField.label} date range`}
+                    aria-label={`Select ${column.columnDef.meta?.label} date range`}
                     selected={
                       dateValue.length === 2
                         ? {
@@ -546,7 +563,7 @@ function FilterItem<TData>({
                   <Calendar
                     id={`${inputId}-calendar`}
                     mode="single"
-                    aria-label={`Select ${filterField.label} date`}
+                    aria-label={`Select ${column.columnDef.meta?.label} date`}
                     selected={dateValue[0] ? new Date(dateValue[0]) : undefined}
                     onSelect={(date) => {
                       onFilterUpdate(filter.filterId, {
@@ -575,7 +592,7 @@ function FilterItem<TData>({
               <SelectTrigger
                 id={inputId}
                 aria-controls={`${inputId}-listbox`}
-                aria-label={`${filterField.label} boolean filter`}
+                aria-label={`${column.columnDef.meta?.label} boolean filter`}
                 size="sm"
                 className="w-full rounded dark:bg-transparent"
               >
@@ -592,7 +609,7 @@ function FilterItem<TData>({
           return null;
       }
     },
-    [filterFields, onFilterUpdate],
+    [filterableColumns, onFilterUpdate],
   );
 
   return (
@@ -649,8 +666,8 @@ function FilterItem<TData>({
               className="w-32 justify-between rounded"
             >
               <span className="truncate">
-                {filterFields.find((field) => field.id === filter.id)?.label ??
-                  "Select field"}
+                {filterableColumns.find((field) => field.id === filter.id)
+                  ?.columnDef.meta?.label ?? "Select field"}
               </span>
               <ChevronsUpDown className="opacity-50" />
             </Button>
@@ -665,22 +682,23 @@ function FilterItem<TData>({
               <CommandList>
                 <CommandEmpty>No fields found.</CommandEmpty>
                 <CommandGroup>
-                  {filterFields.map((field) => (
+                  {filterableColumns.map((column) => (
                     <CommandItem
-                      key={field.id}
-                      value={field.id}
+                      key={column.id}
+                      value={column.id}
                       onSelect={(value) => {
-                        const filterField = filterFields.find(
+                        const filterableColumn = filterableColumns.find(
                           (col) => col.id === value,
                         );
 
-                        if (!filterField) return;
+                        if (!filterableColumn) return;
 
                         onFilterUpdate(filter.filterId, {
                           id: value as Extract<keyof TData, string>,
-                          variant: filterField.variant,
+                          variant:
+                            filterableColumn.columnDef.meta?.variant ?? "text",
                           operator: getDefaultFilterOperator(
-                            filterField.variant,
+                            filterableColumn.columnDef.meta?.variant ?? "text",
                           ),
                           value: "",
                         });
@@ -690,11 +708,13 @@ function FilterItem<TData>({
                         });
                       }}
                     >
-                      <span className="truncate">{field.label}</span>
+                      <span className="truncate">
+                        {column.columnDef.meta?.label}
+                      </span>
                       <Check
                         className={cn(
                           "ml-auto size-4 shrink-0",
-                          field.id === filter.id ? "opacity-100" : "opacity-0",
+                          column.id === filter.id ? "opacity-100" : "opacity-0",
                         )}
                       />
                     </CommandItem>
@@ -760,5 +780,113 @@ function FilterItem<TData>({
         </SortableItemHandle>
       </div>
     </SortableItem>
+  );
+}
+
+interface RangeFilterProps<TData> {
+  filter: ExtendedColumnFilter<TData>;
+  column: Column<TData>;
+  inputId: string;
+  onFilterUpdate: (
+    filterId: string,
+    updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
+  ) => void;
+}
+
+function RangeFilter<TData>({
+  filter,
+  column,
+  inputId,
+  onFilterUpdate,
+}: RangeFilterProps<TData>) {
+  const meta = column.columnDef.meta;
+
+  const [min, max] = React.useMemo(() => {
+    const range = column.columnDef.meta?.range;
+    if (range) return range;
+
+    const values = column.getFacetedMinMaxValues();
+    if (!values) return [0, 100];
+
+    return [values[0], values[1]];
+  }, [column]);
+
+  const formatValue = React.useCallback(
+    (value: string | number | undefined) => {
+      if (value === undefined || value === "") return "";
+      const numValue = Number(value);
+      return Number.isNaN(numValue)
+        ? ""
+        : numValue.toLocaleString(undefined, {
+            maximumFractionDigits: 0,
+          });
+    },
+    [],
+  );
+
+  const value = React.useMemo(() => {
+    if (Array.isArray(filter.value)) return filter.value.map(formatValue);
+    return [formatValue(filter.value), ""];
+  }, [filter.value, formatValue]);
+
+  const onRangeValueChange = React.useCallback(
+    (value: string, isMin?: boolean) => {
+      const numValue = Number(value);
+      const currentValues = Array.isArray(filter.value)
+        ? filter.value
+        : ["", ""];
+      const otherValue = isMin
+        ? (currentValues[1] ?? "")
+        : (currentValues[0] ?? "");
+
+      if (
+        value === "" ||
+        (!Number.isNaN(numValue) &&
+          (isMin
+            ? numValue >= min && numValue <= (Number(otherValue) || max)
+            : numValue <= max && numValue >= (Number(otherValue) || min)))
+      ) {
+        onFilterUpdate(filter.filterId, {
+          value: isMin ? [value, otherValue] : [otherValue, value],
+        });
+      }
+    },
+    [filter.filterId, filter.value, min, max, onFilterUpdate],
+  );
+
+  return (
+    <div className="flex w-full items-center gap-2">
+      <Input
+        id={`${inputId}-min`}
+        type="number"
+        aria-label={`${meta?.label} minimum value`}
+        aria-valuemin={min}
+        aria-valuemax={max}
+        inputMode="numeric"
+        pattern="[0-9]*"
+        min={min}
+        max={max}
+        placeholder={min.toString()}
+        className="h-8 w-full rounded"
+        defaultValue={value[0]}
+        onChange={(event) => onRangeValueChange(event.target.value, true)}
+      />
+      <span className="sr-only shrink-0 text-muted-foreground">to</span>
+      <Input
+        id={`${inputId}-max`}
+        type="number"
+        aria-label={`${meta?.label} maximum value`}
+        aria-valuemin={min}
+        aria-valuemax={max}
+        inputMode="numeric"
+        pattern="[0-9]*"
+        placeholder={max.toString()}
+        min={min}
+        max={max}
+        className="h-8 w-full rounded"
+        defaultValue={value[1]}
+        onChange={(event) => onRangeValueChange(event.target.value)}
+      />
+    </div>
   );
 }

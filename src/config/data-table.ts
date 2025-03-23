@@ -41,6 +41,7 @@ export const dataTableConfig = {
     { label: "Is less than or equal to", value: "lte" as const },
     { label: "Is greater than", value: "gt" as const },
     { label: "Is greater than or equal to", value: "gte" as const },
+    { label: "Is between", value: "isBetween" as const },
     { label: "Is empty", value: "isEmpty" as const },
     { label: "Is not empty", value: "isNotEmpty" as const },
   ],
