@@ -222,35 +222,33 @@ export function DataTableFilterMenu<TData>({
                 </PopoverContent>
               </Popover>
             </div>
-            <div className="px-2">
-              <Select
-                value={filter.operator}
-                onValueChange={(value) =>
-                  onFilterUpdate(filter.filterId, {
-                    operator: value as FilterOperator,
-                    value:
-                      value === "isEmpty" || value === "isNotEmpty"
-                        ? ""
-                        : filter.value,
-                  })
-                }
-              >
-                <SelectTrigger className="h-auto border-0 bg-transparent px-0 py-0.5 font-normal text-sm shadow-none [&>svg]:size-3">
-                  <SelectValue placeholder={filter.operator} />
-                </SelectTrigger>
-                <SelectContent>
-                  {getFilterOperators(filter.variant).map((operator) => (
-                    <SelectItem
-                      key={operator.value}
-                      value={operator.value}
-                      className="text-sm"
-                    >
-                      {operator.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <Select
+              value={filter.operator}
+              onValueChange={(value: FilterOperator) =>
+                onFilterUpdate(filter.filterId, {
+                  operator: value,
+                  value:
+                    value === "isEmpty" || value === "isNotEmpty"
+                      ? ""
+                      : filter.value,
+                })
+              }
+            >
+              <SelectTrigger className="rounded-none border-none px-1.5">
+                <SelectValue placeholder={filter.operator} />
+              </SelectTrigger>
+              <SelectContent>
+                {getFilterOperators(filter.variant).map((operator) => (
+                  <SelectItem
+                    className="text-sm"
+                    key={operator.value}
+                    value={operator.value}
+                  >
+                    {operator.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             {renderFilterInput({
               filter,
               column,
@@ -260,7 +258,7 @@ export function DataTableFilterMenu<TData>({
               variant="ghost"
               size="sm"
               onClick={() => onFilterRemove(filter.filterId)}
-              className="h-full rounded-none"
+              className="h-full rounded-none px-1.5"
             >
               <X className="size-3.5" />
             </Button>
