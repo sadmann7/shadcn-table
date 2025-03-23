@@ -118,6 +118,8 @@ export function DataTableFilterList<TData>({
   );
   const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
 
+  console.log({ filters });
+
   const [joinOperator, setJoinOperator] = useQueryState(
     "joinOperator",
     parseAsStringEnum(["and", "or"]).withDefault("and").withOptions({
@@ -204,7 +206,7 @@ export function DataTableFilterList<TData>({
           collisionPadding={collisionPadding}
           side={side}
           sideOffset={sideOffset}
-          className="flex w-[calc(100vw-(--spacing(12)))] min-w-60 origin-(--radix-popover-content-transform-origin) flex-col gap-3.5 p-4 sm:w-[36rem]"
+          className="flex w-[calc(100vw-(--spacing(12)))] min-w-60 origin-(--radix-popover-content-transform-origin) flex-col gap-3.5 p-4 sm:w-[38rem]"
         >
           <div className="flex flex-col gap-1">
             <h4 id={labelId} className="font-medium leading-none">
@@ -473,7 +475,8 @@ function FilterItem<TData>({
             </Faceted>
           );
         }
-        case "date": {
+        case "date":
+        case "date-range": {
           const dateValue = Array.isArray(filter.value)
             ? filter.value.filter(Boolean)
             : [filter.value, filter.value].filter(Boolean);
