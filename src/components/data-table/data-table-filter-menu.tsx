@@ -2,10 +2,13 @@
 
 import type { Column, Table } from "@tanstack/react-table";
 import {
+  BadgeCheck,
   CalendarIcon,
   Check,
   ChevronsUpDown,
   ListFilter,
+  SquareCheck,
+  Text,
   X,
 } from "lucide-react";
 import { useQueryState } from "nuqs";
@@ -401,20 +404,31 @@ function FilterValueSelector<TData>({
         </div>
       );
 
-    default:
+    default: {
+      const isEmpty = !value.trim();
+
       return (
         <CommandGroup>
           <CommandItem
             value={value}
             onSelect={() => onSelect(value)}
-            disabled={!value.trim()}
-            className="justify-center"
+            disabled={isEmpty}
           >
-            <Check className="mr-2 size-4" />
-            Apply filter
+            {isEmpty ? (
+              <>
+                <Text />
+                <span>Type to add filter...</span>
+              </>
+            ) : (
+              <>
+                <BadgeCheck />
+                <span className="truncate">Filter by &quot;{value}&quot;</span>
+              </>
+            )}
           </CommandItem>
         </CommandGroup>
       );
+    }
   }
 }
 
