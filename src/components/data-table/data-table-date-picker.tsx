@@ -190,7 +190,6 @@ export function DataTableDatePicker<TData>({
                 : { from: undefined, to: undefined }
             }
             onSelect={onSelect}
-            numberOfMonths={1}
           />
         ) : (
           <Calendar
@@ -200,7 +199,6 @@ export function DataTableDatePicker<TData>({
               !isDateRange(selectedDates) ? selectedDates[0] : undefined
             }
             onSelect={onSelect}
-            numberOfMonths={1}
           />
         )}
       </PopoverContent>

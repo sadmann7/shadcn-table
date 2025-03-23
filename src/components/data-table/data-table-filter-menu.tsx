@@ -41,6 +41,7 @@ import { generateId } from "@/lib/id";
 import { getFiltersStateParser } from "@/lib/parsers";
 import { cn, formatDate } from "@/lib/utils";
 import type { ExtendedColumnFilter, FilterOperator } from "@/types/data-table";
+import { DataTableRangeFilter } from "./data-table-range-filter";
 
 const FILTERS_KEY = "filters";
 const DEBOUNCE_MS = 300;
@@ -161,65 +162,63 @@ export function DataTableFilterMenu<TData>({
         return (
           <div
             key={filter.filterId}
-            className="flex h-8 items-center divide-x rounded-md border bg-background"
+            className="flex h-8 items-center rounded-md bg-background"
           >
-            <div className="flex items-center gap-1.5">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="rounded-none rounded-l-md font-normal dark:bg-input/30"
-                  >
-                    {column.columnDef.meta?.icon && (
-                      <column.columnDef.meta.icon className="text-muted-foreground" />
-                    )}
-                    {column.columnDef.meta?.label ?? column.id}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent align="start" className="w-48 p-0">
-                  <Command>
-                    <CommandInput placeholder="Search fields..." />
-                    <CommandList>
-                      <CommandEmpty>No fields found.</CommandEmpty>
-                      <CommandGroup>
-                        {columns.map((col) => (
-                          <CommandItem
-                            key={col.id}
-                            value={col.id}
-                            onSelect={() => {
-                              onFilterUpdate(filter.filterId, {
-                                id: col.id as Extract<keyof TData, string>,
-                                variant: col.columnDef.meta?.variant ?? "text",
-                                operator: getDefaultFilterOperator(
-                                  col.columnDef.meta?.variant ?? "text",
-                                ),
-                                value: "",
-                              });
-                            }}
-                          >
-                            {col.columnDef.meta?.icon && (
-                              <col.columnDef.meta.icon />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="rounded-none rounded-l-md border border-r-0 font-normal dark:bg-input/30"
+                >
+                  {column.columnDef.meta?.icon && (
+                    <column.columnDef.meta.icon className="text-muted-foreground" />
+                  )}
+                  {column.columnDef.meta?.label ?? column.id}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="w-48 p-0">
+                <Command>
+                  <CommandInput placeholder="Search fields..." />
+                  <CommandList>
+                    <CommandEmpty>No fields found.</CommandEmpty>
+                    <CommandGroup>
+                      {columns.map((col) => (
+                        <CommandItem
+                          key={col.id}
+                          value={col.id}
+                          onSelect={() => {
+                            onFilterUpdate(filter.filterId, {
+                              id: col.id as Extract<keyof TData, string>,
+                              variant: col.columnDef.meta?.variant ?? "text",
+                              operator: getDefaultFilterOperator(
+                                col.columnDef.meta?.variant ?? "text",
+                              ),
+                              value: "",
+                            });
+                          }}
+                        >
+                          {col.columnDef.meta?.icon && (
+                            <col.columnDef.meta.icon />
+                          )}
+                          <span className="truncate">
+                            {col.columnDef.meta?.label ?? col.id}
+                          </span>
+                          <Check
+                            className={cn(
+                              "ml-auto",
+                              col.id === filter.id
+                                ? "opacity-100"
+                                : "opacity-0",
                             )}
-                            <span className="truncate">
-                              {col.columnDef.meta?.label ?? col.id}
-                            </span>
-                            <Check
-                              className={cn(
-                                "ml-auto",
-                                col.id === filter.id
-                                  ? "opacity-100"
-                                  : "opacity-0",
-                              )}
-                            />
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-            </div>
+                          />
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
             <Select
               value={filter.operator}
               onValueChange={(value: FilterOperator) =>
@@ -234,7 +233,7 @@ export function DataTableFilterMenu<TData>({
             >
               <SelectTrigger
                 size="sm"
-                className="rounded-none border-y-0 border-l-0 px-2.5 lowercase [&_svg]:hidden"
+                className="rounded-none border-r-0 px-2.5 lowercase [&_svg]:hidden"
               >
                 <SelectValue placeholder={filter.operator} />
               </SelectTrigger>
@@ -250,7 +249,7 @@ export function DataTableFilterMenu<TData>({
                 ))}
               </SelectContent>
             </Select>
-            {onFilerInputRender({
+            {onFilterInputRender({
               filter,
               column,
               onFilterUpdate,
@@ -258,7 +257,7 @@ export function DataTableFilterMenu<TData>({
             <Button
               variant="ghost"
               size="sm"
-              className="h-full rounded-none rounded-r-md px-1.5 font-normal dark:bg-input/30"
+              className="h-full rounded-none rounded-r-md border border-l-0 px-1.5 font-normal dark:bg-input/30"
               onClick={() => onFilterRemove(filter.filterId)}
             >
               <X className="size-3.5" />
@@ -401,18 +400,12 @@ function FilterValueSelector<TData>({
     case "date":
     case "date-range":
       return (
-        <div className="p-2">
-          <Calendar
-            mode="single"
-            selected={value ? new Date(value) : undefined}
-            onSelect={(date) => {
-              if (date) {
-                onSelect(date.toISOString());
-              }
-            }}
-            initialFocus
-          />
-        </div>
+        <Calendar
+          initialFocus
+          mode="single"
+          selected={value ? new Date(value) : undefined}
+          onSelect={(date) => onSelect(date?.getTime().toString() ?? "")}
+        />
       );
 
     default: {
@@ -443,7 +436,7 @@ function FilterValueSelector<TData>({
   }
 }
 
-function onFilerInputRender<TData>({
+function onFilterInputRender<TData>({
   filter,
   column,
   onFilterUpdate,
@@ -463,14 +456,30 @@ function onFilerInputRender<TData>({
     case "text":
     case "number":
     case "range": {
+      if (
+        (filter.variant === "range" && filter.operator === "isBetween") ||
+        filter.operator === "isBetween"
+      ) {
+        return (
+          <DataTableRangeFilter
+            filter={filter}
+            column={column}
+            inputId={`${filter.filterId}-input`}
+            onFilterUpdate={onFilterUpdate}
+            className="size-full max-w-28 gap-0 [&_[data-slot='range-min']]:border-r-0 [&_input]:rounded-none [&_input]:px-1.5"
+          />
+        );
+      }
+
       const isNumber =
         filter.variant === "number" || filter.variant === "range";
+
       return (
         <Input
           type={isNumber ? "number" : "text"}
           inputMode={isNumber ? "numeric" : undefined}
           placeholder={column.columnDef.meta?.placeholder ?? "Enter value..."}
-          className="h-full w-28 rounded-none border-0 bg-transparent px-1.5 text-sm shadow-none"
+          className="h-full w-24 rounded-none px-1.5"
           defaultValue={typeof filter.value === "string" ? filter.value : ""}
           onChange={(event) =>
             onFilterUpdate(filter.filterId, { value: event.target.value })
@@ -487,7 +496,7 @@ function onFilerInputRender<TData>({
             onFilterUpdate(filter.filterId, { value })
           }
         >
-          <SelectTrigger className="h-auto rounded-none border-0 bg-transparent px-1.5 py-0.5 shadow-none [&>svg]:size-3">
+          <SelectTrigger className="rounded-none bg-transparent px-1.5 py-0.5 [&_svg]:hidden">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -514,7 +523,7 @@ function onFilerInputRender<TData>({
             <Button
               variant="ghost"
               size="sm"
-              className="h-full min-w-16 rounded-none px-1.5 font-normal dark:bg-input/30"
+              className="h-full min-w-16 rounded-none border px-1.5 font-normal dark:bg-input/30"
             >
               {selectedValues.length === 0 ? (
                 filter.variant === "multi-select" ? (
@@ -529,7 +538,7 @@ function onFilerInputRender<TData>({
                       selectedOption.icon ? (
                         <div
                           key={selectedOption.value}
-                          className="rounded-full border border-border bg-background p-0.5"
+                          className="rounded-full border bg-background p-0.5"
                         >
                           <selectedOption.icon className="size-3.5" />
                         </div>
@@ -609,7 +618,7 @@ function onFilerInputRender<TData>({
               variant="ghost"
               size="sm"
               className={cn(
-                "h-auto px-0 py-0.5 font-normal",
+                "h-full rounded-none border px-1.5 font-normal dark:bg-input/30",
                 !filter.value && "text-muted-foreground",
               )}
             >
@@ -621,6 +630,7 @@ function onFilerInputRender<TData>({
             {filter.operator === "isBetween" ? (
               <Calendar
                 mode="range"
+                initialFocus
                 selected={
                   dateValue.length === 2
                     ? {
@@ -642,12 +652,11 @@ function onFilerInputRender<TData>({
                       : [],
                   });
                 }}
-                initialFocus
-                numberOfMonths={1}
               />
             ) : (
               <Calendar
                 mode="single"
+                initialFocus
                 selected={
                   dateValue[0] ? new Date(Number(dateValue[0])) : undefined
                 }
@@ -656,7 +665,6 @@ function onFilerInputRender<TData>({
                     value: (date?.getTime() ?? "").toString(),
                   });
                 }}
-                initialFocus
               />
             )}
           </PopoverContent>

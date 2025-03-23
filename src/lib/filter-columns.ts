@@ -36,8 +36,6 @@ export function filterColumns<T extends Table>({
 
     switch (filter.operator) {
       case "eq":
-        console.log({ filter });
-
         if (Array.isArray(filter.value)) {
           return inArray(column, filter.value);
         }
@@ -170,9 +168,30 @@ export function filterColumns<T extends Table>({
           Array.isArray(filter.value) &&
           filter.value.length === 2
         ) {
+          const firstValue =
+            filter.value[0] && filter.value[0].trim() !== ""
+              ? Number(filter.value[0])
+              : null;
+          const secondValue =
+            filter.value[1] && filter.value[1].trim() !== ""
+              ? Number(filter.value[1])
+              : null;
+
+          if (firstValue === null && secondValue === null) {
+            return undefined;
+          }
+
+          if (firstValue !== null && secondValue === null) {
+            return eq(column, firstValue);
+          }
+
+          if (firstValue === null && secondValue !== null) {
+            return eq(column, secondValue);
+          }
+
           return and(
-            filter.value[0] !== null ? gte(column, filter.value[0]) : undefined,
-            filter.value[1] !== null ? lte(column, filter.value[1]) : undefined,
+            firstValue !== null ? gte(column, firstValue) : undefined,
+            secondValue !== null ? lte(column, secondValue) : undefined,
           );
         }
         return undefined;

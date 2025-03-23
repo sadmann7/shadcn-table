@@ -6,7 +6,7 @@ import * as React from "react";
 
 import { DataTableDatePicker } from "@/components/data-table/data-table-date-picker";
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";
-import { DataTableRangeFilter } from "@/components/data-table/data-table-range-filter";
+import { DataTableSlider } from "@/components/data-table/data-table-slider";
 import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -106,7 +106,7 @@ function DataTableToolbarFilter<TData>({
 
         case "range":
           return (
-            <DataTableRangeFilter
+            <DataTableSlider
               column={column}
               title={columnMeta.label ?? column.id}
             />

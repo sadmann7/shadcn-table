@@ -12,6 +12,7 @@ import {
 import { parseAsStringEnum, useQueryState } from "nuqs";
 import * as React from "react";
 
+import { DataTableRangeFilter } from "@/components/data-table/data-table-range-filter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -183,7 +184,7 @@ export function DataTableFilterList<TData>({
     >
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="outline" size="sm" className="[&>svg]:size-3">
+          <Button variant="outline" size="sm">
             <ListFilter />
             Filters
             {filters.length > 0 && (
@@ -245,11 +246,7 @@ export function DataTableFilterList<TData>({
             </SortableContent>
           ) : null}
           <div className="flex w-full items-center gap-2">
-            <Button
-              size="sm"
-              className="h-[1.85rem] rounded"
-              onClick={onFilterAdd}
-            >
+            <Button size="sm" className="rounded" onClick={onFilterAdd}>
               Add filter
             </Button>
             {filters.length > 0 ? (
@@ -337,9 +334,12 @@ function FilterItem<TData>({
         case "text":
         case "number":
         case "range": {
-          if (filter.variant === "range" && filter.operator === "isBetween") {
+          if (
+            (filter.variant === "range" && filter.operator === "isBetween") ||
+            filter.operator === "isBetween"
+          ) {
             return (
-              <RangeFilter
+              <DataTableRangeFilter
                 filter={filter}
                 column={column}
                 inputId={inputId}
@@ -422,7 +422,7 @@ function FilterItem<TData>({
                   aria-label={`${column.columnDef.meta?.label} filter value`}
                   variant="outline"
                   size="sm"
-                  className="w-full rounded px-1.5"
+                  className="w-full rounded font-normal"
                 >
                   <FacetedBadgeList
                     options={column.columnDef.meta?.options}
@@ -448,12 +448,10 @@ function FilterItem<TData>({
                   <FacetedGroup>
                     {column.columnDef.meta?.options?.map((option) => (
                       <FacetedItem key={option.value} value={option.value}>
-                        {option.icon && (
-                          <option.icon className="size-4 text-muted-foreground" />
-                        )}
+                        {option.icon && <option.icon />}
                         <span>{option.label}</span>
                         {option.count && (
-                          <span className="ml-auto flex size-4 items-center justify-center font-mono text-xs">
+                          <span className="ml-auto font-mono text-xs">
                             {option.count}
                           </span>
                         )}
@@ -487,7 +485,7 @@ function FilterItem<TData>({
                   aria-label={`${column.columnDef.meta?.label} filter values`}
                   variant="outline"
                   size="sm"
-                  className="w-full rounded px-1.5"
+                  className="w-full rounded font-normal"
                 >
                   <FacetedBadgeList
                     options={column.columnDef.meta?.options}
@@ -509,12 +507,10 @@ function FilterItem<TData>({
                   <FacetedGroup>
                     {column.columnDef.meta?.options?.map((option) => (
                       <FacetedItem key={option.value} value={option.value}>
-                        {option.icon && (
-                          <option.icon className="size-4 text-muted-foreground" />
-                        )}
+                        {option.icon && <option.icon />}
                         <span>{option.label}</span>
                         {option.count && (
-                          <span className="ml-auto flex size-4 items-center justify-center font-mono text-xs">
+                          <span className="ml-auto font-mono text-xs">
                             {option.count}
                           </span>
                         )}
@@ -552,7 +548,7 @@ function FilterItem<TData>({
                   variant="outline"
                   size="sm"
                   className={cn(
-                    "w-full justify-start rounded text-left font-normal [&>svg]:size-3.5",
+                    "w-full justify-start rounded text-left font-normal",
                     !filter.value && "text-muted-foreground",
                   )}
                 >
@@ -568,8 +564,9 @@ function FilterItem<TData>({
                 {filter.operator === "isBetween" ? (
                   <Calendar
                     id={`${inputId}-calendar`}
-                    mode="range"
                     aria-label={`Select ${column.columnDef.meta?.label} date range`}
+                    mode="range"
+                    initialFocus
                     selected={
                       dateValue.length === 2
                         ? {
@@ -591,14 +588,13 @@ function FilterItem<TData>({
                           : [],
                       });
                     }}
-                    initialFocus
-                    numberOfMonths={1}
                   />
                 ) : (
                   <Calendar
                     id={`${inputId}-calendar`}
-                    mode="single"
                     aria-label={`Select ${column.columnDef.meta?.label} date`}
+                    mode="single"
+                    initialFocus
                     selected={
                       dateValue[0] ? new Date(Number(dateValue[0])) : undefined
                     }
@@ -607,7 +603,6 @@ function FilterItem<TData>({
                         value: (date?.getTime() ?? "").toString(),
                       });
                     }}
-                    initialFocus
                   />
                 )}
               </PopoverContent>
@@ -673,7 +668,7 @@ function FilterItem<TData>({
               size="sm"
               aria-label="Select filter field"
               aria-controls={fieldListboxId}
-              className="w-32 justify-between rounded"
+              className="w-32 justify-between rounded font-normal"
             >
               <span className="truncate">
                 {columns.find((field) => field.id === filter.id)?.columnDef.meta
@@ -718,7 +713,7 @@ function FilterItem<TData>({
                       </span>
                       <Check
                         className={cn(
-                          "ml-auto size-4 shrink-0",
+                          "ml-auto",
                           column.id === filter.id ? "opacity-100" : "opacity-0",
                         )}
                       />
@@ -773,127 +768,17 @@ function FilterItem<TData>({
           aria-label={`Remove filter ${index + 1}`}
           variant="outline"
           size="icon"
-          className="size-8 shrink-0 rounded [&>svg]:size-3.5"
+          className="size-8 rounded"
           onClick={() => onFilterRemove(filter.filterId)}
         >
           <Trash2 />
         </Button>
         <SortableItemHandle asChild>
-          <Button
-            variant="outline"
-            size="icon"
-            className="size-8 shrink-0 rounded [&>svg]:size-3.5"
-          >
+          <Button variant="outline" size="icon" className="size-8 rounded">
             <GripVertical />
           </Button>
         </SortableItemHandle>
       </div>
     </SortableItem>
-  );
-}
-
-interface RangeFilterProps<TData> {
-  filter: ExtendedColumnFilter<TData>;
-  column: Column<TData>;
-  inputId: string;
-  onFilterUpdate: (
-    filterId: string,
-    updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
-  ) => void;
-}
-
-function RangeFilter<TData>({
-  filter,
-  column,
-  inputId,
-  onFilterUpdate,
-}: RangeFilterProps<TData>) {
-  const meta = column.columnDef.meta;
-
-  const [min, max] = React.useMemo(() => {
-    const range = column.columnDef.meta?.range;
-    if (range) return range;
-
-    const values = column.getFacetedMinMaxValues();
-    if (!values) return [0, 100];
-
-    return [values[0], values[1]];
-  }, [column]);
-
-  const formatValue = React.useCallback(
-    (value: string | number | undefined) => {
-      if (value === undefined || value === "") return "";
-      const numValue = Number(value);
-      return Number.isNaN(numValue)
-        ? ""
-        : numValue.toLocaleString(undefined, {
-            maximumFractionDigits: 0,
-          });
-    },
-    [],
-  );
-
-  const value = React.useMemo(() => {
-    if (Array.isArray(filter.value)) return filter.value.map(formatValue);
-    return [formatValue(filter.value), ""];
-  }, [filter.value, formatValue]);
-
-  const onRangeValueChange = React.useCallback(
-    (value: string, isMin?: boolean) => {
-      const numValue = Number(value);
-      const currentValues = Array.isArray(filter.value)
-        ? filter.value
-        : ["", ""];
-      const otherValue = isMin
-        ? (currentValues[1] ?? "")
-        : (currentValues[0] ?? "");
-
-      if (
-        value === "" ||
-        (!Number.isNaN(numValue) &&
-          (isMin
-            ? numValue >= min && numValue <= (Number(otherValue) || max)
-            : numValue <= max && numValue >= (Number(otherValue) || min)))
-      ) {
-        onFilterUpdate(filter.filterId, {
-          value: isMin ? [value, otherValue] : [otherValue, value],
-        });
-      }
-    },
-    [filter.filterId, filter.value, min, max, onFilterUpdate],
-  );
-
-  return (
-    <div className="flex w-full items-center gap-2">
-      <Input
-        id={`${inputId}-min`}
-        type="number"
-        aria-label={`${meta?.label} minimum value`}
-        aria-valuemin={min}
-        aria-valuemax={max}
-        inputMode="numeric"
-        placeholder={min.toString()}
-        min={min}
-        max={max}
-        className="h-8 w-full rounded"
-        defaultValue={value[0]}
-        onChange={(event) => onRangeValueChange(event.target.value, true)}
-      />
-      <span className="sr-only shrink-0 text-muted-foreground">to</span>
-      <Input
-        id={`${inputId}-max`}
-        type="number"
-        aria-label={`${meta?.label} maximum value`}
-        aria-valuemin={min}
-        aria-valuemax={max}
-        inputMode="numeric"
-        placeholder={max.toString()}
-        min={min}
-        max={max}
-        className="h-8 w-full rounded"
-        defaultValue={value[1]}
-        onChange={(event) => onRangeValueChange(event.target.value)}
-      />
-    </div>
   );
 }

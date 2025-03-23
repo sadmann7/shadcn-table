@@ -193,7 +193,7 @@ export function DataTableSortList<TData>({
           <div className="flex w-full items-center gap-2">
             <Button
               size="sm"
-              className="h-[1.85rem] rounded"
+              className="rounded"
               onClick={onSortAdd}
               disabled={columns.length === 0}
             >
@@ -201,8 +201,8 @@ export function DataTableSortList<TData>({
             </Button>
             {sorting.length > 0 && (
               <Button
-                size="sm"
                 variant="outline"
+                size="sm"
                 className="rounded"
                 onClick={onSortingReset}
               >
@@ -261,7 +261,7 @@ function SortItem({
               aria-controls={fieldListboxId}
               variant="outline"
               size="sm"
-              className="w-44 justify-between rounded"
+              className="w-44 justify-between rounded font-normal"
             >
               <span className="truncate">{columnLabels.get(sort.id)}</span>
               <ChevronsUpDown className="opacity-50" />
@@ -319,7 +319,7 @@ function SortItem({
           aria-label={`Remove sort ${sort.id}`}
           variant="outline"
           size="icon"
-          className="size-8 shrink-0 rounded [&>svg]:size-3.5"
+          className="size-8 shrink-0 rounded"
           onClick={() => onSortRemove(sort.id)}
         >
           <Trash2 />
@@ -328,7 +328,7 @@ function SortItem({
           <Button
             variant="outline"
             size="icon"
-            className="size-8 shrink-0 rounded [&>svg]:size-3.5"
+            className="size-8 shrink-0 rounded"
           >
             <GripVertical />
           </Button>
