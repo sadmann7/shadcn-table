@@ -9,6 +9,7 @@ import { useDataTable } from "@/hooks/use-data-table";
 
 import { DataTableAdvancedToolbar } from "@/components/data-table/data-table-advanced-toolbar";
 import { DataTableFilterList } from "@/components/data-table/data-table-filter-list";
+import { DataTableFilterMenu } from "@/components/data-table/data-table-filter-menu";
 import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import type {
@@ -35,7 +36,7 @@ interface TasksTableProps {
 }
 
 export function TasksTable({ promises }: TasksTableProps) {
-  const { enableAdvancedFilter } = useFeatureFlags();
+  const { enableAdvancedFilter, filterVariant } = useFeatureFlags();
 
   const [
     { data, pageCount },
@@ -84,13 +85,22 @@ export function TasksTable({ promises }: TasksTableProps) {
         {enableAdvancedFilter ? (
           <DataTableAdvancedToolbar table={table}>
             <DataTableSortList table={table} align="start" />
-            <DataTableFilterList
-              table={table}
-              shallow={shallow}
-              debounceMs={debounceMs}
-              throttleMs={throttleMs}
-              align="start"
-            />
+            {filterVariant === "queryBuilder" ? (
+              <DataTableFilterList
+                table={table}
+                shallow={shallow}
+                debounceMs={debounceMs}
+                throttleMs={throttleMs}
+                align="start"
+              />
+            ) : (
+              <DataTableFilterMenu
+                table={table}
+                shallow={shallow}
+                debounceMs={debounceMs}
+                throttleMs={throttleMs}
+              />
+            )}
           </DataTableAdvancedToolbar>
         ) : (
           <DataTableToolbar table={table}>

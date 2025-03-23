@@ -12,6 +12,7 @@ declare module "@tanstack/react-table" {
     options?: Option[];
     range?: [number, number];
     unit?: string;
+    icon?: React.ComponentType<{ className?: string }>;
   }
 }
 
