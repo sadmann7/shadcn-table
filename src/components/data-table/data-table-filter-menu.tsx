@@ -5,7 +5,6 @@ import {
   BadgeCheck,
   CalendarIcon,
   Check,
-  ChevronsUpDown,
   ListFilter,
   Text,
   X,
@@ -176,7 +175,6 @@ export function DataTableFilterMenu<TData>({
                       <column.columnDef.meta.icon className="text-muted-foreground" />
                     )}
                     {column.columnDef.meta?.label ?? column.id}
-                    <ChevronsUpDown className="size-3.5" />
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent align="start" className="w-48 p-0">
@@ -236,7 +234,7 @@ export function DataTableFilterMenu<TData>({
             >
               <SelectTrigger
                 size="sm"
-                className="rounded-none border-y-0 border-l-0 px-1.5 lowercase"
+                className="rounded-none border-y-0 border-l-0 px-2.5 lowercase [&_svg]:hidden"
               >
                 <SelectValue placeholder={filter.operator} />
               </SelectTrigger>
@@ -292,7 +290,7 @@ export function DataTableFilterMenu<TData>({
             Filter
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-[250px] p-0" align="start">
+        <PopoverContent align="start" className="w-auto p-0">
           <Command className="[&_[cmdk-input-wrapper]_svg]:hidden">
             <CommandInput
               ref={inputRef}
@@ -473,9 +471,9 @@ function onFilerInputRender<TData>({
           inputMode={isNumber ? "numeric" : undefined}
           placeholder={column.columnDef.meta?.placeholder ?? "Enter value..."}
           className="h-full w-28 rounded-none border-0 bg-transparent px-1.5 text-sm shadow-none"
-          value={typeof filter.value === "string" ? filter.value : ""}
-          onChange={(e) =>
-            onFilterUpdate(filter.filterId, { value: e.target.value })
+          defaultValue={typeof filter.value === "string" ? filter.value : ""}
+          onChange={(event) =>
+            onFilterUpdate(filter.filterId, { value: event.target.value })
           }
         />
       );
@@ -506,8 +504,8 @@ function onFilerInputRender<TData>({
         ? filter.value
         : [filter.value];
 
-      const selectedOption = options.find(
-        (option) => option.value === selectedValues[0],
+      const selectedOptions = options.filter((option) =>
+        selectedValues.includes(option.value),
       );
 
       return (
@@ -519,16 +517,31 @@ function onFilerInputRender<TData>({
               className="h-full min-w-16 rounded-none px-1.5 font-normal dark:bg-input/30"
             >
               {selectedValues.length === 0 ? (
-                "Select..."
-              ) : selectedValues.length === 1 ? (
-                <>
-                  {selectedOption?.icon && (
-                    <selectedOption.icon className="size-3.5" />
-                  )}
-                  <span className="truncate">{selectedOption?.label}</span>
-                </>
+                filter.variant === "multi-select" ? (
+                  "Select options..."
+                ) : (
+                  "Select option..."
+                )
               ) : (
-                `${selectedValues.length} selected`
+                <>
+                  <div className="-space-x-2 flex items-center rtl:space-x-reverse">
+                    {selectedOptions.map((selectedOption) =>
+                      selectedOption.icon ? (
+                        <div
+                          key={selectedOption.value}
+                          className="rounded-full border border-border bg-background p-0.5"
+                        >
+                          <selectedOption.icon className="size-3.5" />
+                        </div>
+                      ) : null,
+                    )}
+                  </div>
+                  <span className="truncate">
+                    {selectedOptions.length > 1
+                      ? `${selectedOptions.length} selected`
+                      : selectedOptions[0]?.label}
+                  </span>
+                </>
               )}
             </Button>
           </PopoverTrigger>
