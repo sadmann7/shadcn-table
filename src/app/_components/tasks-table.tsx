@@ -64,9 +64,6 @@ export function TasksTable({ promises }: TasksTableProps) {
     columns,
     pageCount,
     enableAdvancedFilter,
-    defaultColumn: {
-      enableColumnFilter: false,
-    },
     initialState: {
       sorting: [{ id: "createdAt", desc: true }],
       columnPinning: { right: ["actions"] },

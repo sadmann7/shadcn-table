@@ -302,7 +302,6 @@ function FilterItem<TData>({
 }: FilterItemProps<TData>) {
   const joinOperatorListboxId = `${filterItemId}-join-operator-listbox`;
   const fieldListboxId = `${filterItemId}-field-listbox`;
-  const fieldTriggerId = `${filterItemId}-field-trigger`;
   const operatorListboxId = `${filterItemId}-operator-listbox`;
   const inputId = `${filterItemId}-input`;
   const [showFieldSelector, setShowFieldSelector] = React.useState(false);
@@ -660,7 +659,6 @@ function FilterItem<TData>({
         <Popover open={showFieldSelector} onOpenChange={setShowFieldSelector}>
           <PopoverTrigger asChild>
             <Button
-              id={fieldTriggerId}
               role="combobox"
               aria-controls={fieldListboxId}
               variant="outline"

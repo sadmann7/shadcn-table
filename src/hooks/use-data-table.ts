@@ -268,6 +268,10 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
       rowSelection,
       columnFilters,
     },
+    defaultColumn: {
+      ...tableProps.defaultColumn,
+      enableColumnFilter: false,
+    },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onPaginationChange,
