@@ -69,8 +69,6 @@ export const dataTableConfig = {
     "gte",
     "isBetween",
     "isRelativeToToday",
-    "and",
-    "or",
   ] as const,
   joinOperators: ["and", "or"] as const,
 };
