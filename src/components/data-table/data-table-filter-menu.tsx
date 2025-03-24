@@ -177,7 +177,10 @@ export function DataTableFilterMenu<TData>({
                   {column.columnDef.meta?.label ?? column.id}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent align="start" className="w-48 p-0">
+              <PopoverContent
+                align="start"
+                className="w-48 origin-[var(--radix-popover-content-transform-origin)] p-0"
+              >
                 <Command>
                   <CommandInput placeholder="Search fields..." />
                   <CommandList>
@@ -231,13 +234,10 @@ export function DataTableFilterMenu<TData>({
                 })
               }
             >
-              <SelectTrigger
-                size="sm"
-                className="rounded-none border-r-0 px-2.5 lowercase [&_svg]:hidden"
-              >
+              <SelectTrigger className="h-8 rounded-none border-r-0 px-2.5 lowercase [&[data-size]]:h-8 [&_svg]:hidden">
                 <SelectValue placeholder={filter.operator} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="origin-[var(--radix-select-content-transform-origin)]">
                 {getFilterOperators(filter.variant).map((operator) => (
                   <SelectItem
                     className="lowercase"
@@ -289,7 +289,10 @@ export function DataTableFilterMenu<TData>({
             Filter
           </Button>
         </PopoverTrigger>
-        <PopoverContent align="start" className="w-auto p-0">
+        <PopoverContent
+          align="start"
+          className="w-auto origin-[var(--radix-popover-content-transform-origin)] p-0"
+        >
           <Command className="[&_[cmdk-input-wrapper]_svg]:hidden">
             <CommandInput
               ref={inputRef}
@@ -554,7 +557,10 @@ function onFilterInputRender<TData>({
               )}
             </Button>
           </PopoverTrigger>
-          <PopoverContent align="start" className="w-[200px] p-0">
+          <PopoverContent
+            align="start"
+            className="w-48 origin-[var(--radix-popover-content-transform-origin)] p-0"
+          >
             <Command>
               <CommandInput placeholder="Search options..." />
               <CommandList>
@@ -626,7 +632,10 @@ function onFilterInputRender<TData>({
               <span className="truncate">{displayValue}</span>
             </Button>
           </PopoverTrigger>
-          <PopoverContent align="start" className="w-auto p-0">
+          <PopoverContent
+            align="start"
+            className="w-auto origin-[var(--radix-popover-content-transform-origin)] p-0"
+          >
             {filter.operator === "isBetween" ? (
               <Calendar
                 mode="range"

@@ -152,7 +152,7 @@ export function DataTableSortList<TData>({
           alignOffset={alignOffset}
           sideOffset={sideOffset}
           collisionPadding={collisionPadding}
-          className="flex w-[calc(100vw-(--spacing(20)))] origin-(--radix-popover-content-transform-origin) flex-col gap-3.5 p-4 sm:w-[var(--radix-popover-content-width)] sm:min-w-[25rem]"
+          className="flex w-[calc(100vw-(--spacing(20)))] origin-[var(--radix-popover-content-transform-origin)] flex-col gap-3.5 p-4 sm:w-[var(--radix-popover-content-width)] sm:min-w-[25rem]"
         >
           <div className="flex flex-col gap-1">
             <h4 id={labelId} className="font-medium leading-none">
@@ -269,7 +269,7 @@ function SortItem({
           </PopoverTrigger>
           <PopoverContent
             id={fieldListboxId}
-            className="w-(--radix-popover-trigger-width) origin-(--radix-popover-content-transform-origin) p-0"
+            className="w-[var(--radix-popover-trigger-width)] origin-[var(--radix-popover-content-transform-origin)] p-0"
           >
             <Command>
               <CommandInput placeholder="Search fields..." />
@@ -297,16 +297,14 @@ function SortItem({
           }
         >
           <SelectTrigger
-            aria-label="Select sort direction"
             aria-controls={directionListboxId}
-            size="sm"
-            className="w-24 rounded"
+            className="h-8 w-24 rounded [&[data-size]]:h-8"
           >
             <SelectValue />
           </SelectTrigger>
           <SelectContent
             id={directionListboxId}
-            className="min-w-(--radix-select-trigger-width) origin-(--radix-select-content-transform-origin)"
+            className="min-w-[var(--radix-select-trigger-width)] origin-[var(--radix-select-content-transform-origin)]"
           >
             {dataTableConfig.sortOrders.map((order) => (
               <SelectItem key={order.value} value={order.value}>
@@ -316,7 +314,7 @@ function SortItem({
           </SelectContent>
         </Select>
         <Button
-          aria-label={`Remove sort ${sort.id}`}
+          aria-controls={sortItemId}
           variant="outline"
           size="icon"
           className="size-8 shrink-0 rounded"

@@ -205,7 +205,7 @@ export function DataTableFilterList<TData>({
           collisionPadding={collisionPadding}
           side={side}
           sideOffset={sideOffset}
-          className="flex w-[calc(100vw-(--spacing(12)))] origin-(--radix-popover-content-transform-origin) flex-col gap-3.5 p-4 sm:w-[var(--radix-popover-content-width)] sm:min-w-[25rem]"
+          className="flex w-[calc(100vw-(--spacing(12)))] origin-[var(--radix-popover-content-transform-origin)] flex-col gap-3.5 p-4 sm:w-[var(--radix-popover-content-width)] sm:min-w-[25rem]"
         >
           <div className="flex flex-col gap-1">
             <h4 id={labelId} className="font-medium leading-none">
@@ -251,8 +251,8 @@ export function DataTableFilterList<TData>({
             </Button>
             {filters.length > 0 ? (
               <Button
-                size="sm"
                 variant="outline"
+                size="sm"
                 className="rounded"
                 onClick={onFiltersReset}
               >
@@ -390,8 +390,7 @@ function FilterItem<TData>({
                 id={inputId}
                 aria-controls={`${inputId}-listbox`}
                 aria-label={`${column.columnDef.meta?.label} boolean filter`}
-                size="sm"
-                className="w-full rounded"
+                className="h-8 w-full rounded [&[data-size]]:h-8"
               >
                 <SelectValue placeholder={filter.value ? "True" : "False"} />
               </SelectTrigger>
@@ -435,7 +434,7 @@ function FilterItem<TData>({
               </FacetedTrigger>
               <FacetedContent
                 id={`${inputId}-listbox`}
-                className="w-[12.5rem] origin-(--radix-popover-content-transform-origin)"
+                className="w-[12.5rem] origin-[var(--radix-popover-content-transform-origin)]"
               >
                 <FacetedInput
                   aria-label={`Search ${column.columnDef.meta?.label} options`}
@@ -559,7 +558,7 @@ function FilterItem<TData>({
               <PopoverContent
                 id={`${inputId}-calendar`}
                 align="start"
-                className="w-auto origin-(--radix-popover-content-transform-origin) p-0"
+                className="w-auto origin-[var(--radix-popover-content-transform-origin)] p-0"
               >
                 {filter.operator === "isBetween" ? (
                   <Calendar
@@ -636,8 +635,7 @@ function FilterItem<TData>({
               <SelectTrigger
                 aria-label="Select join operator"
                 aria-controls={joinOperatorListboxId}
-                size="sm"
-                className="rounded lowercase"
+                className="h-8 rounded lowercase [&[data-size]]:h-8"
               >
                 <SelectValue placeholder={joinOperator} />
               </SelectTrigger>
@@ -664,10 +662,9 @@ function FilterItem<TData>({
             <Button
               id={fieldTriggerId}
               role="combobox"
+              aria-controls={fieldListboxId}
               variant="outline"
               size="sm"
-              aria-label="Select filter field"
-              aria-controls={fieldListboxId}
               className="w-32 justify-between rounded font-normal"
             >
               <span className="truncate">
@@ -680,7 +677,7 @@ function FilterItem<TData>({
           <PopoverContent
             id={fieldListboxId}
             align="start"
-            className="w-40 origin-(--radix-popover-content-transform-origin) p-0"
+            className="w-40 origin-[var(--radix-popover-content-transform-origin)] p-0"
           >
             <Command>
               <CommandInput placeholder="Search fields..." />
@@ -737,10 +734,8 @@ function FilterItem<TData>({
           }
         >
           <SelectTrigger
-            aria-label="Select filter operator"
             aria-controls={operatorListboxId}
-            size="sm"
-            className="w-32 rounded lowercase"
+            className="h-8 w-32 rounded lowercase [&[data-size]]:h-8"
           >
             <div className="truncate">
               <SelectValue placeholder={filter.operator} />
@@ -748,7 +743,7 @@ function FilterItem<TData>({
           </SelectTrigger>
           <SelectContent
             id={operatorListboxId}
-            className="origin-(--radix-select-content-transform-origin)"
+            className="origin-[var(--radix-select-content-transform-origin)]"
           >
             {getFilterOperators(filter.variant).map((operator) => (
               <SelectItem
@@ -765,7 +760,7 @@ function FilterItem<TData>({
           {onFilterInputRender({ filter, inputId })}
         </div>
         <Button
-          aria-label={`Remove filter ${index + 1}`}
+          aria-controls={filterItemId}
           variant="outline"
           size="icon"
           className="size-8 rounded"
