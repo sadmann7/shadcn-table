@@ -37,8 +37,11 @@ import { CSS } from "@dnd-kit/utilities";
 import { Slot, type SlotProps } from "@radix-ui/react-slot";
 import * as React from "react";
 
-import { composeEventHandlers, useComposedRefs } from "@/lib/composition";
 import { cn } from "@/lib/utils";
+import {
+  composeEventHandlers,
+  useComposedRefs,
+} from "@/registry/new-york/lib/composition";
 import * as ReactDOM from "react-dom";
 
 const orientationConfig = {

@@ -31,15 +31,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import {
   Sortable,
   SortableContent,
   SortableItem,
   SortableItemHandle,
   SortableOverlay,
-} from "@/components/ui/sortable";
-import { dataTableConfig } from "@/config/data-table";
-import { cn } from "@/lib/utils";
+} from "@/registry/new-york/components/ui/sortable";
+import { dataTableConfig } from "@/registry/new-york/config/data-table";
 import type { PopoverContentProps } from "@radix-ui/react-popover";
 
 interface DataTableSortListProps<TData>

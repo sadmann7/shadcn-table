@@ -9,13 +9,21 @@
       "title": "Data Table",
       "description": "A feature-rich data table component with server-side filtering, sorting, and pagination",
       "registryDependencies": [
+        "badge",
         "button",
+        "calendar",
         "command",
         "dropdown-menu",
         "input",
         "popover",
         "select",
         "table"
+      ],
+      "dependencies": [
+        "@tanstack/react-table",
+        "lucide-react",
+        "motion",
+        "nuqs"
       ],
       "files": [
         {
@@ -39,27 +47,11 @@
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-filter-list.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/registry/new-york/components/data-table/data-table-filter-menu.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/registry/new-york/components/data-table/data-table-range-filter.tsx",
-          "type": "registry:component"
-        },
-        {
           "path": "src/registry/new-york/components/data-table/data-table-action-bar.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/registry/new-york/components/data-table/data-table-toolbar.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/registry/new-york/components/data-table/data-table-advanced-toolbar.tsx",
           "type": "registry:component"
         },
         {
@@ -95,8 +87,138 @@
           "type": "registry:lib"
         },
         {
+          "path": "src/registry/new-york/lib/data-table.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/registry/new-york/lib/format.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/registry/new-york/types/data-table.ts",
+          "type": "registry:file",
+          "target": "types/data-table.ts"
+        }
+      ]
+    },
+    {
+      "name": "data-table-filter-list",
+      "type": "registry:component",
+      "title": "Data Table Filter List",
+      "description": "A filter list component for the data table",
+      "registryDependencies": [
+        "badge",
+        "button",
+        "calendar",
+        "command",
+        "input",
+        "popover",
+        "select",
+        "table"
+      ],
+      "dependencies": ["lucide-react", "@tanstack/react-table", "nuqs"],
+      "files": [
+        {
+          "path": "src/registry/new-york/components/data-table/data-table-filter-list.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/registry/new-york/components/ui/sortable.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/registry/new-york/components/ui/faceted.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/registry/new-york/components/data-table/data-table-range-filter.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/registry/new-york/components/data-table/data-table-advanced-toolbar.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/registry/new-york/lib/composition.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/registry/new-york/lib/data-table.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/registry/new-york/lib/format.ts",
+          "type": "registry:lib"
+        },
+        {
           "path": "src/registry/new-york/lib/id.ts",
           "type": "registry:lib"
+        },
+        {
+          "path": "src/registry/new-york/lib/parsers.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/registry/new-york/config/data-table.ts",
+          "type": "registry:file",
+          "target": "config/data-table.ts"
+        },
+        {
+          "path": "src/registry/new-york/types/data-table.ts",
+          "type": "registry:file",
+          "target": "types/data-table.ts"
+        }
+      ]
+    },
+    {
+      "name": "data-table-filter-menu",
+      "type": "registry:component",
+      "title": "Data Table Filter Menu",
+      "description": "A filter menu component for the data table",
+      "registryDependencies": [
+        "badge",
+        "button",
+        "calendar",
+        "command",
+        "input",
+        "popover",
+        "select",
+        "table"
+      ],
+      "dependencies": ["lucide-react", "@tanstack/react-table", "nuqs"],
+      "files": [
+        {
+          "path": "src/registry/new-york/components/data-table/data-table-filter-menu.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/registry/new-york/components/data-table/data-table-range-filter.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/registry/new-york/components/data-table/data-table-advanced-toolbar.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/registry/new-york/lib/data-table.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/registry/new-york/lib/format.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/registry/new-york/lib/id.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/registry/new-york/lib/parsers.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/registry/new-york/config/data-table.ts",
+          "type": "registry:file",
+          "target": "config/data-table.ts"
         },
         {
           "path": "src/registry/new-york/types/data-table.ts",

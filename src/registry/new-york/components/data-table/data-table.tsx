@@ -9,9 +9,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getCommonPinningStyles } from "@/lib/data-table";
 import { cn } from "@/lib/utils";
 import { DataTablePagination } from "@/registry/new-york/components/data-table/data-table-pagination";
+import { getCommonPinningStyles } from "@/registry/new-york/lib/data-table";
 
 interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
   table: TanstackTable<TData>;

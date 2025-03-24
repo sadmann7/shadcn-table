@@ -2,8 +2,8 @@ import type { SearchParams } from "@/types";
 import * as React from "react";
 
 import { Shell } from "@/components/shell";
-import { getValidFilters } from "@/lib/data-table";
 import { DataTableSkeleton } from "@/registry/new-york/components/data-table/data-table-skeleton";
+import { getValidFilters } from "@/registry/new-york/lib/data-table";
 
 import { FeatureFlagsProvider } from "./_components/feature-flags-provider";
 import { TasksTable } from "./_components/tasks-table";
