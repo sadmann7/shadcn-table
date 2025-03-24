@@ -1,7 +1,7 @@
 "use client";
 
 import { type Task, tasks } from "@/db/schema";
-import type { DataTableRowAction } from "@/types/data-table";
+import type { DataTableRowAction } from "@/registry/new-york/types/data-table";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,
@@ -14,7 +14,6 @@ import {
 import * as React from "react";
 import { toast } from "sonner";
 
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -32,7 +31,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getErrorMessage } from "@/lib/handle-error";
-import { formatDate } from "@/lib/utils";
+import { DataTableColumnHeader } from "@/registry/new-york/components/data-table/data-table-column-header";
+import { formatDate } from "@/registry/new-york/lib/format";
 
 import { updateTask } from "../_lib/actions";
 import { getPriorityIcon, getStatusIcon } from "../_lib/utils";

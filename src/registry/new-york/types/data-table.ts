@@ -1,5 +1,5 @@
 import type { DataTableConfig } from "@/config/data-table";
-import type { filterSchema } from "@/lib/parsers";
+import type { filterSchema } from "@/registry/new-york/lib/parsers";
 import type { ColumnSort, Row, RowData } from "@tanstack/react-table";
 import type { z } from "zod";
 

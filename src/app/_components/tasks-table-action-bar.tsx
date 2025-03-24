@@ -7,10 +7,6 @@ import { ArrowUp, CheckCircle2, Download, Trash2, X } from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
 
-import {
-  DataTableActionBar,
-  DataTableActionBarAction,
-} from "@/components/data-table/data-table-action-bar";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -25,6 +21,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { exportTableToCSV } from "@/lib/export";
+import {
+  DataTableActionBar,
+  DataTableActionBarAction,
+} from "@/registry/new-york/components/data-table/data-table-action-bar";
 import { deleteTasks, updateTasks } from "../_lib/actions";
 
 const actions = [

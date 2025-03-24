@@ -1,5 +1,8 @@
 import { isEmpty } from "@/db/utils";
-import type { ExtendedColumnFilter, JoinOperator } from "@/types/data-table";
+import type {
+  ExtendedColumnFilter,
+  JoinOperator,
+} from "@/registry/new-york/types/data-table";
 import { addDays, endOfDay, startOfDay } from "date-fns";
 import {
   type AnyColumn,

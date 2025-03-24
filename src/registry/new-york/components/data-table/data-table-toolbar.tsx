@@ -4,13 +4,13 @@ import type { Column, Table } from "@tanstack/react-table";
 import { X } from "lucide-react";
 import * as React from "react";
 
-import { DataTableDatePicker } from "@/components/data-table/data-table-date-picker";
-import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";
-import { DataTableSlider } from "@/components/data-table/data-table-slider";
-import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { DataTableDatePicker } from "@/registry/new-york/components/data-table/data-table-date-picker";
+import { DataTableFacetedFilter } from "@/registry/new-york/components/data-table/data-table-faceted-filter";
+import { DataTableSlider } from "@/registry/new-york/components/data-table/data-table-slider";
+import { DataTableViewOptions } from "@/registry/new-york/components/data-table/data-table-view-options";
 
 interface DataTableToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {

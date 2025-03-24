@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { customAlphabet } from "nanoid";
 
-import { generateId } from "@/lib/id";
+import { generateId } from "@/registry/new-york/lib/id";
 
 export function generateRandomTask(): Task {
   return {

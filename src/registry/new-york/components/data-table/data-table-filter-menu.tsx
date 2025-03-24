@@ -35,12 +35,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table";
-import { generateId } from "@/lib/id";
-import { getFiltersStateParser } from "@/lib/parsers";
-import { cn, formatDate } from "@/lib/utils";
-import type { ExtendedColumnFilter, FilterOperator } from "@/types/data-table";
+import { cn } from "@/lib/utils";
+import { useDebouncedCallback } from "@/registry/new-york/hooks/use-debounced-callback";
+import { formatDate } from "@/registry/new-york/lib/format";
+import { generateId } from "@/registry/new-york/lib/id";
+import { getFiltersStateParser } from "@/registry/new-york/lib/parsers";
+import type {
+  ExtendedColumnFilter,
+  FilterOperator,
+} from "@/registry/new-york/types/data-table";
 import { DataTableRangeFilter } from "./data-table-range-filter";
 
 const FILTERS_KEY = "filters";

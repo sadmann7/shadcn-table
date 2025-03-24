@@ -13,7 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { formatDate } from "@/lib/utils";
+import { formatDate } from "@/registry/new-york/lib/format";
 
 type DateSelection = Date[] | DateRange;
 

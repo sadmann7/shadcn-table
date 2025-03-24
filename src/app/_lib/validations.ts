@@ -9,7 +9,10 @@ import {
 import * as z from "zod";
 
 import { dataTableConfig } from "@/config/data-table";
-import { getFiltersStateParser, getSortingStateParser } from "@/lib/parsers";
+import {
+  getFiltersStateParser,
+  getSortingStateParser,
+} from "@/registry/new-york/lib/parsers";
 
 export const searchParamsCache = createSearchParamsCache({
   filterVariant: parseAsStringEnum(

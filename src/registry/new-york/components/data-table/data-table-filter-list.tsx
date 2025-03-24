@@ -12,7 +12,6 @@ import {
 import { parseAsStringEnum, useQueryState } from "nuqs";
 import * as React from "react";
 
-import { DataTableRangeFilter } from "@/components/data-table/data-table-range-filter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -24,17 +23,6 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import {
-  Faceted,
-  FacetedBadgeList,
-  FacetedContent,
-  FacetedEmpty,
-  FacetedGroup,
-  FacetedInput,
-  FacetedItem,
-  FacetedList,
-  FacetedTrigger,
-} from "@/components/ui/faceted";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -56,16 +44,29 @@ import {
   SortableOverlay,
 } from "@/components/ui/sortable";
 import { dataTableConfig } from "@/config/data-table";
-import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
 import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table";
-import { generateId } from "@/lib/id";
-import { getFiltersStateParser } from "@/lib/parsers";
-import { cn, formatDate } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { DataTableRangeFilter } from "@/registry/new-york/components/data-table/data-table-range-filter";
+import {
+  Faceted,
+  FacetedBadgeList,
+  FacetedContent,
+  FacetedEmpty,
+  FacetedGroup,
+  FacetedInput,
+  FacetedItem,
+  FacetedList,
+  FacetedTrigger,
+} from "@/registry/new-york/components/ui/faceted";
+import { useDebouncedCallback } from "@/registry/new-york/hooks/use-debounced-callback";
+import { formatDate } from "@/registry/new-york/lib/format";
+import { generateId } from "@/registry/new-york/lib/id";
+import { getFiltersStateParser } from "@/registry/new-york/lib/parsers";
 import type {
   ExtendedColumnFilter,
   FilterOperator,
   JoinOperator,
-} from "@/types/data-table";
+} from "@/registry/new-york/types/data-table";
 import type { PopoverContentProps } from "@radix-ui/react-popover";
 
 const FILTERS_KEY = "filters";

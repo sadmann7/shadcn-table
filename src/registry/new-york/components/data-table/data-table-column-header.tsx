@@ -36,7 +36,7 @@ export function DataTableColumnHeader<TData, TValue>({
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <DropdownMenu>
-        <DropdownMenuTrigger className="-ml-1.5 flex h-8 items-center gap-1.5 rounded-md px-2 py-1.5 text-xs hover:bg-accent focus:outline-none focus:ring-1 focus:ring-ring data-[state=open]:bg-accent [&>svg]:size-4 [&_svg]:shrink-0">
+        <DropdownMenuTrigger className="-ml-1.5 flex h-8 items-center gap-1.5 rounded-md px-2 py-1.5 text-xs hover:bg-accent focus:outline-none focus:ring-1 focus:ring-ring data-[state=open]:bg-accent [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-muted-foreground">
           <span>{title}</span>
           {column.getCanSort() &&
             (column.getIsSorted() === "desc" ? (

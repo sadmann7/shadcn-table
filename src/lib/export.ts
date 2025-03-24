@@ -1,29 +1,10 @@
 import type { Table } from "@tanstack/react-table";
 
 export function exportTableToCSV<TData>(
-  /**
-   * The table to export.
-   * @type Table<TData>
-   */
   table: Table<TData>,
   opts: {
-    /**
-     * The filename for the CSV file.
-     * @default "table"
-     * @example "tasks"
-     */
     filename?: string;
-    /**
-     * The columns to exclude from the CSV file.
-     * @default []
-     * @example ["select", "actions"]
-     */
     excludeColumns?: (keyof TData | "select" | "actions")[];
-
-    /**
-     * Whether to export only the selected rows.
-     * @default false
-     */
     onlySelected?: boolean;
   } = {},
 ): void {
@@ -33,13 +14,11 @@ export function exportTableToCSV<TData>(
     onlySelected = false,
   } = opts;
 
-  // Retrieve headers (column names)
   const headers = table
     .getAllLeafColumns()
     .map((column) => column.id)
     .filter((id) => !excludeColumns.includes(id));
 
-  // Build CSV content
   const csvContent = [
     headers.join(","),
     ...(onlySelected
@@ -49,7 +28,6 @@ export function exportTableToCSV<TData>(
       headers
         .map((header) => {
           const cellValue = row.getValue(header);
-          // Handle values that might contain commas or newlines
           return typeof cellValue === "string"
             ? `"${cellValue.replace(/"/g, '""')}"`
             : cellValue;
@@ -58,10 +36,8 @@ export function exportTableToCSV<TData>(
     ),
   ].join("\n");
 
-  // Create a Blob with CSV content
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
 
-  // Create a link and trigger the download
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.setAttribute("href", url);
