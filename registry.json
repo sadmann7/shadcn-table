@@ -19,12 +19,7 @@
         "select",
         "table"
       ],
-      "dependencies": [
-        "@tanstack/react-table",
-        "lucide-react",
-        "motion",
-        "nuqs"
-      ],
+      "dependencies": ["@tanstack/react-table", "lucide-react", "nuqs"],
       "files": [
         {
           "path": "src/registry/new-york/components/data-table/data-table.tsx",
@@ -47,15 +42,7 @@
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-action-bar.tsx",
-          "type": "registry:component"
-        },
-        {
           "path": "src/registry/new-york/components/data-table/data-table-toolbar.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/registry/new-york/components/data-table/data-table-sort-list.tsx",
           "type": "registry:component"
         },
         {
@@ -71,20 +58,16 @@
           "type": "registry:component"
         },
         {
+          "path": "src/registry/new-york/hooks/use-callback-ref.ts",
+          "type": "registry:hook"
+        },
+        {
           "path": "src/registry/new-york/hooks/use-data-table.ts",
           "type": "registry:hook"
         },
         {
           "path": "src/registry/new-york/hooks/use-debounced-callback.ts",
           "type": "registry:hook"
-        },
-        {
-          "path": "src/registry/new-york/hooks/use-callback-ref.ts",
-          "type": "registry:hook"
-        },
-        {
-          "path": "src/registry/new-york/lib/parsers.ts",
-          "type": "registry:lib"
         },
         {
           "path": "src/registry/new-york/lib/data-table.ts",
@@ -95,9 +78,60 @@
           "type": "registry:lib"
         },
         {
+          "path": "src/registry/new-york/lib/parsers.ts",
+          "type": "registry:lib"
+        },
+        {
           "path": "src/registry/new-york/types/data-table.ts",
           "type": "registry:file",
           "target": "types/data-table.ts"
+        }
+      ]
+    },
+    {
+      "name": "data-table-action-bar",
+      "type": "registry:component",
+      "title": "Data Table Action Bar",
+      "description": "A action bar component for the data table",
+      "registryDependencies": ["button", "tooltip"],
+      "dependencies": ["@tanstack/react-table", "lucide-react", "motion"],
+      "files": [
+        {
+          "path": "src/registry/new-york/components/data-table/data-table-action-bar.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "data-table-sort-list",
+      "type": "registry:component",
+      "title": "Data Table Sort List",
+      "description": "A sort list component for the data table",
+      "registryDependencies": [
+        "badge",
+        "button",
+        "command",
+        "popover",
+        "select"
+      ],
+      "dependencies": ["@tanstack/react-table", "lucide-react"],
+      "files": [
+        {
+          "path": "src/registry/new-york/components/data-table/data-table-sort-list.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/registry/new-york/components/ui/sortable.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/registry/new-york/lib/composition.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "src/registry/new-york/config/data-table.ts",
+          "type": "registry:file",
+          "target": "config/data-table.ts"
         }
       ]
     },
@@ -113,10 +147,9 @@
         "command",
         "input",
         "popover",
-        "select",
-        "table"
+        "select"
       ],
-      "dependencies": ["lucide-react", "@tanstack/react-table", "nuqs"],
+      "dependencies": ["@tanstack/react-table", "lucide-react", "nuqs"],
       "files": [
         {
           "path": "src/registry/new-york/components/data-table/data-table-filter-list.tsx",
@@ -137,6 +170,14 @@
         {
           "path": "src/registry/new-york/components/data-table/data-table-advanced-toolbar.tsx",
           "type": "registry:component"
+        },
+        {
+          "path": "src/registry/new-york/hooks/use-callback-ref.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "src/registry/new-york/hooks/use-debounced-callback.ts",
+          "type": "registry:hook"
         },
         {
           "path": "src/registry/new-york/lib/composition.ts",
@@ -182,10 +223,9 @@
         "command",
         "input",
         "popover",
-        "select",
-        "table"
+        "select"
       ],
-      "dependencies": ["lucide-react", "@tanstack/react-table", "nuqs"],
+      "dependencies": ["@tanstack/react-table", "lucide-react", "nuqs"],
       "files": [
         {
           "path": "src/registry/new-york/components/data-table/data-table-filter-menu.tsx",
@@ -198,6 +238,14 @@
         {
           "path": "src/registry/new-york/components/data-table/data-table-advanced-toolbar.tsx",
           "type": "registry:component"
+        },
+        {
+          "path": "src/registry/new-york/hooks/use-callback-ref.ts",
+          "type": "registry:hook"
+        },
+        {
+          "path": "src/registry/new-york/hooks/use-debounced-callback.ts",
+          "type": "registry:hook"
         },
         {
           "path": "src/registry/new-york/lib/data-table.ts",

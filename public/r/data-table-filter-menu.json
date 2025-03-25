@@ -5,8 +5,8 @@
   "title": "Data Table Filter Menu",
   "description": "A filter menu component for the data table",
   "dependencies": [
-    "lucide-react",
     "@tanstack/react-table",
+    "lucide-react",
     "nuqs"
   ],
   "registryDependencies": [
@@ -16,8 +16,7 @@
     "command",
     "input",
     "popover",
-    "select",
-    "table"
+    "select"
   ],
   "files": [
     {
@@ -34,6 +33,16 @@
       "path": "src/registry/new-york/components/data-table/data-table-advanced-toolbar.tsx",
       "content": "\"use client\";\n\nimport type { Table } from \"@tanstack/react-table\";\nimport type * as React from \"react\";\n\nimport { cn } from \"@/lib/utils\";\nimport { DataTableViewOptions } from \"@/registry/new-york/components/data-table/data-table-view-options\";\n\ninterface DataTableAdvancedToolbarProps<TData>\n  extends React.HTMLAttributes<HTMLDivElement> {\n  table: Table<TData>;\n}\n\nexport function DataTableAdvancedToolbar<TData>({\n  table,\n  children,\n  className,\n  ...props\n}: DataTableAdvancedToolbarProps<TData>) {\n  return (\n    <div\n      role=\"toolbar\"\n      aria-orientation=\"horizontal\"\n      className={cn(\n        \"flex w-full items-start justify-between gap-2 p-1\",\n        className,\n      )}\n      {...props}\n    >\n      <div className=\"flex flex-1 flex-wrap items-center gap-2\">{children}</div>\n      <div className=\"flex items-center gap-2\">\n        <DataTableViewOptions table={table} />\n      </div>\n    </div>\n  );\n}\n",
       "type": "registry:component"
+    },
+    {
+      "path": "src/registry/new-york/hooks/use-callback-ref.ts",
+      "content": "import * as React from \"react\";\n\n/**\n * @see https://github.com/radix-ui/primitives/blob/main/packages/react/use-callback-ref/src/useCallbackRef.tsx\n */\n\n/**\n * A custom hook that converts a callback to a ref to avoid triggering re-renders when passed as a\n * prop or avoid re-executing effects when passed as a dependency\n */\nfunction useCallbackRef<T extends (...args: never[]) => unknown>(\n  callback: T | undefined,\n): T {\n  const callbackRef = React.useRef(callback);\n\n  React.useEffect(() => {\n    callbackRef.current = callback;\n  });\n\n  // https://github.com/facebook/react/issues/19240\n  return React.useMemo(\n    () => ((...args) => callbackRef.current?.(...args)) as T,\n    [],\n  );\n}\n\nexport { useCallbackRef };\n",
+      "type": "registry:hook"
+    },
+    {
+      "path": "src/registry/new-york/hooks/use-debounced-callback.ts",
+      "content": "/**\n * @see https://github.com/mantinedev/mantine/blob/master/packages/@mantine/hooks/src/use-debounced-callback/use-debounced-callback.ts\n */\n\nimport * as React from \"react\";\n\nimport { useCallbackRef } from \"@/registry/new-york/hooks/use-callback-ref\";\n\nexport function useDebouncedCallback<T extends (...args: never[]) => unknown>(\n  callback: T,\n  delay: number,\n) {\n  const handleCallback = useCallbackRef(callback);\n  const debounceTimerRef = React.useRef(0);\n  React.useEffect(\n    () => () => window.clearTimeout(debounceTimerRef.current),\n    [],\n  );\n\n  const setValue = React.useCallback(\n    (...args: Parameters<T>) => {\n      window.clearTimeout(debounceTimerRef.current);\n      debounceTimerRef.current = window.setTimeout(\n        () => handleCallback(...args),\n        delay,\n      );\n    },\n    [handleCallback, delay],\n  );\n\n  return setValue;\n}\n",
+      "type": "registry:hook"
     },
     {
       "path": "src/registry/new-york/lib/data-table.ts",
@@ -57,7 +66,7 @@
     },
     {
       "path": "src/registry/new-york/config/data-table.ts",
-      "content": "export type DataTableConfig = typeof dataTableConfig;\n\nexport const dataTableConfig = {\n  textOperators: [\n    { label: \"Contains\", value: \"iLike\" as const },\n    { label: \"Does not contain\", value: \"notILike\" as const },\n    { label: \"Is\", value: \"eq\" as const },\n    { label: \"Is not\", value: \"ne\" as const },\n    { label: \"Is empty\", value: \"isEmpty\" as const },\n    { label: \"Is not empty\", value: \"isNotEmpty\" as const },\n  ],\n  numericOperators: [\n    { label: \"Is\", value: \"eq\" as const },\n    { label: \"Is not\", value: \"ne\" as const },\n    { label: \"Is less than\", value: \"lt\" as const },\n    { label: \"Is less than or equal to\", value: \"lte\" as const },\n    { label: \"Is greater than\", value: \"gt\" as const },\n    { label: \"Is greater than or equal to\", value: \"gte\" as const },\n    { label: \"Is between\", value: \"isBetween\" as const },\n    { label: \"Is empty\", value: \"isEmpty\" as const },\n    { label: \"Is not empty\", value: \"isNotEmpty\" as const },\n  ],\n  dateOperators: [\n    { label: \"Is\", value: \"eq\" as const },\n    { label: \"Is not\", value: \"ne\" as const },\n    { label: \"Is before\", value: \"lt\" as const },\n    { label: \"Is after\", value: \"gt\" as const },\n    { label: \"Is on or before\", value: \"lte\" as const },\n    { label: \"Is on or after\", value: \"gte\" as const },\n    { label: \"Is between\", value: \"isBetween\" as const },\n    { label: \"Is relative to today\", value: \"isRelativeToToday\" as const },\n    { label: \"Is empty\", value: \"isEmpty\" as const },\n    { label: \"Is not empty\", value: \"isNotEmpty\" as const },\n  ],\n  selectOperators: [\n    { label: \"Is\", value: \"eq\" as const },\n    { label: \"Is not\", value: \"ne\" as const },\n    { label: \"Is empty\", value: \"isEmpty\" as const },\n    { label: \"Is not empty\", value: \"isNotEmpty\" as const },\n  ],\n  booleanOperators: [\n    { label: \"Is\", value: \"eq\" as const },\n    { label: \"Is not\", value: \"ne\" as const },\n  ],\n  sortOrders: [\n    { label: \"Asc\", value: \"asc\" as const },\n    { label: \"Desc\", value: \"desc\" as const },\n  ],\n  filterVariants: [\n    \"text\",\n    \"number\",\n    \"range\",\n    \"date\",\n    \"date-range\",\n    \"boolean\",\n    \"select\",\n    \"multi-select\",\n  ] as const,\n  operators: [\n    \"iLike\",\n    \"notILike\",\n    \"eq\",\n    \"ne\",\n    \"isEmpty\",\n    \"isNotEmpty\",\n    \"lt\",\n    \"lte\",\n    \"gt\",\n    \"gte\",\n    \"isBetween\",\n    \"isRelativeToToday\",\n    \"and\",\n    \"or\",\n  ] as const,\n  joinOperators: [\"and\", \"or\"] as const,\n};\n",
+      "content": "export type DataTableConfig = typeof dataTableConfig;\n\nexport const dataTableConfig = {\n  textOperators: [\n    { label: \"Contains\", value: \"iLike\" as const },\n    { label: \"Does not contain\", value: \"notILike\" as const },\n    { label: \"Is\", value: \"eq\" as const },\n    { label: \"Is not\", value: \"ne\" as const },\n    { label: \"Is empty\", value: \"isEmpty\" as const },\n    { label: \"Is not empty\", value: \"isNotEmpty\" as const },\n  ],\n  numericOperators: [\n    { label: \"Is\", value: \"eq\" as const },\n    { label: \"Is not\", value: \"ne\" as const },\n    { label: \"Is less than\", value: \"lt\" as const },\n    { label: \"Is less than or equal to\", value: \"lte\" as const },\n    { label: \"Is greater than\", value: \"gt\" as const },\n    { label: \"Is greater than or equal to\", value: \"gte\" as const },\n    { label: \"Is between\", value: \"isBetween\" as const },\n    { label: \"Is empty\", value: \"isEmpty\" as const },\n    { label: \"Is not empty\", value: \"isNotEmpty\" as const },\n  ],\n  dateOperators: [\n    { label: \"Is\", value: \"eq\" as const },\n    { label: \"Is not\", value: \"ne\" as const },\n    { label: \"Is before\", value: \"lt\" as const },\n    { label: \"Is after\", value: \"gt\" as const },\n    { label: \"Is on or before\", value: \"lte\" as const },\n    { label: \"Is on or after\", value: \"gte\" as const },\n    { label: \"Is between\", value: \"isBetween\" as const },\n    { label: \"Is relative to today\", value: \"isRelativeToToday\" as const },\n    { label: \"Is empty\", value: \"isEmpty\" as const },\n    { label: \"Is not empty\", value: \"isNotEmpty\" as const },\n  ],\n  selectOperators: [\n    { label: \"Is\", value: \"eq\" as const },\n    { label: \"Is not\", value: \"ne\" as const },\n    { label: \"Is empty\", value: \"isEmpty\" as const },\n    { label: \"Is not empty\", value: \"isNotEmpty\" as const },\n  ],\n  booleanOperators: [\n    { label: \"Is\", value: \"eq\" as const },\n    { label: \"Is not\", value: \"ne\" as const },\n  ],\n  sortOrders: [\n    { label: \"Asc\", value: \"asc\" as const },\n    { label: \"Desc\", value: \"desc\" as const },\n  ],\n  filterVariants: [\n    \"text\",\n    \"number\",\n    \"range\",\n    \"date\",\n    \"date-range\",\n    \"boolean\",\n    \"select\",\n    \"multi-select\",\n  ] as const,\n  operators: [\n    \"iLike\",\n    \"notILike\",\n    \"eq\",\n    \"ne\",\n    \"isEmpty\",\n    \"isNotEmpty\",\n    \"lt\",\n    \"lte\",\n    \"gt\",\n    \"gte\",\n    \"isBetween\",\n    \"isRelativeToToday\",\n  ] as const,\n  joinOperators: [\"and\", \"or\"] as const,\n};\n",
       "type": "registry:file",
       "target": "config/data-table.ts"
     },
