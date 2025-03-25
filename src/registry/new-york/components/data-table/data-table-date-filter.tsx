@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { formatDate } from "@/registry/new-york/lib/format";
-import { DataTableDatePickerProps } from "../../types/doc";
 
 type DateSelection = Date[] | DateRange;
 
