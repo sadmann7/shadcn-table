@@ -304,16 +304,18 @@ function DataTableFilterItem<TData>({
   onFilterUpdate,
   onFilterRemove,
 }: DataTableFilterItemProps<TData>) {
-  const joinOperatorListboxId = `${filterItemId}-join-operator-listbox`;
-  const fieldListboxId = `${filterItemId}-field-listbox`;
-  const operatorListboxId = `${filterItemId}-operator-listbox`;
-  const inputId = `${filterItemId}-input`;
   const [showFieldSelector, setShowFieldSelector] = React.useState(false);
 
   const column = columns.find((column) => column.id === filter.id);
   if (!column) return null;
 
+  const joinOperatorListboxId = `${filterItemId}-join-operator-listbox`;
+  const fieldListboxId = `${filterItemId}-field-listbox`;
+  const operatorListboxId = `${filterItemId}-operator-listbox`;
+  const inputId = `${filterItemId}-input`;
+
   const columnMeta = column.columnDef.meta;
+  const filterOperators = getFilterOperators(filter.variant);
 
   return (
     <SortableItem value={filter.filterId} asChild>
@@ -439,7 +441,7 @@ function DataTableFilterItem<TData>({
             id={operatorListboxId}
             className="origin-[var(--radix-select-content-transform-origin)]"
           >
-            {getFilterOperators(filter.variant).map((operator) => (
+            {filterOperators.map((operator) => (
               <SelectItem
                 key={operator.value}
                 value={operator.value}

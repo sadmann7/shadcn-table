@@ -205,6 +205,7 @@ export function DataTableFilterMenu<TData>({
             aria-label="Open filter command menu"
             variant="outline"
             size={filters.length > 0 ? "icon" : "sm"}
+            className="size-8"
           >
             <ListFilter />
             {filters.length > 0 ? null : "Filter"}
@@ -292,15 +293,16 @@ function DataTableFilterItem<TData>({
   onFilterRemove,
 }: DataTableFilterItemProps<TData>) {
   {
-    const operatorListboxId = `${filterItemId}-operator-listbox`;
-    const inputId = `${filterItemId}-input`;
-
     const [showFieldSelector, setShowFieldSelector] = React.useState(false);
 
     const column = columns.find((column) => column.id === filter.id);
     if (!column) return null;
 
+    const operatorListboxId = `${filterItemId}-operator-listbox`;
+    const inputId = `${filterItemId}-input`;
+
     const columnMeta = column.columnDef.meta;
+    const filterOperators = getFilterOperators(filter.variant);
 
     return (
       <div
@@ -389,7 +391,7 @@ function DataTableFilterItem<TData>({
             id={operatorListboxId}
             className="origin-[var(--radix-select-content-transform-origin)]"
           >
-            {getFilterOperators(filter.variant).map((operator) => (
+            {filterOperators.map((operator) => (
               <SelectItem
                 key={operator.value}
                 className="lowercase"
