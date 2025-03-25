@@ -177,7 +177,7 @@ export function DataTableSortList<TData>({
                 className="flex max-h-[300px] flex-col gap-2 overflow-y-auto p-0.5"
               >
                 {sorting.map((sort) => (
-                  <SortItem
+                  <DataTableSortItem
                     key={sort.id}
                     sort={sort}
                     sortItemId={`${id}-sort-${sort.id}`}
@@ -224,7 +224,7 @@ export function DataTableSortList<TData>({
   );
 }
 
-interface SortItemProps {
+interface DataTableSortItemProps {
   sort: ColumnSort;
   sortItemId: string;
   columns: { id: string; label: string }[];
@@ -233,14 +233,14 @@ interface SortItemProps {
   onSortRemove: (sortId: string) => void;
 }
 
-function SortItem({
+function DataTableSortItem({
   sort,
   sortItemId,
   columns,
   columnLabels,
   onSortUpdate,
   onSortRemove,
-}: SortItemProps) {
+}: DataTableSortItemProps) {
   const fieldListboxId = `${sortItemId}-field-listbox`;
   const fieldTriggerId = `${sortItemId}-field-trigger`;
   const directionListboxId = `${sortItemId}-direction-listbox`;

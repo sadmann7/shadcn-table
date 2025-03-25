@@ -234,7 +234,7 @@ export function DataTableFilterList<TData>({
                 className="flex max-h-[300px] flex-col gap-2 overflow-y-auto py-0.5 pr-1"
               >
                 {filters.map((filter, index) => (
-                  <FilterItem<TData>
+                  <DataTableFilterItem<TData>
                     key={filter.filterId}
                     filter={filter}
                     index={index}
@@ -280,7 +280,7 @@ export function DataTableFilterList<TData>({
   );
 }
 
-interface FilterItemProps<TData> {
+interface DataTableFilterItemProps<TData> {
   filter: ExtendedColumnFilter<TData>;
   index: number;
   filterItemId: string;
@@ -294,7 +294,7 @@ interface FilterItemProps<TData> {
   onFilterRemove: (filterId: string) => void;
 }
 
-function FilterItem<TData>({
+function DataTableFilterItem<TData>({
   filter,
   index,
   filterItemId,
@@ -303,7 +303,7 @@ function FilterItem<TData>({
   columns,
   onFilterUpdate,
   onFilterRemove,
-}: FilterItemProps<TData>) {
+}: DataTableFilterItemProps<TData>) {
   const joinOperatorListboxId = `${filterItemId}-join-operator-listbox`;
   const fieldListboxId = `${filterItemId}-field-listbox`;
   const operatorListboxId = `${filterItemId}-operator-listbox`;
@@ -319,13 +319,15 @@ function FilterItem<TData>({
 
       if (!column) return null;
 
+      const columnMeta = column.columnDef.meta;
+
       if (filter.operator === "isEmpty" || filter.operator === "isNotEmpty") {
         return (
           <div
             id={inputId}
             role="status"
             aria-live="polite"
-            aria-label={`${column.columnDef.meta?.label} filter is ${
+            aria-label={`${columnMeta?.label} filter is ${
               filter.operator === "isEmpty" ? "empty" : "not empty"
             }`}
             className="h-8 w-full rounded border border-dashed"
@@ -358,12 +360,10 @@ function FilterItem<TData>({
             <Input
               id={inputId}
               type={isNumber ? "number" : filter.variant}
-              aria-label={`${column.columnDef.meta?.label} filter value`}
+              aria-label={`${columnMeta?.label} filter value`}
               aria-describedby={`${inputId}-description`}
               inputMode={isNumber ? "numeric" : undefined}
-              placeholder={
-                column.columnDef.meta?.placeholder ?? "Enter a value..."
-              }
+              placeholder={columnMeta?.placeholder ?? "Enter a value..."}
               className="h-8 w-full rounded"
               defaultValue={
                 typeof filter.value === "string" ? filter.value : undefined
@@ -392,7 +392,7 @@ function FilterItem<TData>({
               <SelectTrigger
                 id={inputId}
                 aria-controls={`${inputId}-listbox`}
-                aria-label={`${column.columnDef.meta?.label} boolean filter`}
+                aria-label={`${columnMeta?.label} boolean filter`}
                 className="h-8 w-full rounded [&[data-size]]:h-8"
               >
                 <SelectValue placeholder={filter.value ? "True" : "False"} />
@@ -421,7 +421,7 @@ function FilterItem<TData>({
                 <Button
                   id={inputId}
                   aria-controls={`${inputId}-listbox`}
-                  aria-label={`${column.columnDef.meta?.label} filter value`}
+                  aria-label={`${columnMeta?.label} filter value`}
                   variant="outline"
                   size="sm"
                   className="w-full rounded font-normal"
@@ -429,8 +429,7 @@ function FilterItem<TData>({
                   <FacetedBadgeList
                     options={column.columnDef.meta?.options}
                     placeholder={
-                      column.columnDef.meta?.placeholder ??
-                      "Select an option..."
+                      columnMeta?.placeholder ?? "Select an option..."
                     }
                   />
                 </Button>
@@ -440,10 +439,8 @@ function FilterItem<TData>({
                 className="w-[12.5rem] origin-[var(--radix-popover-content-transform-origin)]"
               >
                 <FacetedInput
-                  aria-label={`Search ${column.columnDef.meta?.label} options`}
-                  placeholder={
-                    column.columnDef.meta?.placeholder ?? "Search options..."
-                  }
+                  aria-label={`Search ${columnMeta?.label} options`}
+                  placeholder={columnMeta?.placeholder ?? "Search options..."}
                 />
                 <FacetedList>
                   <FacetedEmpty>No options found.</FacetedEmpty>
@@ -484,7 +481,7 @@ function FilterItem<TData>({
                 <Button
                   id={inputId}
                   aria-controls={`${inputId}-listbox`}
-                  aria-label={`${column.columnDef.meta?.label} filter values`}
+                  aria-label={`${columnMeta?.label} filter values`}
                   variant="outline"
                   size="sm"
                   className="w-full rounded font-normal"
@@ -492,17 +489,15 @@ function FilterItem<TData>({
                   <FacetedBadgeList
                     options={column.columnDef.meta?.options}
                     placeholder={
-                      column.columnDef.meta?.placeholder ?? " Select options..."
+                      columnMeta?.placeholder ?? " Select options..."
                     }
                   />
                 </Button>
               </FacetedTrigger>
               <FacetedContent id={`${inputId}-listbox`}>
                 <FacetedInput
-                  aria-label={`Search ${column.columnDef.meta?.label} options`}
-                  placeholder={
-                    column.columnDef.meta?.placeholder ?? "Search options..."
-                  }
+                  aria-label={`Search ${columnMeta?.label} options`}
+                  placeholder={columnMeta?.placeholder ?? "Search options..."}
                 />
                 <FacetedList>
                   <FacetedEmpty>No options found.</FacetedEmpty>
@@ -546,7 +541,7 @@ function FilterItem<TData>({
                 <Button
                   id={inputId}
                   aria-controls={`${inputId}-calendar`}
-                  aria-label={`${column.columnDef.meta?.label} date filter`}
+                  aria-label={`${columnMeta?.label} date filter`}
                   variant="outline"
                   size="sm"
                   className={cn(
@@ -566,7 +561,7 @@ function FilterItem<TData>({
                 {filter.operator === "isBetween" ? (
                   <Calendar
                     id={`${inputId}-calendar`}
-                    aria-label={`Select ${column.columnDef.meta?.label} date range`}
+                    aria-label={`Select ${columnMeta?.label} date range`}
                     mode="range"
                     initialFocus
                     selected={
@@ -594,7 +589,7 @@ function FilterItem<TData>({
                 ) : (
                   <Calendar
                     id={`${inputId}-calendar`}
-                    aria-label={`Select ${column.columnDef.meta?.label} date`}
+                    aria-label={`Select ${columnMeta?.label} date`}
                     mode="single"
                     initialFocus
                     selected={
@@ -670,8 +665,8 @@ function FilterItem<TData>({
               className="w-32 justify-between rounded font-normal"
             >
               <span className="truncate">
-                {columns.find((field) => field.id === filter.id)?.columnDef.meta
-                  ?.label ?? "Select field"}
+                {columns.find((column) => column.id === filter.id)?.columnDef
+                  .meta?.label ?? "Select field"}
               </span>
               <ChevronsUpDown className="opacity-50" />
             </Button>

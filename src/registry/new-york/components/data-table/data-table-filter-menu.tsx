@@ -168,12 +168,14 @@ export function DataTableFilterMenu<TData>({
   return (
     <div className="flex flex-wrap items-center gap-2">
       {filters.map((filter) => {
-        const column = columns.find((col) => col.id === filter.id);
+        const column = columns.find((column) => column.id === filter.id);
         if (!column) return null;
 
         const filterItemId = `${id}-filter-${filter.filterId}`;
         const operatorListboxId = `${filterItemId}-operator-listbox`;
         const inputId = `${filterItemId}-input`;
+
+        const columnMeta = column.columnDef.meta;
 
         return (
           <div
@@ -189,10 +191,10 @@ export function DataTableFilterMenu<TData>({
                   size="sm"
                   className="rounded-none rounded-l-md border border-r-0 font-normal dark:bg-input/30"
                 >
-                  {column.columnDef.meta?.icon && (
-                    <column.columnDef.meta.icon className="text-muted-foreground" />
+                  {columnMeta?.icon && (
+                    <columnMeta.icon className="text-muted-foreground" />
                   )}
-                  {column.columnDef.meta?.label ?? column.id}
+                  {columnMeta?.label ?? column.id}
                 </Button>
               </PopoverTrigger>
               <PopoverContent
@@ -204,31 +206,31 @@ export function DataTableFilterMenu<TData>({
                   <CommandList>
                     <CommandEmpty>No fields found.</CommandEmpty>
                     <CommandGroup>
-                      {columns.map((col) => (
+                      {columns.map((column) => (
                         <CommandItem
-                          key={col.id}
-                          value={col.id}
+                          key={column.id}
+                          value={column.id}
                           onSelect={() => {
                             onFilterUpdate(filter.filterId, {
-                              id: col.id as Extract<keyof TData, string>,
-                              variant: col.columnDef.meta?.variant ?? "text",
+                              id: column.id as Extract<keyof TData, string>,
+                              variant: column.columnDef.meta?.variant ?? "text",
                               operator: getDefaultFilterOperator(
-                                col.columnDef.meta?.variant ?? "text",
+                                column.columnDef.meta?.variant ?? "text",
                               ),
                               value: "",
                             });
                           }}
                         >
-                          {col.columnDef.meta?.icon && (
-                            <col.columnDef.meta.icon />
+                          {column.columnDef.meta?.icon && (
+                            <column.columnDef.meta.icon />
                           )}
                           <span className="truncate">
-                            {col.columnDef.meta?.label ?? col.id}
+                            {column.columnDef.meta?.label ?? column.id}
                           </span>
                           <Check
                             className={cn(
                               "ml-auto",
-                              col.id === filter.id
+                              column.id === filter.id
                                 ? "opacity-100"
                                 : "opacity-0",
                             )}
@@ -265,8 +267,8 @@ export function DataTableFilterMenu<TData>({
                 {getFilterOperators(filter.variant).map((operator) => (
                   <SelectItem
                     key={operator.value}
-                    value={operator.value}
                     className="lowercase"
+                    value={operator.value}
                   >
                     {operator.label}
                   </SelectItem>
@@ -280,9 +282,9 @@ export function DataTableFilterMenu<TData>({
               onFilterUpdate,
             })}
             <Button
+              aria-controls={filterItemId}
               variant="ghost"
               size="sm"
-              aria-label={`Remove ${column.columnDef.meta?.label ?? column.id} filter`}
               className="h-full rounded-none rounded-r-md border border-l-0 px-1.5 font-normal dark:bg-input/30"
               onClick={() => onFilterRemove(filter.filterId)}
             >
