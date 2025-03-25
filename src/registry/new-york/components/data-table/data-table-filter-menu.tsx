@@ -53,6 +53,7 @@ import type {
 const FILTERS_KEY = "filters";
 const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
+const KEYBOARD_SHORTCUT = "f";
 
 interface DataTableFilterMenuProps<TData> {
   table: Table<TData>;
@@ -174,13 +175,13 @@ export function DataTableFilterMenu<TData>({
         return;
       }
 
-      if (event.key.toLowerCase() === "f" && !event.shiftKey) {
+      if (event.key.toLowerCase() === KEYBOARD_SHORTCUT && !event.shiftKey) {
         event.preventDefault();
         setOpen(true);
       }
 
       if (
-        event.key.toLowerCase() === "f" &&
+        event.key.toLowerCase() === KEYBOARD_SHORTCUT &&
         event.shiftKey &&
         filters.length > 0
       ) {

@@ -1,16 +1,13 @@
 "use client";
 
+/**
+ * @see https://github.com/dubinc/dub/blob/main/packages/ui/src/animated-size-container.tsx
+ */
+
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { type TargetAndTransition, motion } from "motion/react";
-
-const DEFAULT_TRANSITION = {
-  type: "spring",
-  duration: 0.3,
-  stiffness: 100,
-  damping: 15,
-} as const;
 
 interface Dimensions extends TargetAndTransition {
   width: string | number;
@@ -22,13 +19,17 @@ interface DynamicContainerProps
   width?: boolean;
   height?: boolean;
   children?: React.ReactNode;
-  transition?: typeof DEFAULT_TRANSITION;
 }
 
 function DynamicContainer({
   width,
   height,
-  transition = DEFAULT_TRANSITION,
+  transition = {
+    type: "spring",
+    duration: 0.3,
+    stiffness: 100,
+    damping: 15,
+  },
   className,
   children,
   ...props
