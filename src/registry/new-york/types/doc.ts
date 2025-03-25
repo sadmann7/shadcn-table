@@ -5,6 +5,7 @@ import type {
   ExtendedColumnSort,
   Option,
 } from "@/registry/new-york/types/data-table";
+import type { EmptyProps } from "@/types";
 
 import type {
   Column,
@@ -14,11 +15,6 @@ import type {
 } from "@tanstack/react-table";
 import type { motion } from "motion/react";
 import type * as React from "react";
-
-type EmptyProps<T extends React.ElementType> = Omit<
-  React.ComponentProps<T>,
-  keyof React.ComponentProps<T>
->;
 
 export interface UseDataTableProps<TData>
   extends Omit<
