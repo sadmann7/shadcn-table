@@ -70,7 +70,6 @@ import type {
   FilterOperator,
   JoinOperator,
 } from "@/registry/new-york/types/data-table";
-import type { PopoverContentProps } from "@radix-ui/react-popover";
 
 const FILTERS_KEY = "filters";
 const JOIN_OPERATOR_KEY = "joinOperator";
@@ -78,10 +77,7 @@ const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
 
 interface DataTableFilterListProps<TData>
-  extends Pick<
-    PopoverContentProps,
-    "align" | "alignOffset" | "collisionPadding" | "side" | "sideOffset"
-  > {
+  extends React.ComponentProps<typeof PopoverContent> {
   table: Table<TData>;
   debounceMs?: number;
   throttleMs?: number;
@@ -93,11 +89,7 @@ export function DataTableFilterList<TData>({
   debounceMs = DEBOUNCE_MS,
   throttleMs = THROTTLE_MS,
   shallow = true,
-  align = "center",
-  side = "bottom",
-  alignOffset = 0,
-  sideOffset = 4,
-  collisionPadding = 16,
+  ...props
 }: DataTableFilterListProps<TData>) {
   const id = React.useId();
   const labelId = React.useId();
@@ -204,12 +196,8 @@ export function DataTableFilterList<TData>({
         <PopoverContent
           aria-describedby={descriptionId}
           aria-labelledby={labelId}
-          align={align}
-          alignOffset={alignOffset}
-          collisionPadding={collisionPadding}
-          side={side}
-          sideOffset={sideOffset}
-          className="flex w-[calc(100vw-(--spacing(12)))] origin-[var(--radix-popover-content-transform-origin)] flex-col gap-3.5 p-4 sm:w-[var(--radix-popover-content-width)] sm:min-w-[25rem]"
+          className="flex w-full max-w-[var(--radix-popover-content-available-width)] origin-[var(--radix-popover-content-transform-origin)] flex-col gap-3.5 p-4 sm:min-w-[25rem]"
+          {...props}
         >
           <div className="flex flex-col gap-1">
             <h4 id={labelId} className="font-medium leading-none">

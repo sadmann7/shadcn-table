@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { formatDate } from "@/registry/new-york/lib/format";
+import { DataTableDatePickerProps } from "../../types/doc";
 
 type DateSelection = Date[] | DateRange;
 
@@ -43,17 +44,17 @@ function parseColumnFilterValue(
   return [value as number | string | undefined];
 }
 
-interface DataTableDatePickerProps<TData> {
+interface DataTableDateFilterProps<TData> {
   column: Column<TData, unknown>;
   title?: string;
   multiple?: boolean;
 }
 
-export function DataTableDatePicker<TData>({
+export function DataTableDateFilter<TData>({
   column,
   title,
   multiple,
-}: DataTableDatePickerProps<TData>) {
+}: DataTableDateFilterProps<TData>) {
   const columnFilterValue = column.getFilterValue();
 
   const selectedDates = React.useMemo<DateSelection>(() => {

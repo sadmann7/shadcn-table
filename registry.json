@@ -46,11 +46,11 @@
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-slider.tsx",
+          "path": "src/registry/new-york/components/data-table/data-table-slider-filter.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-date-picker.tsx",
+          "path": "src/registry/new-york/components/data-table/data-table-date-filter.tsx",
           "type": "registry:component"
         },
         {
@@ -225,7 +225,12 @@
         "popover",
         "select"
       ],
-      "dependencies": ["@tanstack/react-table", "lucide-react", "nuqs"],
+      "dependencies": [
+        "@tanstack/react-table",
+        "lucide-react",
+        "motion",
+        "nuqs"
+      ],
       "files": [
         {
           "path": "src/registry/new-york/components/data-table/data-table-filter-menu.tsx",
@@ -272,6 +277,19 @@
           "path": "src/registry/new-york/types/data-table.ts",
           "type": "registry:file",
           "target": "types/data-table.ts"
+        }
+      ]
+    },
+    {
+      "name": "data-table-ts-doc",
+      "type": "registry:component",
+      "title": "Data Table TypeScript Doc",
+      "description": "A TypeScript doc component for the data table",
+      "files": [
+        {
+          "path": "src/registry/new-york/types/doc.ts",
+          "type": "registry:file",
+          "target": "types/doc.ts"
         }
       ]
     }

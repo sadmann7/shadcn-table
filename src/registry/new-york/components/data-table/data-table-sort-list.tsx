@@ -40,23 +40,15 @@ import {
   SortableOverlay,
 } from "@/registry/new-york/components/ui/sortable";
 import { dataTableConfig } from "@/registry/new-york/config/data-table";
-import type { PopoverContentProps } from "@radix-ui/react-popover";
 
 interface DataTableSortListProps<TData>
-  extends Pick<
-    PopoverContentProps,
-    "align" | "alignOffset" | "collisionPadding" | "side" | "sideOffset"
-  > {
+  extends React.ComponentProps<typeof PopoverContent> {
   table: Table<TData>;
 }
 
 export function DataTableSortList<TData>({
   table,
-  align = "center",
-  side = "bottom",
-  alignOffset = 0,
-  sideOffset = 4,
-  collisionPadding = 16,
+  ...props
 }: DataTableSortListProps<TData>) {
   const id = React.useId();
   const labelId = React.useId();
@@ -147,12 +139,8 @@ export function DataTableSortList<TData>({
         <PopoverContent
           aria-labelledby={labelId}
           aria-describedby={descriptionId}
-          align={align}
-          side={side}
-          alignOffset={alignOffset}
-          sideOffset={sideOffset}
-          collisionPadding={collisionPadding}
-          className="flex w-[calc(100vw-(--spacing(20)))] origin-[var(--radix-popover-content-transform-origin)] flex-col gap-3.5 p-4 sm:w-[var(--radix-popover-content-width)] sm:min-w-[25rem]"
+          className="flex w-full max-w-[var(--radix-popover-content-available-width)] origin-[var(--radix-popover-content-transform-origin)] flex-col gap-3.5 p-4"
+          {...props}
         >
           <div className="flex flex-col gap-1">
             <h4 id={labelId} className="font-medium leading-none">

@@ -55,7 +55,8 @@ const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
 const KEYBOARD_SHORTCUT = "f";
 
-interface DataTableFilterMenuProps<TData> {
+interface DataTableFilterMenuProps<TData>
+  extends React.ComponentProps<typeof PopoverContent> {
   table: Table<TData>;
   debounceMs?: number;
   throttleMs?: number;
@@ -67,6 +68,8 @@ export function DataTableFilterMenu<TData>({
   debounceMs = DEBOUNCE_MS,
   throttleMs = THROTTLE_MS,
   shallow = true,
+  align = "start",
+  ...props
 }: DataTableFilterMenuProps<TData>) {
   const id = React.useId();
 
@@ -245,8 +248,9 @@ export function DataTableFilterMenu<TData>({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          align="start"
-          className="w-auto origin-[var(--radix-popover-content-transform-origin)] p-0"
+          align={align}
+          className="w-full max-w-[var(--radix-popover-content-available-width)] origin-[var(--radix-popover-content-transform-origin)] p-0"
+          {...props}
         >
           <Command loop className="[&_[cmdk-input-wrapper]_svg]:hidden">
             <CommandInput

@@ -14,8 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
-interface DataTablePaginationProps<TData> {
+interface DataTablePaginationProps<TData> extends React.ComponentProps<"div"> {
   table: Table<TData>;
   pageSizeOptions?: number[];
 }
@@ -23,9 +24,17 @@ interface DataTablePaginationProps<TData> {
 export function DataTablePagination<TData>({
   table,
   pageSizeOptions = [10, 20, 30, 40, 50],
+  className,
+  ...props
 }: DataTablePaginationProps<TData>) {
   return (
-    <div className="flex w-full flex-col-reverse items-center justify-between gap-4 overflow-auto p-1 sm:flex-row sm:gap-8">
+    <div
+      className={cn(
+        "flex w-full flex-col-reverse items-center justify-between gap-4 overflow-auto p-1 sm:flex-row sm:gap-8",
+        className,
+      )}
+      {...props}
+    >
       <div className="flex-1 whitespace-nowrap text-muted-foreground text-sm">
         {table.getFilteredSelectedRowModel().rows.length} of{" "}
         {table.getFilteredRowModel().rows.length} row(s) selected.

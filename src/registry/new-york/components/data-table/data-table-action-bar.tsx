@@ -18,7 +18,6 @@ interface DataTableActionBarProps<TData>
   table: Table<TData>;
   visible?: boolean;
   container?: Element | DocumentFragment | null;
-  children: React.ReactNode;
 }
 
 function DataTableActionBar<TData>({

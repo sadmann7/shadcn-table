@@ -55,12 +55,12 @@ interface UseDataTableProps<TData>
     sorting?: ExtendedColumnSort<TData>[];
   };
   history?: "push" | "replace";
-  throttleMs?: number;
   debounceMs?: number;
-  scroll?: boolean;
-  shallow?: boolean;
+  throttleMs?: number;
   clearOnDefault?: boolean;
   enableAdvancedFilter?: boolean;
+  scroll?: boolean;
+  shallow?: boolean;
   startTransition?: React.TransitionStartFunction;
 }
 
@@ -70,12 +70,12 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
     pageCount = -1,
     initialState,
     history = "replace",
-    throttleMs = THROTTLE_MS,
     debounceMs = DEBOUNCE_MS,
-    scroll = false,
-    shallow = true,
+    throttleMs = THROTTLE_MS,
     clearOnDefault = false,
     enableAdvancedFilter = false,
+    scroll = false,
+    shallow = true,
     startTransition,
     ...tableProps
   } = props;

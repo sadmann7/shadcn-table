@@ -15,15 +15,15 @@ import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import { PlusCircle, Settings2, XCircle } from "lucide-react";
 
-interface DataTableSliderProps<TData> {
+interface DataTableSliderFilterProps<TData> {
   column: Column<TData, unknown>;
   title?: string;
 }
 
-export function DataTableSlider<TData>({
+export function DataTableSliderFilter<TData>({
   column,
   title,
-}: DataTableSliderProps<TData>) {
+}: DataTableSliderFilterProps<TData>) {
   const id = React.useId();
   const columnFilterValue = column.getFilterValue() as
     | [number, number]

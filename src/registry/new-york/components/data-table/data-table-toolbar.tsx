@@ -7,13 +7,12 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { DataTableDatePicker } from "@/registry/new-york/components/data-table/data-table-date-picker";
+import { DataTableDateFilter } from "@/registry/new-york/components/data-table/data-table-date-filter";
 import { DataTableFacetedFilter } from "@/registry/new-york/components/data-table/data-table-faceted-filter";
-import { DataTableSlider } from "@/registry/new-york/components/data-table/data-table-slider";
+import { DataTableSliderFilter } from "@/registry/new-york/components/data-table/data-table-slider-filter";
 import { DataTableViewOptions } from "@/registry/new-york/components/data-table/data-table-view-options";
 
-interface DataTableToolbarProps<TData>
-  extends React.HTMLAttributes<HTMLDivElement> {
+interface DataTableToolbarProps<TData> extends React.ComponentProps<"div"> {
   table: Table<TData>;
 }
 
@@ -97,7 +96,7 @@ function DataTableToolbarFilter<TData>({
         case "date":
         case "date-range":
           return (
-            <DataTableDatePicker
+            <DataTableDateFilter
               column={column}
               title={columnMeta.label ?? column.id}
               multiple={columnMeta.variant === "date-range"}
@@ -106,7 +105,7 @@ function DataTableToolbarFilter<TData>({
 
         case "range":
           return (
-            <DataTableSlider
+            <DataTableSliderFilter
               column={column}
               title={columnMeta.label ?? column.id}
             />

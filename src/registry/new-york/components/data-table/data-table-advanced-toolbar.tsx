@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { DataTableViewOptions } from "@/registry/new-york/components/data-table/data-table-view-options";
 
 interface DataTableAdvancedToolbarProps<TData>
-  extends React.HTMLAttributes<HTMLDivElement> {
+  extends React.ComponentProps<"div"> {
   table: Table<TData>;
 }
 
