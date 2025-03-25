@@ -123,9 +123,12 @@ export function DataTableFilterMenu<TData>({
       };
 
       debouncedSetFilters([...filters, newFilter]);
-      setSelectedColumn(null);
-      setInputValue("");
       setOpen(false);
+
+      setTimeout(() => {
+        setSelectedColumn(null);
+        setInputValue("");
+      }, 150);
     },
     [filters, debouncedSetFilters],
   );
@@ -196,7 +199,7 @@ export function DataTableFilterMenu<TData>({
                 align="start"
                 className="w-48 origin-[var(--radix-popover-content-transform-origin)] p-0"
               >
-                <Command>
+                <Command loop>
                   <CommandInput placeholder="Search fields..." />
                   <CommandList>
                     <CommandEmpty>No fields found.</CommandEmpty>
@@ -316,7 +319,6 @@ export function DataTableFilterMenu<TData>({
             aria-label="Open filter command menu"
             variant="outline"
             size={filters.length > 0 ? "icon" : "sm"}
-            className="h-8"
           >
             <ListFilter />
             {filters.length > 0 ? null : "Filter"}
@@ -326,7 +328,7 @@ export function DataTableFilterMenu<TData>({
           align="start"
           className="w-auto origin-[var(--radix-popover-content-transform-origin)] p-0"
         >
-          <Command className="[&_[cmdk-input-wrapper]_svg]:hidden">
+          <Command loop className="[&_[cmdk-input-wrapper]_svg]:hidden">
             <CommandInput
               ref={inputRef}
               placeholder={
