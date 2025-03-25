@@ -1,6 +1,6 @@
 "use client";
 
-import type { Column, Table } from "@tanstack/react-table";
+import type { Column, ColumnMeta, Table } from "@tanstack/react-table";
 import {
   CalendarIcon,
   Check,
@@ -310,309 +310,10 @@ function DataTableFilterItem<TData>({
   const inputId = `${filterItemId}-input`;
   const [showFieldSelector, setShowFieldSelector] = React.useState(false);
 
-  const onFilterInputRender = React.useCallback(
-    ({
-      filter,
-      inputId,
-    }: { filter: ExtendedColumnFilter<TData>; inputId: string }) => {
-      const column = columns.find((f) => f.id === filter.id);
+  const column = columns.find((column) => column.id === filter.id);
+  if (!column) return null;
 
-      if (!column) return null;
-
-      const columnMeta = column.columnDef.meta;
-
-      if (filter.operator === "isEmpty" || filter.operator === "isNotEmpty") {
-        return (
-          <div
-            id={inputId}
-            role="status"
-            aria-live="polite"
-            aria-label={`${columnMeta?.label} filter is ${
-              filter.operator === "isEmpty" ? "empty" : "not empty"
-            }`}
-            className="h-8 w-full rounded border border-dashed"
-          />
-        );
-      }
-
-      switch (filter.variant) {
-        case "text":
-        case "number":
-        case "range": {
-          if (
-            (filter.variant === "range" && filter.operator === "isBetween") ||
-            filter.operator === "isBetween"
-          ) {
-            return (
-              <DataTableRangeFilter
-                filter={filter}
-                column={column}
-                inputId={inputId}
-                onFilterUpdate={onFilterUpdate}
-              />
-            );
-          }
-
-          const isNumber =
-            filter.variant === "number" || filter.variant === "range";
-
-          return (
-            <Input
-              id={inputId}
-              type={isNumber ? "number" : filter.variant}
-              aria-label={`${columnMeta?.label} filter value`}
-              aria-describedby={`${inputId}-description`}
-              inputMode={isNumber ? "numeric" : undefined}
-              placeholder={columnMeta?.placeholder ?? "Enter a value..."}
-              className="h-8 w-full rounded"
-              defaultValue={
-                typeof filter.value === "string" ? filter.value : undefined
-              }
-              onChange={(event) =>
-                onFilterUpdate(filter.filterId, {
-                  value: event.target.value,
-                })
-              }
-            />
-          );
-        }
-
-        case "boolean": {
-          if (Array.isArray(filter.value)) return null;
-
-          return (
-            <Select
-              value={filter.value}
-              onValueChange={(value) =>
-                onFilterUpdate(filter.filterId, {
-                  value,
-                })
-              }
-            >
-              <SelectTrigger
-                id={inputId}
-                aria-controls={`${inputId}-listbox`}
-                aria-label={`${columnMeta?.label} boolean filter`}
-                className="h-8 w-full rounded [&[data-size]]:h-8"
-              >
-                <SelectValue placeholder={filter.value ? "True" : "False"} />
-              </SelectTrigger>
-              <SelectContent id={`${inputId}-listbox`}>
-                <SelectItem value="true">True</SelectItem>
-                <SelectItem value="false">False</SelectItem>
-              </SelectContent>
-            </Select>
-          );
-        }
-
-        case "select":
-          return (
-            <Faceted
-              value={
-                typeof filter.value === "string" ? filter.value : undefined
-              }
-              onValueChange={(value) => {
-                onFilterUpdate(filter.filterId, {
-                  value,
-                });
-              }}
-            >
-              <FacetedTrigger asChild>
-                <Button
-                  id={inputId}
-                  aria-controls={`${inputId}-listbox`}
-                  aria-label={`${columnMeta?.label} filter value`}
-                  variant="outline"
-                  size="sm"
-                  className="w-full rounded font-normal"
-                >
-                  <FacetedBadgeList
-                    options={column.columnDef.meta?.options}
-                    placeholder={
-                      columnMeta?.placeholder ?? "Select an option..."
-                    }
-                  />
-                </Button>
-              </FacetedTrigger>
-              <FacetedContent
-                id={`${inputId}-listbox`}
-                className="w-[12.5rem] origin-[var(--radix-popover-content-transform-origin)]"
-              >
-                <FacetedInput
-                  aria-label={`Search ${columnMeta?.label} options`}
-                  placeholder={columnMeta?.placeholder ?? "Search options..."}
-                />
-                <FacetedList>
-                  <FacetedEmpty>No options found.</FacetedEmpty>
-                  <FacetedGroup>
-                    {column.columnDef.meta?.options?.map((option) => (
-                      <FacetedItem key={option.value} value={option.value}>
-                        {option.icon && <option.icon />}
-                        <span>{option.label}</span>
-                        {option.count && (
-                          <span className="ml-auto font-mono text-xs">
-                            {option.count}
-                          </span>
-                        )}
-                      </FacetedItem>
-                    ))}
-                  </FacetedGroup>
-                </FacetedList>
-              </FacetedContent>
-            </Faceted>
-          );
-
-        case "multi-select": {
-          const selectedValues = Array.isArray(filter.value)
-            ? filter.value
-            : [];
-
-          return (
-            <Faceted
-              multiple
-              value={selectedValues as string[]}
-              onValueChange={(value) => {
-                onFilterUpdate(filter.filterId, {
-                  value,
-                });
-              }}
-            >
-              <FacetedTrigger asChild>
-                <Button
-                  id={inputId}
-                  aria-controls={`${inputId}-listbox`}
-                  aria-label={`${columnMeta?.label} filter values`}
-                  variant="outline"
-                  size="sm"
-                  className="w-full rounded font-normal"
-                >
-                  <FacetedBadgeList
-                    options={column.columnDef.meta?.options}
-                    placeholder={
-                      columnMeta?.placeholder ?? " Select options..."
-                    }
-                  />
-                </Button>
-              </FacetedTrigger>
-              <FacetedContent id={`${inputId}-listbox`}>
-                <FacetedInput
-                  aria-label={`Search ${columnMeta?.label} options`}
-                  placeholder={columnMeta?.placeholder ?? "Search options..."}
-                />
-                <FacetedList>
-                  <FacetedEmpty>No options found.</FacetedEmpty>
-                  <FacetedGroup>
-                    {column.columnDef.meta?.options?.map((option) => (
-                      <FacetedItem key={option.value} value={option.value}>
-                        {option.icon && <option.icon />}
-                        <span>{option.label}</span>
-                        {option.count && (
-                          <span className="ml-auto font-mono text-xs">
-                            {option.count}
-                          </span>
-                        )}
-                      </FacetedItem>
-                    ))}
-                  </FacetedGroup>
-                </FacetedList>
-              </FacetedContent>
-            </Faceted>
-          );
-        }
-
-        case "date":
-        case "date-range": {
-          const dateValue = Array.isArray(filter.value)
-            ? filter.value.filter(Boolean)
-            : [filter.value, filter.value].filter(Boolean);
-
-          const displayValue =
-            filter.operator === "isBetween" && dateValue.length === 2
-              ? `${formatDate(new Date(Number(dateValue[0])))} - ${formatDate(
-                  new Date(Number(dateValue[1])),
-                )}`
-              : dateValue[0]
-                ? formatDate(new Date(Number(dateValue[0])))
-                : "Pick a date";
-
-          return (
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  id={inputId}
-                  aria-controls={`${inputId}-calendar`}
-                  aria-label={`${columnMeta?.label} date filter`}
-                  variant="outline"
-                  size="sm"
-                  className={cn(
-                    "w-full justify-start rounded text-left font-normal",
-                    !filter.value && "text-muted-foreground",
-                  )}
-                >
-                  <CalendarIcon />
-                  <span className="truncate">{displayValue}</span>
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                id={`${inputId}-calendar`}
-                align="start"
-                className="w-auto origin-[var(--radix-popover-content-transform-origin)] p-0"
-              >
-                {filter.operator === "isBetween" ? (
-                  <Calendar
-                    id={`${inputId}-calendar`}
-                    aria-label={`Select ${columnMeta?.label} date range`}
-                    mode="range"
-                    initialFocus
-                    selected={
-                      dateValue.length === 2
-                        ? {
-                            from: new Date(Number(dateValue[0])),
-                            to: new Date(Number(dateValue[1])),
-                          }
-                        : {
-                            from: new Date(),
-                            to: new Date(),
-                          }
-                    }
-                    onSelect={(date) => {
-                      onFilterUpdate(filter.filterId, {
-                        value: date
-                          ? [
-                              (date.from?.getTime() ?? "").toString(),
-                              (date.to?.getTime() ?? "").toString(),
-                            ]
-                          : [],
-                      });
-                    }}
-                  />
-                ) : (
-                  <Calendar
-                    id={`${inputId}-calendar`}
-                    aria-label={`Select ${columnMeta?.label} date`}
-                    mode="single"
-                    initialFocus
-                    selected={
-                      dateValue[0] ? new Date(Number(dateValue[0])) : undefined
-                    }
-                    onSelect={(date) => {
-                      onFilterUpdate(filter.filterId, {
-                        value: (date?.getTime() ?? "").toString(),
-                      });
-                    }}
-                  />
-                )}
-              </PopoverContent>
-            </Popover>
-          );
-        }
-
-        default:
-          return null;
-      }
-    },
-    [columns, onFilterUpdate],
-  );
+  const columnMeta = column.columnDef.meta;
 
   return (
     <SortableItem value={filter.filterId} asChild>
@@ -686,10 +387,6 @@ function DataTableFilterItem<TData>({
                       key={column.id}
                       value={column.id}
                       onSelect={(value) => {
-                        const column = columns.find((col) => col.id === value);
-
-                        if (!column) return;
-
                         onFilterUpdate(filter.filterId, {
                           id: value as Extract<keyof TData, string>,
                           variant: column.columnDef.meta?.variant ?? "text",
@@ -754,7 +451,13 @@ function DataTableFilterItem<TData>({
           </SelectContent>
         </Select>
         <div className="min-w-36 flex-1">
-          {onFilterInputRender({ filter, inputId })}
+          {onFilterInputRender({
+            filter,
+            inputId,
+            column,
+            columnMeta,
+            onFilterUpdate,
+          })}
         </div>
         <Button
           aria-controls={filterItemId}
@@ -773,4 +476,303 @@ function DataTableFilterItem<TData>({
       </div>
     </SortableItem>
   );
+}
+
+function onFilterInputRender<TData>({
+  filter,
+  inputId,
+  column,
+  columnMeta,
+  onFilterUpdate,
+}: {
+  filter: ExtendedColumnFilter<TData>;
+  inputId: string;
+  column: Column<TData>;
+  columnMeta?: ColumnMeta<TData, unknown>;
+  onFilterUpdate: (
+    filterId: string,
+    updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
+  ) => void;
+}) {
+  if (filter.operator === "isEmpty" || filter.operator === "isNotEmpty") {
+    return (
+      <div
+        id={inputId}
+        role="status"
+        aria-live="polite"
+        aria-label={`${columnMeta?.label} filter is ${
+          filter.operator === "isEmpty" ? "empty" : "not empty"
+        }`}
+        className="h-8 w-full rounded border border-dashed"
+      />
+    );
+  }
+
+  switch (filter.variant) {
+    case "text":
+    case "number":
+    case "range": {
+      if (
+        (filter.variant === "range" && filter.operator === "isBetween") ||
+        filter.operator === "isBetween"
+      ) {
+        return (
+          <DataTableRangeFilter
+            filter={filter}
+            column={column}
+            inputId={inputId}
+            onFilterUpdate={onFilterUpdate}
+          />
+        );
+      }
+
+      const isNumber =
+        filter.variant === "number" || filter.variant === "range";
+
+      return (
+        <Input
+          id={inputId}
+          type={isNumber ? "number" : filter.variant}
+          aria-label={`${columnMeta?.label} filter value`}
+          aria-describedby={`${inputId}-description`}
+          inputMode={isNumber ? "numeric" : undefined}
+          placeholder={columnMeta?.placeholder ?? "Enter a value..."}
+          className="h-8 w-full rounded"
+          defaultValue={
+            typeof filter.value === "string" ? filter.value : undefined
+          }
+          onChange={(event) =>
+            onFilterUpdate(filter.filterId, {
+              value: event.target.value,
+            })
+          }
+        />
+      );
+    }
+
+    case "boolean": {
+      if (Array.isArray(filter.value)) return null;
+
+      return (
+        <Select
+          value={filter.value}
+          onValueChange={(value) =>
+            onFilterUpdate(filter.filterId, {
+              value,
+            })
+          }
+        >
+          <SelectTrigger
+            id={inputId}
+            aria-controls={`${inputId}-listbox`}
+            aria-label={`${columnMeta?.label} boolean filter`}
+            className="h-8 w-full rounded [&[data-size]]:h-8"
+          >
+            <SelectValue placeholder={filter.value ? "True" : "False"} />
+          </SelectTrigger>
+          <SelectContent id={`${inputId}-listbox`}>
+            <SelectItem value="true">True</SelectItem>
+            <SelectItem value="false">False</SelectItem>
+          </SelectContent>
+        </Select>
+      );
+    }
+
+    case "select":
+      return (
+        <Faceted
+          value={typeof filter.value === "string" ? filter.value : undefined}
+          onValueChange={(value) => {
+            onFilterUpdate(filter.filterId, {
+              value,
+            });
+          }}
+        >
+          <FacetedTrigger asChild>
+            <Button
+              id={inputId}
+              aria-controls={`${inputId}-listbox`}
+              aria-label={`${columnMeta?.label} filter value`}
+              variant="outline"
+              size="sm"
+              className="w-full rounded font-normal"
+            >
+              <FacetedBadgeList
+                options={column.columnDef.meta?.options}
+                placeholder={columnMeta?.placeholder ?? "Select an option..."}
+              />
+            </Button>
+          </FacetedTrigger>
+          <FacetedContent
+            id={`${inputId}-listbox`}
+            className="w-[12.5rem] origin-[var(--radix-popover-content-transform-origin)]"
+          >
+            <FacetedInput
+              aria-label={`Search ${columnMeta?.label} options`}
+              placeholder={columnMeta?.placeholder ?? "Search options..."}
+            />
+            <FacetedList>
+              <FacetedEmpty>No options found.</FacetedEmpty>
+              <FacetedGroup>
+                {columnMeta?.options?.map((option) => (
+                  <FacetedItem key={option.value} value={option.value}>
+                    {option.icon && <option.icon />}
+                    <span>{option.label}</span>
+                    {option.count && (
+                      <span className="ml-auto font-mono text-xs">
+                        {option.count}
+                      </span>
+                    )}
+                  </FacetedItem>
+                ))}
+              </FacetedGroup>
+            </FacetedList>
+          </FacetedContent>
+        </Faceted>
+      );
+
+    case "multi-select": {
+      const selectedValues = Array.isArray(filter.value) ? filter.value : [];
+
+      return (
+        <Faceted
+          multiple
+          value={selectedValues as string[]}
+          onValueChange={(value) => {
+            onFilterUpdate(filter.filterId, {
+              value,
+            });
+          }}
+        >
+          <FacetedTrigger asChild>
+            <Button
+              id={inputId}
+              aria-controls={`${inputId}-listbox`}
+              aria-label={`${columnMeta?.label} filter values`}
+              variant="outline"
+              size="sm"
+              className="w-full rounded font-normal"
+            >
+              <FacetedBadgeList
+                options={columnMeta?.options}
+                placeholder={columnMeta?.placeholder ?? " Select options..."}
+              />
+            </Button>
+          </FacetedTrigger>
+          <FacetedContent id={`${inputId}-listbox`}>
+            <FacetedInput
+              aria-label={`Search ${columnMeta?.label} options`}
+              placeholder={columnMeta?.placeholder ?? "Search options..."}
+            />
+            <FacetedList>
+              <FacetedEmpty>No options found.</FacetedEmpty>
+              <FacetedGroup>
+                {columnMeta?.options?.map((option) => (
+                  <FacetedItem key={option.value} value={option.value}>
+                    {option.icon && <option.icon />}
+                    <span>{option.label}</span>
+                    {option.count && (
+                      <span className="ml-auto font-mono text-xs">
+                        {option.count}
+                      </span>
+                    )}
+                  </FacetedItem>
+                ))}
+              </FacetedGroup>
+            </FacetedList>
+          </FacetedContent>
+        </Faceted>
+      );
+    }
+
+    case "date":
+    case "date-range": {
+      const dateValue = Array.isArray(filter.value)
+        ? filter.value.filter(Boolean)
+        : [filter.value, filter.value].filter(Boolean);
+
+      const displayValue =
+        filter.operator === "isBetween" && dateValue.length === 2
+          ? `${formatDate(new Date(Number(dateValue[0])))} - ${formatDate(
+              new Date(Number(dateValue[1])),
+            )}`
+          : dateValue[0]
+            ? formatDate(new Date(Number(dateValue[0])))
+            : "Pick a date";
+
+      return (
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              id={inputId}
+              aria-controls={`${inputId}-calendar`}
+              aria-label={`${columnMeta?.label} date filter`}
+              variant="outline"
+              size="sm"
+              className={cn(
+                "w-full justify-start rounded text-left font-normal",
+                !filter.value && "text-muted-foreground",
+              )}
+            >
+              <CalendarIcon />
+              <span className="truncate">{displayValue}</span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            id={`${inputId}-calendar`}
+            align="start"
+            className="w-auto origin-[var(--radix-popover-content-transform-origin)] p-0"
+          >
+            {filter.operator === "isBetween" ? (
+              <Calendar
+                id={`${inputId}-calendar`}
+                aria-label={`Select ${columnMeta?.label} date range`}
+                mode="range"
+                initialFocus
+                selected={
+                  dateValue.length === 2
+                    ? {
+                        from: new Date(Number(dateValue[0])),
+                        to: new Date(Number(dateValue[1])),
+                      }
+                    : {
+                        from: new Date(),
+                        to: new Date(),
+                      }
+                }
+                onSelect={(date) => {
+                  onFilterUpdate(filter.filterId, {
+                    value: date
+                      ? [
+                          (date.from?.getTime() ?? "").toString(),
+                          (date.to?.getTime() ?? "").toString(),
+                        ]
+                      : [],
+                  });
+                }}
+              />
+            ) : (
+              <Calendar
+                id={`${inputId}-calendar`}
+                aria-label={`Select ${columnMeta?.label} date`}
+                mode="single"
+                initialFocus
+                selected={
+                  dateValue[0] ? new Date(Number(dateValue[0])) : undefined
+                }
+                onSelect={(date) => {
+                  onFilterUpdate(filter.filterId, {
+                    value: (date?.getTime() ?? "").toString(),
+                  });
+                }}
+              />
+            )}
+          </PopoverContent>
+        </Popover>
+      );
+    }
+
+    default:
+      return null;
+  }
 }
