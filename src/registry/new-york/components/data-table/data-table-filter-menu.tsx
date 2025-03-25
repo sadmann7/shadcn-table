@@ -128,7 +128,7 @@ export function DataTableFilterMenu<TData>({
       setTimeout(() => {
         setSelectedColumn(null);
         setInputValue("");
-      }, 150);
+      }, 100);
     },
     [filters, debouncedSetFilters],
   );
@@ -165,6 +165,37 @@ export function DataTableFilterMenu<TData>({
     debouncedSetFilters([]);
   }, [debouncedSetFilters]);
 
+  React.useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
+      if (event.key.toLowerCase() === "f" && !event.shiftKey) {
+        event.preventDefault();
+        setOpen(true);
+      }
+
+      if (
+        event.key.toLowerCase() === "f" &&
+        event.shiftKey &&
+        filters.length > 0
+      ) {
+        event.preventDefault();
+        debouncedSetFilters((prevFilters) => {
+          if (prevFilters.length === 0) return prevFilters;
+          return prevFilters.slice(0, -1);
+        });
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [filters.length, debouncedSetFilters]);
+
   return (
     <div className="flex flex-wrap items-center gap-2">
       {filters.map((filter) => (
@@ -190,13 +221,14 @@ export function DataTableFilterMenu<TData>({
       )}
       <Popover
         open={open}
-        onOpenChange={async (open) => {
+        onOpenChange={(open) => {
           setOpen(open);
 
           if (!open) {
-            await new Promise((resolve) => setTimeout(resolve, 100));
-            setSelectedColumn(null);
-            setInputValue("");
+            setTimeout(() => {
+              setSelectedColumn(null);
+              setInputValue("");
+            }, 100);
           }
         }}
       >
@@ -205,7 +237,7 @@ export function DataTableFilterMenu<TData>({
             aria-label="Open filter command menu"
             variant="outline"
             size={filters.length > 0 ? "icon" : "sm"}
-            className="size-8"
+            className={cn(filters.length > 0 && "size-8", "h-8")}
           >
             <ListFilter />
             {filters.length > 0 ? null : "Filter"}

@@ -156,19 +156,19 @@
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/ui/sortable.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "src/registry/new-york/components/ui/faceted.tsx",
-          "type": "registry:component"
-        },
-        {
           "path": "src/registry/new-york/components/data-table/data-table-range-filter.tsx",
           "type": "registry:component"
         },
         {
           "path": "src/registry/new-york/components/data-table/data-table-advanced-toolbar.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/registry/new-york/components/ui/sortable.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "src/registry/new-york/components/ui/faceted.tsx",
           "type": "registry:component"
         },
         {
