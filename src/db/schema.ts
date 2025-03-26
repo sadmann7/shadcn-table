@@ -1,8 +1,8 @@
 import { pgTable } from "@/db/utils";
 import { sql } from "drizzle-orm";
-import { boolean, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, real, timestamp, varchar } from "drizzle-orm/pg-core";
 
-import { generateId } from "@/lib/id";
+import { generateId } from "@/registry/new-york/lib/id";
 
 export const tasks = pgTable("tasks", {
   id: varchar("id", { length: 30 })
@@ -28,6 +28,7 @@ export const tasks = pgTable("tasks", {
   })
     .notNull()
     .default("low"),
+  estimatedHours: real("estimated_hours").notNull().default(0),
   archived: boolean("archived").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")

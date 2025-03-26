@@ -8,11 +8,15 @@ import {
 } from "nuqs/server";
 import * as z from "zod";
 
-import { getFiltersStateParser, getSortingStateParser } from "@/lib/parsers";
+import { dataTableConfig } from "@/config/data-table";
+import {
+  getFiltersStateParser,
+  getSortingStateParser,
+} from "@/registry/new-york/lib/parsers";
 
 export const searchParamsCache = createSearchParamsCache({
-  flags: parseAsArrayOf(z.enum(["advancedTable", "floatingBar"])).withDefault(
-    [],
+  filterVariant: parseAsStringEnum(
+    dataTableConfig.featureFlags.map((flag) => flag.value),
   ),
   page: parseAsInteger.withDefault(1),
   perPage: parseAsInteger.withDefault(10),
@@ -22,8 +26,8 @@ export const searchParamsCache = createSearchParamsCache({
   title: parseAsString.withDefault(""),
   status: parseAsArrayOf(z.enum(tasks.status.enumValues)).withDefault([]),
   priority: parseAsArrayOf(z.enum(tasks.priority.enumValues)).withDefault([]),
-  from: parseAsString.withDefault(""),
-  to: parseAsString.withDefault(""),
+  estimatedHours: parseAsArrayOf(z.coerce.number()).withDefault([]),
+  createdAt: parseAsArrayOf(z.coerce.number()).withDefault([]),
   // advanced filter
   filters: getFiltersStateParser().withDefault([]),
   joinOperator: parseAsStringEnum(["and", "or"]).withDefault("and"),
@@ -34,6 +38,7 @@ export const createTaskSchema = z.object({
   label: z.enum(tasks.label.enumValues),
   status: z.enum(tasks.status.enumValues),
   priority: z.enum(tasks.priority.enumValues),
+  estimatedHours: z.coerce.number().optional(),
 });
 
 export const updateTaskSchema = z.object({
@@ -41,6 +46,7 @@ export const updateTaskSchema = z.object({
   label: z.enum(tasks.label.enumValues).optional(),
   status: z.enum(tasks.status.enumValues).optional(),
   priority: z.enum(tasks.priority.enumValues).optional(),
+  estimatedHours: z.coerce.number().optional(),
 });
 
 export type GetTasksSchema = Awaited<

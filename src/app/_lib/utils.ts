@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { customAlphabet } from "nanoid";
 
-import { generateId } from "@/lib/id";
+import { generateId } from "@/registry/new-york/lib/id";
 
 export function generateRandomTask(): Task {
   return {
@@ -21,6 +21,7 @@ export function generateRandomTask(): Task {
     title: faker.hacker
       .phrase()
       .replace(/^./, (letter) => letter.toUpperCase()),
+    estimatedHours: faker.number.int({ min: 1, max: 24 }),
     status: faker.helpers.shuffle(tasks.status.enumValues)[0] ?? "todo",
     label: faker.helpers.shuffle(tasks.label.enumValues)[0] ?? "bug",
     priority: faker.helpers.shuffle(tasks.priority.enumValues)[0] ?? "low",
@@ -30,11 +31,6 @@ export function generateRandomTask(): Task {
   };
 }
 
-/**
- * Returns the appropriate status icon based on the provided status.
- * @param status - The status of the task.
- * @returns A React component representing the status icon.
- */
 export function getStatusIcon(status: Task["status"]) {
   const statusIcons = {
     canceled: CircleX,
@@ -46,11 +42,6 @@ export function getStatusIcon(status: Task["status"]) {
   return statusIcons[status] || CircleIcon;
 }
 
-/**
- * Returns the appropriate priority icon based on the provided priority.
- * @param priority - The priority of the task.
- * @returns A React component representing the priority icon.
- */
 export function getPriorityIcon(priority: Task["priority"]) {
   const priorityIcons = {
     high: ArrowUpIcon,

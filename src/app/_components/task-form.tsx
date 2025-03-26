@@ -12,6 +12,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -143,6 +144,28 @@ export function TaskForm<T extends FieldValues>({
                   </SelectGroup>
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name={"estimatedHours" as FieldPath<T>}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Estimated Hours</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="Enter estimated hours"
+                  step="0.5"
+                  min="0"
+                  {...field}
+                  onChange={(event) =>
+                    field.onChange(event.target.valueAsNumber)
+                  }
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

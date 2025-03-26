@@ -8,7 +8,7 @@ import "@/styles/globals.css";
 
 import type { Metadata, Viewport } from "next";
 
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { fontMono, fontSans } from "@/lib/fonts";
 import Script from "next/script";
 

@@ -1,13 +1,19 @@
 "use client";
 
 import { type Task, tasks } from "@/db/schema";
-import type { DataTableRowAction } from "@/types";
+import type { DataTableRowAction } from "@/registry/new-york/types/data-table";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Ellipsis } from "lucide-react";
+import {
+  ArrowUpDown,
+  CalendarIcon,
+  CircleDashed,
+  Clock,
+  Ellipsis,
+  Text,
+} from "lucide-react";
 import * as React from "react";
 import { toast } from "sonner";
 
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -25,20 +31,27 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getErrorMessage } from "@/lib/handle-error";
-import { formatDate } from "@/lib/utils";
+import { DataTableColumnHeader } from "@/registry/new-york/components/data-table/data-table-column-header";
+import { formatDate } from "@/registry/new-york/lib/format";
 
 import { updateTask } from "../_lib/actions";
 import { getPriorityIcon, getStatusIcon } from "../_lib/utils";
 
-interface GetColumnsProps {
+interface GetTasksTableColumnsProps {
+  statusCounts: Record<Task["status"], number>;
+  priorityCounts: Record<Task["priority"], number>;
+  estimatedHoursRange: { min: number; max: number };
   setRowAction: React.Dispatch<
     React.SetStateAction<DataTableRowAction<Task> | null>
   >;
 }
 
-export function getColumns({
+export function getTasksTableColumns({
+  statusCounts,
+  priorityCounts,
+  estimatedHoursRange,
   setRowAction,
-}: GetColumnsProps): ColumnDef<Task>[] {
+}: GetTasksTableColumnsProps): ColumnDef<Task>[] {
   return [
     {
       id: "select",
@@ -63,8 +76,10 @@ export function getColumns({
       ),
       enableSorting: false,
       enableHiding: false,
+      size: 40,
     },
     {
+      id: "code",
       accessorKey: "code",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Task" />
@@ -74,6 +89,7 @@ export function getColumns({
       enableHiding: false,
     },
     {
+      id: "title",
       accessorKey: "title",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Title" />
@@ -84,7 +100,7 @@ export function getColumns({
         );
 
         return (
-          <div className="flex space-x-2">
+          <div className="flex items-center gap-2">
             {label && <Badge variant="outline">{label}</Badge>}
             <span className="max-w-[31.25rem] truncate font-medium">
               {row.getValue("title")}
@@ -92,8 +108,18 @@ export function getColumns({
           </div>
         );
       },
+      meta: {
+        label: "Title",
+        placeholder: "Search titles...",
+        variant: "text",
+        icon: Text,
+      },
+      enableColumnFilter: true,
+      enableHiding: false,
+      enableSorting: false,
     },
     {
+      id: "status",
       accessorKey: "status",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
@@ -108,20 +134,27 @@ export function getColumns({
         const Icon = getStatusIcon(status);
 
         return (
-          <div className="flex w-[6.25rem] items-center">
-            <Icon
-              className="mr-2 size-4 text-muted-foreground"
-              aria-hidden="true"
-            />
+          <Badge variant="outline" className="py-1 [&>svg]:size-3.5">
+            <Icon />
             <span className="capitalize">{status}</span>
-          </div>
+          </Badge>
         );
       },
-      filterFn: (row, id, value) => {
-        return Array.isArray(value) && value.includes(row.getValue(id));
+      meta: {
+        label: "Status",
+        variant: "select",
+        options: tasks.status.enumValues.map((status) => ({
+          label: status.charAt(0).toUpperCase() + status.slice(1),
+          value: status,
+          count: statusCounts[status],
+          icon: getStatusIcon(status),
+        })),
+        icon: CircleDashed,
       },
+      enableColumnFilter: true,
     },
     {
+      id: "priority",
       accessorKey: "priority",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Priority" />
@@ -136,34 +169,57 @@ export function getColumns({
         const Icon = getPriorityIcon(priority);
 
         return (
-          <div className="flex items-center">
-            <Icon
-              className="mr-2 size-4 text-muted-foreground"
-              aria-hidden="true"
-            />
+          <Badge variant="outline" className="py-1 [&>svg]:size-3.5">
+            <Icon />
             <span className="capitalize">{priority}</span>
-          </div>
+          </Badge>
         );
       },
-      filterFn: (row, id, value) => {
-        return Array.isArray(value) && value.includes(row.getValue(id));
+      meta: {
+        label: "Priority",
+        variant: "multiSelect",
+        options: tasks.priority.enumValues.map((priority) => ({
+          label: priority.charAt(0).toUpperCase() + priority.slice(1),
+          value: priority,
+          count: priorityCounts[priority],
+          icon: getPriorityIcon(priority),
+        })),
+        icon: ArrowUpDown,
       },
+      enableColumnFilter: true,
     },
     {
-      accessorKey: "archived",
+      id: "estimatedHours",
+      accessorKey: "estimatedHours",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Archived" />
+        <DataTableColumnHeader column={column} title="Est. Hours" />
       ),
-      cell: ({ row }) => (
-        <Badge variant="outline">{row.original.archived ? "Yes" : "No"}</Badge>
-      ),
+      cell: ({ cell }) => {
+        const estimatedHours = cell.getValue<number>();
+        return <div className="w-20 text-right">{estimatedHours}</div>;
+      },
+      meta: {
+        label: "Est. Hours",
+        variant: "range",
+        range: [estimatedHoursRange.min, estimatedHoursRange.max],
+        unit: "hr",
+        icon: Clock,
+      },
+      enableColumnFilter: true,
     },
     {
+      id: "createdAt",
       accessorKey: "createdAt",
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Created At" />
       ),
       cell: ({ cell }) => formatDate(cell.getValue<Date>()),
+      meta: {
+        label: "Created At",
+        variant: "dateRange",
+        icon: CalendarIcon,
+      },
+      enableColumnFilter: true,
     },
     {
       id: "actions",
@@ -183,7 +239,7 @@ export function getColumns({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40">
               <DropdownMenuItem
-                onSelect={() => setRowAction({ row, type: "update" })}
+                onSelect={() => setRowAction({ row, variant: "update" })}
               >
                 Edit
               </DropdownMenuItem>
@@ -223,7 +279,7 @@ export function getColumns({
               </DropdownMenuSub>
               <DropdownMenuSeparator />
               <DropdownMenuItem
-                onSelect={() => setRowAction({ row, type: "delete" })}
+                onSelect={() => setRowAction({ row, variant: "delete" })}
               >
                 Delete
                 <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>

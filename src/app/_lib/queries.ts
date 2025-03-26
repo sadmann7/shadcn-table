@@ -1,7 +1,7 @@
 import "server-only";
 
 import { db } from "@/db";
-import { type Task, tasks } from "@/db/schema";
+import { tasks } from "@/db/schema";
 import {
   and,
   asc,
@@ -12,6 +12,7 @@ import {
   ilike,
   inArray,
   lte,
+  sql,
 } from "drizzle-orm";
 
 import { filterColumns } from "@/lib/filter-columns";
@@ -24,9 +25,9 @@ export async function getTasks(input: GetTasksSchema) {
     async () => {
       try {
         const offset = (input.page - 1) * input.perPage;
-        const fromDate = input.from ? new Date(input.from) : undefined;
-        const toDate = input.to ? new Date(input.to) : undefined;
-        const advancedTable = input.flags.includes("advancedTable");
+        const advancedTable =
+          input.filterVariant === "advancedFilters" ||
+          input.filterVariant === "commandFilters";
 
         const advancedWhere = filterColumns({
           table: tasks,
@@ -44,8 +45,40 @@ export async function getTasks(input: GetTasksSchema) {
               input.priority.length > 0
                 ? inArray(tasks.priority, input.priority)
                 : undefined,
-              fromDate ? gte(tasks.createdAt, fromDate) : undefined,
-              toDate ? lte(tasks.createdAt, toDate) : undefined,
+              input.estimatedHours.length > 0
+                ? and(
+                    input.estimatedHours[0]
+                      ? gte(tasks.estimatedHours, input.estimatedHours[0])
+                      : undefined,
+                    input.estimatedHours[1]
+                      ? lte(tasks.estimatedHours, input.estimatedHours[1])
+                      : undefined,
+                  )
+                : undefined,
+              input.createdAt.length > 0
+                ? and(
+                    input.createdAt[0]
+                      ? gte(
+                          tasks.createdAt,
+                          (() => {
+                            const date = new Date(input.createdAt[0]);
+                            date.setHours(0, 0, 0, 0);
+                            return date;
+                          })(),
+                        )
+                      : undefined,
+                    input.createdAt[1]
+                      ? lte(
+                          tasks.createdAt,
+                          (() => {
+                            const date = new Date(input.createdAt[1]);
+                            date.setHours(23, 59, 59, 999);
+                            return date;
+                          })(),
+                        )
+                      : undefined,
+                  )
+                : undefined,
             );
 
         const orderBy =
@@ -87,7 +120,7 @@ export async function getTasks(input: GetTasksSchema) {
     },
     [JSON.stringify(input)],
     {
-      revalidate: 3600,
+      revalidate: 1,
       tags: ["tasks"],
     },
   )();
@@ -104,18 +137,28 @@ export async function getTaskStatusCounts() {
           })
           .from(tasks)
           .groupBy(tasks.status)
-          .having(gt(count(), 0))
+          .having(gt(count(tasks.status), 0))
           .then((res) =>
             res.reduce(
               (acc, { status, count }) => {
                 acc[status] = count;
                 return acc;
               },
-              {} as Record<Task["status"], number>,
+              {
+                todo: 0,
+                "in-progress": 0,
+                done: 0,
+                canceled: 0,
+              },
             ),
           );
       } catch (_err) {
-        return {} as Record<Task["status"], number>;
+        return {
+          todo: 0,
+          "in-progress": 0,
+          done: 0,
+          canceled: 0,
+        };
       }
     },
     ["task-status-counts"],
@@ -143,14 +186,44 @@ export async function getTaskPriorityCounts() {
                 acc[priority] = count;
                 return acc;
               },
-              {} as Record<Task["priority"], number>,
+              {
+                low: 0,
+                medium: 0,
+                high: 0,
+              },
             ),
           );
       } catch (_err) {
-        return {} as Record<Task["priority"], number>;
+        return {
+          low: 0,
+          medium: 0,
+          high: 0,
+        };
       }
     },
     ["task-priority-counts"],
+    {
+      revalidate: 3600,
+    },
+  )();
+}
+
+export async function getEstimatedHoursRange() {
+  return unstable_cache(
+    async () => {
+      try {
+        return await db
+          .select({
+            min: sql<number>`min(${tasks.estimatedHours})`,
+            max: sql<number>`max(${tasks.estimatedHours})`,
+          })
+          .from(tasks)
+          .then((res) => res[0] ?? { min: 0, max: 0 });
+      } catch (_err) {
+        return { min: 0, max: 0 };
+      }
+    },
+    ["estimated-hours-range"],
     {
       revalidate: 3600,
     },

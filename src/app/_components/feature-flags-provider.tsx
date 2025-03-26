@@ -10,19 +10,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { type DataTableConfig, dataTableConfig } from "@/config/data-table";
-import { cn } from "@/lib/utils";
 
-type FeatureFlagValue = DataTableConfig["featureFlags"][number]["value"];
+type FilterVariant = DataTableConfig["featureFlags"][number]["value"];
 
-interface FeatureFlagsContextProps {
-  featureFlags: FeatureFlagValue[];
-  setFeatureFlags: (value: FeatureFlagValue[]) => void;
+interface FeatureFlagsContextValue {
+  filterVariant: FilterVariant;
+  enableAdvancedFilter: boolean;
 }
 
-const FeatureFlagsContext = React.createContext<FeatureFlagsContextProps>({
-  featureFlags: [],
-  setFeatureFlags: () => {},
-});
+const FeatureFlagsContext =
+  React.createContext<FeatureFlagsContextValue | null>(null);
 
 export function useFeatureFlags() {
   const context = React.useContext(FeatureFlagsContext);
@@ -39,51 +36,58 @@ interface FeatureFlagsProviderProps {
 }
 
 export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
-  const [featureFlags, setFeatureFlags] = useQueryState<FeatureFlagValue[]>(
-    "flags",
+  const [filterVariant, setFilterVariant] = useQueryState<FilterVariant | null>(
+    "filterVariant",
     {
-      defaultValue: [],
-      parse: (value) => value.split(",") as FeatureFlagValue[],
-      serialize: (value) => value.join(","),
-      eq: (a, b) =>
-        a.length === b.length && a.every((value, index) => value === b[index]),
+      parse: (value) => {
+        if (!value) return null;
+        const validValues = dataTableConfig.featureFlags.map(
+          (flag) => flag.value,
+        );
+        return validValues.includes(value as FilterVariant)
+          ? (value as FilterVariant)
+          : null;
+      },
+      serialize: (value) => value ?? "",
+      defaultValue: null,
       clearOnDefault: true,
       shallow: false,
+      eq: (a, b) => (!a && !b) || a === b,
     },
   );
 
+  const contextValue = React.useMemo<FeatureFlagsContextValue>(
+    () => ({
+      filterVariant,
+      enableAdvancedFilter:
+        filterVariant === "advancedFilters" ||
+        filterVariant === "commandFilters",
+    }),
+    [filterVariant],
+  );
+
   return (
-    <FeatureFlagsContext.Provider
-      value={{
-        featureFlags,
-        setFeatureFlags: (value) => void setFeatureFlags(value),
-      }}
-    >
-      <div className="w-full overflow-x-auto">
+    <FeatureFlagsContext.Provider value={contextValue}>
+      <div className="w-full overflow-x-auto p-1">
         <ToggleGroup
-          type="multiple"
+          type="single"
           variant="outline"
           size="sm"
-          value={featureFlags}
-          onValueChange={(value: FeatureFlagValue[]) => setFeatureFlags(value)}
+          value={filterVariant}
+          onValueChange={(value: FilterVariant) => {
+            setFilterVariant(value);
+          }}
           className="w-fit gap-0"
         >
-          {dataTableConfig.featureFlags.map((flag, index) => (
-            <Tooltip key={flag.value}>
+          {dataTableConfig.featureFlags.map((flag) => (
+            <Tooltip key={flag.value} delayDuration={700}>
               <ToggleGroupItem
                 value={flag.value}
-                className={cn(
-                  "gap-2 whitespace-nowrap rounded-none px-3 text-xs data-[state=on]:bg-accent/70 data-[state=on]:hover:bg-accent/90",
-                  {
-                    "rounded-l-sm border-r-0": index === 0,
-                    "rounded-r-sm":
-                      index === dataTableConfig.featureFlags.length - 1,
-                  },
-                )}
+                className="whitespace-nowrap px-3 text-xs data-[state=on]:bg-accent/70 data-[state=on]:hover:bg-accent/90"
                 asChild
               >
                 <TooltipTrigger>
-                  <flag.icon className="size-3.5 shrink-0" aria-hidden="true" />
+                  <flag.icon className="size-3.5 shrink-0" />
                   {flag.label}
                 </TooltipTrigger>
               </ToggleGroupItem>
@@ -91,12 +95,12 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
                 align="start"
                 side="bottom"
                 sideOffset={6}
-                className="flex max-w-60 flex-col space-y-1.5 border bg-background py-2 font-semibold text-foreground"
+                className="flex flex-col gap-1.5 border bg-background py-2 font-semibold text-foreground [&>span]:hidden"
               >
                 <div>{flag.tooltipTitle}</div>
-                <div className="text-muted-foreground text-xs">
+                <p className="text-balance text-muted-foreground text-xs">
                   {flag.tooltipDescription}
-                </div>
+                </p>
               </TooltipContent>
             </Tooltip>
           ))}
