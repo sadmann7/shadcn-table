@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { DataTablePagination } from "@/registry/new-york/components/data-table/data-table-pagination";
 import { getCommonPinningStyles } from "@/registry/new-york/lib/data-table";
 
-interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
+interface DataTableProps<TData> extends React.ComponentProps<"div"> {
   table: TanstackTable<TData>;
   actionBar?: React.ReactNode;
 }

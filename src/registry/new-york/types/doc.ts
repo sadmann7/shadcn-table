@@ -1,36 +1,20 @@
 import type { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import type { PopoverContent } from "@/components/ui/popover";
 import type {
   ExtendedColumnFilter,
-  ExtendedColumnSort,
   Option,
 } from "@/registry/new-york/types/data-table";
 import type { EmptyProps } from "@/types";
 
-import type {
-  Column,
-  Table,
-  TableOptions,
-  TableState,
-} from "@tanstack/react-table";
+import type { Column, Table, TableOptions } from "@tanstack/react-table";
 import type { motion } from "motion/react";
 import type * as React from "react";
 
 export interface UseDataTableProps<TData>
-  extends Omit<
+  extends Required<Pick<TableOptions<TData>, "pageCount">>,
+    Pick<
       TableOptions<TData>,
-      | "state"
-      | "pageCount"
-      | "getCoreRowModel"
-      | "manualFiltering"
-      | "manualPagination"
-      | "manualSorting"
-    >,
-    Required<Pick<TableOptions<TData>, "pageCount">> {
-  initialState?: Omit<Partial<TableState>, "sorting"> & {
-    sorting?: ExtendedColumnSort<TData>[];
-  };
-
+      "data" | "columns" | "getRowId" | "defaultColumn" | "initialState"
+    > {
   /**
    * Determines how query updates affect history.
    * `push` creates a new history entry; `replace` (default) updates the current entry.
@@ -89,8 +73,7 @@ export interface UseDataTableProps<TData>
   startTransition?: React.TransitionStartFunction;
 }
 
-export interface DataTableProps<TData>
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface DataTableProps<TData> extends EmptyProps<"div"> {
   /** The table instance. */
   table: Table<TData>;
 
@@ -104,7 +87,7 @@ export interface DataTableToolbarProps<TData> extends EmptyProps<"div"> {
 }
 
 export interface DataTableAdvancedToolbarProps<TData>
-  extends React.ComponentProps<"div"> {
+  extends EmptyProps<"div"> {
   /** The table instance. */
   table: Table<TData>;
 }
@@ -183,8 +166,7 @@ export interface DataTableRangeFilterProps<TData> extends EmptyProps<"div"> {
   ) => void;
 }
 
-export interface DataTableFilterListProps<TData>
-  extends React.ComponentProps<typeof PopoverContent> {
+export interface DataTableFilterListProps<TData> {
   /** The table instance. */
   table: Table<TData>;
 
@@ -231,8 +213,7 @@ export interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
 }
 
-export interface DataTableSkeletonProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface DataTableSkeletonProps extends EmptyProps<"div"> {
   /** The number of columns in the table. */
   columnCount: number;
 
