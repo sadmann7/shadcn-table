@@ -85,6 +85,17 @@ export function DataTableFilterMenu<TData>({
   const [inputValue, setInputValue] = React.useState("");
   const inputRef = React.useRef<HTMLInputElement>(null);
 
+  const onOpenChange = React.useCallback((open: boolean) => {
+    setOpen(open);
+
+    if (!open) {
+      setTimeout(() => {
+        setSelectedColumn(null);
+        setInputValue("");
+      }, 100);
+    }
+  }, []);
+
   const onInputKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
       if (event.key === "Backspace" && !inputValue && selectedColumn) {
@@ -189,16 +200,23 @@ export function DataTableFilterMenu<TData>({
         filters.length > 0
       ) {
         event.preventDefault();
-        debouncedSetFilters((prevFilters) => {
-          if (prevFilters.length === 0) return prevFilters;
-          return prevFilters.slice(0, -1);
-        });
+        onFilterRemove(filters[filters.length - 1]?.filterId ?? "");
       }
     }
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [filters.length, debouncedSetFilters]);
+  }, [filters, onFilterRemove]);
+
+  const onTriggerKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (event.key === "Backspace" && filters.length > 0) {
+        event.preventDefault();
+        onFilterRemove(filters[filters.length - 1]?.filterId ?? "");
+      }
+    },
+    [filters, onFilterRemove],
+  );
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -223,25 +241,14 @@ export function DataTableFilterMenu<TData>({
           <X />
         </Button>
       )}
-      <Popover
-        open={open}
-        onOpenChange={(open) => {
-          setOpen(open);
-
-          if (!open) {
-            setTimeout(() => {
-              setSelectedColumn(null);
-              setInputValue("");
-            }, 100);
-          }
-        }}
-      >
+      <Popover open={open} onOpenChange={onOpenChange}>
         <PopoverTrigger asChild>
           <Button
             aria-label="Open filter command menu"
             variant="outline"
             size={filters.length > 0 ? "icon" : "sm"}
             className={cn(filters.length > 0 && "size-8", "h-8")}
+            onKeyDown={onTriggerKeyDown}
           >
             <ListFilter />
             {filters.length > 0 ? null : "Filter"}
@@ -341,12 +348,23 @@ function DataTableFilterItem<TData>({
     const columnMeta = column.columnDef.meta;
     const filterOperators = getFilterOperators(filter.variant);
 
+    const onItemKeyDown = React.useCallback(
+      (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === "Backspace") {
+          event.preventDefault();
+          onFilterRemove(filter.filterId);
+        }
+      },
+      [filter.filterId, onFilterRemove],
+    );
+
     return (
       <div
         key={filter.filterId}
         role="listitem"
         id={filterItemId}
         className="flex h-8 items-center rounded-md bg-background"
+        onKeyDown={onItemKeyDown}
       >
         <Popover open={showFieldSelector} onOpenChange={setShowFieldSelector}>
           <PopoverTrigger asChild>
