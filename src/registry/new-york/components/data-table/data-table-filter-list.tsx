@@ -588,11 +588,11 @@ function onFilterInputRender<TData>({
       <div
         id={inputId}
         role="status"
-        aria-live="polite"
         aria-label={`${columnMeta?.label} filter is ${
           filter.operator === "isEmpty" ? "empty" : "not empty"
         }`}
-        className="h-8 w-full rounded border border-dashed"
+        aria-live="polite"
+        className="h-8 w-full rounded border bg-transparent dark:bg-input/30"
       />
     );
   }

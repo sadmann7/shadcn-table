@@ -626,7 +626,17 @@ function onFilterInputRender<TData>({
   setShowValueSelector: (value: boolean) => void;
 }) {
   if (filter.operator === "isEmpty" || filter.operator === "isNotEmpty") {
-    return null;
+    return (
+      <div
+        id={inputId}
+        role="status"
+        aria-label={`${column.columnDef.meta?.label} filter is ${
+          filter.operator === "isEmpty" ? "empty" : "not empty"
+        }`}
+        aria-live="polite"
+        className="h-full w-16 rounded-none border bg-transparent px-1.5 py-0.5 text-muted-foreground dark:bg-input/30"
+      />
+    );
   }
 
   switch (filter.variant) {
