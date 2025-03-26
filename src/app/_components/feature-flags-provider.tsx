@@ -13,13 +13,13 @@ import { type DataTableConfig, dataTableConfig } from "@/config/data-table";
 
 type FilterVariant = DataTableConfig["featureFlags"][number]["value"];
 
-interface FeatureFlagsContextProps {
+interface FeatureFlagsContextValue {
   filterVariant: FilterVariant;
   enableAdvancedFilter: boolean;
 }
 
 const FeatureFlagsContext =
-  React.createContext<FeatureFlagsContextProps | null>(null);
+  React.createContext<FeatureFlagsContextValue | null>(null);
 
 export function useFeatureFlags() {
   const context = React.useContext(FeatureFlagsContext);
@@ -56,7 +56,7 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
     },
   );
 
-  const contextValue = React.useMemo<FeatureFlagsContextProps>(
+  const contextValue = React.useMemo<FeatureFlagsContextValue>(
     () => ({
       filterVariant,
       enableAdvancedFilter:
@@ -74,9 +74,7 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
           variant="outline"
           size="sm"
           value={filterVariant}
-          onValueChange={(
-            value: DataTableConfig["featureFlags"][number]["value"],
-          ) => {
+          onValueChange={(value: FilterVariant) => {
             setFilterVariant(value);
           }}
           className="w-fit gap-0"
@@ -97,7 +95,7 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
                 align="start"
                 side="bottom"
                 sideOffset={6}
-                className="flex max-w-48 flex-col gap-1.5 border bg-background py-2 font-semibold text-foreground [&>span]:hidden"
+                className="flex flex-col gap-1.5 border bg-background py-2 font-semibold text-foreground [&>span]:hidden"
               >
                 <div>{flag.tooltipTitle}</div>
                 <p className="text-balance text-muted-foreground text-xs">
