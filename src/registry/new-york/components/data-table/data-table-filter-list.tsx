@@ -117,6 +117,8 @@ export function DataTableFilterList<TData>({
   );
   const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
 
+  console.log({ filters });
+
   const [joinOperator, setJoinOperator] = useQueryState(
     JOIN_OPERATOR_KEY,
     parseAsStringEnum(["and", "or"]).withDefault("and").withOptions({
@@ -640,6 +642,8 @@ function onFilterInputRender<TData>({
     case "boolean": {
       if (Array.isArray(filter.value)) return null;
 
+      const inputListboxId = `${inputId}-listbox`;
+
       return (
         <Select
           open={showValueSelector}
@@ -653,13 +657,13 @@ function onFilterInputRender<TData>({
         >
           <SelectTrigger
             id={inputId}
-            aria-controls={`${inputId}-listbox`}
+            aria-controls={inputListboxId}
             aria-label={`${columnMeta?.label} boolean filter`}
             className="h-8 w-full rounded [&[data-size]]:h-8"
           >
             <SelectValue placeholder={filter.value ? "True" : "False"} />
           </SelectTrigger>
-          <SelectContent id={`${inputId}-listbox`}>
+          <SelectContent id={inputListboxId}>
             <SelectItem value="true">True</SelectItem>
             <SelectItem value="false">False</SelectItem>
           </SelectContent>
@@ -668,91 +672,52 @@ function onFilterInputRender<TData>({
     }
 
     case "select":
-      return (
-        <Faceted
-          open={showValueSelector}
-          onOpenChange={setShowValueSelector}
-          value={typeof filter.value === "string" ? filter.value : undefined}
-          onValueChange={(value) => {
-            onFilterUpdate(filter.filterId, {
-              value,
-            });
-          }}
-        >
-          <FacetedTrigger asChild>
-            <Button
-              id={inputId}
-              aria-controls={`${inputId}-listbox`}
-              aria-label={`${columnMeta?.label} filter value`}
-              variant="outline"
-              size="sm"
-              className="w-full rounded font-normal"
-            >
-              <FacetedBadgeList
-                options={column.columnDef.meta?.options}
-                placeholder={columnMeta?.placeholder ?? "Select an option..."}
-              />
-            </Button>
-          </FacetedTrigger>
-          <FacetedContent
-            id={`${inputId}-listbox`}
-            className="w-[200px] origin-[var(--radix-popover-content-transform-origin)]"
-          >
-            <FacetedInput
-              aria-label={`Search ${columnMeta?.label} options`}
-              placeholder={columnMeta?.placeholder ?? "Search options..."}
-            />
-            <FacetedList>
-              <FacetedEmpty>No options found.</FacetedEmpty>
-              <FacetedGroup>
-                {columnMeta?.options?.map((option) => (
-                  <FacetedItem key={option.value} value={option.value}>
-                    {option.icon && <option.icon />}
-                    <span>{option.label}</span>
-                    {option.count && (
-                      <span className="ml-auto font-mono text-xs">
-                        {option.count}
-                      </span>
-                    )}
-                  </FacetedItem>
-                ))}
-              </FacetedGroup>
-            </FacetedList>
-          </FacetedContent>
-        </Faceted>
-      );
-
     case "multiSelect": {
-      const selectedValues = Array.isArray(filter.value) ? filter.value : [];
+      const inputListboxId = `${inputId}-listbox`;
+
+      const multiple = filter.variant === "multiSelect";
+      const selectedValues = multiple
+        ? Array.isArray(filter.value)
+          ? filter.value
+          : []
+        : typeof filter.value === "string"
+          ? filter.value
+          : undefined;
 
       return (
         <Faceted
           open={showValueSelector}
           onOpenChange={setShowValueSelector}
-          value={selectedValues as string[]}
+          value={selectedValues}
           onValueChange={(value) => {
             onFilterUpdate(filter.filterId, {
               value,
             });
           }}
-          multiple
+          multiple={multiple}
         >
           <FacetedTrigger asChild>
             <Button
               id={inputId}
-              aria-controls={`${inputId}-listbox`}
-              aria-label={`${columnMeta?.label} filter values`}
+              aria-controls={inputListboxId}
+              aria-label={`${columnMeta?.label} filter value${multiple ? "s" : ""}`}
               variant="outline"
               size="sm"
               className="w-full rounded font-normal"
             >
               <FacetedBadgeList
                 options={columnMeta?.options}
-                placeholder={columnMeta?.placeholder ?? " Select options..."}
+                placeholder={
+                  columnMeta?.placeholder ??
+                  `Select option${multiple ? "s" : ""}...`
+                }
               />
             </Button>
           </FacetedTrigger>
-          <FacetedContent id={`${inputId}-listbox`}>
+          <FacetedContent
+            id={inputListboxId}
+            className="w-[200px] origin-[var(--radix-popover-content-transform-origin)]"
+          >
             <FacetedInput
               aria-label={`Search ${columnMeta?.label} options`}
               placeholder={columnMeta?.placeholder ?? "Search options..."}
@@ -780,6 +745,8 @@ function onFilterInputRender<TData>({
 
     case "date":
     case "dateRange": {
+      const inputListboxId = `${inputId}-listbox`;
+
       const dateValue = Array.isArray(filter.value)
         ? filter.value.filter(Boolean)
         : [filter.value, filter.value].filter(Boolean);
@@ -798,7 +765,7 @@ function onFilterInputRender<TData>({
           <PopoverTrigger asChild>
             <Button
               id={inputId}
-              aria-controls={`${inputId}-calendar`}
+              aria-controls={inputListboxId}
               aria-label={`${columnMeta?.label} date filter`}
               variant="outline"
               size="sm"
@@ -812,13 +779,12 @@ function onFilterInputRender<TData>({
             </Button>
           </PopoverTrigger>
           <PopoverContent
-            id={`${inputId}-calendar`}
+            id={inputListboxId}
             align="start"
             className="w-auto origin-[var(--radix-popover-content-transform-origin)] p-0"
           >
             {filter.operator === "isBetween" ? (
               <Calendar
-                id={`${inputId}-calendar`}
                 aria-label={`Select ${columnMeta?.label} date range`}
                 mode="range"
                 initialFocus
@@ -846,7 +812,6 @@ function onFilterInputRender<TData>({
               />
             ) : (
               <Calendar
-                id={`${inputId}-calendar`}
                 aria-label={`Select ${columnMeta?.label} date`}
                 mode="single"
                 initialFocus

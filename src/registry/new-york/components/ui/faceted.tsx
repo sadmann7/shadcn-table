@@ -78,13 +78,28 @@ function Faceted<Multiple extends boolean = false>(
   props: FacetedProps<Multiple>,
 ) {
   const {
+    open: openProp,
+    onOpenChange: onOpenChangeProp,
     value,
     onValueChange,
     children,
     multiple = false,
     ...facetedProps
   } = props;
-  const [open, setOpen] = React.useState(false);
+
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
+  const isControlled = openProp !== undefined;
+  const open = isControlled ? openProp : uncontrolledOpen;
+
+  const onOpenChange = React.useCallback(
+    (newOpen: boolean) => {
+      if (!isControlled) {
+        setUncontrolledOpen(newOpen);
+      }
+      onOpenChangeProp?.(newOpen);
+    },
+    [isControlled, onOpenChangeProp],
+  );
 
   const onItemSelect = React.useCallback(
     (selectedValue: string) => {
@@ -103,10 +118,10 @@ function Faceted<Multiple extends boolean = false>(
           onValueChange(selectedValue as FacetedValue<Multiple>);
         }
 
-        requestAnimationFrame(() => setOpen(false));
+        requestAnimationFrame(() => onOpenChange(false));
       }
     },
-    [multiple, onValueChange, value],
+    [multiple, value, onValueChange, onOpenChange],
   );
 
   const contextValue = React.useMemo<FacetedContextValue<typeof multiple>>(
@@ -116,7 +131,7 @@ function Faceted<Multiple extends boolean = false>(
 
   return (
     <FacetedContext.Provider value={contextValue}>
-      <Popover open={open} onOpenChange={setOpen} {...facetedProps}>
+      <Popover open={open} onOpenChange={onOpenChange} {...facetedProps}>
         {children}
       </Popover>
     </FacetedContext.Provider>

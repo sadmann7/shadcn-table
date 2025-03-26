@@ -38,10 +38,17 @@ export function filterColumns<T extends Table>({
     const column = getColumn(table, filter.id);
 
     switch (filter.operator) {
+      case "iLike":
+        return filter.variant === "text" && typeof filter.value === "string"
+          ? ilike(column, `%${filter.value}%`)
+          : undefined;
+
+      case "notILike":
+        return filter.variant === "text" && typeof filter.value === "string"
+          ? notIlike(column, `%${filter.value}%`)
+          : undefined;
+
       case "eq":
-        if (Array.isArray(filter.value)) {
-          return inArray(column, filter.value);
-        }
         if (column.dataType === "boolean" && typeof filter.value === "string") {
           return eq(column, filter.value === "true");
         }
@@ -55,9 +62,6 @@ export function filterColumns<T extends Table>({
         return eq(column, filter.value);
 
       case "ne":
-        if (Array.isArray(filter.value)) {
-          return notInArray(column, filter.value);
-        }
         if (column.dataType === "boolean" && typeof filter.value === "string") {
           return ne(column, filter.value === "true");
         }
@@ -70,15 +74,17 @@ export function filterColumns<T extends Table>({
         }
         return ne(column, filter.value);
 
-      case "iLike":
-        return filter.variant === "text" && typeof filter.value === "string"
-          ? ilike(column, `%${filter.value}%`)
-          : undefined;
+      case "inArray":
+        if (Array.isArray(filter.value)) {
+          return inArray(column, filter.value);
+        }
+        return undefined;
 
-      case "notILike":
-        return filter.variant === "text" && typeof filter.value === "string"
-          ? notIlike(column, `%${filter.value}%`)
-          : undefined;
+      case "notInArray":
+        if (Array.isArray(filter.value)) {
+          return notInArray(column, filter.value);
+        }
+        return undefined;
 
       case "lt":
         return filter.variant === "number" || filter.variant === "range"

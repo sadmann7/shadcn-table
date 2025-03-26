@@ -666,7 +666,9 @@ function onFilterInputRender<TData>({
       );
     }
 
-    case "boolean":
+    case "boolean": {
+      const inputListboxId = `${inputId}-listbox`;
+
       return (
         <Select
           open={showValueSelector}
@@ -678,19 +680,23 @@ function onFilterInputRender<TData>({
         >
           <SelectTrigger
             id={inputId}
+            aria-controls={inputListboxId}
             className="rounded-none bg-transparent px-1.5 py-0.5 [&_svg]:hidden"
           >
             <SelectValue placeholder={filter.value ? "True" : "False"} />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent id={inputListboxId}>
             <SelectItem value="true">True</SelectItem>
             <SelectItem value="false">False</SelectItem>
           </SelectContent>
         </Select>
       );
+    }
 
     case "select":
     case "multiSelect": {
+      const inputListboxId = `${inputId}-listbox`;
+
       const options = column.columnDef.meta?.options ?? [];
       const selectedValues = Array.isArray(filter.value)
         ? filter.value
@@ -705,6 +711,7 @@ function onFilterInputRender<TData>({
           <PopoverTrigger asChild>
             <Button
               id={inputId}
+              aria-controls={inputListboxId}
               variant="ghost"
               size="sm"
               className="h-full min-w-16 rounded-none border px-1.5 font-normal dark:bg-input/30"
@@ -739,6 +746,7 @@ function onFilterInputRender<TData>({
             </Button>
           </PopoverTrigger>
           <PopoverContent
+            id={inputListboxId}
             align="start"
             className="w-48 origin-[var(--radix-popover-content-transform-origin)] p-0"
           >
@@ -785,6 +793,8 @@ function onFilterInputRender<TData>({
 
     case "date":
     case "dateRange": {
+      const inputListboxId = `${inputId}-listbox`;
+
       const dateValue = Array.isArray(filter.value)
         ? filter.value.filter(Boolean)
         : [filter.value, filter.value].filter(Boolean);
@@ -803,6 +813,7 @@ function onFilterInputRender<TData>({
           <PopoverTrigger asChild>
             <Button
               id={inputId}
+              aria-controls={inputListboxId}
               variant="ghost"
               size="sm"
               className={cn(
@@ -815,6 +826,7 @@ function onFilterInputRender<TData>({
             </Button>
           </PopoverTrigger>
           <PopoverContent
+            id={inputListboxId}
             align="start"
             className="w-auto origin-[var(--radix-popover-content-transform-origin)] p-0"
           >
