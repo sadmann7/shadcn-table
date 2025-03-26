@@ -285,14 +285,29 @@ function DataTableSortItem({
   const fieldTriggerId = `${sortItemId}-field-trigger`;
   const directionListboxId = `${sortItemId}-direction-listbox`;
 
+  const [showFieldSelector, setShowFieldSelector] = React.useState(false);
+  const [showDirectionSelector, setShowDirectionSelector] =
+    React.useState(false);
+
   const onItemKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
+      if (showFieldSelector || showDirectionSelector) {
+        return;
+      }
+
       if (REMOVE_SORT_SHORTCUTS.includes(event.key.toLowerCase())) {
         event.preventDefault();
         onSortRemove(sort.id);
       }
     },
-    [sort.id, onSortRemove],
+    [sort.id, showFieldSelector, showDirectionSelector, onSortRemove],
   );
 
   return (
@@ -304,7 +319,7 @@ function DataTableSortItem({
         className="flex items-center gap-2"
         onKeyDown={onItemKeyDown}
       >
-        <Popover>
+        <Popover open={showFieldSelector} onOpenChange={setShowFieldSelector}>
           <PopoverTrigger asChild>
             <Button
               id={fieldTriggerId}
@@ -342,6 +357,8 @@ function DataTableSortItem({
           </PopoverContent>
         </Popover>
         <Select
+          open={showDirectionSelector}
+          onOpenChange={setShowDirectionSelector}
           value={sort.desc ? "desc" : "asc"}
           onValueChange={(value: SortDirection) =>
             onSortUpdate(sort.id, { desc: value === "desc" })

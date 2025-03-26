@@ -130,17 +130,18 @@ export function DataTableFilterList<TData>({
 
     if (!column) return;
 
-    const newFilter: ExtendedColumnFilter<TData> = {
-      id: column.id as Extract<keyof TData, string>,
-      value: "",
-      variant: column.columnDef.meta?.variant ?? "text",
-      operator: getDefaultFilterOperator(
-        column.columnDef.meta?.variant ?? "text",
-      ),
-      filterId: generateId({ length: 8 }),
-    };
-
-    debouncedSetFilters([...filters, newFilter]);
+    debouncedSetFilters([
+      ...filters,
+      {
+        id: column.id as Extract<keyof TData, string>,
+        value: "",
+        variant: column.columnDef.meta?.variant ?? "text",
+        operator: getDefaultFilterOperator(
+          column.columnDef.meta?.variant ?? "text",
+        ),
+        filterId: generateId({ length: 8 }),
+      },
+    ]);
   }, [columns, filters, debouncedSetFilters]);
 
   const onFilterUpdate = React.useCallback(
@@ -351,6 +352,8 @@ function DataTableFilterItem<TData>({
   onFilterRemove,
 }: DataTableFilterItemProps<TData>) {
   const [showFieldSelector, setShowFieldSelector] = React.useState(false);
+  const [showOperatorSelector, setShowOperatorSelector] = React.useState(false);
+  const [showValueSelector, setShowValueSelector] = React.useState(false);
 
   const column = columns.find((column) => column.id === filter.id);
   if (!column) return null;
@@ -365,12 +368,29 @@ function DataTableFilterItem<TData>({
 
   const onItemKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
+      if (showFieldSelector || showOperatorSelector || showValueSelector) {
+        return;
+      }
+
       if (REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase())) {
         event.preventDefault();
         onFilterRemove(filter.filterId);
       }
     },
-    [filter.filterId, onFilterRemove],
+    [
+      filter.filterId,
+      showFieldSelector,
+      showOperatorSelector,
+      showValueSelector,
+      onFilterRemove,
+    ],
   );
 
   return (
@@ -475,6 +495,8 @@ function DataTableFilterItem<TData>({
           </PopoverContent>
         </Popover>
         <Select
+          open={showOperatorSelector}
+          onOpenChange={setShowOperatorSelector}
           value={filter.operator}
           onValueChange={(value: FilterOperator) =>
             onFilterUpdate(filter.filterId, {
@@ -516,6 +538,8 @@ function DataTableFilterItem<TData>({
             column,
             columnMeta,
             onFilterUpdate,
+            showValueSelector,
+            setShowValueSelector,
           })}
         </div>
         <Button
@@ -543,6 +567,8 @@ function onFilterInputRender<TData>({
   column,
   columnMeta,
   onFilterUpdate,
+  showValueSelector,
+  setShowValueSelector,
 }: {
   filter: ExtendedColumnFilter<TData>;
   inputId: string;
@@ -552,6 +578,8 @@ function onFilterInputRender<TData>({
     filterId: string,
     updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
   ) => void;
+  showValueSelector: boolean;
+  setShowValueSelector: (value: boolean) => void;
 }) {
   if (filter.operator === "isEmpty" || filter.operator === "isNotEmpty") {
     return (
@@ -614,6 +642,8 @@ function onFilterInputRender<TData>({
 
       return (
         <Select
+          open={showValueSelector}
+          onOpenChange={setShowValueSelector}
           value={filter.value}
           onValueChange={(value) =>
             onFilterUpdate(filter.filterId, {
@@ -640,6 +670,8 @@ function onFilterInputRender<TData>({
     case "select":
       return (
         <Faceted
+          open={showValueSelector}
+          onOpenChange={setShowValueSelector}
           value={typeof filter.value === "string" ? filter.value : undefined}
           onValueChange={(value) => {
             onFilterUpdate(filter.filterId, {
@@ -695,13 +727,15 @@ function onFilterInputRender<TData>({
 
       return (
         <Faceted
-          multiple
+          open={showValueSelector}
+          onOpenChange={setShowValueSelector}
           value={selectedValues as string[]}
           onValueChange={(value) => {
             onFilterUpdate(filter.filterId, {
               value,
             });
           }}
+          multiple
         >
           <FacetedTrigger asChild>
             <Button
@@ -760,7 +794,7 @@ function onFilterInputRender<TData>({
             : "Pick a date";
 
       return (
-        <Popover>
+        <Popover open={showValueSelector} onOpenChange={setShowValueSelector}>
           <PopoverTrigger asChild>
             <Button
               id={inputId}

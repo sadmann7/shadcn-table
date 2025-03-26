@@ -357,6 +357,9 @@ function DataTableFilterItem<TData>({
 }: DataTableFilterItemProps<TData>) {
   {
     const [showFieldSelector, setShowFieldSelector] = React.useState(false);
+    const [showOperatorSelector, setShowOperatorSelector] =
+      React.useState(false);
+    const [showValueSelector, setShowValueSelector] = React.useState(false);
 
     const column = columns.find((column) => column.id === filter.id);
     if (!column) return null;
@@ -369,12 +372,29 @@ function DataTableFilterItem<TData>({
 
     const onItemKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (
+          event.target instanceof HTMLInputElement ||
+          event.target instanceof HTMLTextAreaElement
+        ) {
+          return;
+        }
+
+        if (showFieldSelector || showOperatorSelector || showValueSelector) {
+          return;
+        }
+
         if (REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase())) {
           event.preventDefault();
           onFilterRemove(filter.filterId);
         }
       },
-      [filter.filterId, onFilterRemove],
+      [
+        filter.filterId,
+        showFieldSelector,
+        showOperatorSelector,
+        showValueSelector,
+        onFilterRemove,
+      ],
     );
 
     return (
@@ -444,6 +464,8 @@ function DataTableFilterItem<TData>({
           </PopoverContent>
         </Popover>
         <Select
+          open={showOperatorSelector}
+          onOpenChange={setShowOperatorSelector}
           value={filter.operator}
           onValueChange={(value: FilterOperator) =>
             onFilterUpdate(filter.filterId, {
@@ -481,6 +503,8 @@ function DataTableFilterItem<TData>({
           column,
           inputId,
           onFilterUpdate,
+          showValueSelector,
+          setShowValueSelector,
         })}
         <Button
           aria-controls={filterItemId}
@@ -588,6 +612,8 @@ function onFilterInputRender<TData>({
   column,
   inputId,
   onFilterUpdate,
+  showValueSelector,
+  setShowValueSelector,
 }: {
   filter: ExtendedColumnFilter<TData>;
   column: Column<TData>;
@@ -596,6 +622,8 @@ function onFilterInputRender<TData>({
     filterId: string,
     updates: Partial<Omit<ExtendedColumnFilter<TData>, "filterId">>,
   ) => void;
+  showValueSelector: boolean;
+  setShowValueSelector: (value: boolean) => void;
 }) {
   if (filter.operator === "isEmpty" || filter.operator === "isNotEmpty") {
     return null;
@@ -641,6 +669,8 @@ function onFilterInputRender<TData>({
     case "boolean":
       return (
         <Select
+          open={showValueSelector}
+          onOpenChange={setShowValueSelector}
           value={typeof filter.value === "string" ? filter.value : "true"}
           onValueChange={(value: "true" | "false") =>
             onFilterUpdate(filter.filterId, { value })
@@ -671,7 +701,7 @@ function onFilterInputRender<TData>({
       );
 
       return (
-        <Popover>
+        <Popover open={showValueSelector} onOpenChange={setShowValueSelector}>
           <PopoverTrigger asChild>
             <Button
               id={inputId}
@@ -769,7 +799,7 @@ function onFilterInputRender<TData>({
             : "Pick date...";
 
       return (
-        <Popover>
+        <Popover open={showValueSelector} onOpenChange={setShowValueSelector}>
           <PopoverTrigger asChild>
             <Button
               id={inputId}
