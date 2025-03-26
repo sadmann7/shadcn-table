@@ -5,20 +5,18 @@ export type DataTableConfig = typeof dataTableConfig;
 export const dataTableConfig = {
   featureFlags: [
     {
-      label: "Query builder",
-      value: "queryBuilder" as const,
+      label: "Advanced filters",
+      value: "advancedFilters" as const,
       icon: FileSpreadsheetIcon,
-      tooltipTitle: "Visual Query Builder",
-      tooltipDescription:
-        "Build complex data filters using a visual interface.",
+      tooltipTitle: "Advanced filters",
+      tooltipDescription: "Airtable like advanced filters for filtering rows.",
     },
     {
       label: "Command filters",
       value: "commandFilters" as const,
       icon: CommandIcon,
       tooltipTitle: "Command filter chips",
-      tooltipDescription:
-        "Create filters using pre-defined chips from a command menu.",
+      tooltipDescription: "Linear like command palette for filtering rows.",
     },
   ],
 };

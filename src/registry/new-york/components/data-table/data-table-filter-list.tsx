@@ -182,7 +182,7 @@ export function DataTableFilterList<TData>({
         <PopoverTrigger asChild>
           <Button variant="outline" size="sm">
             <ListFilter />
-            Filters
+            Filter
             {filters.length > 0 && (
               <Badge
                 variant="secondary"

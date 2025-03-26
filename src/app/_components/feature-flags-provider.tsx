@@ -60,7 +60,8 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
     () => ({
       filterVariant,
       enableAdvancedFilter:
-        filterVariant === "queryBuilder" || filterVariant === "commandFilters",
+        filterVariant === "advancedFilters" ||
+        filterVariant === "commandFilters",
     }),
     [filterVariant],
   );
@@ -84,11 +85,11 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
             <Tooltip key={flag.value} delayDuration={700}>
               <ToggleGroupItem
                 value={flag.value}
-                className="gap-2 whitespace-nowrap px-3 text-xs data-[state=on]:bg-accent/70 data-[state=on]:hover:bg-accent/90"
+                className="whitespace-nowrap px-3 text-xs data-[state=on]:bg-accent/70 data-[state=on]:hover:bg-accent/90"
                 asChild
               >
                 <TooltipTrigger>
-                  <flag.icon className="size-3.5 shrink-0" aria-hidden="true" />
+                  <flag.icon className="size-3.5 shrink-0" />
                   {flag.label}
                 </TooltipTrigger>
               </ToggleGroupItem>
@@ -96,12 +97,12 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
                 align="start"
                 side="bottom"
                 sideOffset={6}
-                className="flex max-w-60 flex-col gap-1.5 border bg-background py-2 font-semibold text-foreground [&>span]:hidden"
+                className="flex max-w-48 flex-col gap-1.5 border bg-background py-2 font-semibold text-foreground [&>span]:hidden"
               >
                 <div>{flag.tooltipTitle}</div>
-                <div className="text-muted-foreground text-xs">
+                <p className="text-balance text-muted-foreground text-xs">
                   {flag.tooltipDescription}
-                </div>
+                </p>
               </TooltipContent>
             </Tooltip>
           ))}

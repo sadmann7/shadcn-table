@@ -1,7 +1,7 @@
 import "server-only";
 
 import { db } from "@/db";
-import { type Task, tasks } from "@/db/schema";
+import { tasks } from "@/db/schema";
 import {
   and,
   asc,
@@ -26,7 +26,7 @@ export async function getTasks(input: GetTasksSchema) {
       try {
         const offset = (input.page - 1) * input.perPage;
         const advancedTable =
-          input.filterVariant === "queryBuilder" ||
+          input.filterVariant === "advancedFilters" ||
           input.filterVariant === "commandFilters";
 
         const advancedWhere = filterColumns({

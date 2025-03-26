@@ -82,7 +82,7 @@ export function TasksTable({ promises }: TasksTableProps) {
         {enableAdvancedFilter ? (
           <DataTableAdvancedToolbar table={table}>
             <DataTableSortList table={table} align="start" />
-            {filterVariant === "queryBuilder" ? (
+            {filterVariant === "advancedFilters" ? (
               <DataTableFilterList
                 table={table}
                 shallow={shallow}
