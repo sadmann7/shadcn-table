@@ -41,6 +41,9 @@ import {
 } from "@/registry/new-york/components/ui/sortable";
 import { dataTableConfig } from "@/registry/new-york/config/data-table";
 
+const OPEN_MENU_SHORTCUT = "s";
+const REMOVE_SORT_SHORTCUTS = ["backspace", "delete"];
+
 interface DataTableSortListProps<TData>
   extends React.ComponentProps<typeof PopoverContent> {
   table: Table<TData>;
@@ -53,6 +56,8 @@ export function DataTableSortList<TData>({
   const id = React.useId();
   const labelId = React.useId();
   const descriptionId = React.useId();
+  const [open, setOpen] = React.useState(false);
+  const addButtonRef = React.useRef<HTMLButtonElement>(null);
 
   const sorting = table.getState().sorting;
   const onSortingChange = table.setSorting;
@@ -115,21 +120,67 @@ export function DataTableSortList<TData>({
     [onSortingChange, table.initialState.sorting],
   );
 
+  React.useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
+      if (
+        event.key.toLowerCase() === OPEN_MENU_SHORTCUT &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.shiftKey
+      ) {
+        event.preventDefault();
+        setOpen(true);
+      }
+
+      if (
+        event.key.toLowerCase() === OPEN_MENU_SHORTCUT &&
+        event.shiftKey &&
+        sorting.length > 0
+      ) {
+        event.preventDefault();
+        onSortingReset();
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [sorting.length, onSortingReset]);
+
+  const onTriggerKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (
+        REMOVE_SORT_SHORTCUTS.includes(event.key.toLowerCase()) &&
+        sorting.length > 0
+      ) {
+        event.preventDefault();
+        onSortingReset();
+      }
+    },
+    [sorting.length, onSortingReset],
+  );
+
   return (
     <Sortable
       value={sorting}
       onValueChange={onSortingChange}
       getItemValue={(item) => item.id}
     >
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onKeyDown={onTriggerKeyDown}>
             <ArrowDownUp />
             Sort
             {sorting.length > 0 && (
               <Badge
                 variant="secondary"
-                className="h-[1.14rem] rounded-[0.2rem] px-[0.32rem] font-mono font-normal text-[0.65rem]"
+                className="h-[18.24px] rounded-[3.2px] px-[5.12px] font-mono font-normal text-[10.4px]"
               >
                 {sorting.length}
               </Badge>
@@ -139,7 +190,7 @@ export function DataTableSortList<TData>({
         <PopoverContent
           aria-labelledby={labelId}
           aria-describedby={descriptionId}
-          className="flex w-full max-w-[var(--radix-popover-content-available-width)] origin-[var(--radix-popover-content-transform-origin)] flex-col gap-3.5 p-4"
+          className="flex w-full max-w-[var(--radix-popover-content-available-width)] origin-[var(--radix-popover-content-transform-origin)] flex-col gap-3.5 p-4 sm:min-w-[380px]"
           {...props}
         >
           <div className="flex flex-col gap-1">
@@ -154,15 +205,15 @@ export function DataTableSortList<TData>({
               )}
             >
               {sorting.length > 0
-                ? "Modify sorting to organize your results."
-                : "Add sorting to organize your results."}
+                ? "Modify sorting to organize your rows."
+                : "Add sorting to organize your rows."}
             </p>
           </div>
           {sorting.length > 0 && (
             <SortableContent asChild>
               <div
                 role="list"
-                className="flex max-h-[300px] flex-col gap-2 overflow-y-auto p-0.5"
+                className="flex max-h-[300px] flex-col gap-2 overflow-y-auto p-1"
               >
                 {sorting.map((sort) => (
                   <DataTableSortItem
@@ -182,6 +233,7 @@ export function DataTableSortList<TData>({
             <Button
               size="sm"
               className="rounded"
+              ref={addButtonRef}
               onClick={onSortAdd}
               disabled={columns.length === 0}
             >
@@ -202,7 +254,7 @@ export function DataTableSortList<TData>({
       </Popover>
       <SortableOverlay>
         <div className="flex items-center gap-2">
-          <div className="h-8 w-[11.25rem] rounded-sm bg-primary/10" />
+          <div className="h-8 w-[180px] rounded-sm bg-primary/10" />
           <div className="h-8 w-24 rounded-sm bg-primary/10" />
           <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
           <div className="size-8 shrink-0 rounded-sm bg-primary/10" />
@@ -233,6 +285,16 @@ function DataTableSortItem({
   const fieldTriggerId = `${sortItemId}-field-trigger`;
   const directionListboxId = `${sortItemId}-direction-listbox`;
 
+  const onItemKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (REMOVE_SORT_SHORTCUTS.includes(event.key.toLowerCase())) {
+        event.preventDefault();
+        onSortRemove(sort.id);
+      }
+    },
+    [sort.id, onSortRemove],
+  );
+
   return (
     <SortableItem value={sort.id} asChild>
       <div
@@ -240,6 +302,7 @@ function DataTableSortItem({
         id={sortItemId}
         tabIndex={-1}
         className="flex items-center gap-2"
+        onKeyDown={onItemKeyDown}
       >
         <Popover>
           <PopoverTrigger asChild>

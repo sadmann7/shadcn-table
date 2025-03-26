@@ -53,7 +53,8 @@ import type {
 const FILTERS_KEY = "filters";
 const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
-const KEYBOARD_SHORTCUT = "f";
+const OPEN_MENU_SHORTCUT = "f";
+const REMOVE_FILTER_SHORTCUTS = ["backspace", "delete"];
 
 interface DataTableFilterMenuProps<TData>
   extends React.ComponentProps<typeof PopoverContent> {
@@ -83,6 +84,7 @@ export function DataTableFilterMenu<TData>({
   const [selectedColumn, setSelectedColumn] =
     React.useState<Column<TData> | null>(null);
   const [inputValue, setInputValue] = React.useState("");
+  const triggerRef = React.useRef<HTMLButtonElement>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   const onOpenChange = React.useCallback((open: boolean) => {
@@ -98,7 +100,11 @@ export function DataTableFilterMenu<TData>({
 
   const onInputKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === "Backspace" && !inputValue && selectedColumn) {
+      if (
+        REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase()) &&
+        !inputValue &&
+        selectedColumn
+      ) {
         event.preventDefault();
         setSelectedColumn(null);
       }
@@ -154,6 +160,9 @@ export function DataTableFilterMenu<TData>({
         (filter) => filter.filterId !== filterId,
       );
       debouncedSetFilters(updatedFilters);
+      requestAnimationFrame(() => {
+        triggerRef.current?.focus();
+      });
     },
     [filters, debouncedSetFilters],
   );
@@ -189,14 +198,20 @@ export function DataTableFilterMenu<TData>({
         return;
       }
 
-      if (event.key.toLowerCase() === KEYBOARD_SHORTCUT && !event.shiftKey) {
+      if (
+        event.key.toLowerCase() === OPEN_MENU_SHORTCUT &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.shiftKey
+      ) {
         event.preventDefault();
         setOpen(true);
       }
 
       if (
-        event.key.toLowerCase() === KEYBOARD_SHORTCUT &&
+        event.key.toLowerCase() === OPEN_MENU_SHORTCUT &&
         event.shiftKey &&
+        !open &&
         filters.length > 0
       ) {
         event.preventDefault();
@@ -206,11 +221,14 @@ export function DataTableFilterMenu<TData>({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [filters, onFilterRemove]);
+  }, [open, filters, onFilterRemove]);
 
   const onTriggerKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (event.key === "Backspace" && filters.length > 0) {
+      if (
+        REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase()) &&
+        filters.length > 0
+      ) {
         event.preventDefault();
         onFilterRemove(filters[filters.length - 1]?.filterId ?? "");
       }
@@ -248,6 +266,7 @@ export function DataTableFilterMenu<TData>({
             variant="outline"
             size={filters.length > 0 ? "icon" : "sm"}
             className={cn(filters.length > 0 && "size-8", "h-8")}
+            ref={triggerRef}
             onKeyDown={onTriggerKeyDown}
           >
             <ListFilter />
@@ -350,7 +369,7 @@ function DataTableFilterItem<TData>({
 
     const onItemKeyDown = React.useCallback(
       (event: React.KeyboardEvent<HTMLDivElement>) => {
-        if (event.key === "Backspace") {
+        if (REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase())) {
           event.preventDefault();
           onFilterRemove(filter.filterId);
         }

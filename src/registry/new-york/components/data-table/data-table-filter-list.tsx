@@ -75,6 +75,8 @@ const FILTERS_KEY = "filters";
 const JOIN_OPERATOR_KEY = "joinOperator";
 const DEBOUNCE_MS = 300;
 const THROTTLE_MS = 50;
+const OPEN_MENU_SHORTCUT = "f";
+const REMOVE_FILTER_SHORTCUTS = ["backspace", "delete"];
 
 interface DataTableFilterListProps<TData>
   extends React.ComponentProps<typeof PopoverContent> {
@@ -94,6 +96,8 @@ export function DataTableFilterList<TData>({
   const id = React.useId();
   const labelId = React.useId();
   const descriptionId = React.useId();
+  const [open, setOpen] = React.useState(false);
+  const addButtonRef = React.useRef<HTMLButtonElement>(null);
 
   const columns = React.useMemo(() => {
     return table
@@ -163,6 +167,9 @@ export function DataTableFilterList<TData>({
         (filter) => filter.filterId !== filterId,
       );
       void setFilters(updatedFilters);
+      requestAnimationFrame(() => {
+        addButtonRef.current?.focus();
+      });
     },
     [filters, setFilters],
   );
@@ -172,21 +179,67 @@ export function DataTableFilterList<TData>({
     void setJoinOperator("and");
   }, [setFilters, setJoinOperator]);
 
+  React.useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
+      if (
+        event.key.toLowerCase() === OPEN_MENU_SHORTCUT &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.shiftKey
+      ) {
+        event.preventDefault();
+        setOpen(true);
+      }
+
+      if (
+        event.key.toLowerCase() === OPEN_MENU_SHORTCUT &&
+        event.shiftKey &&
+        filters.length > 0
+      ) {
+        event.preventDefault();
+        onFilterRemove(filters[filters.length - 1]?.filterId ?? "");
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [filters, onFilterRemove]);
+
+  const onTriggerKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (
+        REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase()) &&
+        filters.length > 0
+      ) {
+        event.preventDefault();
+        onFilterRemove(filters[filters.length - 1]?.filterId ?? "");
+      }
+    },
+    [filters, onFilterRemove],
+  );
+
   return (
     <Sortable
       value={filters}
       onValueChange={setFilters}
       getItemValue={(item) => item.filterId}
     >
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onKeyDown={onTriggerKeyDown}>
             <ListFilter />
             Filter
             {filters.length > 0 && (
               <Badge
                 variant="secondary"
-                className="h-[1.14rem] rounded-[0.2rem] px-[0.32rem] font-mono font-normal text-[0.65rem]"
+                className="h-[18.24px] rounded-[3.2px] px-[5.12px] font-mono font-normal text-[10.4px]"
               >
                 {filters.length}
               </Badge>
@@ -196,7 +249,7 @@ export function DataTableFilterList<TData>({
         <PopoverContent
           aria-describedby={descriptionId}
           aria-labelledby={labelId}
-          className="flex w-full max-w-[var(--radix-popover-content-available-width)] origin-[var(--radix-popover-content-transform-origin)] flex-col gap-3.5 p-4 sm:min-w-[25rem]"
+          className="flex w-full max-w-[var(--radix-popover-content-available-width)] origin-[var(--radix-popover-content-transform-origin)] flex-col gap-3.5 p-4 sm:min-w-[380px]"
           {...props}
         >
           <div className="flex flex-col gap-1">
@@ -211,15 +264,15 @@ export function DataTableFilterList<TData>({
               )}
             >
               {filters.length > 0
-                ? "Modify filters to refine your results."
-                : "Add filters to refine your results."}
+                ? "Modify filters to refine your rows."
+                : "Add filters to refine your rows."}
             </p>
           </div>
           {filters.length > 0 ? (
             <SortableContent asChild>
               <div
                 role="list"
-                className="flex max-h-[300px] flex-col gap-2 overflow-y-auto py-0.5 pr-1"
+                className="flex max-h-[300px] flex-col gap-2 overflow-y-auto p-1"
               >
                 {filters.map((filter, index) => (
                   <DataTableFilterItem<TData>
@@ -238,7 +291,12 @@ export function DataTableFilterList<TData>({
             </SortableContent>
           ) : null}
           <div className="flex w-full items-center gap-2">
-            <Button size="sm" className="rounded" onClick={onFilterAdd}>
+            <Button
+              size="sm"
+              className="rounded"
+              ref={addButtonRef}
+              onClick={onFilterAdd}
+            >
               Add filter
             </Button>
             {filters.length > 0 ? (
@@ -256,7 +314,7 @@ export function DataTableFilterList<TData>({
       </Popover>
       <SortableOverlay>
         <div className="flex items-center gap-2">
-          <div className="h-8 min-w-[4.5rem] rounded-sm bg-primary/10" />
+          <div className="h-8 min-w-[72px] rounded-sm bg-primary/10" />
           <div className="h-8 w-32 rounded-sm bg-primary/10" />
           <div className="h-8 w-32 rounded-sm bg-primary/10" />
           <div className="h-8 min-w-36 flex-1 rounded-sm bg-primary/10" />
@@ -305,6 +363,16 @@ function DataTableFilterItem<TData>({
   const columnMeta = column.columnDef.meta;
   const filterOperators = getFilterOperators(filter.variant);
 
+  const onItemKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase())) {
+        event.preventDefault();
+        onFilterRemove(filter.filterId);
+      }
+    },
+    [filter.filterId, onFilterRemove],
+  );
+
   return (
     <SortableItem value={filter.filterId} asChild>
       <div
@@ -312,8 +380,9 @@ function DataTableFilterItem<TData>({
         id={filterItemId}
         tabIndex={-1}
         className="flex items-center gap-2"
+        onKeyDown={onItemKeyDown}
       >
-        <div className="min-w-[4.5rem] text-center">
+        <div className="min-w-[72px] text-center">
           {index === 0 ? (
             <span className="text-muted-foreground text-sm">Where</span>
           ) : index === 1 ? (
@@ -595,7 +664,7 @@ function onFilterInputRender<TData>({
           </FacetedTrigger>
           <FacetedContent
             id={`${inputId}-listbox`}
-            className="w-[12.5rem] origin-[var(--radix-popover-content-transform-origin)]"
+            className="w-[200px] origin-[var(--radix-popover-content-transform-origin)]"
           >
             <FacetedInput
               aria-label={`Search ${columnMeta?.label} options`}
