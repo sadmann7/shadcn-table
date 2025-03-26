@@ -621,7 +621,7 @@ function onFilterInputRender<TData>({
         </Faceted>
       );
 
-    case "multi-select": {
+    case "multiSelect": {
       const selectedValues = Array.isArray(filter.value) ? filter.value : [];
 
       return (
@@ -676,7 +676,7 @@ function onFilterInputRender<TData>({
     }
 
     case "date":
-    case "date-range": {
+    case "dateRange": {
       const dateValue = Array.isArray(filter.value)
         ? filter.value.filter(Boolean)
         : [filter.value, filter.value].filter(Boolean);

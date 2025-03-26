@@ -114,7 +114,7 @@ export function DataTableFilterMenu<TData>({
       }
 
       const filterValue =
-        column.columnDef.meta?.variant === "multi-select" ? [value] : value;
+        column.columnDef.meta?.variant === "multiSelect" ? [value] : value;
 
       const newFilter: ExtendedColumnFilter<TData> = {
         id: column.id as Extract<keyof TData, string>,
@@ -486,7 +486,7 @@ function FilterValueSelector<TData>({
       );
 
     case "select":
-    case "multi-select":
+    case "multiSelect":
       return (
         <CommandGroup>
           {column.columnDef.meta?.options?.map((option) => (
@@ -508,7 +508,7 @@ function FilterValueSelector<TData>({
       );
 
     case "date":
-    case "date-range":
+    case "dateRange":
       return (
         <Calendar
           initialFocus
@@ -623,7 +623,7 @@ function onFilterInputRender<TData>({
       );
 
     case "select":
-    case "multi-select": {
+    case "multiSelect": {
       const options = column.columnDef.meta?.options ?? [];
       const selectedValues = Array.isArray(filter.value)
         ? filter.value
@@ -643,7 +643,7 @@ function onFilterInputRender<TData>({
               className="h-full min-w-16 rounded-none border px-1.5 font-normal dark:bg-input/30"
             >
               {selectedOptions.length === 0 ? (
-                filter.variant === "multi-select" ? (
+                filter.variant === "multiSelect" ? (
                   "Select options..."
                 ) : (
                   "Select option..."
@@ -686,7 +686,7 @@ function onFilterInputRender<TData>({
                       value={option.value}
                       onSelect={() => {
                         const value =
-                          filter.variant === "multi-select"
+                          filter.variant === "multiSelect"
                             ? selectedValues.includes(option.value)
                               ? selectedValues.filter((v) => v !== option.value)
                               : [...selectedValues, option.value]
@@ -696,7 +696,7 @@ function onFilterInputRender<TData>({
                     >
                       {option.icon && <option.icon />}
                       <span className="truncate">{option.label}</span>
-                      {filter.variant === "multi-select" && (
+                      {filter.variant === "multiSelect" && (
                         <Check
                           className={cn(
                             "ml-auto",
@@ -717,7 +717,7 @@ function onFilterInputRender<TData>({
     }
 
     case "date":
-    case "date-range": {
+    case "dateRange": {
       const dateValue = Array.isArray(filter.value)
         ? filter.value.filter(Boolean)
         : [filter.value, filter.value].filter(Boolean);

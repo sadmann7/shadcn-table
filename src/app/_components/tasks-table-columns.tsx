@@ -142,7 +142,7 @@ export function getTasksTableColumns({
       },
       meta: {
         label: "Status",
-        variant: "multi-select",
+        variant: "multiSelect",
         options: tasks.status.enumValues.map((status) => ({
           label: status.charAt(0).toUpperCase() + status.slice(1),
           value: status,
@@ -177,7 +177,7 @@ export function getTasksTableColumns({
       },
       meta: {
         label: "Priority",
-        variant: "multi-select",
+        variant: "multiSelect",
         options: tasks.priority.enumValues.map((priority) => ({
           label: priority.charAt(0).toUpperCase() + priority.slice(1),
           value: priority,
@@ -216,7 +216,7 @@ export function getTasksTableColumns({
       cell: ({ cell }) => formatDate(cell.getValue<Date>()),
       meta: {
         label: "Created At",
-        variant: "date-range",
+        variant: "dateRange",
         icon: CalendarIcon,
       },
       enableColumnFilter: true,

@@ -47,10 +47,10 @@ export function getFilterOperators(filterVariant: FilterVariant) {
     number: dataTableConfig.numericOperators,
     range: dataTableConfig.numericOperators,
     date: dataTableConfig.dateOperators,
-    "date-range": dataTableConfig.dateOperators,
+    dateRange: dataTableConfig.dateOperators,
     boolean: dataTableConfig.booleanOperators,
     select: dataTableConfig.selectOperators,
-    "multi-select": dataTableConfig.selectOperators,
+    multiSelect: dataTableConfig.selectOperators,
   };
 
   return operatorMap[filterVariant] ?? dataTableConfig.textOperators;

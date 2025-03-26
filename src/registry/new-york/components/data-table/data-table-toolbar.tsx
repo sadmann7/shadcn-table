@@ -94,12 +94,12 @@ function DataTableToolbarFilter<TData>({
           );
 
         case "date":
-        case "date-range":
+        case "dateRange":
           return (
             <DataTableDateFilter
               column={column}
               title={columnMeta.label ?? column.id}
-              multiple={columnMeta.variant === "date-range"}
+              multiple={columnMeta.variant === "dateRange"}
             />
           );
 
@@ -112,13 +112,13 @@ function DataTableToolbarFilter<TData>({
           );
 
         case "select":
-        case "multi-select":
+        case "multiSelect":
           return (
             <DataTableFacetedFilter
               column={column}
               title={columnMeta.label ?? column.id}
               options={columnMeta.options ?? []}
-              multiple={columnMeta.variant === "multi-select"}
+              multiple={columnMeta.variant === "multiSelect"}
             />
           );
 
