@@ -18,6 +18,7 @@
     "input",
     "popover",
     "select",
+    "separator",
     "table"
   ],
   "files": [
@@ -100,7 +101,7 @@
       "path": "src/registry/new-york/types/data-table.ts",
       "content": "import type { DataTableConfig } from \"@/registry/new-york/config/data-table\";\nimport type { filterSchema } from \"@/registry/new-york/lib/parsers\";\nimport type { ColumnSort, Row, RowData } from \"@tanstack/react-table\";\nimport type { z } from \"zod\";\n\ndeclare module \"@tanstack/react-table\" {\n  // biome-ignore lint/correctness/noUnusedVariables: <explanation>\n  interface ColumnMeta<TData extends RowData, TValue> {\n    label?: string;\n    placeholder?: string;\n    variant?: FilterVariant;\n    options?: Option[];\n    range?: [number, number];\n    unit?: string;\n    icon?: React.ComponentType<{ className?: string }>;\n  }\n}\n\nexport interface Option {\n  label: string;\n  value: string;\n  count?: number;\n  icon?: React.ComponentType<{ className?: string }>;\n}\n\nexport type FilterOperator = DataTableConfig[\"operators\"][number];\nexport type FilterVariant = DataTableConfig[\"filterVariants\"][number];\nexport type JoinOperator = DataTableConfig[\"joinOperators\"][number];\n\nexport interface ExtendedColumnSort<TData> extends Omit<ColumnSort, \"id\"> {\n  id: Extract<keyof TData, string>;\n}\n\nexport interface ExtendedColumnFilter<TData>\n  extends z.infer<typeof filterSchema> {\n  id: Extract<keyof TData, string>;\n}\n\nexport interface DataTableRowAction<TData> {\n  row: Row<TData>;\n  variant: \"update\" | \"delete\";\n}\n",
       "type": "registry:file",
-      "target": "types/data-table.ts"
+      "target": "src/registry/new-york/types/data-table.ts"
     }
   ]
 }

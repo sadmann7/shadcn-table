@@ -36,7 +36,7 @@ interface TasksTableProps {
 }
 
 export function TasksTable({ promises }: TasksTableProps) {
-  const { enableAdvancedFilter, filterVariant } = useFeatureFlags();
+  const { enableAdvancedFilter, filterFlag } = useFeatureFlags();
 
   const [
     { data, pageCount },
@@ -82,7 +82,7 @@ export function TasksTable({ promises }: TasksTableProps) {
         {enableAdvancedFilter ? (
           <DataTableAdvancedToolbar table={table}>
             <DataTableSortList table={table} align="start" />
-            {filterVariant === "advancedFilters" ? (
+            {filterFlag === "advancedFilters" ? (
               <DataTableFilterList
                 table={table}
                 shallow={shallow}

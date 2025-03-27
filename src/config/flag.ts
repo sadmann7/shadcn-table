@@ -1,8 +1,8 @@
 import { CommandIcon, FileSpreadsheetIcon } from "lucide-react";
 
-export type DataTableConfig = typeof dataTableConfig;
+export type FlagConfig = typeof flagConfig;
 
-export const dataTableConfig = {
+export const flagConfig = {
   featureFlags: [
     {
       label: "Advanced filters",

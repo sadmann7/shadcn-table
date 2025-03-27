@@ -26,8 +26,8 @@ export async function getTasks(input: GetTasksSchema) {
       try {
         const offset = (input.page - 1) * input.perPage;
         const advancedTable =
-          input.filterVariant === "advancedFilters" ||
-          input.filterVariant === "commandFilters";
+          input.filterFlag === "advancedFilters" ||
+          input.filterFlag === "commandFilters";
 
         const advancedWhere = filterColumns({
           table: tasks,

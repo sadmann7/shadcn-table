@@ -5,7 +5,7 @@
   "items": [
     {
       "name": "data-table",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "Data Table",
       "description": "A feature-rich data table component with server-side filtering, sorting, and pagination",
       "registryDependencies": [
@@ -91,7 +91,7 @@
     },
     {
       "name": "data-table-action-bar",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "Data Table Action Bar",
       "description": "A action bar component for the data table",
       "registryDependencies": ["button", "tooltip"],
@@ -105,7 +105,7 @@
     },
     {
       "name": "data-table-sort-list",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "Data Table Sort List",
       "description": "A sort list component for the data table",
       "registryDependencies": [
@@ -138,7 +138,7 @@
     },
     {
       "name": "data-table-filter-list",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "Data Table Filter List",
       "description": "A filter list component for the data table",
       "registryDependencies": [
@@ -214,7 +214,7 @@
     },
     {
       "name": "data-table-filter-menu",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "Data Table Filter Menu",
       "description": "A filter menu component for the data table",
       "registryDependencies": [
@@ -283,7 +283,7 @@
     },
     {
       "name": "data-table-ts-doc",
-      "type": "registry:block",
+      "type": "registry:file",
       "title": "Data Table TypeScript Doc",
       "description": "A TypeScript doc for the data table",
       "files": [
