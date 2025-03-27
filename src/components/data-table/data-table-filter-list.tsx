@@ -12,6 +12,7 @@ import {
 import { parseAsStringEnum, useQueryState } from "nuqs";
 import * as React from "react";
 
+import { DataTableRangeFilter } from "@/components/data-table/data-table-range-filter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -23,6 +24,17 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import {
+  Faceted,
+  FacetedBadgeList,
+  FacetedContent,
+  FacetedEmpty,
+  FacetedGroup,
+  FacetedInput,
+  FacetedItem,
+  FacetedList,
+  FacetedTrigger,
+} from "@/components/ui/faceted";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -36,35 +48,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { dataTableConfig } from "@/config/data-table";
-import { cn } from "@/lib/utils";
-import { DataTableRangeFilter } from "@/registry/new-york/components/data-table/data-table-range-filter";
-import {
-  Faceted,
-  FacetedBadgeList,
-  FacetedContent,
-  FacetedEmpty,
-  FacetedGroup,
-  FacetedInput,
-  FacetedItem,
-  FacetedList,
-  FacetedTrigger,
-} from "@/registry/new-york/components/ui/faceted";
 import {
   Sortable,
   SortableContent,
   SortableItem,
   SortableItemHandle,
   SortableOverlay,
-} from "@/registry/new-york/components/ui/sortable";
-import { useDebouncedCallback } from "@/registry/new-york/hooks/use-debounced-callback";
-import {
-  getDefaultFilterOperator,
-  getFilterOperators,
-} from "@/registry/new-york/lib/data-table";
-import { formatDate } from "@/registry/new-york/lib/format";
-import { generateId } from "@/registry/new-york/lib/id";
-import { getFiltersStateParser } from "@/registry/new-york/lib/parsers";
+} from "@/components/ui/sortable";
+import { dataTableConfig } from "@/config/data-table";
+import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
+import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table";
+import { formatDate } from "@/lib/format";
+import { generateId } from "@/lib/id";
+import { getFiltersStateParser } from "@/lib/parsers";
+import { cn } from "@/lib/utils";
 import type {
   ExtendedColumnFilter,
   FilterOperator,

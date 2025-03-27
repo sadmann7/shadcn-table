@@ -23,63 +23,63 @@
       "dependencies": ["@tanstack/react-table", "lucide-react", "nuqs"],
       "files": [
         {
-          "path": "src/registry/new-york/components/data-table/data-table.tsx",
+          "path": "src/components/data-table/data-table.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-column-header.tsx",
+          "path": "src/components/data-table/data-table-column-header.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-pagination.tsx",
+          "path": "src/components/data-table/data-table-pagination.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-view-options.tsx",
+          "path": "src/components/data-table/data-table-view-options.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-faceted-filter.tsx",
+          "path": "src/components/data-table/data-table-faceted-filter.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-toolbar.tsx",
+          "path": "src/components/data-table/data-table-toolbar.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-slider-filter.tsx",
+          "path": "src/components/data-table/data-table-slider-filter.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-date-filter.tsx",
+          "path": "src/components/data-table/data-table-date-filter.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-skeleton.tsx",
+          "path": "src/components/data-table/data-table-skeleton.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/hooks/use-callback-ref.ts",
+          "path": "src/hooks/use-callback-ref.ts",
           "type": "registry:hook"
         },
         {
-          "path": "src/registry/new-york/hooks/use-data-table.ts",
+          "path": "src/hooks/use-data-table.ts",
           "type": "registry:hook"
         },
         {
-          "path": "src/registry/new-york/hooks/use-debounced-callback.ts",
+          "path": "src/hooks/use-debounced-callback.ts",
           "type": "registry:hook"
         },
         {
-          "path": "src/registry/new-york/lib/data-table.ts",
+          "path": "src/lib/data-table.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/lib/format.ts",
+          "path": "src/lib/format.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/lib/parsers.ts",
+          "path": "src/lib/parsers.ts",
           "type": "registry:lib"
         },
         {
@@ -103,7 +103,7 @@
       "dependencies": ["@tanstack/react-table", "lucide-react", "motion"],
       "files": [
         {
-          "path": "src/registry/new-york/components/data-table/data-table-action-bar.tsx",
+          "path": "src/components/data-table/data-table-action-bar.tsx",
           "type": "registry:component"
         }
       ]
@@ -123,15 +123,15 @@
       "dependencies": ["@tanstack/react-table", "lucide-react"],
       "files": [
         {
-          "path": "src/registry/new-york/components/data-table/data-table-sort-list.tsx",
+          "path": "src/components/data-table/data-table-sort-list.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/ui/sortable.tsx",
+          "path": "src/components/ui/sortable.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/lib/composition.ts",
+          "path": "src/lib/composition.ts",
           "type": "registry:lib"
         },
         {
@@ -158,51 +158,51 @@
       "dependencies": ["@tanstack/react-table", "lucide-react", "nuqs"],
       "files": [
         {
-          "path": "src/registry/new-york/components/data-table/data-table-filter-list.tsx",
+          "path": "src/components/data-table/data-table-filter-list.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-range-filter.tsx",
+          "path": "src/components/data-table/data-table-range-filter.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-advanced-toolbar.tsx",
+          "path": "src/components/data-table/data-table-advanced-toolbar.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/ui/sortable.tsx",
+          "path": "src/components/ui/sortable.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/ui/faceted.tsx",
+          "path": "src/components/ui/faceted.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/hooks/use-callback-ref.ts",
+          "path": "src/hooks/use-callback-ref.ts",
           "type": "registry:hook"
         },
         {
-          "path": "src/registry/new-york/hooks/use-debounced-callback.ts",
+          "path": "src/hooks/use-debounced-callback.ts",
           "type": "registry:hook"
         },
         {
-          "path": "src/registry/new-york/lib/composition.ts",
+          "path": "src/lib/composition.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/lib/data-table.ts",
+          "path": "src/lib/data-table.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/lib/format.ts",
+          "path": "src/lib/format.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/lib/id.ts",
+          "path": "src/lib/id.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/lib/parsers.ts",
+          "path": "src/lib/parsers.ts",
           "type": "registry:lib"
         },
         {
@@ -239,39 +239,39 @@
       ],
       "files": [
         {
-          "path": "src/registry/new-york/components/data-table/data-table-filter-menu.tsx",
+          "path": "src/components/data-table/data-table-filter-menu.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-range-filter.tsx",
+          "path": "src/components/data-table/data-table-range-filter.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/components/data-table/data-table-advanced-toolbar.tsx",
+          "path": "src/components/data-table/data-table-advanced-toolbar.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/registry/new-york/hooks/use-callback-ref.ts",
+          "path": "src/hooks/use-callback-ref.ts",
           "type": "registry:hook"
         },
         {
-          "path": "src/registry/new-york/hooks/use-debounced-callback.ts",
+          "path": "src/hooks/use-debounced-callback.ts",
           "type": "registry:hook"
         },
         {
-          "path": "src/registry/new-york/lib/data-table.ts",
+          "path": "src/lib/data-table.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/lib/format.ts",
+          "path": "src/lib/format.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/lib/id.ts",
+          "path": "src/lib/id.ts",
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/lib/parsers.ts",
+          "path": "src/lib/parsers.ts",
           "type": "registry:lib"
         },
         {
@@ -293,9 +293,9 @@
       "description": "A TypeScript doc for the data table",
       "files": [
         {
-          "path": "src/registry/new-york/types/doc.ts",
+          "path": "src/types/doc.ts",
           "type": "registry:file",
-          "target": "src/registry/new-york/types/doc.ts"
+          "target": "src/types/doc.ts"
         }
       ]
     }

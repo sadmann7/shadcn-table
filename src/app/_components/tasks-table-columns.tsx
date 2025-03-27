@@ -14,6 +14,7 @@ import {
 import * as React from "react";
 import { toast } from "sonner";
 
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -30,9 +31,8 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatDate } from "@/lib/format";
 import { getErrorMessage } from "@/lib/handle-error";
-import { DataTableColumnHeader } from "@/registry/new-york/components/data-table/data-table-column-header";
-import { formatDate } from "@/registry/new-york/lib/format";
 
 import { updateTask } from "../_lib/actions";
 import { getPriorityIcon, getStatusIcon } from "../_lib/utils";
