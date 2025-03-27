@@ -6,7 +6,7 @@ This is a shadcn table component with server-side sorting, filtering, and pagina
 
 ## Documentation
 
-See the [documentation](https://diceui.com/docs/data-table) for more information.
+See the [documentation](https://diceui.com/docs/data-table) to get started.
 
 ## Tech Stack
 

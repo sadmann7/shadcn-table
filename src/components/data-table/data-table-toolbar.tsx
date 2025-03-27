@@ -93,6 +93,14 @@ function DataTableToolbarFilter<TData>({
             />
           );
 
+        case "range":
+          return (
+            <DataTableSliderFilter
+              column={column}
+              title={columnMeta.label ?? column.id}
+            />
+          );
+
         case "date":
         case "dateRange":
           return (
@@ -100,14 +108,6 @@ function DataTableToolbarFilter<TData>({
               column={column}
               title={columnMeta.label ?? column.id}
               multiple={columnMeta.variant === "dateRange"}
-            />
-          );
-
-        case "range":
-          return (
-            <DataTableSliderFilter
-              column={column}
-              title={columnMeta.label ?? column.id}
             />
           );
 

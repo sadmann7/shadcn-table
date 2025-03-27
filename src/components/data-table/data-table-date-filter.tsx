@@ -17,13 +17,11 @@ import { formatDate } from "@/lib/format";
 
 type DateSelection = Date[] | DateRange;
 
-function isDateRange(value: DateSelection): value is DateRange {
+function getIsDateRange(value: DateSelection): value is DateRange {
   return value && typeof value === "object" && !Array.isArray(value);
 }
 
-function validateDate(
-  timestamp: number | string | undefined,
-): Date | undefined {
+function parseAsDate(timestamp: number | string | undefined): Date | undefined {
   if (!timestamp) return undefined;
   const numericTimestamp =
     typeof timestamp === "string" ? Number(timestamp) : timestamp;
@@ -31,16 +29,25 @@ function validateDate(
   return !Number.isNaN(date.getTime()) ? date : undefined;
 }
 
-function parseColumnFilterValue(
-  value: unknown,
-): (number | string | undefined)[] {
-  if (Array.isArray(value)) {
-    return value as (number | string)[];
+function parseColumnFilterValue(value: unknown) {
+  if (value === null || value === undefined) {
+    return [];
   }
-  if (typeof value === "string") {
+
+  if (Array.isArray(value)) {
+    return value.map((item) => {
+      if (typeof item === "number" || typeof item === "string") {
+        return item;
+      }
+      return undefined;
+    });
+  }
+
+  if (typeof value === "string" || typeof value === "number") {
     return [value];
   }
-  return [value as number | string | undefined];
+
+  return [];
 }
 
 interface DataTableDateFilterProps<TData> {
@@ -64,13 +71,13 @@ export function DataTableDateFilter<TData>({
     if (multiple) {
       const timestamps = parseColumnFilterValue(columnFilterValue);
       return {
-        from: validateDate(timestamps[0]),
-        to: validateDate(timestamps[1]),
+        from: parseAsDate(timestamps[0]),
+        to: parseAsDate(timestamps[1]),
       };
     }
 
     const timestamps = parseColumnFilterValue(columnFilterValue);
-    const date = validateDate(timestamps[0]);
+    const date = parseAsDate(timestamps[0]);
     return date ? [date] : [];
   }, [columnFilterValue, multiple]);
 
@@ -102,7 +109,7 @@ export function DataTableDateFilter<TData>({
 
   const hasValue = React.useMemo(() => {
     if (multiple) {
-      if (!isDateRange(selectedDates)) return false;
+      if (!getIsDateRange(selectedDates)) return false;
       return selectedDates.from || selectedDates.to;
     }
     if (!Array.isArray(selectedDates)) return false;
@@ -119,7 +126,7 @@ export function DataTableDateFilter<TData>({
 
   const label = React.useMemo(() => {
     if (multiple) {
-      if (!isDateRange(selectedDates)) return null;
+      if (!getIsDateRange(selectedDates)) return null;
 
       const hasSelectedDates = selectedDates.from || selectedDates.to;
       const dateText = hasSelectedDates
@@ -131,7 +138,10 @@ export function DataTableDateFilter<TData>({
           <span>{title}</span>
           {hasSelectedDates && (
             <>
-              <Separator orientation="vertical" className="mx-0.5 h-4" />
+              <Separator
+                orientation="vertical"
+                className="mx-0.5 data-[orientation=vertical]:h-4"
+              />
               <span>{dateText}</span>
             </>
           )}
@@ -139,7 +149,7 @@ export function DataTableDateFilter<TData>({
       );
     }
 
-    if (isDateRange(selectedDates)) return null;
+    if (getIsDateRange(selectedDates)) return null;
 
     const hasSelectedDate = selectedDates.length > 0;
     const dateText = hasSelectedDate
@@ -151,7 +161,10 @@ export function DataTableDateFilter<TData>({
         <span>{title}</span>
         {hasSelectedDate && (
           <>
-            <Separator orientation="vertical" className="mx-0.5 h-4" />
+            <Separator
+              orientation="vertical"
+              className="mx-0.5 data-[orientation=vertical]:h-4"
+            />
             <span>{dateText}</span>
           </>
         )}
@@ -165,8 +178,8 @@ export function DataTableDateFilter<TData>({
         <Button variant="outline" size="sm" className="border-dashed">
           {hasValue ? (
             <div
-              aria-label={`Clear ${title} filter`}
               role="button"
+              aria-label={`Clear ${title} filter`}
               tabIndex={0}
               onClick={onReset}
               className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
@@ -185,7 +198,7 @@ export function DataTableDateFilter<TData>({
             initialFocus
             mode="range"
             selected={
-              isDateRange(selectedDates)
+              getIsDateRange(selectedDates)
                 ? selectedDates
                 : { from: undefined, to: undefined }
             }
@@ -196,7 +209,7 @@ export function DataTableDateFilter<TData>({
             initialFocus
             mode="single"
             selected={
-              !isDateRange(selectedDates) ? selectedDates[0] : undefined
+              !getIsDateRange(selectedDates) ? selectedDates[0] : undefined
             }
             onSelect={onSelect}
           />

@@ -74,8 +74,8 @@ export function DataTableSliderFilter<TData>({
         <Button variant="outline" size="sm" className="border-dashed">
           {columnFilterValue ? (
             <div
-              aria-label="Clear filter"
               role="button"
+              aria-label={`Clear ${title} filter`}
               tabIndex={0}
               onClick={onReset}
               className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
@@ -88,7 +88,10 @@ export function DataTableSliderFilter<TData>({
           <span>{title}</span>
           {columnFilterValue ? (
             <>
-              <Separator orientation="vertical" className="mx-0.5 h-4" />
+              <Separator
+                orientation="vertical"
+                className="mx-0.5 data-[orientation=vertical]:h-4"
+              />
               {formatValue(columnFilterValue[0])} -{" "}
               {formatValue(columnFilterValue[1])}
               {unit ? ` ${unit}` : ""}
@@ -174,7 +177,8 @@ export function DataTableSliderFilter<TData>({
             min={min}
             max={max}
             value={range}
-            onValueChange={(value) => onRangeChange(value as [number, number])}
+            onValueChange={(value) => setRange(value as [number, number])}
+            onValueCommit={(value) => onRangeChange(value as [number, number])}
             className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4"
           />
         </div>
