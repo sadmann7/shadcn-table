@@ -23,39 +23,39 @@
       "dependencies": ["@tanstack/react-table", "lucide-react", "nuqs"],
       "files": [
         {
-          "path": "src/components/data-table/data-table.tsx",
+          "path": "src/components/data-table.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/data-table/data-table-column-header.tsx",
+          "path": "src/components/data-table-column-header.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/data-table/data-table-pagination.tsx",
+          "path": "src/components/data-table-pagination.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/data-table/data-table-view-options.tsx",
+          "path": "src/components/data-table-view-options.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/data-table/data-table-faceted-filter.tsx",
+          "path": "src/components/data-table-faceted-filter.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/data-table/data-table-toolbar.tsx",
+          "path": "src/components/data-table-toolbar.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/data-table/data-table-slider-filter.tsx",
+          "path": "src/components/data-table-slider-filter.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/data-table/data-table-date-filter.tsx",
+          "path": "src/components/data-table-date-filter.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/data-table/data-table-skeleton.tsx",
+          "path": "src/components/data-table-skeleton.tsx",
           "type": "registry:component"
         },
         {
@@ -103,7 +103,7 @@
       "dependencies": ["@tanstack/react-table", "lucide-react", "motion"],
       "files": [
         {
-          "path": "src/components/data-table/data-table-action-bar.tsx",
+          "path": "src/components/data-table-action-bar.tsx",
           "type": "registry:component"
         }
       ]
@@ -123,7 +123,7 @@
       "dependencies": ["@tanstack/react-table", "lucide-react"],
       "files": [
         {
-          "path": "src/components/data-table/data-table-sort-list.tsx",
+          "path": "src/components/data-table-sort-list.tsx",
           "type": "registry:component"
         },
         {
@@ -158,15 +158,15 @@
       "dependencies": ["@tanstack/react-table", "lucide-react", "nuqs"],
       "files": [
         {
-          "path": "src/components/data-table/data-table-filter-list.tsx",
+          "path": "src/components/data-table-filter-list.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/data-table/data-table-range-filter.tsx",
+          "path": "src/components/data-table-range-filter.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/data-table/data-table-advanced-toolbar.tsx",
+          "path": "src/components/data-table-advanced-toolbar.tsx",
           "type": "registry:component"
         },
         {
@@ -239,15 +239,15 @@
       ],
       "files": [
         {
-          "path": "src/components/data-table/data-table-filter-menu.tsx",
+          "path": "src/components/data-table-filter-menu.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/data-table/data-table-range-filter.tsx",
+          "path": "src/components/data-table-range-filter.tsx",
           "type": "registry:component"
         },
         {
-          "path": "src/components/data-table/data-table-advanced-toolbar.tsx",
+          "path": "src/components/data-table-advanced-toolbar.tsx",
           "type": "registry:component"
         },
         {
