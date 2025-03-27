@@ -174,7 +174,8 @@ export function DataTableSliderFilter<TData>({
             min={min}
             max={max}
             value={range}
-            onValueChange={(value) => onRangeChange(value as [number, number])}
+            onValueChange={(value) => setRange(value as [number, number])}
+            onValueCommit={(value) => onRangeChange(value as [number, number])}
             className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4"
           />
         </div>
