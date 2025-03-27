@@ -115,8 +115,6 @@ export function getTasksTableColumns({
         icon: Text,
       },
       enableColumnFilter: true,
-      enableHiding: false,
-      enableSorting: false,
     },
     {
       id: "status",

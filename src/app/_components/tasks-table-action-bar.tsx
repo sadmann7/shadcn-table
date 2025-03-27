@@ -108,7 +108,10 @@ export function TasksTableActionBar({ table }: TasksTableActionBarProps) {
         <span className="whitespace-nowrap text-xs">
           {rows.length} selected
         </span>
-        <Separator orientation="vertical" className="mr-1 ml-2" />
+        <Separator
+          orientation="vertical"
+          className="mr-1 ml-2 data-[orientation=vertical]:h-4"
+        />
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -130,7 +133,10 @@ export function TasksTableActionBar({ table }: TasksTableActionBarProps) {
           </TooltipContent>
         </Tooltip>
       </div>
-      <Separator orientation="vertical" className="hidden h-5 sm:block" />
+      <Separator
+        orientation="vertical"
+        className="hidden data-[orientation=vertical]:h-5 sm:block"
+      />
       <div className="flex items-center gap-1.5">
         <Select
           onValueChange={(value: Task["status"]) =>

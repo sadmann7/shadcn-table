@@ -79,8 +79,8 @@ export function DataTableFacetedFilter<TData, TValue>({
         <Button variant="outline" size="sm" className="border-dashed">
           {selectedValues?.size > 0 ? (
             <div
-              aria-label={`Clear ${title} filter`}
               role="button"
+              aria-label={`Clear ${title} filter`}
               tabIndex={0}
               onClick={onReset}
               className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
@@ -93,7 +93,10 @@ export function DataTableFacetedFilter<TData, TValue>({
           {title}
           {selectedValues?.size > 0 && (
             <>
-              <Separator orientation="vertical" className="mx-0.5 h-4" />
+              <Separator
+                orientation="vertical"
+                className="mx-0.5 data-[orientation=vertical]:h-4"
+              />
               <Badge
                 variant="secondary"
                 className="rounded-sm px-1 font-normal lg:hidden"
