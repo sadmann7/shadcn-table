@@ -49,7 +49,7 @@ export const getSortingStateParser = <TData>(
   });
 };
 
-const filterSchema = z.object({
+const filterItemSchema = z.object({
   id: z.string(),
   value: z.union([z.string(), z.array(z.string())]),
   variant: z.enum(dataTableConfig.filterVariants),
@@ -57,7 +57,7 @@ const filterSchema = z.object({
   filterId: z.string(),
 });
 
-export type FilterSchema = z.infer<typeof filterSchema>;
+export type FilterItemSchema = z.infer<typeof filterItemSchema>;
 
 export const getFiltersStateParser = <TData>(
   columnIds?: string[] | Set<string>,
@@ -72,7 +72,7 @@ export const getFiltersStateParser = <TData>(
     parse: (value) => {
       try {
         const parsed = JSON.parse(value);
-        const result = z.array(filterSchema).safeParse(parsed);
+        const result = z.array(filterItemSchema).safeParse(parsed);
 
         if (!result.success) return null;
 
