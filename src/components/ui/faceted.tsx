@@ -20,30 +20,6 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-const FACETED_NAME = "Faceted";
-const TRIGGER_NAME = "FacetedTrigger";
-const BADGE_LIST_NAME = "FacetedBadgeList";
-const CONTENT_NAME = "FacetedContent";
-const INPUT_NAME = "FacetedInput";
-const LIST_NAME = "FacetedList";
-const EMPTY_NAME = "FacetedEmpty";
-const GROUP_NAME = "FacetedGroup";
-const ITEM_NAME = "FacetedItem";
-const SEPARATOR_NAME = "FacetedSeparator";
-
-const ERRORS = {
-  [FACETED_NAME]: `\`${FACETED_NAME}\` must be used as root component`,
-  [TRIGGER_NAME]: `\`${TRIGGER_NAME}\` must be within \`${FACETED_NAME}\``,
-  [BADGE_LIST_NAME]: `\`${BADGE_LIST_NAME}\` must be within \`${FACETED_NAME}\``,
-  [CONTENT_NAME]: `\`${CONTENT_NAME}\` must be within \`${FACETED_NAME}\``,
-  [INPUT_NAME]: `\`${INPUT_NAME}\` must be within \`${FACETED_NAME}\``,
-  [LIST_NAME]: `\`${LIST_NAME}\` must be within \`${FACETED_NAME}\``,
-  [EMPTY_NAME]: `\`${EMPTY_NAME}\` must be within \`${FACETED_NAME}\``,
-  [GROUP_NAME]: `\`${GROUP_NAME}\` must be within \`${FACETED_NAME}\``,
-  [ITEM_NAME]: `\`${ITEM_NAME}\` must be within \`${FACETED_NAME}\``,
-  [SEPARATOR_NAME]: `\`${SEPARATOR_NAME}\` must be within \`${FACETED_NAME}\``,
-};
-
 type FacetedValue<Multiple extends boolean> = Multiple extends true
   ? string[]
   : string;
@@ -58,10 +34,10 @@ const FacetedContext = React.createContext<FacetedContextValue<boolean> | null>(
   null,
 );
 
-function useFacetedContext(name: keyof typeof ERRORS) {
+function useFacetedContext(name: string) {
   const context = React.useContext(FacetedContext);
   if (!context) {
-    throw new Error(ERRORS[name]);
+    throw new Error(`\`${name}\` must be within Faceted`);
   }
   return context;
 }
@@ -168,10 +144,10 @@ function FacetedBadgeList(props: FacetedBadgeListProps) {
     ...badgeListProps
   } = props;
 
-  const context = useFacetedContext(BADGE_LIST_NAME);
+  const context = useFacetedContext("FacetedBadgeList");
   const values = Array.isArray(context.value)
     ? context.value
-    : [context.value].filter(Boolean);
+    : ([context.value].filter(Boolean) as string[]);
 
   const getLabel = React.useCallback(
     (value: string) => {
@@ -251,7 +227,7 @@ interface FacetedItemProps extends React.ComponentProps<typeof CommandItem> {
 
 function FacetedItem(props: FacetedItemProps) {
   const { value, onSelect, className, children, ...itemProps } = props;
-  const context = useFacetedContext(ITEM_NAME);
+  const context = useFacetedContext("FacetedItem");
 
   const isSelected = context.multiple
     ? Array.isArray(context.value) && context.value.includes(value)
