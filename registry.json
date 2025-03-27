@@ -138,6 +138,11 @@
           "path": "src/config/data-table.ts",
           "type": "registry:file",
           "target": "src/config/data-table.ts"
+        },
+        {
+          "path": "src/types/data-table.ts",
+          "type": "registry:file",
+          "target": "src/types/data-table.ts"
         }
       ]
     },
