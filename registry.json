@@ -18,6 +18,7 @@
         "popover",
         "select",
         "separator",
+        "slider",
         "table"
       ],
       "dependencies": ["@tanstack/react-table", "lucide-react", "nuqs"],
@@ -160,7 +161,12 @@
         "popover",
         "select"
       ],
-      "dependencies": ["@tanstack/react-table", "lucide-react", "nuqs"],
+      "dependencies": [
+        "@tanstack/react-table",
+        "lucide-react",
+        "nanoid",
+        "nuqs"
+      ],
       "files": [
         {
           "path": "src/components/data-table-filter-list.tsx",
@@ -240,6 +246,7 @@
         "@tanstack/react-table",
         "lucide-react",
         "motion",
+        "nanoid",
         "nuqs"
       ],
       "files": [
@@ -288,19 +295,6 @@
           "path": "src/types/data-table.ts",
           "type": "registry:file",
           "target": "src/types/data-table.ts"
-        }
-      ]
-    },
-    {
-      "name": "data-table-ts-doc",
-      "type": "registry:file",
-      "title": "Data Table TypeScript Doc",
-      "description": "A TypeScript doc for the data table",
-      "files": [
-        {
-          "path": "src/types/doc.ts",
-          "type": "registry:file",
-          "target": "src/types/doc.ts"
         }
       ]
     }

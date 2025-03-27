@@ -8,6 +8,7 @@
     "@tanstack/react-table",
     "lucide-react",
     "motion",
+    "nanoid",
     "nuqs"
   ],
   "registryDependencies": [
