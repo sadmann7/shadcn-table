@@ -1,8 +1,6 @@
 import { customAlphabet } from "nanoid";
 
-const prefixes: Record<string, unknown> = {
-  task: "tsk",
-};
+const prefixes: Record<string, unknown> = {};
 
 interface GenerateIdOptions {
   length?: number;

@@ -2,7 +2,7 @@ import { pgTable } from "@/db/utils";
 import { sql } from "drizzle-orm";
 import { boolean, real, timestamp, varchar } from "drizzle-orm/pg-core";
 
-import { generateId } from "@/registry/new-york/lib/id";
+import { generateId } from "@/lib/id";
 
 export const tasks = pgTable("tasks", {
   id: varchar("id", { length: 30 })

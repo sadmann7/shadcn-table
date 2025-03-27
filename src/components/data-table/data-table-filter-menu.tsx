@@ -12,6 +12,7 @@ import {
 import { useQueryState } from "nuqs";
 import * as React from "react";
 
+import { DataTableRangeFilter } from "@/components/data-table/data-table-range-filter";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -35,16 +36,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useDebouncedCallback } from "@/hooks/use-debounced-callback";
+import { getDefaultFilterOperator, getFilterOperators } from "@/lib/data-table";
+import { formatDate } from "@/lib/format";
+import { generateId } from "@/lib/id";
+import { getFiltersStateParser } from "@/lib/parsers";
 import { cn } from "@/lib/utils";
-import { DataTableRangeFilter } from "@/registry/new-york/components/data-table/data-table-range-filter";
-import { useDebouncedCallback } from "@/registry/new-york/hooks/use-debounced-callback";
-import {
-  getDefaultFilterOperator,
-  getFilterOperators,
-} from "@/registry/new-york/lib/data-table";
-import { formatDate } from "@/registry/new-york/lib/format";
-import { generateId } from "@/registry/new-york/lib/id";
-import { getFiltersStateParser } from "@/registry/new-york/lib/parsers";
 import type { ExtendedColumnFilter, FilterOperator } from "@/types/data-table";
 
 const FILTERS_KEY = "filters";

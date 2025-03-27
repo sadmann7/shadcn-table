@@ -9,10 +9,7 @@ import {
 import * as z from "zod";
 
 import { flagConfig } from "@/config/flag";
-import {
-  getFiltersStateParser,
-  getSortingStateParser,
-} from "@/registry/new-york/lib/parsers";
+import { getFiltersStateParser, getSortingStateParser } from "@/lib/parsers";
 
 export const searchParamsCache = createSearchParamsCache({
   filterFlag: parseAsStringEnum(

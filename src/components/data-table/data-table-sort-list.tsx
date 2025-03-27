@@ -31,15 +31,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { dataTableConfig } from "@/config/data-table";
-import { cn } from "@/lib/utils";
 import {
   Sortable,
   SortableContent,
   SortableItem,
   SortableItemHandle,
   SortableOverlay,
-} from "@/registry/new-york/components/ui/sortable";
+} from "@/components/ui/sortable";
+import { dataTableConfig } from "@/config/data-table";
+import { cn } from "@/lib/utils";
 
 const OPEN_MENU_SHORTCUT = "s";
 const REMOVE_SORT_SHORTCUTS = ["backspace", "delete"];
