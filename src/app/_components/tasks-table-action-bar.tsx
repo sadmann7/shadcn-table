@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import {
   DataTableActionBar,
   DataTableActionBarAction,
-} from "@/components/data-table/data-table-action-bar";
+} from "@/components/data-table-action-bar";
 import { Button } from "@/components/ui/button";
 import {
   Select,
