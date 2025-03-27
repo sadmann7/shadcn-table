@@ -5,7 +5,7 @@
   "items": [
     {
       "name": "data-table",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "Data Table",
       "description": "A feature-rich data table component with server-side filtering, sorting, and pagination",
       "registryDependencies": [
@@ -83,15 +83,20 @@
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/types/data-table.ts",
+          "path": "src/config/data-table.ts",
           "type": "registry:file",
-          "target": "src/registry/new-york/types/data-table.ts"
+          "target": "src/config/data-table.ts"
+        },
+        {
+          "path": "src/types/data-table.ts",
+          "type": "registry:file",
+          "target": "src/types/data-table.ts"
         }
       ]
     },
     {
       "name": "data-table-action-bar",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "Data Table Action Bar",
       "description": "A action bar component for the data table",
       "registryDependencies": ["button", "tooltip"],
@@ -105,7 +110,7 @@
     },
     {
       "name": "data-table-sort-list",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "Data Table Sort List",
       "description": "A sort list component for the data table",
       "registryDependencies": [
@@ -130,15 +135,15 @@
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/config/data-table.ts",
+          "path": "src/config/data-table.ts",
           "type": "registry:file",
-          "target": "src/registry/new-york/config/data-table.ts"
+          "target": "src/config/data-table.ts"
         }
       ]
     },
     {
       "name": "data-table-filter-list",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "Data Table Filter List",
       "description": "A filter list component for the data table",
       "registryDependencies": [
@@ -201,20 +206,20 @@
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/config/data-table.ts",
+          "path": "src/config/data-table.ts",
           "type": "registry:file",
-          "target": "src/registry/new-york/config/data-table.ts"
+          "target": "src/config/data-table.ts"
         },
         {
-          "path": "src/registry/new-york/types/data-table.ts",
+          "path": "src/types/data-table.ts",
           "type": "registry:file",
-          "target": "src/registry/new-york/types/data-table.ts"
+          "target": "src/types/data-table.ts"
         }
       ]
     },
     {
       "name": "data-table-filter-menu",
-      "type": "registry:block",
+      "type": "registry:component",
       "title": "Data Table Filter Menu",
       "description": "A filter menu component for the data table",
       "registryDependencies": [
@@ -270,20 +275,20 @@
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/config/data-table.ts",
+          "path": "src/config/data-table.ts",
           "type": "registry:file",
-          "target": "src/registry/new-york/config/data-table.ts"
+          "target": "src/config/data-table.ts"
         },
         {
-          "path": "src/registry/new-york/types/data-table.ts",
+          "path": "src/types/data-table.ts",
           "type": "registry:file",
-          "target": "src/registry/new-york/types/data-table.ts"
+          "target": "src/types/data-table.ts"
         }
       ]
     },
     {
       "name": "data-table-ts-doc",
-      "type": "registry:block",
+      "type": "registry:file",
       "title": "Data Table TypeScript Doc",
       "description": "A TypeScript doc for the data table",
       "files": [

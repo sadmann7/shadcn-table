@@ -8,15 +8,15 @@ import {
 } from "nuqs/server";
 import * as z from "zod";
 
-import { dataTableConfig } from "@/config/data-table";
+import { flagConfig } from "@/config/flag";
 import {
   getFiltersStateParser,
   getSortingStateParser,
 } from "@/registry/new-york/lib/parsers";
 
 export const searchParamsCache = createSearchParamsCache({
-  filterVariant: parseAsStringEnum(
-    dataTableConfig.featureFlags.map((flag) => flag.value),
+  filterFlag: parseAsStringEnum(
+    flagConfig.featureFlags.map((flag) => flag.value),
   ),
   page: parseAsInteger.withDefault(1),
   perPage: parseAsInteger.withDefault(10),

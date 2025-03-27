@@ -36,6 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { dataTableConfig } from "@/config/data-table";
 import { cn } from "@/lib/utils";
 import { DataTableRangeFilter } from "@/registry/new-york/components/data-table/data-table-range-filter";
 import {
@@ -56,7 +57,6 @@ import {
   SortableItemHandle,
   SortableOverlay,
 } from "@/registry/new-york/components/ui/sortable";
-import { dataTableConfig } from "@/registry/new-york/config/data-table";
 import { useDebouncedCallback } from "@/registry/new-york/hooks/use-debounced-callback";
 import {
   getDefaultFilterOperator,
@@ -69,7 +69,7 @@ import type {
   ExtendedColumnFilter,
   FilterOperator,
   JoinOperator,
-} from "@/registry/new-york/types/data-table";
+} from "@/types/data-table";
 
 const FILTERS_KEY = "filters";
 const JOIN_OPERATOR_KEY = "joinOperator";

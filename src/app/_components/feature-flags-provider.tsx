@@ -9,12 +9,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { type DataTableConfig, dataTableConfig } from "@/config/data-table";
+import { type FlagConfig, flagConfig } from "@/config/flag";
 
-type FilterVariant = DataTableConfig["featureFlags"][number]["value"];
+type FilterFlag = FlagConfig["featureFlags"][number]["value"];
 
 interface FeatureFlagsContextValue {
-  filterVariant: FilterVariant;
+  filterFlag: FilterFlag;
   enableAdvancedFilter: boolean;
 }
 
@@ -36,16 +36,14 @@ interface FeatureFlagsProviderProps {
 }
 
 export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
-  const [filterVariant, setFilterVariant] = useQueryState<FilterVariant | null>(
-    "filterVariant",
+  const [filterFlag, setFilterFlag] = useQueryState<FilterFlag | null>(
+    "filterFlag",
     {
       parse: (value) => {
         if (!value) return null;
-        const validValues = dataTableConfig.featureFlags.map(
-          (flag) => flag.value,
-        );
-        return validValues.includes(value as FilterVariant)
-          ? (value as FilterVariant)
+        const validValues = flagConfig.featureFlags.map((flag) => flag.value);
+        return validValues.includes(value as FilterFlag)
+          ? (value as FilterFlag)
           : null;
       },
       serialize: (value) => value ?? "",
@@ -56,14 +54,20 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
     },
   );
 
+  const onFilterFlagChange = React.useCallback(
+    (value: FilterFlag) => {
+      setFilterFlag(value);
+    },
+    [setFilterFlag],
+  );
+
   const contextValue = React.useMemo<FeatureFlagsContextValue>(
     () => ({
-      filterVariant,
+      filterFlag,
       enableAdvancedFilter:
-        filterVariant === "advancedFilters" ||
-        filterVariant === "commandFilters",
+        filterFlag === "advancedFilters" || filterFlag === "commandFilters",
     }),
-    [filterVariant],
+    [filterFlag],
   );
 
   return (
@@ -73,13 +77,11 @@ export function FeatureFlagsProvider({ children }: FeatureFlagsProviderProps) {
           type="single"
           variant="outline"
           size="sm"
-          value={filterVariant}
-          onValueChange={(value: FilterVariant) => {
-            setFilterVariant(value);
-          }}
+          value={filterFlag}
+          onValueChange={onFilterFlagChange}
           className="w-fit gap-0"
         >
-          {dataTableConfig.featureFlags.map((flag) => (
+          {flagConfig.featureFlags.map((flag) => (
             <Tooltip key={flag.value} delayDuration={700}>
               <ToggleGroupItem
                 value={flag.value}

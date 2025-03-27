@@ -1,7 +1,7 @@
 "use client";
 
 import { type Task, tasks } from "@/db/schema";
-import type { DataTableRowAction } from "@/registry/new-york/types/data-table";
+import type { DataTableRowAction } from "@/types/data-table";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,

@@ -45,10 +45,7 @@ import {
 import { formatDate } from "@/registry/new-york/lib/format";
 import { generateId } from "@/registry/new-york/lib/id";
 import { getFiltersStateParser } from "@/registry/new-york/lib/parsers";
-import type {
-  ExtendedColumnFilter,
-  FilterOperator,
-} from "@/registry/new-york/types/data-table";
+import type { ExtendedColumnFilter, FilterOperator } from "@/types/data-table";
 
 const FILTERS_KEY = "filters";
 const DEBOUNCE_MS = 300;
