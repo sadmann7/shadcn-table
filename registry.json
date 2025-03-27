@@ -128,7 +128,7 @@
         },
         {
           "path": "src/components/ui/sortable.tsx",
-          "type": "registry:component"
+          "type": "registry:ui"
         },
         {
           "path": "src/lib/composition.ts",
@@ -171,11 +171,11 @@
         },
         {
           "path": "src/components/ui/sortable.tsx",
-          "type": "registry:component"
+          "type": "registry:ui"
         },
         {
           "path": "src/components/ui/faceted.tsx",
-          "type": "registry:component"
+          "type": "registry:ui"
         },
         {
           "path": "src/hooks/use-callback-ref.ts",
