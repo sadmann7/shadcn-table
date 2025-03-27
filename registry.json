@@ -83,9 +83,14 @@
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/types/data-table.ts",
+          "path": "src/config/data-table.ts",
           "type": "registry:file",
-          "target": "src/registry/new-york/types/data-table.ts"
+          "target": "src/config/data-table.ts"
+        },
+        {
+          "path": "src/types/data-table.ts",
+          "type": "registry:file",
+          "target": "src/types/data-table.ts"
         }
       ]
     },
@@ -130,9 +135,9 @@
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/config/data-table.ts",
+          "path": "src/config/data-table.ts",
           "type": "registry:file",
-          "target": "src/registry/new-york/config/data-table.ts"
+          "target": "src/config/data-table.ts"
         }
       ]
     },
@@ -201,14 +206,14 @@
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/config/data-table.ts",
+          "path": "src/config/data-table.ts",
           "type": "registry:file",
-          "target": "src/registry/new-york/config/data-table.ts"
+          "target": "src/config/data-table.ts"
         },
         {
-          "path": "src/registry/new-york/types/data-table.ts",
+          "path": "src/types/data-table.ts",
           "type": "registry:file",
-          "target": "src/registry/new-york/types/data-table.ts"
+          "target": "src/types/data-table.ts"
         }
       ]
     },
@@ -270,14 +275,14 @@
           "type": "registry:lib"
         },
         {
-          "path": "src/registry/new-york/config/data-table.ts",
+          "path": "src/config/data-table.ts",
           "type": "registry:file",
-          "target": "src/registry/new-york/config/data-table.ts"
+          "target": "src/config/data-table.ts"
         },
         {
-          "path": "src/registry/new-york/types/data-table.ts",
+          "path": "src/types/data-table.ts",
           "type": "registry:file",
-          "target": "src/registry/new-york/types/data-table.ts"
+          "target": "src/types/data-table.ts"
         }
       ]
     },

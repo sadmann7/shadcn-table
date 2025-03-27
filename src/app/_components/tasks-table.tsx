@@ -1,7 +1,7 @@
 "use client";
 
 import type { Task } from "@/db/schema";
-import type { DataTableRowAction } from "@/registry/new-york/types/data-table";
+import type { DataTableRowAction } from "@/types/data-table";
 import * as React from "react";
 
 import { DataTable } from "@/registry/new-york/components/data-table/data-table";

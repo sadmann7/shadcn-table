@@ -1,9 +1,6 @@
 import type { DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import type {
-  ExtendedColumnFilter,
-  Option,
-} from "@/registry/new-york/types/data-table";
 import type { EmptyProps } from "@/types";
+import type { ExtendedColumnFilter, Option } from "@/types/data-table";
 
 import type { Column, Table, TableOptions } from "@tanstack/react-table";
 import type { motion } from "motion/react";
