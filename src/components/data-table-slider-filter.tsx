@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
+import { cn } from "@/lib/utils";
 import { PlusCircle, Settings2, XCircle } from "lucide-react";
 
 interface DataTableSliderFilterProps<TData> {
@@ -111,7 +112,7 @@ export function DataTableSliderFilter<TData>({
             <div className="relative">
               <Input
                 id={`${id}-from`}
-                type="text"
+                type="number"
                 aria-valuemin={min}
                 aria-valuemax={max}
                 inputMode="numeric"
@@ -130,7 +131,7 @@ export function DataTableSliderFilter<TData>({
                     onRangeChange([numValue, range[1]]);
                   }
                 }}
-                className="h-8 w-24 pr-8"
+                className={cn("h-8 w-24", unit && "pr-8")}
               />
               {unit && (
                 <span className="absolute top-0 right-0 bottom-0 flex items-center rounded-r-md bg-accent px-2 text-muted-foreground text-sm">
@@ -144,7 +145,7 @@ export function DataTableSliderFilter<TData>({
             <div className="relative">
               <Input
                 id={`${id}-to`}
-                type="text"
+                type="number"
                 aria-valuemin={min}
                 aria-valuemax={max}
                 inputMode="numeric"
@@ -163,7 +164,7 @@ export function DataTableSliderFilter<TData>({
                     onRangeChange([range[0], numValue]);
                   }
                 }}
-                className="h-8 w-24 pr-8"
+                className={cn("h-8 w-24", unit && "pr-8")}
               />
               {unit && (
                 <span className="absolute top-0 right-0 bottom-0 flex items-center rounded-r-md bg-accent px-2 text-muted-foreground text-sm">
