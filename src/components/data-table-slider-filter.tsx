@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
-import { useCallbackRef } from "@/hooks/use-callback-ref";
 import { cn } from "@/lib/utils";
 import { PlusCircle, XCircle } from "lucide-react";
 
@@ -60,22 +59,16 @@ export function DataTableSliderFilter<TData>({
     return [0, 100];
   }, [column, defaultRange]);
 
-  const [range, setRange] = React.useState<RangeValue>(
-    columnFilterValue ?? [min, max],
-  );
-
-  const onRangeChange = useCallbackRef(setRange);
-
-  React.useEffect(() => {
-    onRangeChange(columnFilterValue ?? [min, max]);
-  }, [columnFilterValue, min, max, onRangeChange]);
-
   const step = React.useMemo(() => {
     const rangeSize = max - min;
     if (rangeSize <= 20) return 1;
     if (rangeSize <= 100) return Math.ceil(rangeSize / 20);
     return Math.ceil(rangeSize / 50);
   }, [min, max]);
+
+  const range = React.useMemo(() => {
+    return columnFilterValue ?? [min, max];
+  }, [columnFilterValue, min, max]);
 
   const onReset = React.useCallback(
     (event?: React.MouseEvent) => {
@@ -94,44 +87,32 @@ export function DataTableSliderFilter<TData>({
   const onFromInputChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const numValue = Number(event.target.value);
-      if (!Number.isNaN(numValue) && numValue >= min && numValue <= range[1]) {
-        const newRange: RangeValue = [numValue, range[1]];
-        onRangeChange(newRange);
+      if (!Number.isNaN(numValue) && numValue >= min && numValue <= max) {
+        const newRange: RangeValue = [numValue, max];
         column.setFilterValue(newRange);
       }
     },
-    [column, min, range, onRangeChange],
+    [column, min, max],
   );
 
   const onToInputChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const numValue = Number(event.target.value);
-      if (!Number.isNaN(numValue) && numValue <= max && numValue >= range[0]) {
-        const newRange: RangeValue = [range[0], numValue];
-        onRangeChange(newRange);
+      if (!Number.isNaN(numValue) && numValue <= max && numValue >= min) {
+        const newRange: RangeValue = [min, numValue];
         column.setFilterValue(newRange);
       }
     },
-    [column, max, range, onRangeChange],
+    [column, max, min],
   );
 
   const onSliderValueChange = React.useCallback(
     (value: RangeValue) => {
       if (Array.isArray(value) && value.length === 2) {
-        onRangeChange(value);
-      }
-    },
-    [onRangeChange],
-  );
-
-  const onSliderValueCommit = React.useCallback(
-    (value: RangeValue) => {
-      if (Array.isArray(value) && value.length === 2) {
-        onRangeChange(value);
         column.setFilterValue(value);
       }
     },
-    [column, onRangeChange],
+    [column],
   );
 
   return (
@@ -185,7 +166,7 @@ export function DataTableSliderFilter<TData>({
                 placeholder={min.toString()}
                 min={min}
                 max={max}
-                value={range[0].toString()}
+                value={range[0]?.toString()}
                 onChange={onFromInputChange}
                 className={cn("h-8 w-24", unit && "pr-8")}
               />
@@ -209,7 +190,7 @@ export function DataTableSliderFilter<TData>({
                 placeholder={max.toString()}
                 min={min}
                 max={max}
-                value={range[1].toString()}
+                value={range[1]?.toString()}
                 onChange={onToInputChange}
                 className={cn("h-8 w-24", unit && "pr-8")}
               />
@@ -230,7 +211,6 @@ export function DataTableSliderFilter<TData>({
             step={step}
             value={range}
             onValueChange={onSliderValueChange}
-            onValueCommit={onSliderValueCommit}
           />
         </div>
         <Button
