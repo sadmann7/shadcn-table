@@ -82,15 +82,32 @@ function DataTableToolbarFilter<TData>({
 
       switch (columnMeta.variant) {
         case "text":
-        case "number":
           return (
             <Input
-              type={columnMeta.variant}
               placeholder={columnMeta.placeholder ?? columnMeta.label}
               value={(column.getFilterValue() as string) ?? ""}
               onChange={(event) => column.setFilterValue(event.target.value)}
               className="h-8 w-40 lg:w-56"
             />
+          );
+
+        case "number":
+          return (
+            <div className="relative">
+              <Input
+                type="number"
+                inputMode="numeric"
+                placeholder={columnMeta.placeholder ?? columnMeta.label}
+                value={(column.getFilterValue() as string) ?? ""}
+                onChange={(event) => column.setFilterValue(event.target.value)}
+                className={cn("h-8 w-[120px]", columnMeta.unit && "pr-8")}
+              />
+              {columnMeta.unit && (
+                <span className="absolute top-0 right-0 bottom-0 flex items-center rounded-r-md bg-accent px-2 text-muted-foreground text-sm">
+                  {columnMeta.unit}
+                </span>
+              )}
+            </div>
           );
 
         case "range":
