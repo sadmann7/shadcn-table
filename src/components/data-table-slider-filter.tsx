@@ -64,9 +64,7 @@ export function DataTableSliderFilter<TData>({
     columnFilterValue ?? [min, max],
   );
 
-  const onRangeChange = useCallbackRef((newRange: RangeValue) => {
-    setRange(newRange);
-  });
+  const onRangeChange = useCallbackRef(setRange);
 
   React.useEffect(() => {
     onRangeChange(columnFilterValue ?? [min, max]);
@@ -240,7 +238,6 @@ export function DataTableSliderFilter<TData>({
           variant="outline"
           size="sm"
           onClick={onReset}
-          className="px-3 text-xs"
         >
           Clear
         </Button>
