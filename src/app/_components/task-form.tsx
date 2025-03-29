@@ -39,7 +39,7 @@ export function TaskForm<T extends FieldValues>({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-4 px-4"
       >
         <FormField
           control={form.control}
