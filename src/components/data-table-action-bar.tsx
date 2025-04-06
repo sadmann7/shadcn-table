@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   Tooltip,
   TooltipContent,
@@ -8,7 +9,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import type { Table } from "@tanstack/react-table";
-import { Loader } from "lucide-react";
+import { Loader, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -123,4 +124,55 @@ function DataTableActionBarAction({
   );
 }
 
-export { DataTableActionBar, DataTableActionBarAction };
+interface DataTableActionBarSelectionProps<TData> {
+  table: Table<TData>;
+}
+
+function DataTableActionBarSelection<TData>({
+  table,
+}: DataTableActionBarSelectionProps<TData>) {
+  const onClearSelection = React.useCallback(() => {
+    table.toggleAllRowsSelected(false);
+  }, [table]);
+
+  return (
+    <div className="flex h-7 items-center rounded-md border pr-1 pl-2.5">
+      <span className="whitespace-nowrap text-xs">
+        {table.getFilteredSelectedRowModel().rows.length} selected
+      </span>
+      <Separator
+        orientation="vertical"
+        className="mr-1 ml-2 data-[orientation=vertical]:h-4"
+      />
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-5"
+            onClick={onClearSelection}
+          >
+            <X className="size-3.5" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent
+          sideOffset={10}
+          className="flex items-center gap-2 border bg-accent px-2 py-1 font-semibold text-foreground dark:bg-zinc-900 [&>span]:hidden"
+        >
+          <p>Clear selection</p>
+          <kbd className="select-none rounded border bg-background px-1.5 py-px font-mono font-normal text-[0.7rem] text-foreground shadow-xs disabled:opacity-50">
+            <abbr title="Escape" className="no-underline">
+              Esc
+            </abbr>
+          </kbd>
+        </TooltipContent>
+      </Tooltip>
+    </div>
+  );
+}
+
+export {
+  DataTableActionBar,
+  DataTableActionBarAction,
+  DataTableActionBarSelection,
+};
