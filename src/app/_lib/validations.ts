@@ -28,6 +28,16 @@ export const searchParamsCache = createSearchParamsCache({
   // advanced filter
   filters: getFiltersStateParser().withDefault([]),
   joinOperator: parseAsStringEnum(["and", "or"]).withDefault("and"),
+  // define columns to retrieve from the database
+  columns: parseAsArrayOf(z.string()).withDefault([
+    "code",
+    "label",
+    "title",
+    "status",
+    "priority",
+    "createdAt",
+    "estimatedHours",
+  ]),
 });
 
 export const createTaskSchema = z.object({
