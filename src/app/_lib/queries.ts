@@ -89,8 +89,27 @@ export async function getTasks(input: GetTasksSchema) {
             : [asc(tasks.createdAt)];
 
         const { data, total } = await db.transaction(async (tx) => {
+          // Prepare the selection object based on input.columns
+          const selection = (
+            input.columns.length > 0
+              ? input.columns.reduce(
+                  (acc, col) => {
+                    if (col in tasks) {
+                      acc[col as keyof typeof tasks] =
+                        tasks[col as keyof typeof tasks];
+                    }
+                    return acc;
+                  },
+                  {} as Record<
+                    string,
+                    (typeof tasks)[keyof typeof tasks]
+                  >,
+                )
+              : tasks // Select all columns (tasks table) if input.columns is empty
+          ) as any; // Cast to any as strict typing is problematic
+
           const data = await tx
-            .select()
+            .select(selection) // Use the prepared selection object
             .from(tasks)
             .limit(input.perPage)
             .offset(offset)
