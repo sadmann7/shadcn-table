@@ -1,8 +1,8 @@
-# [Shadcn Table](https://table.sadmn.com)
+# [Shadcn Table](https://tablecn.com)
 
 This is a shadcn table component with server-side sorting, filtering, and pagination. It is bootstrapped with `create-t3-app`.
 
-[![Shadcn Table](./public/images/screenshot.png)](https://table.sadmn.com)
+[![Shadcn Table](./public/images/screenshot.png)](https://tablecn.com)
 
 ## Documentation
 
