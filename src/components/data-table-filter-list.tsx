@@ -114,8 +114,6 @@ export function DataTableFilterList<TData>({
   );
   const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
 
-  console.log({ filters });
-
   const [joinOperator, setJoinOperator] = useQueryState(
     JOIN_OPERATOR_KEY,
     parseAsStringEnum(["and", "or"]).withDefault("and").withOptions({
