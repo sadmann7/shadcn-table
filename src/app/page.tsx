@@ -14,10 +14,23 @@ import {
   getTasks,
 } from "./_lib/queries";
 import { searchParamsCache } from "./_lib/validations";
+import type { Task } from "@/db/schema";
 
 interface IndexPageProps {
   searchParams: Promise<SearchParams>;
 }
+
+// Define all selectable columns with user-friendly labels
+const availableColumns: { id: keyof Task; label: string }[] = [
+  { id: "code", label: "Code" },
+  { id: "title", label: "Title" },
+  { id: "status", label: "Status" },
+  { id: "priority", label: "Priority" },
+  { id: "label", label: "Label" },
+  { id: "estimatedHours", label: "Est. Hours" },
+  { id: "createdAt", label: "Created At" },
+  // Add other columns from your Task schema as needed
+];
 
 export default async function IndexPage(props: IndexPageProps) {
   const searchParams = await props.searchParams;
@@ -29,6 +42,8 @@ export default async function IndexPage(props: IndexPageProps) {
     getTasks({
       ...search,
       filters: validFilters,
+      // Ensure columns are passed if defined, otherwise default handled by getTasks
+      columns: search.columns,
     }),
     getTaskStatusCounts(),
     getTaskPriorityCounts(),
@@ -41,22 +56,26 @@ export default async function IndexPage(props: IndexPageProps) {
         <React.Suspense
           fallback={
             <DataTableSkeleton
-              columnCount={7}
+              columnCount={search.columns.length > 0 ? search.columns.length : availableColumns.length} // Adjust skeleton based on selected/available columns
               filterCount={2}
-              cellWidths={[
-                "10rem",
-                "30rem",
-                "10rem",
-                "10rem",
-                "6rem",
-                "6rem",
-                "6rem",
-              ]}
+              // Adjust cellWidths based on default/selected columns if needed
+              // cellWidths={[
+              //   "10rem",
+              //   "30rem",
+              //   "10rem",
+              //   "10rem",
+              //   "6rem",
+              // ]}
               shrinkZero
             />
           }
         >
-          <TasksTable promises={promises} />
+          {/* Pass promises, availableColumns, and search */}
+          <TasksTable
+            promises={promises}
+            availableColumns={availableColumns}
+            search={search} // Pass the parsed search params
+          />
         </React.Suspense>
       </FeatureFlagsProvider>
     </Shell>

@@ -11,15 +11,22 @@ import { DataTableViewOptions } from "@/components/data-table-view-options";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import type { Task } from "@/db/schema";
 
 interface DataTableToolbarProps<TData> extends React.ComponentProps<"div"> {
   table: Table<TData>;
+  availableColumns: { id: keyof Task; label: string }[];
+  selectedColumns: string[];
+  onColumnsChange: (newColumns: string[]) => void;
 }
 
 export function DataTableToolbar<TData>({
   table,
   children,
   className,
+  availableColumns,
+  selectedColumns,
+  onColumnsChange,
   ...props
 }: DataTableToolbarProps<TData>) {
   const isFiltered = table.getState().columnFilters.length > 0;
@@ -62,11 +69,16 @@ export function DataTableToolbar<TData>({
       </div>
       <div className="flex items-center gap-2">
         {children}
-        <DataTableViewOptions table={table} />
+        <DataTableViewOptions
+          availableColumns={availableColumns}
+          selectedColumns={selectedColumns}
+          onColumnsChange={onColumnsChange}
+        />
       </div>
     </div>
   );
 }
+
 interface DataTableToolbarFilterProps<TData> {
   column: Column<TData>;
 }
