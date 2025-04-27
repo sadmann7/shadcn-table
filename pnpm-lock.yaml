@@ -126,8 +126,8 @@ importers:
         specifier: ^0.0.1
         version: 0.0.1
       shadcn:
-        specifier: 2.5.0
-        version: 2.5.0(@types/node@22.15.2)(typescript@5.8.3)
+        specifier: 2.4.0-canary.12
+        version: 2.4.0-canary.12(@types/node@22.15.2)(typescript@5.8.3)
       sonner:
         specifier: ^2.0.3
         version: 2.0.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -2592,8 +2592,8 @@ packages:
   server-only@0.0.1:
     resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
 
-  shadcn@2.5.0:
-    resolution: {integrity: sha512-kqbTpDWIYE8spytMiJFoKyzOTHb+DzNLjMXzz+ifDFTBgTPv6gIydmirTZwwfFb23XvenrTSVHsZHUjGsllcHw==}
+  shadcn@2.4.0-canary.12:
+    resolution: {integrity: sha512-451Gl3WrYqbbpokknAt+hUsj4jugIHq9oGTTCKqV/FLgvlQyH1+ULTWHCoAL8GRgW1WQiaVJx7N5dtL5cZd/7Q==}
     hasBin: true
 
   sharp@0.34.1:
@@ -4926,7 +4926,7 @@ snapshots:
 
   server-only@0.0.1: {}
 
-  shadcn@2.5.0(@types/node@22.15.2)(typescript@5.8.3):
+  shadcn@2.4.0-canary.12(@types/node@22.15.2)(typescript@5.8.3):
     dependencies:
       '@antfu/ni': 23.3.1
       '@babel/core': 7.26.10
