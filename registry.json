@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "shadcn-table",
-  "homepage": "https://table.sadmn.com",
+  "homepage": "https://tablecn.com",
   "items": [
     {
       "name": "data-table",
@@ -24,64 +24,79 @@
       "dependencies": ["@tanstack/react-table", "lucide-react", "nuqs"],
       "files": [
         {
-          "path": "src/components/data-table.tsx",
-          "type": "registry:component"
+          "path": "src/components/data-table/data-table.tsx",
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table.tsx"
         },
         {
-          "path": "src/components/data-table-column-header.tsx",
-          "type": "registry:component"
+          "path": "src/components/data-table/data-table-column-header.tsx",
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-column-header.tsx"
         },
         {
-          "path": "src/components/data-table-pagination.tsx",
-          "type": "registry:component"
+          "path": "src/components/data-table/data-table-pagination.tsx",
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-pagination.tsx"
         },
         {
-          "path": "src/components/data-table-view-options.tsx",
-          "type": "registry:component"
+          "path": "src/components/data-table/data-table-view-options.tsx",
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-view-options.tsx"
         },
         {
-          "path": "src/components/data-table-faceted-filter.tsx",
-          "type": "registry:component"
+          "path": "src/components/data-table/data-table-faceted-filter.tsx",
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-faceted-filter.tsx"
         },
         {
-          "path": "src/components/data-table-toolbar.tsx",
-          "type": "registry:component"
+          "path": "src/components/data-table/data-table-toolbar.tsx",
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-toolbar.tsx"
         },
         {
-          "path": "src/components/data-table-slider-filter.tsx",
-          "type": "registry:component"
+          "path": "src/components/data-table/data-table-slider-filter.tsx",
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-slider-filter.tsx"
         },
         {
-          "path": "src/components/data-table-date-filter.tsx",
-          "type": "registry:component"
+          "path": "src/components/data-table/data-table-date-filter.tsx",
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-date-filter.tsx"
         },
         {
-          "path": "src/components/data-table-skeleton.tsx",
-          "type": "registry:component"
+          "path": "src/components/data-table/data-table-skeleton.tsx",
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-skeleton.tsx"
         },
         {
           "path": "src/hooks/use-callback-ref.ts",
-          "type": "registry:hook"
+          "type": "registry:hook",
+          "target": "src/hooks/use-callback-ref.ts"
         },
         {
           "path": "src/hooks/use-data-table.ts",
-          "type": "registry:hook"
+          "type": "registry:hook",
+          "target": "src/hooks/use-data-table.ts"
         },
         {
           "path": "src/hooks/use-debounced-callback.ts",
-          "type": "registry:hook"
+          "type": "registry:hook",
+          "target": "src/hooks/use-debounced-callback.ts"
         },
         {
           "path": "src/lib/data-table.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "src/lib/data-table.ts"
         },
         {
           "path": "src/lib/format.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "src/lib/format.ts"
         },
         {
           "path": "src/lib/parsers.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "src/lib/parsers.ts"
         },
         {
           "path": "src/config/data-table.ts",
@@ -124,16 +139,19 @@
       "dependencies": ["@tanstack/react-table", "lucide-react"],
       "files": [
         {
-          "path": "src/components/data-table-sort-list.tsx",
-          "type": "registry:component"
+          "path": "src/components/data-table/data-table-sort-list.tsx",
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-sort-list.tsx"
         },
         {
           "path": "src/components/ui/sortable.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "src/components/ui/sortable.tsx"
         },
         {
           "path": "src/lib/composition.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "src/lib/composition.ts"
         },
         {
           "path": "src/config/data-table.ts",
@@ -169,52 +187,64 @@
       ],
       "files": [
         {
-          "path": "src/components/data-table-filter-list.tsx",
-          "type": "registry:component"
+          "path": "src/components/data-table/data-table-filter-list.tsx",
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-filter-list.tsx"
         },
         {
           "path": "src/components/data-table-range-filter.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-range-filter.tsx"
         },
         {
           "path": "src/components/data-table-advanced-toolbar.tsx",
-          "type": "registry:component"
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-advanced-toolbar.tsx"
         },
         {
           "path": "src/components/ui/sortable.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "src/components/ui/sortable.tsx"
         },
         {
           "path": "src/components/ui/faceted.tsx",
-          "type": "registry:ui"
+          "type": "registry:ui",
+          "target": "src/components/ui/faceted.tsx"
         },
         {
           "path": "src/hooks/use-callback-ref.ts",
-          "type": "registry:hook"
+          "type": "registry:hook",
+          "target": "src/hooks/use-callback-ref.ts"
         },
         {
           "path": "src/hooks/use-debounced-callback.ts",
-          "type": "registry:hook"
+          "type": "registry:hook",
+          "target": "src/hooks/use-debounced-callback.ts"
         },
         {
           "path": "src/lib/composition.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "src/lib/composition.ts"
         },
         {
           "path": "src/lib/data-table.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "src/lib/data-table.ts"
         },
         {
           "path": "src/lib/format.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "src/lib/format.ts"
         },
         {
           "path": "src/lib/id.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "src/lib/id.ts"
         },
         {
           "path": "src/lib/parsers.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "src/lib/parsers.ts"
         },
         {
           "path": "src/config/data-table.ts",
@@ -251,40 +281,49 @@
       ],
       "files": [
         {
-          "path": "src/components/data-table-filter-menu.tsx",
-          "type": "registry:component"
+          "path": "src/components/data-table/data-table-filter-menu.tsx",
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-filter-menu.tsx"
         },
         {
-          "path": "src/components/data-table-range-filter.tsx",
-          "type": "registry:component"
+          "path": "src/components/data-table/data-table-range-filter.tsx",
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-range-filter.tsx"
         },
         {
-          "path": "src/components/data-table-advanced-toolbar.tsx",
-          "type": "registry:component"
+          "path": "src/components/data-table/data-table-advanced-toolbar.tsx",
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-advanced-toolbar.tsx"
         },
         {
           "path": "src/hooks/use-callback-ref.ts",
-          "type": "registry:hook"
+          "type": "registry:hook",
+          "target": "src/hooks/use-callback-ref.ts"
         },
         {
           "path": "src/hooks/use-debounced-callback.ts",
-          "type": "registry:hook"
+          "type": "registry:hook",
+          "target": "src/hooks/use-debounced-callback.ts"
         },
         {
           "path": "src/lib/data-table.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "src/lib/data-table.ts"
         },
         {
           "path": "src/lib/format.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "src/lib/format.ts"
         },
         {
           "path": "src/lib/id.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "src/lib/id.ts"
         },
         {
           "path": "src/lib/parsers.ts",
-          "type": "registry:lib"
+          "type": "registry:lib",
+          "target": "src/lib/parsers.ts"
         },
         {
           "path": "src/config/data-table.ts",

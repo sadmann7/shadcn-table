@@ -1,7 +1,7 @@
 import type { SearchParams } from "@/types";
 import * as React from "react";
 
-import { DataTableSkeleton } from "@/components/data-table-skeleton";
+import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Shell } from "@/components/shell";
 import { getValidFilters } from "@/lib/data-table";
 

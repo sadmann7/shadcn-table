@@ -11,7 +11,7 @@ import {
   DataTableActionBar,
   DataTableActionBarAction,
   DataTableActionBarSelection,
-} from "@/components/data-table-action-bar";
+} from "@/components/data-table/data-table-action-bar";
 import {
   Select,
   SelectContent,
