@@ -70,33 +70,27 @@
         },
         {
           "path": "src/hooks/use-callback-ref.ts",
-          "type": "registry:hook",
-          "target": "src/hooks/use-callback-ref.ts"
+          "type": "registry:hook"
         },
         {
           "path": "src/hooks/use-data-table.ts",
-          "type": "registry:hook",
-          "target": "src/hooks/use-data-table.ts"
+          "type": "registry:hook"
         },
         {
           "path": "src/hooks/use-debounced-callback.ts",
-          "type": "registry:hook",
-          "target": "src/hooks/use-debounced-callback.ts"
+          "type": "registry:hook"
         },
         {
           "path": "src/lib/data-table.ts",
-          "type": "registry:lib",
-          "target": "src/lib/data-table.ts"
+          "type": "registry:lib"
         },
         {
           "path": "src/lib/format.ts",
-          "type": "registry:lib",
-          "target": "src/lib/format.ts"
+          "type": "registry:lib"
         },
         {
           "path": "src/lib/parsers.ts",
-          "type": "registry:lib",
-          "target": "src/lib/parsers.ts"
+          "type": "registry:lib"
         },
         {
           "path": "src/config/data-table.ts",
@@ -119,8 +113,9 @@
       "dependencies": ["@tanstack/react-table", "lucide-react", "motion"],
       "files": [
         {
-          "path": "src/components/data-table-action-bar.tsx",
-          "type": "registry:component"
+          "path": "src/components/data-table/data-table-action-bar.tsx",
+          "type": "registry:component",
+          "target": "src/components/data-table/data-table-action-bar.tsx"
         }
       ]
     },
@@ -150,8 +145,7 @@
         },
         {
           "path": "src/lib/composition.ts",
-          "type": "registry:lib",
-          "target": "src/lib/composition.ts"
+          "type": "registry:lib"
         },
         {
           "path": "src/config/data-table.ts",
@@ -192,12 +186,12 @@
           "target": "src/components/data-table/data-table-filter-list.tsx"
         },
         {
-          "path": "src/components/data-table-range-filter.tsx",
+          "path": "src/components/data-table/data-table-range-filter.tsx",
           "type": "registry:component",
           "target": "src/components/data-table/data-table-range-filter.tsx"
         },
         {
-          "path": "src/components/data-table-advanced-toolbar.tsx",
+          "path": "src/components/data-table/data-table-advanced-toolbar.tsx",
           "type": "registry:component",
           "target": "src/components/data-table/data-table-advanced-toolbar.tsx"
         },
@@ -213,38 +207,31 @@
         },
         {
           "path": "src/hooks/use-callback-ref.ts",
-          "type": "registry:hook",
-          "target": "src/hooks/use-callback-ref.ts"
+          "type": "registry:hook"
         },
         {
           "path": "src/hooks/use-debounced-callback.ts",
-          "type": "registry:hook",
-          "target": "src/hooks/use-debounced-callback.ts"
+          "type": "registry:hook"
         },
         {
           "path": "src/lib/composition.ts",
-          "type": "registry:lib",
-          "target": "src/lib/composition.ts"
+          "type": "registry:lib"
         },
         {
           "path": "src/lib/data-table.ts",
-          "type": "registry:lib",
-          "target": "src/lib/data-table.ts"
+          "type": "registry:lib"
         },
         {
           "path": "src/lib/format.ts",
-          "type": "registry:lib",
-          "target": "src/lib/format.ts"
+          "type": "registry:lib"
         },
         {
           "path": "src/lib/id.ts",
-          "type": "registry:lib",
-          "target": "src/lib/id.ts"
+          "type": "registry:lib"
         },
         {
           "path": "src/lib/parsers.ts",
-          "type": "registry:lib",
-          "target": "src/lib/parsers.ts"
+          "type": "registry:lib"
         },
         {
           "path": "src/config/data-table.ts",
@@ -297,33 +284,27 @@
         },
         {
           "path": "src/hooks/use-callback-ref.ts",
-          "type": "registry:hook",
-          "target": "src/hooks/use-callback-ref.ts"
+          "type": "registry:hook"
         },
         {
           "path": "src/hooks/use-debounced-callback.ts",
-          "type": "registry:hook",
-          "target": "src/hooks/use-debounced-callback.ts"
+          "type": "registry:hook"
         },
         {
           "path": "src/lib/data-table.ts",
-          "type": "registry:lib",
-          "target": "src/lib/data-table.ts"
+          "type": "registry:lib"
         },
         {
           "path": "src/lib/format.ts",
-          "type": "registry:lib",
-          "target": "src/lib/format.ts"
+          "type": "registry:lib"
         },
         {
           "path": "src/lib/id.ts",
-          "type": "registry:lib",
-          "target": "src/lib/id.ts"
+          "type": "registry:lib"
         },
         {
           "path": "src/lib/parsers.ts",
-          "type": "registry:lib",
-          "target": "src/lib/parsers.ts"
+          "type": "registry:lib"
         },
         {
           "path": "src/config/data-table.ts",
