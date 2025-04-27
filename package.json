@@ -62,7 +62,7 @@
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.56.1",
     "server-only": "^0.0.1",
-    "shadcn": "2.5.0",
+    "shadcn": "2.4.0-canary.12",
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.2.0",
     "vaul": "^1.1.2",
