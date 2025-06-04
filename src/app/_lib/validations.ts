@@ -11,7 +11,7 @@ import * as z from "zod";
 import { flagConfig } from "@/config/flag";
 import { getFiltersStateParser, getSortingStateParser } from "@/lib/parsers";
 
-export const searchParamsCache = createSearchParamsCache({
+export const searchParams = {
   filterFlag: parseAsStringEnum(
     flagConfig.featureFlags.map((flag) => flag.value),
   ),
@@ -28,7 +28,8 @@ export const searchParamsCache = createSearchParamsCache({
   // advanced filter
   filters: getFiltersStateParser().withDefault([]),
   joinOperator: parseAsStringEnum(["and", "or"]).withDefault("and"),
-});
+};
+export const searchParamsCache = createSearchParamsCache(searchParams)
 
 export const createTaskSchema = z.object({
   title: z.string(),
