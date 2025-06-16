@@ -64,7 +64,7 @@ export function TaskForm<T extends FieldValues>({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Label</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger className="capitalize">
                     <SelectValue placeholder="Select a label" />
@@ -94,7 +94,7 @@ export function TaskForm<T extends FieldValues>({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Status</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger className="capitalize">
                     <SelectValue placeholder="Select a status" />
@@ -124,7 +124,7 @@ export function TaskForm<T extends FieldValues>({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Priority</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger className="capitalize">
                     <SelectValue placeholder="Select a priority" />

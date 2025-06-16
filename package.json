@@ -20,7 +20,12 @@
     "db:migrate": "dotenv tsx src/db/migrate.ts",
     "db:drop-migration": "drizzle-kit drop",
     "db:seed": "dotenv tsx src/db/seed.ts",
-    "db:studio": "dotenv drizzle-kit studio"
+    "db:studio": "dotenv drizzle-kit studio",
+    "test": "pnpm run test:crud && pnpm run test:filter && pnpm run test:interface && pnpm run test:transaction",
+    "test:crud": "dotenv tsx __tests__/database-adapter.test.ts",
+    "test:filter": "dotenv tsx __tests__/filter-builder.test.ts",
+    "test:interface": "dotenv tsx __tests__/adapter-interface.test.ts",
+    "test:transaction": "dotenv tsx __tests__/transaction.test.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

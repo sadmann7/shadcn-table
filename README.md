@@ -14,8 +14,8 @@ See the [documentation](https://diceui.com/docs/components/data-table) to get st
 - **Styling:** [Tailwind CSS](https://tailwindcss.com)
 - **UI Components:** [shadcn/ui](https://ui.shadcn.com)
 - **Table package:** [TanStack/react-table](https://tanstack.com/table/latest)
-- **Database:** [Neon](https://neon.tech)
-- **ORM:** [Drizzle ORM](https://orm.drizzle.team)
+- **Database:** [Neon](https://neon.tech) / PostgreSQL
+- **ORM:** [Drizzle ORM](https://orm.drizzle.team) via Database Adapter Pattern
 - **Validation:** [Zod](https://zod.dev)
 
 ## Features
@@ -27,6 +27,7 @@ See the [documentation](https://diceui.com/docs/components/data-table) to get st
 - [x] `Notion/Airtable` like advanced filtering
 - [x] `Linear` like filter menu for command palette filtering
 - [x] Action bar on row selection
+- [x] Database adapter pattern for ORM/database flexibility
 
 ## Running Locally
 
@@ -71,6 +72,33 @@ See the [documentation](https://diceui.com/docs/components/data-table) to get st
    ```bash
    pnpm run dev
    ```
+
+## Testing
+
+The project includes comprehensive tests for the database adapter pattern:
+
+```bash
+# Run all tests
+pnpm run test
+
+# Run individual test suites
+pnpm run test:crud      # Basic CRUD operations
+pnpm run test:filter    # Filter builder functionality  
+pnpm run test:interface # Adapter interface compliance
+pnpm run test:transaction # Transaction handling
+```
+
+The test suite validates:
+- **CRUD Operations**: Creating, reading, updating, and deleting records
+- **Complex Filtering**: Text search, numeric ranges, date filtering, multi-select
+- **Filter Builder**: Value normalization, relative dates, operator handling
+- **Interface Compliance**: Ensures any adapter implementation follows the contract
+- **Transaction Support**: Commit/rollback behavior, isolation, complex operations
+- **Error Handling**: Graceful handling of invalid inputs and database errors
+
+This comprehensive testing ensures that the adapter pattern works reliably and that future database adapters (like Supabase) can be validated against the same test suite.
+
+**Prerequisites**: Make sure your database is running before executing the tests.
 
 ## How do I deploy this?
 
