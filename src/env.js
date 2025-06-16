@@ -11,6 +11,8 @@ export const env = createEnv({
       .enum(["development", "test", "production"])
       .default("development"),
     DATABASE_URL: z.string().url(),
+    SUPABASE_URL: z.string().url().optional(),
+    SUPABASE_ANON_KEY: z.string().optional(),
   },
 
   /**
@@ -29,6 +31,8 @@ export const env = createEnv({
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
+    SUPABASE_URL: process.env.SUPABASE_URL,
+    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

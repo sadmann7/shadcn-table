@@ -90,13 +90,7 @@ export type AdapterType = 'drizzle' | 'supabase';
 export interface SchemaDefinition {
   tableName: string;
   primaryKey: string;
-  columns: {
-    [key: string]: {
-      type: 'string' | 'number' | 'boolean' | 'date';
-      nullable?: boolean;
-      enum?: readonly string[];
-    };
-  };
+  schema: any; // Zod schema or other validation schema
 }
 
 export interface DrizzleAdapterConfig {

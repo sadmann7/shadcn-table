@@ -29,7 +29,65 @@ See the [documentation](https://diceui.com/docs/components/data-table) to get st
 - [x] Action bar on row selection
 - [x] Database adapter pattern for ORM/database flexibility
 
+## Architecture
+
+This project uses a **Database Adapter Pattern** that provides a unified interface for different ORMs and databases. This design offers:
+
+- **Database Agnostic**: Easy to switch between different ORMs/databases
+- **Type Safety**: Full TypeScript support with compile-time error checking  
+- **Extensibility**: Easy to add new database adapters
+- **Performance**: Each adapter can optimize for specific database features
+
+### Supported Adapters
+
+**Drizzle ORM Adapter** (Default)
+- Full-featured PostgreSQL adapter using Drizzle ORM
+- Supports complex filtering, transactions, and aggregations
+- Optimized for type safety and performance
+
+**Supabase Adapter**
+- PostgREST-based adapter for Supabase
+- Real-time capabilities and built-in authentication
+- Ideal for serverless deployments
+
+### Switching Database Adapters
+
+The application defaults to the Drizzle adapter. To use different adapters:
+
+```bash
+# Run with Drizzle (default)
+pnpm run dev
+
+# Run with Supabase adapter
+pnpm run dev:supabase
+
+# Build and start with Supabase
+pnpm run build
+pnpm run start:supabase
+```
+
+## Prerequisites
+
+### Required Tools
+
+- **Node.js** (v18 or later)
+- **pnpm** package manager
+- **Docker** (for PostgreSQL)
+
+### Optional Tools
+
+- **Supabase CLI** (for Supabase development)
+  ```bash
+  # Install via Homebrew (macOS)
+  brew install supabase/tap/supabase
+  
+  # Install via npm (cross-platform)
+  npm install -g supabase
+  ```
+
 ## Running Locally
+
+### With Drizzle (Default)
 
 1. Clone the repository
 
@@ -73,19 +131,46 @@ See the [documentation](https://diceui.com/docs/components/data-table) to get st
    pnpm run dev
    ```
 
+### With Supabase
+
+1. Follow steps 1-3 from above
+
+2. Initialize Supabase project
+
+   ```bash
+   supabase start
+   ```
+
+3. Apply migrations and seed data
+
+   ```bash
+   supabase db reset
+   ```
+
+4. Update your `.env` file with Supabase connection details:
+
+   ```bash
+   SUPABASE_URL="http://127.0.0.1:54321"
+   SUPABASE_ANON_KEY="your_anon_key_from_supabase_start"
+   ```
+
+5. Start the development server with Supabase adapter
+
+   ```bash
+   pnpm run dev:supabase
+   ```
+```
+
 ## Testing
 
 The project includes comprehensive tests for the database adapter pattern:
 
 ```bash
-# Run all tests
+# Run all tests (Drizzle adapter)
 pnpm run test
 
-# Run individual test suites
-pnpm run test:crud      # Basic CRUD operations
-pnpm run test:filter    # Filter builder functionality  
-pnpm run test:interface # Adapter interface compliance
-pnpm run test:transaction # Transaction handling
+# Test Supabase adapter specifically
+pnpm run test:supabase
 ```
 
 The test suite validates:
@@ -93,10 +178,9 @@ The test suite validates:
 - **Complex Filtering**: Text search, numeric ranges, date filtering, multi-select
 - **Filter Builder**: Value normalization, relative dates, operator handling
 - **Interface Compliance**: Ensures any adapter implementation follows the contract
-- **Transaction Support**: Commit/rollback behavior, isolation, complex operations
 - **Error Handling**: Graceful handling of invalid inputs and database errors
 
-This comprehensive testing ensures that the adapter pattern works reliably and that future database adapters (like Supabase) can be validated against the same test suite.
+This comprehensive testing ensures that the adapter pattern works reliably across different database backends.
 
 **Prerequisites**: Make sure your database is running before executing the tests.
 
