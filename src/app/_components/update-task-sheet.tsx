@@ -37,8 +37,21 @@ export function UpdateTaskSheet({ task, ...props }: UpdateTaskSheetProps) {
       label: task?.label,
       status: task?.status,
       priority: task?.priority,
+      estimatedHours: task?.estimatedHours ?? undefined,
     },
   });
+
+  React.useEffect(() => {
+    if (task) {
+      form.reset({
+        title: task.title ?? "",
+        label: task.label,
+        status: task.status,
+        priority: task.priority,
+        estimatedHours: task.estimatedHours ?? undefined,
+      });
+    }
+  }, [task, form]);
 
   function onSubmit(input: UpdateTaskSchema) {
     startTransition(async () => {

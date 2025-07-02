@@ -20,6 +20,10 @@ import {
   or,
 } from "drizzle-orm";
 
+// Re-export for backward compatibility
+export { DrizzleAdapter } from "@/lib/database-adapter/drizzle-adapter";
+export { createTaskAdapter } from "@/lib/database-adapter/factory";
+
 export function filterColumns<T extends Table>({
   table,
   filters,
