@@ -7,6 +7,7 @@
     "clean": "rimraf --glob **/node_modules **/dist **/.next pnpm-lock.yaml **/.tsbuildinfo",
     "build": "next build",
     "dev": "next dev",
+    "dev:setup": "docker-compose up -d && sleep 3 && pnpm db:push && pnpm db:seed && pnpm dev",
     "start": "next start",
     "lint": "biome check .",
     "lint:fix": "biome check . --write",

@@ -10,7 +10,6 @@ See the [documentation](https://diceui.com/docs/components/data-table) to get st
 
 ## Tech Stack
 
-- **Framework:** [Next.js](https://nextjs.org)
 - **Styling:** [Tailwind CSS](https://tailwindcss.com)
 - **UI Components:** [shadcn/ui](https://ui.shadcn.com)
 - **Table package:** [TanStack/react-table](https://tanstack.com/table/latest)
@@ -42,31 +41,45 @@ See the [documentation](https://diceui.com/docs/components/data-table) to get st
    pnpm install
    ```
 
-3. Copy the `.env.example` to `.env` and update the variables.
+3. Copy the `.env.example` to `.env.local` and update the variables.
 
    ```bash
-   cp .env.example .env
+   cp .env.example .env.local
    ```
 
-4. (Optional) Run database using docker-compose.yml file
+4. **Option 1: Quick development setup (Recommended)**
 
    ```bash
-   docker compose up
+   pnpm run dev:setup
    ```
 
-5. Push the database schema
+   This single command will:
+   - Start PostgreSQL container
+   - Push database schema
+   - Seed the database
+   - Start the development server
+
+5. **Option 2: Manual setup**
+
+   Start PostgreSQL database:
+
+   ```bash
+   docker-compose up -d
+   ```
+
+   Push the database schema:
 
    ```bash
    pnpm run db:push
    ```
 
-6. Seed the database
+   Seed the database:
 
    ```bash
    pnpm run db:seed
    ```
 
-7. Start the development server
+   Start the development server:
 
    ```bash
    pnpm run dev
