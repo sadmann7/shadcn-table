@@ -4,6 +4,14 @@ This is a shadcn table component with server-side sorting, filtering, and pagina
 
 [![Shadcn Table](./public/images/screenshot.png)](https://tablecn.com)
 
+<div align="center">
+  <a href="https://vercel.com/oss">
+    <img alt="Vercel OSS Program" src="https://vercel.com/oss/program-badge.svg" />
+  </a>
+</div>
+
+<br />
+
 ## Documentation
 
 See the [documentation](https://diceui.com/docs/components/data-table) to get started.

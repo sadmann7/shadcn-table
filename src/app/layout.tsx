@@ -7,10 +7,9 @@ import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 
 import type { Metadata, Viewport } from "next";
-
+import Script from "next/script";
 import { Toaster } from "@/components/ui/sonner";
 import { fontMono, fontSans } from "@/lib/fonts";
-import Script from "next/script";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),

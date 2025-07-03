@@ -1,20 +1,16 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "organizeImports": {
-    "enabled": true
+  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
   },
   "formatter": {
     "enabled": true,
     "indentWidth": 2,
-    "indentStyle": "space",
-    "ignore": [
-      "**/node_modules",
-      "**/dist",
-      "**/build",
-      "**/public",
-      "**/.turbo",
-      "**/.next"
-    ]
+    "indentStyle": "space"
   },
   "linter": {
     "enabled": true,
@@ -30,13 +26,15 @@
       },
       "correctness": {
         "noUnusedVariables": "warn",
-        "useExhaustiveDependencies": "warn"
+        "useExhaustiveDependencies": "warn",
+        "useHookAtTopLevel": "warn"
       },
       "complexity": {
         "noBannedTypes": "off"
       },
       "style": {
-        "useImportType": "warn"
+        "useImportType": "warn",
+        "useSelfClosingElements": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"
@@ -54,19 +52,11 @@
           }
         }
       }
-    },
-    "ignore": [
-      "**/node_modules",
-      "**/dist",
-      "**/build",
-      "**/public",
-      "**/.turbo",
-      "**/.next"
-    ]
+    }
   },
   "overrides": [
     {
-      "include": ["**/*.test.ts"]
+      "includes": ["**/*.test.ts"]
     }
   ],
   "vcs": {
@@ -75,13 +65,14 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignore": [
-      "**/node_modules",
-      "**/dist",
-      "**/build",
-      "**/public",
-      "**/.turbo",
-      "**/.next"
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/public",
+      "!**/.turbo",
+      "!**/.next"
     ]
   }
 }
