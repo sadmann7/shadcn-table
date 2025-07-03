@@ -268,10 +268,7 @@ export function DataTableFilterList<TData>({
           </div>
           {filters.length > 0 ? (
             <SortableContent asChild>
-              <div
-                role="list"
-                className="flex max-h-[300px] flex-col gap-2 overflow-y-auto p-1"
-              >
+              <ul className="flex max-h-[300px] flex-col gap-2 overflow-y-auto p-1">
                 {filters.map((filter, index) => (
                   <DataTableFilterItem<TData>
                     key={filter.filterId}
@@ -285,7 +282,7 @@ export function DataTableFilterList<TData>({
                     onFilterRemove={onFilterRemove}
                   />
                 ))}
-              </div>
+              </ul>
             </SortableContent>
           ) : null}
           <div className="flex w-full items-center gap-2">
@@ -363,7 +360,7 @@ function DataTableFilterItem<TData>({
   const filterOperators = getFilterOperators(filter.variant);
 
   const onItemKeyDown = React.useCallback(
-    (event: React.KeyboardEvent<HTMLDivElement>) => {
+    (event: React.KeyboardEvent<HTMLLIElement>) => {
       if (
         event.target instanceof HTMLInputElement ||
         event.target instanceof HTMLTextAreaElement
@@ -393,8 +390,7 @@ function DataTableFilterItem<TData>({
 
   return (
     <SortableItem value={filter.filterId} asChild>
-      <div
-        role="listitem"
+      <li
         id={filterItemId}
         tabIndex={-1}
         className="flex items-center gap-2"
@@ -436,7 +432,6 @@ function DataTableFilterItem<TData>({
         <Popover open={showFieldSelector} onOpenChange={setShowFieldSelector}>
           <PopoverTrigger asChild>
             <Button
-              role="combobox"
               aria-controls={fieldListboxId}
               variant="outline"
               size="sm"
@@ -554,7 +549,7 @@ function DataTableFilterItem<TData>({
             <GripVertical />
           </Button>
         </SortableItemHandle>
-      </div>
+      </li>
     </SortableItem>
   );
 }

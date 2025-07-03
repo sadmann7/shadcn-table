@@ -1,10 +1,6 @@
-import { isEmpty } from "@/db/utils";
-import type { ExtendedColumnFilter, JoinOperator } from "@/types/data-table";
 import { addDays, endOfDay, startOfDay } from "date-fns";
 import {
   type AnyColumn,
-  type SQL,
-  type Table,
   and,
   eq,
   gt,
@@ -18,7 +14,11 @@ import {
   notIlike,
   notInArray,
   or,
+  type SQL,
+  type Table,
 } from "drizzle-orm";
+import { isEmpty } from "@/db/utils";
+import type { ExtendedColumnFilter, JoinOperator } from "@/types/data-table";
 
 export function filterColumns<T extends Table>({
   table,
