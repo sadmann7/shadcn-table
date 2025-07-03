@@ -30,13 +30,15 @@
       },
       "correctness": {
         "noUnusedVariables": "warn",
-        "useExhaustiveDependencies": "warn"
+        "useExhaustiveDependencies": "warn",
+        "useHookAtTopLevel": "warn"
       },
       "complexity": {
         "noBannedTypes": "off"
       },
       "style": {
-        "useImportType": "warn"
+        "useImportType": "warn",
+        "useSelfClosingElements": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"
