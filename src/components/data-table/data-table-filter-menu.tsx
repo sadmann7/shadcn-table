@@ -567,8 +567,8 @@ function FilterValueSelector<TData>({
     case "dateRange":
       return (
         <Calendar
-          initialFocus
           mode="single"
+          captionLayout="dropdown"
           selected={value ? new Date(value) : undefined}
           onSelect={(date) => onSelect(date?.getTime().toString() ?? "")}
         />
@@ -838,7 +838,7 @@ function onFilterInputRender<TData>({
             {filter.operator === "isBetween" ? (
               <Calendar
                 mode="range"
-                initialFocus
+                captionLayout="dropdown"
                 selected={
                   dateValue.length === 2
                     ? {
@@ -864,7 +864,7 @@ function onFilterInputRender<TData>({
             ) : (
               <Calendar
                 mode="single"
-                initialFocus
+                captionLayout="dropdown"
                 selected={
                   dateValue[0] ? new Date(Number(dateValue[0])) : undefined
                 }
