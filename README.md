@@ -32,9 +32,7 @@ See the [documentation](https://diceui.com/docs/components/data-table) to get st
 
 ## Running Locally
 
-### Quick Setup
-
-For first-time setup, run this single command:
+### Quick Setup (with docker)
 
 1. **Clone the repository**
 
